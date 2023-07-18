@@ -3496,6 +3496,15 @@ public void processChangeSelectView(ValueChangeEvent eve)
 	  return prtMsgManager.isEmailPermit();
   }
 
+  public boolean isCanUseTags() {
+    boolean tagServiceEnabled = ServerConfigurationService.getBoolean(TagService.TAGSERVICE_ENABLED_INTEGRATION_PROP, TagService.TAGSERVICE_ENABLED_INTEGRATION_DEFAULT);
+    boolean manageTagsAllowed = securityService.unlock(userDirectoryService.getCurrentUser(), TagService.TAGSERVICE_MANAGE_PERMISSION, getContextSiteId());
+
+    log.debug("IsTagServiceEnabled:{}|HasCurrentUserTagPermission:{}", tagServiceEnabled, manageTagsAllowed);
+    
+    return tagServiceEnabled && manageTagsAllowed;
+  }
+
   public String processPvtMsgOrganize()
   {
     log.debug("processPvtMsgOrganize()");

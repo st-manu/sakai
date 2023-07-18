@@ -92,6 +92,16 @@
 		    </f:facet>
 		     <h:outputText value="#{rcvdItems.label}"/>
 		  </h:column>
+		  <h:column rendered="#{PrivateMessagesTool.canUseTags}" headerClass="hidden-xs">
+		    <f:facet name="header">
+		       <h:outputText value="#{msgs.pvt_tags_header}"/>
+		    </f:facet>
+		    <t:dataList value="#{rcvdItems.tagList}" var="eachTag" >
+		      <span class="badge bg-info">
+		        <h:outputText value="#{eachTag}"/>
+		      </span>
+		    </t:dataList>
+		  </h:column>
 		</h:dataTable>
 		
 	  <div class="table">
@@ -157,6 +167,16 @@
 		       <h:outputText value="#{msgs.pvt_label}"/>
 		    </f:facet>
 		     <h:outputText value="#{rcvdItems.label}"/>
+		  </h:column>
+		  <h:column rendered="#{PrivateMessagesTool.canUseTags}" headerClass="hidden-xs">
+		    <f:facet name="header">
+		       <h:outputText styleClass="hidden-xs" value="#{msgs.pvt_tags_header}"/>
+		    </f:facet>
+		    <t:dataList value="#{rcvdItems.tagList}" var="eachTag" >
+		      <span class="badge bg-info">
+		        <h:outputText value="#{eachTag}"/>
+		      </span>
+		    </t:dataList>
 		  </h:column>
 		</mf:hierPvtMsgDataTable>
 		</div>

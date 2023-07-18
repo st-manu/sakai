@@ -61,7 +61,8 @@
                         <h:outputText value="{\"bSortable\": true, \"bSearchable\": false}," rendered="#{PrivateMessagesTool.selectedTopic.topic.title != 'pvt_received'}" />
                         {"bSortable": true, "bSearchable": true},
                         <h:outputText value="{\"bSortable\": true, \"bSearchable\": false}," rendered="#{PrivateMessagesTool.selectedTopic.topic.title != 'pvt_sent' && PrivateMessagesTool.selectedTopic.topic.title != 'pvt_received' && PrivateMessagesTool.selectedTopic.topic.title != 'pvt_drafts' && PrivateMessagesTool.selectedTopic.topic.title != 'pvt_deleted' && PrivateMessagesTool.selectedTopic.topic.title != 'pvt_scheduler' }"/>
-                        {"bSortable": true, "bSearchable": true}
+                        {"bSortable": true, "bSearchable": true},
+                        <h:outputText value="{\"bSortable\": false, \"bSearchable\": true}," rendered="#{PrivateMessagesTool.canUseTags}"/>
                     ],
                     "language": {
                         "search": <h:outputText value="'#{msgs.datatables_sSearch}'" />,
@@ -96,7 +97,8 @@
                         <h:outputText value="{\"bSortable\": true, \"bSearchable\": false}," rendered="#{ PrivateMessagesTool.selectedTopic.topic.title != 'pvt_received' }" />
                         {"bSortable": true, "bSearchable": true},
                         <h:outputText value="{\"bSortable\": true, \"bSearchable\": false}," rendered="#{PrivateMessagesTool.selectedTopic.topic.title != 'pvt_sent' && PrivateMessagesTool.selectedTopic.topic.title != 'pvt_received' && PrivateMessagesTool.selectedTopic.topic.title != 'pvt_drafts' && PrivateMessagesTool.selectedTopic.topic.title != 'pvt_deleted' && PrivateMessagesTool.selectedTopic.topic.title != 'pvt_scheduler' }"/>
-                        {"bSortable": true, "bSearchable": true}
+                        {"bSortable": true, "bSearchable": true},
+                        <h:outputText value="{\"bSortable\": false, \"bSearchable\": true}," rendered="#{PrivateMessagesTool.canUseTags}" />
                     ],
                     "language": {
                         "search": <h:outputText value="'#{msgs.datatables_sSearch}'" />,
@@ -236,6 +238,16 @@
 		    </f:facet>
 		     <h:outputText value="#{rcvdItems.label}"/>
 		  </h:column>
+		  <h:column rendered="#{PrivateMessagesTool.canUseTags}" headerClass="hidden-xs">
+		    <f:facet name="header">
+		       <h:outputText value="#{msgs.pvt_tags_header}"/>
+		    </f:facet>
+		    <t:dataList value="#{rcvdItems.tagList}" var="eachTag" >
+		      <span class="badge bg-info">
+		        <h:outputText value="#{eachTag}"/>
+		      </span>
+		    </t:dataList>
+		  </h:column>
 		</h:dataTable>
 	  </h:panelGroup>
 	  <h:panelGroup layout="block" styleClass="table">
@@ -332,6 +344,16 @@
 		       <h:outputLink value="#" onclick="return false;"><h:outputText value="#{msgs.pvt_label}"/></h:outputLink>
 		    </f:facet>
 		     <h:outputText value="#{rcvdItems.label}"/>
+		  </h:column>
+		  <h:column rendered="#{PrivateMessagesTool.canUseTags}" headerClass="hidden-xs">
+		    <f:facet name="header">
+		       <h:outputText value="#{msgs.pvt_tags_header}"/>
+		    </f:facet>
+		    <t:dataList value="#{rcvdItems.tagList}" var="eachTag" >
+		      <span class="badge bg-info">
+		        <h:outputText value="#{eachTag}"/>
+		      </span>
+		    </t:dataList>
 		  </h:column>
 		</mf:hierPvtMsgDataTable>
 		</h:panelGroup>

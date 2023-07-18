@@ -78,6 +78,11 @@
 			  <h:selectBooleanCheckbox value="#{PrivateMessagesTool.searchOnDate}" id="search_by_date" />
 			  <h:outputLabel for="search_by_date"><h:outputText value="#{msgs.pvt_date_range}" /></h:outputLabel>
 			</h:panelGroup>
+
+			<h:panelGroup rendered="#{PrivateMessagesTool.canUseTags}" styleClass="checkbox">
+			  <h:selectBooleanCheckbox value="#{PrivateMessagesTool.searchOnTags}" id="search_by_tags" />
+			  <h:outputLabel for="search_by_tags"><h:outputText value="#{msgs.pvt_tags_header}" /></h:outputLabel>
+			</h:panelGroup>
 			
 			<h:panelGroup styleClass="shorttext" id="pvt_selected_label">
               <f:verbatim><span class="labeled"></f:verbatim>
