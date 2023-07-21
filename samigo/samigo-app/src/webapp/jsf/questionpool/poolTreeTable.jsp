@@ -19,8 +19,9 @@
 **********************************************************************************/
 --%>
 -->
+
 <div class="table">
-  <h:dataTable styleClass="table table-striped" id="TreeTable" value="#{questionpool.qpools}" var="pool">
+  <h:dataTable styleClass="table table-bordered table-striped" id="TreeTable" value="#{questionpool.qpools}" var="pool">
     <h:column id="col1">
 
      <f:facet name="header">

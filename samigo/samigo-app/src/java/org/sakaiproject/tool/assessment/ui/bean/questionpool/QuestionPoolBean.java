@@ -35,6 +35,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -91,6 +93,8 @@ import org.sakaiproject.tool.assessment.ui.bean.authz.AuthorizationBean;
 import org.sakaiproject.tool.assessment.ui.bean.delivery.ItemContentsBean;
 import org.sakaiproject.tool.assessment.ui.bean.evaluation.ExportResponsesBean;
 import org.sakaiproject.tool.assessment.ui.listener.util.ContextUtil;
+import org.sakaiproject.tool.assessment.ui.model.DataTableColumn;
+import org.sakaiproject.tool.assessment.ui.model.DataTableConfig;
 import org.sakaiproject.tool.assessment.util.BeanSort;
 import org.sakaiproject.user.api.User;
 import org.sakaiproject.user.api.UserNotDefinedException;
@@ -182,6 +186,8 @@ public class QuestionPoolBean implements Serializable {
   private QuestionPoolDataModel qpDataModel;
   private QuestionPoolDataModel qpDataModelCopy;
   private QuestionPoolDataModel subQpDataModel;
+  
+  private DataTableConfig dataTableConfig;
   
   // SAM-2049
   private String sortTransferPoolProperty = "title";
@@ -3261,4 +3267,79 @@ String poolId = ContextUtil.lookupParam("qpid");
 		}
 		setOutcomePool((getCurrentPool()!=null)?getCurrentPool().getId():0);
 	}
+
+	public String startExportPool() {
+		log.debug("inside startExportPool()");
+		setOutComeParams();
+
+		AuthorBean author = (AuthorBean) ContextUtil.lookupBean("author");
+		ChooseExportTypeListener chooseExportTypeListener = new ChooseExportTypeListener();
+		chooseExportTypeListener.processAction(null);
+		author.setOutcome("chooseExportType");
+
+		return "choosePoolExportType";
+	}
+
+	public boolean getExportable2MarkupText() {
+		QuestionPoolService questionPoolService = new QuestionPoolService();
+		boolean result = false;
+		if (questionPoolId != null) {
+			QuestionPoolFacade questionPool = questionPoolService.getPool(Long.parseLong(questionPoolId), AgentFacade.getAgentString());
+			result = questionPoolService.isExportable(questionPool);
+		}
+		return result;
+	  }
+
+	public String startExportQuestions() {
+		log.debug("inside startExportQuestions()");
+		setOutComeParams("editPool");
+		getCheckedQuestions();
+
+		AuthorBean author = (AuthorBean) ContextUtil.lookupBean("author");
+		ChooseExportTypeListener chooseExportTypeListener = new ChooseExportTypeListener();
+		chooseExportTypeListener.processAction(null);
+		author.setOutcome("chooseExportType");
+
+		return "choosePoolExportType";
+	}
+	
+	public DataTableConfig getDataTableConfig() {
+		if(this.dataTableConfig == null) {
+			this.dataTableConfig = DataTableConfig.builderWithDefaults()
+				.entitiesMessage(rb.getString("datatables_entities"))
+				.columnDefs(new LinkedList<DataTableColumn>() {{
+					// Order matters: First declarations take precedence over the last ones 
+					// CHECKBOX (delete)
+					add(DataTableColumn.builder()
+							.targets("columnCheckDelete")
+							.orderable(false)
+							.searchable(false)
+							.build());
+					// CHECKBOX (import)
+					add(DataTableColumn.builder()
+							.targets("columnCheckImport")
+							.orderable(false)
+							.searchable(false)
+							.build());
+					// POINTS
+					add(DataTableColumn.builder()
+							.targets("columnPoints")
+							.searchable(false)
+							.build());
+					// DATE
+					add(DataTableColumn.builder()
+							.targets("columnDate")
+							.type(DataTableColumn.TYPE_NUM)
+							.build());
+					// ALL
+					add(DataTableColumn.builder()
+							.targets("_all")
+							.orderable(true)
+							.searchable(true)
+							.build());
+			}}).build();
+		}
+		return this.dataTableConfig;
+	}
+
 }
