@@ -3267,41 +3267,6 @@ String poolId = ContextUtil.lookupParam("qpid");
 		}
 		setOutcomePool((getCurrentPool()!=null)?getCurrentPool().getId():0);
 	}
-
-	public String startExportPool() {
-		log.debug("inside startExportPool()");
-		setOutComeParams();
-
-		AuthorBean author = (AuthorBean) ContextUtil.lookupBean("author");
-		ChooseExportTypeListener chooseExportTypeListener = new ChooseExportTypeListener();
-		chooseExportTypeListener.processAction(null);
-		author.setOutcome("chooseExportType");
-
-		return "choosePoolExportType";
-	}
-
-	public boolean getExportable2MarkupText() {
-		QuestionPoolService questionPoolService = new QuestionPoolService();
-		boolean result = false;
-		if (questionPoolId != null) {
-			QuestionPoolFacade questionPool = questionPoolService.getPool(Long.parseLong(questionPoolId), AgentFacade.getAgentString());
-			result = questionPoolService.isExportable(questionPool);
-		}
-		return result;
-	  }
-
-	public String startExportQuestions() {
-		log.debug("inside startExportQuestions()");
-		setOutComeParams("editPool");
-		getCheckedQuestions();
-
-		AuthorBean author = (AuthorBean) ContextUtil.lookupBean("author");
-		ChooseExportTypeListener chooseExportTypeListener = new ChooseExportTypeListener();
-		chooseExportTypeListener.processAction(null);
-		author.setOutcome("chooseExportType");
-
-		return "choosePoolExportType";
-	}
 	
 	public DataTableConfig getDataTableConfig() {
 		if(this.dataTableConfig == null) {
