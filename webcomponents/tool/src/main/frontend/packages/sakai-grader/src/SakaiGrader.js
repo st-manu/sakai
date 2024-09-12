@@ -673,14 +673,25 @@ export class SakaiGrader extends graderRenderingMixin(gradableDataMixin(SakaiEle
     }
 
     if (filtered.length > 0) {
-      const firstSubmissionId = filtered[0].id;
-      this._hydrateCluster(firstSubmissionId).then(submission => {
+      const currentSubmissionId = this._submission.id;
+      const currentSubmission = filtered.find(s => s.id === currentSubmissionId);
 
-        if (submission) {
-          this._submissions = [ ...filtered ];
-          this._submission = submission;
-        }
-      });
+      if (currentSubmission) {
+        this._hydrateCluster(currentSubmissionId).then(submission => {
+          if (submission) {
+            this._submissions = [ ...filtered ];
+            this._submission = submission;
+          }
+        });
+      } else {
+        const firstSubmissionId = filtered[0].id;
+        this._hydrateCluster(firstSubmissionId).then(submission => {
+          if (submission) {
+            this._submissions = [ ...filtered ];
+            this._submission = submission;
+          }
+        });
+      }
     } else {
       this._submission = new Submission();
     }
