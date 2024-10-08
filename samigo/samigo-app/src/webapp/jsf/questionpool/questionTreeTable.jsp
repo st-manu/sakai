@@ -63,30 +63,30 @@
 
  <f:verbatim><span class="itemAction"></f:verbatim>
  <h:panelGroup rendered ="#{questionpool.currentPool.numberOfQuestions >= 1}">
-     <h:commandLink title="#{questionPoolMessages.t_copyQuestion}" rendered="#{questionpool.importToAuthoring != 'true' && questionpool.canCopyQuestions}" id="copylink" immediate="true" action="#{questionpool.startCopyQuestion}">
+     <h:commandLink title="#{questionPoolMessages.t_copyQuestion}" rendered="#{questionpool.importToAuthoring eq false && questionpool.canCopyQuestions eq true}" id="copylink" immediate="true" action="#{questionpool.startCopyQuestion}">
          <h:outputText id="copy" value="#{questionPoolMessages.copy}"/>
          <f:param name="itemid" value="#{question.itemId}"/>
          <f:param name="outCome" value="editPool"/>
      </h:commandLink>
-<h:outputText  rendered="#{questionpool.importToAuthoring != 'true' && questionpool.canMoveQuestions && questionpool.canCopyQuestions}" value=" #{questionPoolMessages.separator} " />
+<h:outputText  rendered="#{questionpool.importToAuthoring eq false && questionpool.canMoveQuestions eq true && questionpool.canCopyQuestions eq true}" value=" #{questionPoolMessages.separator} " />
 
-<h:commandLink title="#{questionPoolMessages.t_moveQuestion}" rendered="#{questionpool.importToAuthoring != 'true' && questionpool.canMoveQuestions}" id="movelink" immediate="true" action="#{questionpool.startMoveQuestion}">
+<h:commandLink title="#{questionPoolMessages.t_moveQuestion}" rendered="#{questionpool.importToAuthoring eq false && questionpool.canMoveQuestions eq true}" id="movelink" immediate="true" action="#{questionpool.startMoveQuestion}">
   <h:outputText id="move" value="#{questionPoolMessages.move}"/>
     <f:param name="itemid" value="#{question.itemId}"/>
     <f:param name="outCome" value="editPool"/>
 </h:commandLink>
 
-<h:outputText rendered="#{questionpool.importToAuthoring != 'true' && question.typeId == 15}" value=" #{questionPoolMessages.separator} " />
+<h:outputText rendered="#{questionpool.importToAuthoring eq false && question.typeId == 15}" value=" #{questionPoolMessages.separator} " />
 
-<h:commandLink title="#{questionPoolMessages.t_showSolution}" rendered="#{questionpool.importToAuthoring != 'true' && question.typeId == 15}" id="solutionlink" immediate="true" action="#{questionpool.checkSolution}">
+<h:commandLink title="#{questionPoolMessages.t_showSolution}" rendered="#{questionpool.importToAuthoring eq false && question.typeId == 15}" id="solutionlink" immediate="true" action="#{questionpool.checkSolution}">
   <h:outputText id="solution" value="#{questionPoolMessages.sol_q}"/>
     <f:param name="itemid" value="#{question.itemId}"/>
     <f:param name="outCome" value="editPool"/>
 </h:commandLink>
 
-<h:outputText rendered="#{questionpool.importToAuthoring != 'true' && (questionpool.canMoveQuestions || questionpool.canCopyQuestions) && questionpool.canPreviewQuestions}" value=" #{questionPoolMessages.separator} " />
+<h:outputText rendered="#{questionpool.importToAuthoring eq false && (questionpool.canMoveQuestions eq true || questionpool.canCopyQuestions eq true) && questionpool.canPreviewQuestions eq true}" value=" #{questionPoolMessages.separator} " />
 
-<h:commandLink title="#{questionPoolMessages.t_previewQuestion}" rendered="#{questionpool.importToAuthoring != 'true' && questionpool.canPreviewQuestions}" id="previewlink" immediate="true" action="#{questionpool.startPreviewQuestion}">
+<h:commandLink title="#{questionPoolMessages.t_previewQuestion}" rendered="#{questionpool.importToAuthoring eq false && questionpool.canPreviewQuestions eq true}" id="previewlink" immediate="true" action="#{questionpool.startPreviewQuestion}">
     <h:outputText id="preview" value="#{questionPoolMessages.preview}"/>
     <f:param name="itemid" value="#{question.itemId}"/>
 </h:commandLink>
@@ -172,7 +172,7 @@
        </h:panelGroup>
     </h:column>    
 
-    <h:column id="colimport" rendered="#{questionpool.importToAuthoring == 'true'}" headerClass="columnCheckImport">
+    <h:column id="colimport" rendered="#{questionpool.importToAuthoring eq true}" headerClass="columnCheckImport">
       <f:facet name="header">
         <h:panelGroup>
             <h:outputText value="#{questionPoolMessages.impToAuthor} "/>

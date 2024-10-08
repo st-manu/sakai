@@ -51,19 +51,19 @@
 <div class="tier1">
 <h:form id="previewPool">
 <p class="navViewAction">
-<h:commandLink title="#{questionPoolMessages.t_exportPool}" rendered="#{questionpool.importToAuthoring != 'true'}" id="exportPool" immediate="true" action="#{questionpool.startExportPool}">
+<h:commandLink title="#{questionPoolMessages.t_exportPool}" rendered="#{questionpool.importToAuthoring eq false}" id="exportPool" immediate="true" action="#{questionpool.startExportPool}">
 	<h:outputText id="exportp" value="#{questionPoolMessages.t_exportPool}"/>
 	<f:param name="action" value="exportPool" />
 	<f:param name="qpid" value="#{questionpool.currentPool.id}"/>
 	<f:param name="outCome" value="previewPool"/>
 </h:commandLink>
-<h:outputText  rendered="#{questionpool.importToAuthoring != 'true'}" value=" #{questionPoolMessages.separator} " />
-<h:commandLink title="#{questionPoolMessages.t_export}" rendered="#{questionpool.importToAuthoring != 'true'}" id="exportlink" immediate="true" action="#{questionpool.exportPool}">
+<h:outputText  rendered="#{questionpool.importToAuthoring eq false}" value=" #{questionPoolMessages.separator} " />
+<h:commandLink title="#{questionPoolMessages.t_export}" rendered="#{questionpool.importToAuthoring eq false}" id="exportlink" immediate="true" action="#{questionpool.exportPool}">
 	<h:outputText id="exportq" value="#{questionPoolMessages.export}"/>
 	<f:param name="poolId" value="#{questionpool.currentPool.id}"/>
 </h:commandLink>
-<h:outputText  rendered="#{questionpool.importToAuthoring != 'true'}" value=" #{questionPoolMessages.separator} " />
-<h:outputLink id="printlink" rendered="#{questionpool.importToAuthoring != 'true'}" onclick="print(); return false;" title="#{questionPoolMessages.t_print}" >
+<h:outputText  rendered="#{questionpool.importToAuthoring eq false}" value=" #{questionPoolMessages.separator} " />
+<h:outputLink id="printlink" rendered="#{questionpool.importToAuthoring eq false}" onclick="print(); return false;" title="#{questionPoolMessages.t_print}" >
 	<h:outputText id="printq" value="#{questionPoolMessages.print}"/>
 </h:outputLink>
 </p>

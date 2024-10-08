@@ -50,7 +50,7 @@
     <h:panelGroup rendered="#{authorization.createAssessment or authorization.editAnyAssessment or authorization.editOwnAssessment or authorization.gradeAnyAssessment or authorization.gradeOwnAssessment}">
         <li role="menuitem">
             <h:panelGroup styleClass="menuitem">
-               <h:commandLink title="#{generalMessages.t_assessment}" rendered="#{questionpool.importToAuthoring == 'true'}" action="author" immediate="true">
+               <h:commandLink title="#{generalMessages.t_assessment}" rendered="#{questionpool.importToAuthoring eq true}" action="author" immediate="true">
                <h:outputText value="#{generalMessages.assessment}"/>
                    <f:actionListener
                      type="org.sakaiproject.tool.assessment.ui.listener.author.AuthorActionListener" />
@@ -58,7 +58,7 @@
                      type="org.sakaiproject.tool.assessment.ui.listener.questionpool.CancelImportToAssessmentListener" />
                </h:commandLink>
 
-               <h:commandLink title="#{generalMessages.t_assessment}" rendered="#{questionpool.importToAuthoring == 'false'}" action="author"  immediate="true">
+               <h:commandLink title="#{generalMessages.t_assessment}" rendered="#{questionpool.importToAuthoring eq false}" action="author"  immediate="true">
                <h:outputText value="#{generalMessages.assessment}"/>
                    <f:actionListener
                      type="org.sakaiproject.tool.assessment.ui.listener.author.AuthorActionListener" />
@@ -80,12 +80,12 @@
     <h:panelGroup rendered="#{authorization.adminTemplate and template.showAssessmentTypes}">
         <li role="menuitem">
             <h:panelGroup styleClass="menuitem">
-                <h:commandLink title="#{generalMessages.t_template}" rendered="#{questionpool.importToAuthoring == 'false'}" action="template" immediate="true">
+                <h:commandLink title="#{generalMessages.t_template}" rendered="#{questionpool.importToAuthoring eq false}" action="template" immediate="true">
                     <h:outputText value="#{generalMessages.template}"/>
                     <f:actionListener type="org.sakaiproject.tool.assessment.ui.listener.author.TemplateListener" />
                 </h:commandLink>
 
-                <h:commandLink title="#{generalMessages.t_questionPool}" rendered="#{questionpool.importToAuthoring == 'true'}" action="template" immediate="true">
+                <h:commandLink title="#{generalMessages.t_questionPool}" rendered="#{questionpool.importToAuthoring eq true}" action="template" immediate="true">
                     <h:outputText value="#{generalMessages.template}"/>
                     <f:actionListener type="org.sakaiproject.tool.assessment.ui.listener.questionpool.CancelImportToAssessmentListener" />
                 </h:commandLink>
@@ -131,36 +131,36 @@
     </h1>
 </h:panelGroup>
 
-<h:outputText rendered="#{questionpool.importToAuthoring == 'true'}" value="#{questionPoolMessages.msg_imp_poolmanager}"/>
+<h:outputText rendered="#{questionpool.importToAuthoring eq true}" value="#{questionPoolMessages.msg_imp_poolmanager}"/>
 
-<h:outputText escape="false" rendered="#{questionpool.importToAuthoring == 'false' && authorization.createQuestionPool}" value="<p class=\"navViewAction\">"/>
-<h:commandLink title="#{questionPoolMessages.t_addPool}" rendered="#{questionpool.importToAuthoring == 'false' && authorization.createQuestionPool}" id="add" immediate="true" action="#{questionpool.addPool}">
+<h:outputText escape="false" rendered="#{questionpool.importToAuthoring eq false && authorization.createQuestionPool eq true}" value="<p class=\"navViewAction\">"/>
+<h:commandLink title="#{questionPoolMessages.t_addPool}" rendered="#{questionpool.importToAuthoring eq false && authorization.createQuestionPool eq true}" id="add" immediate="true" action="#{questionpool.addPool}">
  <h:outputText value="#{questionPoolMessages.add_new_pool}"/>
   <f:param name="qpid" value="0"/>
   <f:param name="outCome" value="poolList"/>
 </h:commandLink>
 
-<h:outputText value=" #{generalMessages.separator}" rendered="#{questionpool.importToAuthoring == 'false' && authorization.createQuestionPool}" />
+<h:outputText value=" #{generalMessages.separator}" rendered="#{questionpool.importToAuthoring eq false && authorization.createQuestionPool eq true}" />
 <h:outputText value="&#160;" escape="false" />
 
-<h:commandLink title="#{questionPoolMessages.t_importPool}" rendered="#{questionpool.importToAuthoring == 'false' && authorization.createQuestionPool}" id="import" immediate="true" action="importPool">
+<h:commandLink title="#{questionPoolMessages.t_importPool}" rendered="#{questionpool.importToAuthoring eq false && authorization.createQuestionPool eq true}" id="import" immediate="true" action="importPool">
  <h:outputText value="#{questionPoolMessages.t_importPool}"/>
  <f:param name="qpid" value="0"/>
  <f:param name="outCome" value="poolList"/>
 </h:commandLink> 
 
 <!-- SAM-2049 -->
-<h:outputText value=" #{generalMessages.separator}" rendered="#{questionpool.importToAuthoring == 'false' && authorization.createQuestionPool}" />
+<h:outputText value=" #{generalMessages.separator}" rendered="#{questionpool.importToAuthoring eq false && authorization.createQuestionPool eq true}" />
 <h:outputText value="&#160;" escape="false" />
 
-<h:commandLink title="#{questionPoolMessages.t_transferPool}" rendered="#{questionpool.importToAuthoring == 'false' && authorization.createQuestionPool}" 
+<h:commandLink title="#{questionPoolMessages.t_transferPool}" rendered="#{questionpool.importToAuthoring eq false && authorization.createQuestionPool eq true}" 
     id="transfer" immediate="true" action="#{questionpool.transferPool}">
     <h:outputText value="#{questionPoolMessages.transfer_pool_ownership}" />
     <f:param name="qpid" value="0" />
     <f:param name="outCome" value="poolList"/>
 </h:commandLink>
  
-<h:outputText rendered="#{questionpool.importToAuthoring == 'false' && authorization.createQuestionPool}" escape="false" value="</p>"/>
+<h:outputText rendered="#{questionpool.importToAuthoring eq false && authorization.createQuestionPool eq true}" escape="false" value="</p>"/>
 
 <h:messages styleClass="sak-banner-error" rendered="#{! empty facesContext.maximumSeverity}" layout="table"/>
  
@@ -168,10 +168,10 @@
 
 <h:panelGroup layout="block" styleClass="act">
  
-<h:commandButton rendered="#{questionpool.importToAuthoring == 'false' && authorization.deleteOwnQuestionPool}" type="submit" immediate="true" id="Submit" value="#{questionPoolMessages.delete}" action="#{questionpool.startRemovePool}" styleClass="d-none" >
+<h:commandButton rendered="#{questionpool.importToAuthoring eq false && authorization.deleteOwnQuestionPool eq true}" type="submit" immediate="true" id="Submit" value="#{questionPoolMessages.delete}" action="#{questionpool.startRemovePool}" styleClass="d-none" >
   </h:commandButton>
 
-  <h:commandButton rendered="#{questionpool.importToAuthoring == 'true'}"  type="submit" immediate="true" id="cancel" value="#{commonMessages.cancel_action}" action="#{questionpool.cancelImport}"  >
+  <h:commandButton rendered="#{questionpool.importToAuthoring eq true}"  type="submit" immediate="true" id="cancel" value="#{commonMessages.cancel_action}" action="#{questionpool.cancelImport}"  >
   </h:commandButton>
 </h:panelGroup>
 

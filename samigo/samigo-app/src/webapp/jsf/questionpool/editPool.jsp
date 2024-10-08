@@ -112,12 +112,12 @@ function textCounter(field, maxlimit) {
 
 <h:messages styleClass="sak-banner-error" rendered="#{! empty facesContext.maximumSeverity}" layout="table"/>
 
-<h:outputText rendered="#{questionpool.importToAuthoring == 'true'}" value="#{questionPoolMessages.msg_imp_editpool}"/>
+<h:outputText rendered="#{questionpool.importToAuthoring eq true}" value="#{questionPoolMessages.msg_imp_editpool}"/>
 
 <div class="form-group row"> 
     <h:outputLabel for="namefield" value="#{questionPoolMessages.p_name}" styleClass="col-sm-2  form-label"/>
     <div class="col-sm-6">
-    	<h:inputText readonly="#{questionpool.importToAuthoring == 'true' || questionpool.owner!=questionpool.currentPool.owner}"  id="namefield" size="30" maxlength="255" value="#{questionpool.currentPool.displayName}" styleClass="form-control"/>
+    	<h:inputText readonly="#{questionpool.importToAuthoring eq true || questionpool.owner != questionpool.currentPool.owner}"  id="namefield" size="30" maxlength="255" value="#{questionpool.currentPool.displayName}" styleClass="form-control"/>
     </div>
 </div>
 <div class="form-group row"> 
@@ -129,26 +129,26 @@ function textCounter(field, maxlimit) {
 <h:panelGroup layout="block" styleClass="form-group row">
     <h:outputLabel for="orgfield" value="#{questionPoolMessages.dept}" styleClass="col-sm-2 form-label"/>
     <div class="col-sm-6">
-       <h:inputText readonly="#{questionpool.importToAuthoring == 'true' || questionpool.owner!=questionpool.currentPool.owner}"  id="orgfield" size="30" maxlength="255" value="#{questionpool.currentPool.organizationName}" styleClass="form-control"/>
+       <h:inputText readonly="#{questionpool.importToAuthoring eq true || questionpool.owner != questionpool.currentPool.owner}"  id="orgfield" size="30" maxlength="255" value="#{questionpool.currentPool.organizationName}" styleClass="form-control"/>
     </div>
 </h:panelGroup>    
 <h:panelGroup layout="block" styleClass="form-group row">
     <h:outputLabel for="descfield" value="#{questionPoolMessages.desc}" styleClass="col-sm-2 form-label"/>
     <div class="col-sm-6">
-        <h:inputTextarea readonly="#{questionpool.importToAuthoring == 'true' || questionpool.owner!=questionpool.currentPool.owner}"
+        <h:inputTextarea readonly="#{questionpool.importToAuthoring eq true || questionpool.owner != questionpool.currentPool.owner}"
          onchange="inIt();" id="descfield" value="#{questionpool.currentPool.description}" cols="40" rows="6"/>
     </div>
 </h:panelGroup>  
 <h:panelGroup layout="block"  styleClass="form-group row">
     <h:outputLabel for="objfield" value="#{questionPoolMessages.obj}" styleClass="col-sm-2 form-label"/>
     <div class="col-sm-6">
-        <h:inputText readonly="#{questionpool.importToAuthoring == 'true' || questionpool.owner!=questionpool.currentPool.owner}"  id="objfield" size="30" maxlength="255" value="#{questionpool.currentPool.objectives}" styleClass="form-control"/>
+        <h:inputText readonly="#{questionpool.importToAuthoring eq true || questionpool.owner != questionpool.currentPool.owner}"  id="objfield" size="30" maxlength="255" value="#{questionpool.currentPool.objectives}" styleClass="form-control"/>
     </div>
 </h:panelGroup>   
 <h:panelGroup layout="block" styleClass="form-group row">
     <h:outputLabel for="keyfield" value="#{questionPoolMessages.keywords}" styleClass="col-sm-2 form-label"/>
     <div class="col-sm-6">
-        <h:inputText readonly="#{questionpool.importToAuthoring == 'true' || questionpool.owner!=questionpool.currentPool.owner}"  id="keyfield" size="30" maxlength="255" value="#{questionpool.currentPool.keywords}" styleClass="form-control"/>
+        <h:inputText readonly="#{questionpool.importToAuthoring eq true || questionpool.owner != questionpool.currentPool.owner}"  id="keyfield" size="30" maxlength="255" value="#{questionpool.currentPool.keywords}" styleClass="form-control"/>
     </div>
 </h:panelGroup>
 <h:panelGroup rendered="#{questionpool.showTags && questionpool.canManageTags}" layout="block" styleClass="form-group row">
@@ -183,19 +183,19 @@ function textCounter(field, maxlimit) {
 <h:outputText rendered="#{questionpool.currentPool.numberOfSubpools == 0}" value=" #{questionPoolMessages.subps}"/>
 </h:panelGroup>
 <h:panelGroup>
-<h:commandLink title="#{questionPoolMessages.t_addSubpool}" rendered="#{questionpool.importToAuthoring != 'true' && questionpool.canAddPools}" id="addlink" immediate="true" action="#{questionpool.addPool}">
+<h:commandLink title="#{questionPoolMessages.t_addSubpool}" rendered="#{questionpool.importToAuthoring eq false && questionpool.canAddPools eq true}" id="addlink" immediate="true" action="#{questionpool.addPool}">
   <h:outputText  id="add" value="#{questionPoolMessages.t_addSubpool}"/>
   <f:param name="qpid" value="#{questionpool.currentPool.id}"/>
   <f:param name="outCome" value="editPool"/>
 </h:commandLink>
-<h:outputText rendered="#{questionpool.importToAuthoring != 'true' && questionpool.canAddPools}" value=" #{questionPoolMessages.separator} " />
-<h:commandLink title="#{questionPoolMessages.preview}" rendered="#{questionpool.importToAuthoring != 'true'}"  id="previewlink" immediate="true" action="#{questionpool.startPreviewPool}">
+<h:outputText rendered="#{questionpool.importToAuthoring eq false && questionpool.canAddPools eq true}" value=" #{questionPoolMessages.separator} " />
+<h:commandLink title="#{questionPoolMessages.preview}" rendered="#{questionpool.importToAuthoring eq false}"  id="previewlink" immediate="true" action="#{questionpool.startPreviewPool}">
   <h:outputText id="previewq" value="#{questionPoolMessages.preview}"/>
   <f:param name="qpid" value="#{questionpool.currentPool.id}"/>
 </h:commandLink>
 <!-- Export Pool -->
-<h:outputText title="#{questionPoolMessages.t_exportPool}" rendered="#{questionpool.importToAuthoring != 'true'}" value=" #{questionPoolMessages.separator} " />
-<h:commandLink title="#{questionPoolMessages.t_exportPool}" rendered="#{questionpool.importToAuthoring != 'true'}" action="#{questionpool.startExportPool}" >
+<h:outputText title="#{questionPoolMessages.t_exportPool}" rendered="#{questionpool.importToAuthoring eq false}" value=" #{questionPoolMessages.separator} " />
+<h:commandLink title="#{questionPoolMessages.t_exportPool}" rendered="#{questionpool.importToAuthoring eq false}" action="#{questionpool.startExportPool}" >
   <h:outputText id="export" value="#{questionPoolMessages.t_exportPool}"/>
   <f:param name="action" value="exportPool" />
   <f:param name="qpid" value="#{questionpool.currentPool.id}"/>
@@ -225,7 +225,7 @@ function textCounter(field, maxlimit) {
 <h:outputText rendered="#{questionpool.currentPool.numberOfQuestions ==1}" value=" #{questionPoolMessages.q}"/>
 <h:outputText rendered="#{questionpool.currentPool.numberOfQuestions ==0}" value=" #{questionPoolMessages.qs}"/>
 </h:panelGroup>
-<h:commandLink title="#{questionPoolMessages.t_addQuestion}" rendered="#{questionpool.importToAuthoring != 'true' && questionpool.canAddQuestions}" id="addQlink" immediate="true" action="#{questionpool.selectQuestionType}">
+<h:commandLink title="#{questionPoolMessages.t_addQuestion}" rendered="#{questionpool.importToAuthoring eq false && questionpool.canAddQuestions eq true}" id="addQlink" immediate="true" action="#{questionpool.selectQuestionType}">
   <h:outputText id="addq" value="#{questionPoolMessages.t_addQuestion}"/>
   <f:param name="poolId" value="#{questionpool.currentPool.id}"/>
   <f:param name="outCome" value="editPool"/>
@@ -240,7 +240,7 @@ function textCounter(field, maxlimit) {
 </div>
 <!-- END -->
 <f:verbatim><br/></f:verbatim>
-<h:panelGrid rendered="#{(questionpool.importToAuthoring == 'true') && (questionpool.currentPool.numberOfQuestions > 0)}" columnClasses="shorttext">  <h:panelGroup>
+<h:panelGrid rendered="#{(questionpool.importToAuthoring eq true) && (questionpool.currentPool.numberOfQuestions > 0)}" columnClasses="shorttext">  <h:panelGroup>
   <h:outputLabel value="#{authorMessages.assign_to_p}" />
   <h:selectOneMenu id="assignToPart" value="#{questionpool.selectedSection}">
      <f:selectItems  value="#{itemauthor.sectionSelectList}" />
@@ -254,24 +254,24 @@ function textCounter(field, maxlimit) {
 
     <!-- for importing questions from pool to authoring -->
     <!-- disable copy button once clicked.  show processing... -->
-    <h:commandButton id="import" rendered="#{questionpool.importToAuthoring == 'true'}"
+    <h:commandButton id="import" rendered="#{questionpool.importToAuthoring eq true}"
       action="#{questionpool.doit}" onclick="SPNR.disableControlsAndSpin(this, null);" value="#{questionPoolMessages.copy}">
         <f:actionListener type="org.sakaiproject.tool.assessment.ui.listener.questionpool.ImportQuestionsToAuthoring" />
     </h:commandButton>
 
-    <h:commandButton id="removeSubmit" rendered="#{questionpool.importToAuthoring == 'false' && questionpool.canDeleteQuestions}" 
+    <h:commandButton id="removeSubmit" rendered="#{questionpool.importToAuthoring eq false && questionpool.canDeleteQuestions eq true}" 
       action="#{questionpool.doit}" value="#{commonMessages.remove_action}">
         <f:actionListener type="org.sakaiproject.tool.assessment.ui.listener.questionpool.StartRemoveItemsListener" />
         <f:param name="outCome" value="editPool"/>
     </h:commandButton>
 
-    <h:commandButton title="#{questionPoolMessages.t_copyQuestion}" rendered="#{questionpool.importToAuthoring != 'true' && questionpool.canCopyQuestions}"
+    <h:commandButton title="#{questionPoolMessages.t_copyQuestion}" rendered="#{questionpool.importToAuthoring eq false && questionpool.canCopyQuestions eq true}"
       id="copySubmit" immediate="true" action="#{questionpool.startCopyQuestions}" value="#{questionPoolMessages.copy}" />
 
-    <h:commandButton title="#{questionPoolMessages.t_moveQuestion}" rendered="#{questionpool.importToAuthoring != 'true' && questionpool.canMoveQuestions}"
+    <h:commandButton title="#{questionPoolMessages.t_moveQuestion}" rendered="#{questionpool.importToAuthoring eq false && questionpool.canMoveQuestions eq true}"
       id="moveSubmit" immediate="true" action="#{questionpool.startMoveQuestions}" value="#{questionPoolMessages.move}" />
 
-    <h:commandButton title="#{questionPoolMessages.exp_q}" disabled="#{questionpool.currentPool.numberOfQuestions == 0 }" rendered="#{questionpool.importToAuthoring != 'true'}"
+    <h:commandButton title="#{questionPoolMessages.exp_q}" disabled="#{questionpool.currentPool.numberOfQuestions == 0 }" rendered="#{questionpool.importToAuthoring eq false}"
       id="exportSubmit" immediate="true" action="#{questionpool.startExportQuestions}" value="#{questionPoolMessages.t_exportPool}">
         <f:param name="qpid" value="#{questionpool.currentPool.id}"/>
         <f:param name="outCome" value="editPool"/>
@@ -280,7 +280,7 @@ function textCounter(field, maxlimit) {
  </h:panelGroup>
 
   <h:panelGroup styleClass="act">
-    <h:commandButton styleClass="active" id="Update" rendered="#{questionpool.importToAuthoring == 'false' && questionpool.owner == questionpool.currentPool.owner}" action="#{questionpool.getOutcomeEdit}" value="#{questionPoolMessages.update}">
+    <h:commandButton styleClass="active" id="Update" rendered="#{questionpool.importToAuthoring eq false && questionpool.owner == questionpool.currentPool.owner}" action="#{questionpool.getOutcomeEdit}" value="#{questionPoolMessages.update}">
       <f:actionListener type="org.sakaiproject.tool.assessment.ui.listener.questionpool.PoolSaveListener" />
       <f:attribute name="addsource" value="editpoolattr"/>
     </h:commandButton>
