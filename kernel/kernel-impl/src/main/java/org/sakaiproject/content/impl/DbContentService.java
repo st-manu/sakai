@@ -2029,8 +2029,9 @@ public class DbContentService extends BaseContentService
 				   return body;
 			   } else {
 				   while ((bytesRead = in.read(buffer)) != -1 && totalBytes < contentLength) {
-					   System.arraycopy(buffer, 0, body, totalBytes, bytesRead);
-					   totalBytes += bytesRead;
+					   int bytesToCopy = Math.min(bytesRead, body.length - totalBytes);
+					   System.arraycopy(buffer, 0, body, totalBytes, bytesToCopy);
+					   totalBytes += bytesToCopy;
 				   }
 			   }
 		   } 
