@@ -2,16 +2,6 @@
 
 <header class="portal-header d-flex align-items-center justify-content-between" role="banner">
 
-  <button class="btn icon-button m-1 d-md-none btn-sidebar-collapse responsive-sidebar-button"
-      data-bs-toggle="offcanvas"
-      data-bs-target="#portal-nav-sidebar"
-      aria-controls="portal-nav-sidebar"
-      aria-label="$rloader.sit_navigation"
-      aria-expanded="false"
-      title="$rloader.sit_navigation">
-    <span class="bi bi-list"></span>
-  </button>
-
   <div class="d-flex align-items-center">
     <div id="logoWrapper" class="portal-header-logo d-flex align-items-center justify-content-between bg-primary">
       <a class="px-3 btn" href="/portal" title="$rloader.portal_home">
