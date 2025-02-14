@@ -201,17 +201,6 @@
   }
 }
 
-.offcanvas {
-  background-color: var(--sakai-background-color-2);
-  .offcanvas-header {
-    background-color: var(--sakai-offcanvas-header-bg);
-    color: var(--sakai-offcanvas-header-color);
-    .btn-close {
-      background-color: var(--sakai-offcanvas-close-btn-bg);
-    }
-  }
-}
-
 .breadcrumb-item + .breadcrumb-item::before {
   color: var(--sakak-breadcrumb-color);
 }
@@ -303,31 +292,6 @@
   right: 20%;
   color: var(--sakai-primary-color-1);
   background: red;
-}
-
-// make offcanvas header match Sakai's header:
-.offcanvas-header {
-  flex-shrink: 0;
-  height: var(--portal-header-height);
-  color: #fff;
-  background-color: var(--bs-primary);
-}
-// change offcanvas close button's colour to white:
-.offcanvas-header .btn-close {
-  background: transparent url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23fff'%3e%3cpath d='M.293.293a1 1 0 011.414 0L8 6.586 14.293.293a1 1 0 111.414 1.414L9.414 8l6.293 6.293a1 1 0 01-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 01-1.414-1.414L6.586 8 .293 1.707a1 1 0 010-1.414z'/%3e%3c/svg%3e") center/1em auto no-repeat;
-}
-// for narrow views, take up the full width of the screen:
-@media (max-width: $offcanvas-horizontal-width) {
-  .offcanvas-start,
-  .offcanvas-end {
-    max-width: 100vw;
-  }
-}
-@include media-breakpoint-down(md) {
-  .offcanvas-start,
-  .offcanvas-end {
-    bottom: var(--portal-header-height);
-  }
 }
 
 .sakai-sitesAndToolsNav .active .list-group-item-action {
@@ -596,6 +560,96 @@
   }
 }
 
+/*
+  Offcanvas bs style
+*/
+@include media-breakpoint-down(md) {
+
+  .offcanvas {
+    --bs-offcanvas-padding-x: 2rem;
+    --bs-offcanvas-padding-y: 2rem;
+    --bs-offcanvas-width: 100%;
+  }
+
+  // make offcanvas header match Sakai's header:
+  .offcanvas-header {
+    height: var(--portal-header-height);
+  }
+
+  .offcanvas-header .btn-close {
+    padding: calc(var(--bs-offcanvas-padding-y)* 0.25) calc(var(--bs-offcanvas-padding-x)* 0.25);
+    margin: 0px;
+  }
+
+  #portal-nav-sidebar .sakai-sitesAndToolsNav {
+    padding-right: calc(var(--bs-offcanvas-padding-x) - 1rem);
+    padding-left: calc(var(--bs-offcanvas-padding-x) - 1rem);
+    padding-top: calc(var(--bs-offcanvas-padding-y) - 1rem);
+    padding-bottom: calc(var(--bs-offcanvas-padding-y) - 1rem);
+  }
+}
+
+@include media-breakpoint-up(md) {
+
+  .offcanvas {
+    margin: 1.5rem 2.5rem 1rem 1rem;
+    border-radius: 6px 6px 4px 4px;
+  }
+
+  .offcanvas-header {
+    border-radius: 4px 4px 0 0;
+  }
+
+  .offcanvas-body {
+    border-bottom: solid 1px var(--sakai-border-color);
+    border-left: solid 1px var(--sakai-border-color);
+    border-right: solid 1px var(--sakai-border-color);
+    border-radius: 0 0 4px 4px;
+  }
+}
+
+.offcanvas {
+  background-color: var(--sakai-background-color-1);
+
+  .offcanvas-header {
+    flex-shrink: 0;
+    background-color: var(--sakai-offcanvas-header-bg);
+    color: var(--sakai-offcanvas-header-color);
+
+    .btn-close {
+      background-color: var(--sakai-offcanvas-close-btn-bg);
+      margin-right: 0;
+    }
+  }
+}
+
+// change offcanvas close button's colour to white:
+.offcanvas-header .btn-close {
+  background: transparent url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23fff'%3e%3cpath d='M.293.293a1 1 0 011.414 0L8 6.586 14.293.293a1 1 0 111.414 1.414L9.414 8l6.293 6.293a1 1 0 01-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 01-1.414-1.414L6.586 8 .293 1.707a1 1 0 010-1.414z'/%3e%3c/svg%3e") center/1em auto no-repeat;
+}
+
+.offcanvas-start,
+.offcanvas-end {
+  border: none !important;
+}
+
+// for narrow views, take up the full width of the screen:
+@media (max-width: $offcanvas-horizontal-width) {
+
+  .offcanvas-start,
+  .offcanvas-end {
+    max-width: 100vw;
+  }
+}
+
+@include media-breakpoint-down(md) {
+
+  .offcanvas-start,
+  .offcanvas-end {
+    bottom: var(--portal-header-height);
+  }
+}
+
 .sticky-footer {
   position: sticky;
   bottom: 0;
@@ -610,6 +664,8 @@
 
   @media (max-width: 767px) {
     background-color: var(--sakai-background-color-5);
+    padding-left: var(--bs-offcanvas-padding-x) !important;
+    padding-right: var(--bs-offcanvas-padding-x) !important;
   }
 }
 

@@ -619,11 +619,11 @@
     --progress-bar-bg: var(--sakai-color-blue--lighter-6);
     --progress-bar-empty-bg: transparent;
 
-    --sakai-modal-header-bg: #003a6b;
+    --sakai-modal-header-bg: var(--sakai-brand);
     --sakai-modal-header-color: #fff;
     --sakai-modal-close-btn-bg: #fff;
     --sakai-modal-content-bg: var(--sakai-background-color-2);
-    --sakai-offcanvas-header-bg: #003a6b;
+    --sakai-offcanvas-header-bg: var(--sakai-brand);
     --sakai-offcanvas-header-color: #fff;
     --sakai-offcanvas-close-btn-bg: #000;
 

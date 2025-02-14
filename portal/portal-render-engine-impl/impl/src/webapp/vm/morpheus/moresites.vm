@@ -37,7 +37,7 @@
       tabindex="-1"
       aria-labelledby="select-site-label">
     <div class="offcanvas-header">
-      <h2 class="offcanvas-title" id="select-site-label">${rloader.sit_allsites}</h2>
+      <h2 class="offcanvas-title m-0 h4" id="select-site-label">${rloader.sit_allsites}</h2>
       <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="${rloader.sit_closepage}"></button>
     </div>
     <div class="offcanvas-body">

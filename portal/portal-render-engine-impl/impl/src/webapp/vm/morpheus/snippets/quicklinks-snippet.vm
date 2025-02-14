@@ -1,7 +1,7 @@
 #if (${quickLinks} && ${userIsLoggedIn})
 <div class="offcanvas offcanvas-end" tabindex="-1" id="sakai-quickLinksPanel" aria-labelledby="sakai-quickLinksPanelLabel">
   <div class="offcanvas-header">
-    <h2 class="offcanvas-title" id="sakai-quickLinksPanelLabel">${rloader.sit_quick_links}</h2>
+    <h2 class="offcanvas-title m-0 h4" id="sakai-quickLinksPanelLabel">${rloader.sit_quick_links}</h2>
     <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close this quick links panel"></button>
   </div>
   <div class="offcanvas-body">
