@@ -141,6 +141,11 @@
   }
 }
 
+.sakai-accountProfileImage {
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+}
+
 .portal-main-content {
   grid-area: main;
 }
