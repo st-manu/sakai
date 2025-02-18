@@ -10,7 +10,7 @@
           aria-label="$rloader.sit_navigation"
           aria-expanded="false"
           title="$rloader.sit_navigation">
-        <i class="si si-all-sites"></i>
+        <i class="bi bi-grid-3x3-gap-fill"></i>
       </button>
     </li>
 
