@@ -168,10 +168,7 @@
 .portletBody
 {
 	padding: 0;
-        margin-bottom: 3rem !important;
-	@media #{$phone}{
-		margin: 2.3em 0 3rem 0;
-	}
+	margin-bottom: 3rem !important;
 	> * {
 		position: relative;
 	}
