@@ -302,12 +302,12 @@ button.icon-button {
 }
 
 .accordion-item {
-  background-color: var(--site-nav-bg);
+  background-color: var(--sakai-background-color-1);
   color: var(--sakai-text-color);
   border: 1px solid var(--tool-border-color);
   .accordion-button {
     color: var(--sakai-text-color-1);
-    background-color: var(--site-nav-bg);
+    background-color: var(--sakai-background-color-1);
     &::after {
       color: var(--sakai-text-color-1);
     }

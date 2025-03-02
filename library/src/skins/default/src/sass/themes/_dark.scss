@@ -221,7 +221,8 @@
 
     //New sidebar colors
     --site-nav-btn-current-hover-color: var(--site-nav-btn-active-color);
-    --site-nav-btn-hover-bg: var(--sakai-primary-color-2);
+    --site-nav-btn-hover-bg: var(--sakai-brand);
+    --site-nav-btn-page-hover-border: var(--sakai-brand--lighter-2);
 
     // Dashboard
     --sakai-calendar-button-background-color: var(--sakai-background-color);
@@ -235,7 +236,13 @@
     // Jumbotron
     --jumbotron-bg: var(--sakai-color-blue--darker-5);
     --jumbotron-color: var(--sakai-text-color-1);
-    
+
+    //--sakai-current-site: transparent;
+    //--sakai-current-site-color: var(--sakai-text-color-2);
+    --sakai-curent-site-border-color: var(--sakai-brand--lighter-3);
+    //--sakai-selected-page-bg-color: var(--sakai-brand);
+    //--sakai-selected-page-color: var(--sakai-text-color-inverted);
+
     --sakai-thumbnail-background-color: var(--sakai-background-color-2);
 
     --sakai-modal-header-bg: var(--sakai-background-color-3);
@@ -245,6 +252,8 @@
     --sakai-offcanvas-header-bg: var(--sakai-background-color-3);
     --sakai-offcanvas-header-color: var(--sakai-text-color-1);
     --sakai-offcanvas-close-btn-bg: var(--sakai-background-color-1);
+
+    --sakai-selected-page-bg-color: var(--sakai-brand);
 
     .accordion-button::after {
       filter: invert(100%);

@@ -388,61 +388,70 @@
   grid-area: sidebar;
 
   .si-pin {
-    color: transparent;
+    &:hover::before,
+    &:focus::before {
+      content: "\f4ec";
+    }
   }
 
   .si-pin-fill {
     color: var(--sakai-pin-hover-color);
+    &:hover::before,
+    &:focus::before {
+      content: "\f4ed";
+    }
   }
 
   .si-eye-slash-fill {
     color: var(--sakai-text-color-1)
   }
 
-  .site-page-list .selected-page {
-    opacity: 0.7;
-    &:hover {
-      opacity: 0.8;
-    }
-  }
-
   li.site-list-item {
+    border: solid 1px var(--sakai-border-color) !important;
+    border-radius: 4px;
 
     .site-list-item-head {
       button {
-        border: 0px;
-        &:focus, &:hover {
-          border: solid 1px var(--site-nav-btn-current-hover-color);
+        border: solid 1px transparent;
+        &:hover,
+        &:focus {
+          border: solid 1px transparent;
+          color: var(--site-nav-btn-color);
         }
       }
 
       > button {
-        color: var(--sakai-text-color-1);
+        color: var(--sakai-pin-color);
       }
 
       .si-pin {
-        color: transparent;
+        button {
+          border: solid 1px transparent;
+          &:focus, &:hover {
+            border: solid 1px transparent;
+          }
+        }
       }
 
       &:hover {
-        background-color: var(--site-nav-btn-hover-bg);
-        color: var(--site-nav-btn-current-hover-color);
         .si-pin, a, button {
-          color: var(--sakai-text-color-1);
+          color: var(--site-nav-btn-hover-color);
+          text-decoration: underline;
         }
       }
     }
 
     &.is-current-site {
 
+      background-color: var(--sakai-current-site);
+      border-radius: 4px;
+      border: solid 1px var(--sakai-curent-site-border-color) !important;
+
+      a, button {
+        color: var(--sakai-current-site-color);
+      }
+
       .site-list-item-head {
-        background-color: var(--sakai-selected-page-bg-color);
-        opacity: 0.9;
-
-        .si-pin {
-          color: transparent;
-        }
-
         .si-eye-slash-fill {
           color: var(--sakai-selected-page-color);
         }
@@ -450,19 +459,15 @@
         button {
           border: 0px;
           &:focus, &:hover {
-            border: solid 1px var(--sakai-selected-page-color);
+            border: 0px !important;
           }
-        }
-
-        a, button {
-          font-size: 16px;
-          color: var(--sakai-selected-page-color);
         }
 
         &:hover {
           opacity: 1.0;
+          color: var(--sakai-current-site-color);
           .si-pin, a , button {
-            color: var(--sakai-selected-page-color);
+            color: var(--sakai-current-site-color);
           }
         }
       }
@@ -491,14 +496,10 @@
     }
   }
 
-  .sakai-sitesAndToolsNav {
-    background-color: var(--site-nav-bg);
-  }
-
   .sites-section-heading {
     @extend .mb-0, .pb-2, .pt-3, .ps-3;
     font-size: 16px;
-    background-color: var(--site-nav-list-item-bg);
+    color: var(--site-nav-color);
   }
 
   .sakai-sitesAndToolsNav {
@@ -506,27 +507,42 @@
     overflow-y: scroll;
     position: sticky;
     top: 0;
+    scrollbar-width: none;
+    &:hover,
+    &:focus {
+      scrollbar-width: auto;
+    }
   }
 
   .btn-nav {
     color: var(--site-nav-btn-color);
     &:hover,
     &:focus {
-      outline: none;
-      color: var(--site-nav-btn-current-hover-color);
+      box-shadow: none;
+      border: solid 1px var(--site-nav-btn-page-hover-border);
+      border-radius: 4px;
+      color: var(--site-nav-btn-page-hover-color) !important;
+      background-color: transparent;
     }
 
     &.selected-page {
       background-color: var(--sakai-selected-page-bg-color);
-      border-color: var(--sakai-selected-page-bg-color);
-      color: var(--sakai-selected-page-color);
-      font-weight: 600;
+      color: var(--sakai-selected-page-color) !important;
+      border: solid 1px var(--site-nav-btn-page-hover-border);
+      border-radius: 4px;
+      &:hover,
+      &:focus {
+        box-shadow: none;
+        border: solid 1px var(--site-nav-btn-page-hover-border);
+        border-radius: 4px;
+        color: var(--site-nav-btn-page-hover-color) !important;
+        background-color: transparent;
+      }
     }
 
     span {
       margin-left: 5px;
     }
-    border-radius: 0;
   }
 
   .btn-site-carret {
@@ -551,16 +567,6 @@
   &.portal-nav-sidebar-mobile {
     .btn-site-opt {
       color: var(--sakai-text-color-dimmed);
-    }
-    .site-list-item-collapse {
-      background-color: var(--sakai-background-color-3);
-    }
-  }
-
-  &.portal-nav-sidebar-desktop {
-    background-color: var(--sakai-background-color-3);
-    .site-list-item-collapse {
-      background-color: var(--sakai-background-color-2);
     }
   }
 
@@ -595,10 +601,11 @@
   bottom: 0;
   background-color: var(--sticky-footer-bg);
   color: var(--sticky-foooter-color);
+  border-top: solid 1px var(--sakai-border-color);
 
   &:hover {
     background-color: var(--sticky-footer-bg);
-    color: var(--sticky-foooter-color);
+    color: var(--sticky-foooter-color-hover);
   }
 
   @media (max-width: 767px) {
@@ -612,6 +619,11 @@
 
 .portal-nav-sidebar {
   overflow-y: hidden !important;
+  border-right: solid 1px var(--sakai-border-color);
+  & a,
+  & button {
+    color: var(--site-nav-btn-color);
+  }
 }
 
 .toast-header {
