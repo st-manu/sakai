@@ -55,12 +55,15 @@
   grid-area: paBanner;
 }
 .portal-header {
+  height: var(--portal-header-height);
   grid-area: header;
   background-color: var(--top-header-background);
+  border-bottom: 3px solid var(--sakai-border-color);
+  /*box-shadow: rgba(0, 0, 0, 0.07) 0px 2px 4px, rgba(0, 0, 0, 0.07) 0px 4px 8px;*/ // scrollbar issue
 }
 
 .portal-header-breadcrumb-separator, .portal-header-breadcrumb-item > a {
-  color: var(--sakai-text-color-inverted) !important;
+  color: var(--top-header-text-color) !important;
   text-decoration: none;
   &:hover {
     text-decoration: underline;
@@ -110,8 +113,8 @@
 // Responsive header for mobile
 @media (max-width: 767px) {
   .portal-header {
-    background-color: rgba(var(--bs-primary-rgb), 1.0) !important;
     justify-content: space-between !important;
+    box-shadow: none !important;
   }
 }
 
@@ -129,15 +132,19 @@
 #sakai-system-indicators {
 
   button {
-    color: #fff;
-    margin: 0px 3px;
+    color: var(--top-header-text-color);
     i {
       font-size: 22px;
     }
   }
 
+  .sak-sysInd-account {
+    border-radius: 30px;
+  }
+
   .sakai-accountProfileImage {
-    width: 40px;
+    width: 30px;
+    min-width: 30px;
   }
 }
 
@@ -239,16 +246,33 @@
 .portal-jump-links a {
   color: #fff;
 }
-.portal-header-logo {
-  height: var(--portal-header-height);
+.xlogin-logo {
+  .portal-header-logo {
+    height: var(--portal-header-height);
+  }
 }
 @include media-breakpoint-up(md) {
-  .portal-header-logo {
-    width: var(--portal-nav-sidebar-width);
+  .portal-header {
+    .portal-header-logo {
+      width: fit-content;
+      min-width: fit-content;
+      background: var(--top-header-background-logo);
+      border-right: solid 1px var(--top-header-border-color);
+    }
+  }
+  .xlogin-logo {
+    .portal-header-logo {
+      width: var(--portal-nav-sidebar-width);
+      min-width: var(--portal-nav-sidebar-width);
+    }
   }
 }
 .portal-header-logo img {
-  max-height: 3rem;
+  max-height: 2rem;
+  max-width: fit-content;
+}
+.portal-header-logo .btn:hover {
+  border-color: transparent !important;
 }
 
 .portal-user-role {
@@ -319,7 +343,6 @@
 
   > span {
     font-size: 28px;
-    color: white;
   }
 }
 

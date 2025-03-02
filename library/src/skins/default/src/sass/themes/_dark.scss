@@ -47,6 +47,13 @@
     // Suggested: decimal .7 and .9
     --logo-opacity: .7;
 
+    .logo-light {
+      display: none;
+    }
+    .logo-dark {
+        display: block;
+    }
+
     // Primary branding color. 
     // Suggested: Your institution's main branding color.
     // Used in the top header, action buttons, etc. Commonly used as the background
@@ -172,6 +179,9 @@
 
     // Overrides _light.scss variables when necessary
     //--top-header-background: var(--sakai-background-color-1);
+    //--top-header-background-logo: var(--top-header-background);
+    //--top-header-border-color: transparent;
+    //--top-header-text-color: var(--sakai-text-color-2);
     --breadcrumbs-tool-color: var(--sakai-text-color-color-3);
     --breadcrumbs-hover-color: var(--sakai-primary-color-3);
     --link-color: var(--sakai-text-color-3);

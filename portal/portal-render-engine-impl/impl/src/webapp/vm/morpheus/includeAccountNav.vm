@@ -1,6 +1,6 @@
 ## TODO: This file contains some placeholder text and content that needs to be revisited later
 ## to populate the contents and to internationalize. Work-in-progress.
-<ul id="sakai-system-indicators" class="nav flex-nowrap align-items-center">
+<ul id="sakai-system-indicators" class="nav flex-nowrap align-items-center me-3">
 #*
 For opening help sidebar
   <li class="d-none d-md-inline">
@@ -92,14 +92,14 @@ For opening help sidebar
       </button>
     </li>
   #end
-    <li>
-      <button class="btn icon-button sak-sysInd-account"
+    <li">
+      <button class="btn icon-button sak-sysInd-account p-0 me-3 me-md-4 ms-3"
           type="button"
           data-bs-toggle="offcanvas"
           data-bs-target="#sakai-account-panel"
           aria-controls="sakai-account-panel"
           title="${rloader.mainnav_btn_account}">
-        <img class="sakai-accountProfileImage rounded-circle"
+        <img class="sakai-accountProfileImage rounded-circle p-0"
             src="${profileImageUrl}"
             alt="${rloader.sit_profile_image_alt}">
       </button>

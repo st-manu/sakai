@@ -2,14 +2,9 @@
 
 <header class="portal-header d-flex align-items-center justify-content-between" role="banner">
 
-  <div class="d-flex align-items-center">
-    <div id="logoWrapper" class="portal-header-logo d-flex align-items-center justify-content-between bg-primary">
-      <a class="px-3 btn" href="/portal" title="$rloader.portal_home">
-        <button class="btn icon-button btn-logo-button" type="button">
-          <img src="/library/skin/$!{pageSkin}/images/sakaiLogo.png" alt="Sakai Logo">
-        </button>
-      </a>
-      <button id="sidebar-collapse-button" class="btn icon-button btn-sidebar-collapse me-1 d-none d-md-block"
+  <div class="d-flex align-items-center h-100 ms-3 ms-md-0 #if (${userIsLoggedIn}) w-100 #end">
+    <div id="logoWrapper" class="portal-header-logo d-flex h-100 align-items-center">
+      <button id="sidebar-collapse-button" class="btn icon-button btn-sidebar-collapse me-1 ms-3 d-none d-md-block"
           type="button"
           data-portal-sidebar-collapsed="$!{sidebarCollapsed}"
           data-bs-toggle="tooltip"
@@ -18,6 +13,10 @@
           aria-controls="portal-nav-sidebar">
         <span class="bi bi-list"></span>
       </button>
+      <a class="btn" href="/portal" title="$rloader.portal_home">
+        <img class="logo-light" src="/library/skin/$!{pageSkin}/images/sakaiLogoBlack.png" alt="Sakai Logo">
+        <img class="logo-dark" src="/library/skin/$!{pageSkin}/images/sakaiLogo.png" alt="Sakai Logo">
+      </a>
     </div>
     #if (${userIsLoggedIn})
     ## Define font size class based on number of parents
