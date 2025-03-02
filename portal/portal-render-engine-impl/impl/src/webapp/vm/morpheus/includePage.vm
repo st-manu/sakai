@@ -31,6 +31,40 @@
 <div class="portal-main-container container-fluid mt-2 d-flex flex-column">
     <main id="$pageWrapperClass" class="portal-main-content #if( $numberTools > 1 || $homePage)Mrphs-multipleTools #end" role="main">
         <h1 class="skip visually-hidden" tabindex="-1" id="tocontent">${rloader.sit_contentshead}</h1>
+
+        #if (${userIsLoggedIn})
+            <div class="align-items-center portal-header-breadcrumb d-flex mb-4 w-100">
+                #if ($!siteParents)
+                    #foreach ($parent in $siteParents)
+                        <div class="portal-header-breadcrumb-item portal-header-site-title">
+                            <a href="$!{parent.siteUrl}" title="$!{parent.siteTitle}">
+                                $parent.siteTitle
+                            </a>
+                        </div>
+                        <div class="bi bi-chevron-right portal-header-breadcrumb-separator"></div>
+                    #end
+                #end
+
+                <div id="header-site-title" class="portal-header-breadcrumb-item portal-header-site-title">
+                    <a href="$!{siteUrl}" title="$!{siteTitle}">
+                        $siteTitle
+                    </a>
+                </div>
+
+                #foreach( $page in $sitePages.pageNavTools )
+                    #if ($page.current)
+                        <div class="bi bi-chevron-right portal-header-breadcrumb-separator"></div>
+                        <div class="portal-header-breadcrumb-item header-tool-title">
+                            <a href="${page.pageResetUrl}" title="${page.pageTitle}">
+                                ${page.pageTitle}
+                            </a>
+                        </div>
+                    #end
+                #end
+            </div>
+        #end
+
+
         #parse("/vm/morpheus/snippets/roleSwitch-snippet.vm")
         #parse("/vm/morpheus/snippets/siteStatus-snippet.vm")
         #if ($pageTwoColumn)
