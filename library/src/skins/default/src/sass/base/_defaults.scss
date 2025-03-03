@@ -323,3 +323,29 @@ button.icon-button {
 .hidden {
   display: none !important;
 }
+
+// Scrollbar
+
+@media (min-width: 768px) {
+  ::-webkit-scrollbar {
+    width: 12px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: var(--sakai-scrollbar-background-color);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--sakai-scrollbar-thumb-color);
+    border-radius: 30px;
+    border: solid 4px var(--sakai-scrollbar-background-color);
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--sakai-scrollbar-thumb-hover-color);
+  }
+
+  ::-webkit-scrollbar-corner {
+    background: var(--sakai-scrollbar-background-color);
+  }
+}
