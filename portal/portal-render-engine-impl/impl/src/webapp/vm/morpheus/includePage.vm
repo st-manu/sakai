@@ -32,6 +32,15 @@
     <main id="$pageWrapperClass" class="portal-main-content #if( $numberTools > 1 || $homePage)Mrphs-multipleTools #end px-3" role="main">
         <h1 class="skip visually-hidden" tabindex="-1" id="tocontent">${rloader.sit_contentshead}</h1>
 
+        #if (${currentRole} && $roleSwitchState == false)
+            <div class="current-role #if ($userIsLoggedIn) mb-2 #else mb-3 #end">
+                <i class="fa fa-user" aria-hidden="true"></i>
+                <span class="portal-user-role">${rloader.sit_role} ${currentRole}</span>
+            </div>
+        #end
+
+        #parse("/vm/morpheus/snippets/roleSwitch-snippet.vm")
+
         #if (${userIsLoggedIn})
             <div class="align-items-center portal-header-breadcrumb d-flex mb-4 w-100">
                 #if ($!siteParents)
@@ -64,8 +73,6 @@
             </div>
         #end
 
-
-        #parse("/vm/morpheus/snippets/roleSwitch-snippet.vm")
         #parse("/vm/morpheus/snippets/siteStatus-snippet.vm")
         #if ($pageTwoColumn)
         <div class="row">
