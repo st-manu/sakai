@@ -89,6 +89,9 @@
   text-overflow: ellipsis;
 }
 
+.portal-header-hamburger-button {
+  color: var(--sakai-text-color-1) !important;
+}
 /* 
  * WARNING: This CSS uses deprecated properties because there's currently no alternative way
  * to achieve multi-line text truncation. 
