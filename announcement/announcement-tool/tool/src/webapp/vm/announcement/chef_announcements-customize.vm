@@ -7,7 +7,7 @@
     #if ($isOnWorkspaceTab.equals("false"))
 		#if($menu && $EnabledMenuItemExists)
 			#if ($toolId == "sakai.synoptic.announcement")
-				<ul class="navIntraTool actionToolBar" role="menu">
+				<ul class="navIntraTool actionToolBar navIntraToolMobile" role="menu">
 					<li class="firstToolBarItem" role="menuitem"><span><a href="#" title="$tlang.getString("gen.recopt")" onclick="location = '#toolLink("$action" "doOptions")';return false;">
 						$tlang.getString("custom.options")
 						<span class="skip">$toolTitle</span>

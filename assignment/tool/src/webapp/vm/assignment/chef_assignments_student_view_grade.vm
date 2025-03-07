@@ -11,7 +11,8 @@
     #end
     #if ($taggable)
         #if (!$itemHelpers.isEmpty())
-            <ul class="navIntraTool actionToolBar">
+            <div class="dropdown-toggle dropdown-navIntraTool">Tool options</div>
+            <ul class="navIntraTool actionToolBar navIntraToolMobile">
                 #set ($first = true)
                 #foreach ($helperInfo in $itemHelpers)
                     #if (!$first)

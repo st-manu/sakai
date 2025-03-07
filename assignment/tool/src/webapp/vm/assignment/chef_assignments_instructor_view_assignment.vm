@@ -2,7 +2,8 @@
 <div class="portletBody">
 	#if ($taggable && $allowAddAssignment)
 		#if (!$activityHelpers.isEmpty())
-		<ul class="navIntraTool actionToolBar">
+		<div class="dropdown-toggle dropdown-navIntraTool">Tool options</div>
+		<ul class="navIntraTool actionToolBar navIntraToolMobile">
 				#set ($first = true)
 				#foreach ($helperInfo in $activityHelpers)
 					#if (!$first)

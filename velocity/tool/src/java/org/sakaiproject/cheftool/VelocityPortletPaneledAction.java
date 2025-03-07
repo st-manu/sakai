@@ -306,6 +306,9 @@ public abstract class VelocityPortletPaneledAction extends ToolServlet
 		// the context wraps our real vm attribute set
 		Context context = (Context) req.getAttribute(ATTR_CONTEXT);
 
+		ResourceLoader velocityRb = new ResourceLoader("velocity-tool");
+    	context.put("resourceBundle", velocityRb);
+
 		// other wrappers
 		VelocityPortlet portlet = (VelocityPortlet) req.getAttribute(ATTR_PORTLET);
 		JetspeedRunData rundata = (JetspeedRunData) req.getAttribute(ATTR_RUNDATA);

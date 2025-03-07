@@ -93,7 +93,8 @@
 
 ## Macro for the top nav bar HREF and #toolLink/#toolLinkParam
 #macro( navBarHREF $allowAddAssignment $allowGradeSubmission $allowAddAssignment $allowRecoverAssignment $allowAllGroups $assignmentscheck $allowUpdateSite $enableViewOption $view $current )
-    <ul class="navIntraTool actionToolBar">
+    <div class="dropdown-toggle dropdown-navIntraTool">Tool options</div>
+    <ul class="navIntraTool actionToolBar navIntraToolMobile">
         #set( $prevAction = false )
         <li #if( $prevAction == false ) class="firstToolBarItem" #set( $prevAction = true ) #end>
             #if( !$!view.equals( "lisofass1" ) )
@@ -190,7 +191,8 @@
 
 ## Macro for Timesheet tabs
 #macro( navBarTimesheet $current )
-    <ul class="navIntraTool actionToolBar">
+    <div class="dropdown-toggle dropdown-navIntraTool">Tool options</div>
+    <ul class="navIntraTool actionToolBar navIntraToolMobile">
         <li class="firstToolBarItem">
         #if( $current == "Assignment" )
             <span id="tabAssignmentCurrent" class="current">$!tlang.getString( "ts.tab.assignment" )</span>
@@ -226,7 +228,8 @@
 
 ## Macro for the top nav bar using onclick JavaScript
 #macro( navBarOnClick $allowAddAssignment $allowGradeSubmission $allowAddAssignment $allowRecoverAssignment $allowAllGroups $assignmentscheck $allowUpdateSite $enableViewOption $view $formID $current )
-    <ul class="navIntraTool actionToolBar">
+    <div class="dropdown-toggle dropdown-navIntraTool">Tool options</div>
+    <ul class="navIntraTool actionToolBar navIntraToolMobile">
         #set( $prevAction = false )
         #if( !$!view.equals( "lisofass1" ) )
             #set( $prevAction = true )
