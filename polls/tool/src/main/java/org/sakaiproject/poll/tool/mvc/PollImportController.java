@@ -30,6 +30,7 @@ import org.sakaiproject.poll.api.service.PollImportException;
 import org.sakaiproject.poll.api.service.PollsService;
 import org.sakaiproject.tool.api.SessionManager;
 import org.sakaiproject.tool.api.ToolManager;
+import org.sakaiproject.user.api.UserDirectoryService;
 import org.springframework.context.MessageSource;
 import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
@@ -57,15 +58,18 @@ public class PollImportController {
     private final ToolManager toolManager;
     private final SessionManager sessionManager;
     private final PollsService pollsService;
+    private final UserDirectoryService userDirectoryService;
 
     public PollImportController(MessageSource messageSource,
                                 ToolManager toolManager,
                                 SessionManager sessionManager,
-                                PollsService pollsService) {
+                                PollsService pollsService,
+                                UserDirectoryService userDirectoryService) {
         this.messageSource = messageSource;
         this.toolManager = toolManager;
         this.sessionManager = sessionManager;
         this.pollsService = pollsService;
+        this.userDirectoryService = userDirectoryService;
     }
 
     @GetMapping("/pollImport")
