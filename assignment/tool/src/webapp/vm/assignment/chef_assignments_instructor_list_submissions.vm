@@ -579,12 +579,16 @@ function printView(url) {
 												instructor="true">
 											</sakai-rubric-student-button>
 											#end
-											#if($!item.getScoreDisplay().length() > 0 || ($!item.getComment() && $!item.getComment().trim().length() > 0))
+											#if($!item.getScoreDisplay().length() > 0 || ($!item.getComment() && $!item.getComment().trim().length() > 0) || $item.openedAt)
 												<span class="highlight" #if($item.Removed) style="text-decoration: line-through" #end>
-													#if($item.isDraft())
-														-&nbsp;$tlang.getString("gen.dra1")
+												#if($item.isDraft())
+													-&nbsp;$tlang.getString("gen.dra1")
 													#else
-														<span class="bi bi-check" aria-hidden="true"></span>
+														#if($item.openedAt && !$item.submitted)
+															-&nbsp;$tlang.getString("gen.inpro")
+														#else
+															<span class="bi bi-check" aria-hidden="true"></span>
+														#end
 													#end
 												</span>
 											#end
