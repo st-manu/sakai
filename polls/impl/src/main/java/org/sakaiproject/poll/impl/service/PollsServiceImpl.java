@@ -527,7 +527,11 @@ public class PollsServiceImpl implements PollsService, EntityProducer, EntityTra
                 toPoll.setDisplayResult(fromPoll.getDisplayResult());
                 toPoll.setLimitVoting(fromPoll.isLimitVoting());
                 Set<String> fromGroupIds = fromPoll.getGroupIds();
-                toPoll.setGroupIds(fromGroupIds == null ? new HashSet<>() : new HashSet<>(fromGroupIds));
+                if (Objects.equals(fromContext, toContext) && fromGroupIds != null && !fromGroupIds.isEmpty()) {
+                    toPoll.setGroupIds(new HashSet<>(fromGroupIds));
+                } else {
+                    toPoll.setGroupIds(new HashSet<>());
+                }
                 String description = fromPoll.getDescription();
                 description = ltiService.fixLtiLaunchUrls(description, fromContext, toContext, transversalMap);
                 toPoll.setDescription(description);
