@@ -58,14 +58,23 @@ import org.sakaiproject.event.api.UsageSession;
 import org.sakaiproject.event.api.UsageSessionService;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.lti.api.LTIService;
+import static org.sakaiproject.poll.api.PollConstants.APPLICATION_ID;
+import static org.sakaiproject.poll.api.PollConstants.PERMISSION_ADD;
+import static org.sakaiproject.poll.api.PollConstants.PERMISSION_DELETE_ANY;
+import static org.sakaiproject.poll.api.PollConstants.PERMISSION_DELETE_OWN;
+import static org.sakaiproject.poll.api.PollConstants.PERMISSION_EDIT_ANY;
+import static org.sakaiproject.poll.api.PollConstants.PERMISSION_EDIT_OWN;
+import static org.sakaiproject.poll.api.PollConstants.PERMISSION_PREFIX;
+import static org.sakaiproject.poll.api.PollConstants.PERMISSION_VOTE;
+import static org.sakaiproject.poll.api.PollConstants.REFERENCE_ROOT;
 import org.sakaiproject.poll.api.entity.PollEntity;
-import org.sakaiproject.poll.api.model.VoteCollection;
-import org.sakaiproject.poll.api.service.PollsService;
 import org.sakaiproject.poll.api.model.Option;
 import org.sakaiproject.poll.api.model.Poll;
 import org.sakaiproject.poll.api.model.Vote;
+import org.sakaiproject.poll.api.model.VoteCollection;
 import org.sakaiproject.poll.api.repository.PollRepository;
 import org.sakaiproject.poll.api.repository.VoteRepository;
+import org.sakaiproject.poll.api.service.PollsService;
 import org.sakaiproject.poll.api.util.PollUtil;
 import org.sakaiproject.site.api.Group;
 import org.sakaiproject.site.api.Site;
@@ -82,8 +91,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
-
-import static org.sakaiproject.poll.api.PollConstants.*;
 
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -231,16 +238,7 @@ public class PollsServiceImpl implements PollsService, EntityProducer, EntityTra
     }
 
     public List<Poll> findAllPolls(final String siteId) {
-        List<Poll> polls = new ArrayList<>(pollRepository.findBySiteIdOrderByCreationDateDesc(siteId));
-
-        String userId = sessionManager.getCurrentSessionUserId();
-        boolean isInstructor = securityService.unlock(userId, PERMISSION_ADD, siteService.siteReference(siteId));
-
-        if (!isInstructor) {
-            polls.removeIf(p -> !userCanViewPoll(p, userId));
-        }
-
-        return polls;
+        return new ArrayList<>(pollRepository.findBySiteIdOrderByCreationDateDesc(siteId));
     }
 
     public Optional<Poll> getPollById(final String pollId) throws SecurityException {

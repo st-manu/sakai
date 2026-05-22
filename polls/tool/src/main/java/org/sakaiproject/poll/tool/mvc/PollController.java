@@ -21,8 +21,10 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
@@ -98,6 +100,10 @@ public class PollController {
         } catch (IdUnusedException e) {
             log.warn("Site not found: {}", siteId);
         }
+        Map<String, String> groupTitleById = new HashMap<>();
+        for (Group group : siteGroups) {
+            groupTitleById.put(group.getId(), group.getTitle());
+        }
 
         List<Poll> polls = new ArrayList<>(pollsService.findAllPolls(siteId));
 
@@ -146,10 +152,10 @@ public class PollController {
             if (pollGroupIds != null && !pollGroupIds.isEmpty()) {
                 List<String> titles = new ArrayList<>();
                 for (String gid : pollGroupIds) {
-                    siteGroups.stream()
-                        .filter(g -> g.getId().equals(gid))
-                        .findFirst()
-                        .ifPresent(g -> titles.add(g.getTitle()));
+                    String title = groupTitleById.get(gid);
+                    if (title != null) {
+                        titles.add(title);
+                    }
                 }
                 if (titles.isEmpty()) {
                     visibilityDisplay = messageSource.getMessage("poll_visibility_groups", null, effectiveLocale);

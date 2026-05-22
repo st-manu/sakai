@@ -106,7 +106,7 @@ public class PollRepositoryImpl extends SpringCrudRepositoryImpl<Poll, String> i
     @Override
     public List<Poll> findBySiteIdAndGroupIdsIn(String siteId, List<String> groupIds) {
 
-        if (siteId == null || groupIds == null || groupIds.isEmpty()) {
+        if (siteId == null) {
             return Collections.emptyList();
         }
 
@@ -115,11 +115,15 @@ public class PollRepositoryImpl extends SpringCrudRepositoryImpl<Poll, String> i
         Root<Poll> root = query.from(Poll.class);
 
         Predicate sitePredicate = cb.equal(root.get("siteId"), siteId);
-
-        Join<Poll, String> groupJoin = root.join("groupIds", JoinType.LEFT);
-        Predicate groupInPredicate = groupJoin.in(groupIds);
         Predicate noGroupsPredicate = cb.isEmpty(root.get("groupIds"));
-        Predicate groupPredicate = cb.or(groupInPredicate, noGroupsPredicate);
+        Predicate groupPredicate = noGroupsPredicate;
+
+        if (groupIds != null && !groupIds.isEmpty()) {
+            Join<Poll, String> groupJoin = root.join("groupIds", JoinType.LEFT);
+            Predicate groupInPredicate = groupJoin.in(groupIds);
+            groupPredicate = cb.or(groupInPredicate, noGroupsPredicate);
+            query.distinct(true);
+        }
 
         query.select(root)
             .where(cb.and(sitePredicate, groupPredicate))

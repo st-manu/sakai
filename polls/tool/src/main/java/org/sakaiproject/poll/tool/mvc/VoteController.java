@@ -78,13 +78,6 @@ public class VoteController {
             redirectAttributes.addFlashAttribute("alert", messageSource.getMessage("vote_noperm.voteCollection", null, locale));
             return "redirect:/votePolls";
         }
-        if (!poll.get().getGroupIds().isEmpty()
-                && !pollsService.userIsInPollGroup(poll.get(), userId)) {
-
-            redirectAttributes.addFlashAttribute("alert",
-                    messageSource.getMessage("vote_noperm.voteCollection", null, locale));
-            return "redirect:/votePolls";
-        }
         if (!pollsService.pollIsVotable(poll.get())) {
             redirectAttributes.addFlashAttribute("alert", messageSource.getMessage("vote_noperm.voteCollection", null, locale));
             return "redirect:/votePolls";

@@ -23,19 +23,18 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
-import java.util.Set;
 import java.util.TimeZone;
 
-import lombok.RequiredArgsConstructor;
-import lombok.Value;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.sakaiproject.authz.api.SecurityService;
 import org.sakaiproject.component.api.ServerConfigurationService;
 import org.sakaiproject.exception.IdUnusedException;
+import static org.sakaiproject.poll.api.PollConstants.PERMISSION_ADD;
+import static org.sakaiproject.poll.api.PollConstants.PERMISSION_EDIT_ANY;
+import static org.sakaiproject.poll.api.PollConstants.PERMISSION_EDIT_OWN;
 import org.sakaiproject.poll.api.model.Option;
-import org.sakaiproject.poll.api.service.PollsService;
 import org.sakaiproject.poll.api.model.Poll;
+import org.sakaiproject.poll.api.service.PollsService;
 import org.sakaiproject.poll.tool.model.PollForm;
 import org.sakaiproject.site.api.Group;
 import org.sakaiproject.site.api.SiteService;
@@ -56,7 +55,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import static org.sakaiproject.poll.api.PollConstants.*;
+import lombok.Value;
+import lombok.extern.slf4j.Slf4j;
 
 @Controller
 @RequestMapping
@@ -225,12 +225,12 @@ public class PollEditorController {
         }
 
         Poll poll = preparePollEntity(pollForm);
-        // If no groups are selected, the poll becomes visible to all students.
-        poll.setGroupIds(pollForm.getSelectedGroupIds());
         if (poll == null) {
             redirectAttributes.addFlashAttribute("alert", messageSource.getMessage("poll_missing", null, locale));
             return "redirect:/votePolls";
         }
+        // If no groups are selected, the poll becomes visible to all students.
+        poll.setGroupIds(pollForm.getSelectedGroupIds());
 
         Poll saved = pollsService.savePoll(poll);
         redirectAttributes.addFlashAttribute("success", messageSource.getMessage("poll_saved_success", null, locale));
@@ -261,6 +261,16 @@ public class PollEditorController {
         model.addAttribute("isSiteOwner", isSiteOwner());
         model.addAttribute("showPublicAccess", serverConfigurationService.getBoolean("poll.allow.public.access", false));
         model.addAttribute("timezone", getUserZoneId());
+
+        String siteId = toolManager.getCurrentPlacement().getContext();
+        Collection<Group> groups;
+        try {
+            groups = siteService.getSite(siteId).getGroups();
+        } catch (IdUnusedException e) {
+            log.warn("Site not found for id {} when loading groups for poll editor", siteId, e);
+            groups = List.of();
+        }
+        model.addAttribute("groups", groups);
     }
 
     private PollEditContext resolvePollEditContext(String pollId) {

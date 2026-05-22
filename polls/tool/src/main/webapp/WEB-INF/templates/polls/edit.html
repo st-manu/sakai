@@ -121,9 +121,9 @@
 
       <div class="mt-4">
         <h2 class="h5" th:text="#{new_poll_groups_title}">Groups</h2>
-        <label class="form-label" for="selectedGroupIds" th:text="#{new_poll_groups_label}">Select groups allowed to vote</label>
+        <label class="form-label" for="selected-group-ids" th:text="#{new_poll_groups_label}">Select groups allowed to vote</label>
         <select class="form-select"
-                id="selectedGroupIds"
+                id="selected-group-ids"
                 multiple="multiple"
                 th:field="*{selectedGroupIds}">
           <option th:each="g : ${groups}"
