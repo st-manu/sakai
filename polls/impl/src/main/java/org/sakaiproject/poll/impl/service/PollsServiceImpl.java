@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -525,6 +526,8 @@ public class PollsServiceImpl implements PollsService, EntityProducer, EntityTra
                 toPoll.setVoteClose(fromPoll.getVoteClose());
                 toPoll.setDisplayResult(fromPoll.getDisplayResult());
                 toPoll.setLimitVoting(fromPoll.isLimitVoting());
+                Set<String> fromGroupIds = fromPoll.getGroupIds();
+                toPoll.setGroupIds(fromGroupIds == null ? new HashSet<>() : new HashSet<>(fromGroupIds));
                 String description = fromPoll.getDescription();
                 description = ltiService.fixLtiLaunchUrls(description, fromContext, toContext, transversalMap);
                 toPoll.setDescription(description);
@@ -1229,9 +1232,9 @@ public class PollsServiceImpl implements PollsService, EntityProducer, EntityTra
     @Transactional(readOnly = true)
     public boolean userIsInPollGroup(Poll poll, String userId) {
 
-        // Poll without groups: visible to all users
+        // Strict membership semantics: poll without groups means no group membership match.
         if (poll.getGroupIds() == null || poll.getGroupIds().isEmpty()) {
-            return true;
+            return false;
         }
 
         String siteId = poll.getSiteId();

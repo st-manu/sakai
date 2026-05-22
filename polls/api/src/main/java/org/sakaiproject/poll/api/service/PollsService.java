@@ -374,11 +374,11 @@ public interface PollsService {
 
     /**
      * Check whether a user belongs to at least one of the groups assigned to a poll.
-     * If the poll has no groups assigned, it is considered visible to all users.
+     * This method answers strict membership only and does not apply visibility defaults.
      *
      * @param poll the poll to check
      * @param userId the user ID to evaluate
-     * @return true if the user is allowed to view the poll based on group membership
+     * @return true only if the poll has assigned groups and the user belongs to at least one
      */
     boolean userIsInPollGroup(Poll poll, String userId);
 }

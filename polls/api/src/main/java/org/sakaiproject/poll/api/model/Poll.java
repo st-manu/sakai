@@ -24,44 +24,40 @@ package org.sakaiproject.poll.api.model;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.time.Instant;
-import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
-import java.util.Stack;
-import java.util.Set;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.Stack;
 
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderColumn;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.persistence.Transient;
-import javax.persistence.ElementCollection;
-import javax.persistence.CollectionTable;
-import javax.persistence.JoinColumn;
 
 import org.hibernate.annotations.GenericGenerator;
+import org.sakaiproject.springframework.data.PersistableEntity;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-
-import org.sakaiproject.entity.api.ResourceProperties;
-import org.sakaiproject.springframework.data.PersistableEntity;
 
 @Data
 @Entity
@@ -173,6 +169,8 @@ public class Poll implements PersistableEntity<String> {
     private static final String MIN_OPTIONS = "min-options";
     private static final String MAX_OPTIONS = "max-options";
     private static final String DISPLAY_RESULT = "display-result";
+    private static final String GROUP_IDS = "groupIds";
+    private static final String GROUP_ID = "groupId";
 
     public static Poll fromXML(Element element) {
         Poll poll = new Poll();
@@ -212,6 +210,25 @@ public class Poll implements PersistableEntity<String> {
             }
         }
         poll.setLimitVoting(Boolean.parseBoolean(element.getAttribute(LIMIT_VOTING)));
+
+        Set<String> groupIds = new HashSet<>();
+        NodeList children = element.getChildNodes();
+        for (int i = 0; i < children.getLength(); i++) {
+            Node child = children.item(i);
+            if (child.getNodeType() == Node.ELEMENT_NODE && GROUP_IDS.equals(child.getNodeName())) {
+                NodeList groupIdNodes = child.getChildNodes();
+                for (int j = 0; j < groupIdNodes.getLength(); j++) {
+                    Node groupIdNode = groupIdNodes.item(j);
+                    if (groupIdNode.getNodeType() == Node.ELEMENT_NODE && GROUP_ID.equals(groupIdNode.getNodeName())) {
+                        String groupId = groupIdNode.getTextContent();
+                        if (groupId != null && !groupId.trim().isEmpty()) {
+                            groupIds.add(groupId);
+                        }
+                    }
+                }
+            }
+        }
+        poll.setGroupIds(groupIds);
         return poll;
     }
 
@@ -243,6 +260,21 @@ public class Poll implements PersistableEntity<String> {
         poll.setAttribute(VOTE_CLOSE, dformat.format(Date.from(this.voteClose)));
         poll.setAttribute(LIMIT_VOTING, Boolean.toString(limitVoting));
         poll.setAttribute(DISPLAY_RESULT, this.displayResult);
+
+        if (groupIds != null && !groupIds.isEmpty()) {
+            Element groupIdsElement = doc.createElement(GROUP_IDS);
+            for (String groupId : groupIds) {
+                if (groupId == null || groupId.trim().isEmpty()) {
+                    continue;
+                }
+                Element groupIdElement = doc.createElement(GROUP_ID);
+                groupIdElement.setTextContent(groupId);
+                groupIdsElement.appendChild(groupIdElement);
+            }
+            if (groupIdsElement.hasChildNodes()) {
+                poll.appendChild(groupIdsElement);
+            }
+        }
 
         // properties
         //getProperties().toXml(doc, stack);

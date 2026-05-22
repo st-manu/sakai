@@ -229,8 +229,6 @@ public class PollEditorController {
             redirectAttributes.addFlashAttribute("alert", messageSource.getMessage("poll_missing", null, locale));
             return "redirect:/votePolls";
         }
-        // If no groups are selected, the poll becomes visible to all students.
-        poll.setGroupIds(pollForm.getSelectedGroupIds());
 
         Poll saved = pollsService.savePoll(poll);
         redirectAttributes.addFlashAttribute("success", messageSource.getMessage("poll_saved_success", null, locale));

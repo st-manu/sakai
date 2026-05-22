@@ -109,7 +109,7 @@ public class PollController {
 
         String userId = sessionManager.getCurrentSessionUserId();
         if (!(isSiteOwner() || isAllowedPollAdd())) {
-            polls.removeIf(p -> !pollsService.userIsInPollGroup(p, userId));
+            polls.removeIf(p -> !pollsService.userCanViewPoll(p, userId));
         }
 
         Locale effectiveLocale = normaliseLocale(locale != null ? locale : Locale.getDefault());
