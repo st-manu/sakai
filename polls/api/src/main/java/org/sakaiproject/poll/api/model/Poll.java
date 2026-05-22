@@ -127,7 +127,7 @@ public class Poll implements PersistableEntity<String> {
         name = "POLL_GROUPS",
         joinColumns = @JoinColumn(name = "POLL_ID")
     )
-    @Column(name = "GROUP_ID", nullable = false)
+    @Column(name = "GROUP_ID", length=99, nullable = false)
     private Set<String> groupIds = new HashSet<>();
 
     public Poll() {
