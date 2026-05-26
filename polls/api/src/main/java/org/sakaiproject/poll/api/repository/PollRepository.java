@@ -71,14 +71,4 @@ public interface PollRepository extends SpringCrudRepository<Poll, String> {
      */
     Optional<Option> findOptionByOptionId(Long optionId);
 
-    /**
-     * Finds polls for a site that are visible to users in the given groups.
-     * Includes polls assigned to at least one of the provided {@code groupIds} and
-     * polls without group restrictions.
-     *
-     * @param siteId the site identifier
-     * @param groupIds the group IDs the user belongs to (may be empty)
-     * @return list of polls in the site visible for the provided groups or unrestricted
-     */
-    List<Poll> findBySiteIdAndGroupIdsIn(String siteId, List<String> groupIds);
 }

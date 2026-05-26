@@ -173,6 +173,9 @@ public class PollsServiceImpl implements PollsService, EntityProducer, EntityTra
                 || StringUtils.isAnyBlank(poll.getText(), poll.getSiteId(), poll.getVoteOpen().toString(), poll.getVoteClose().toString())) {
             throw new IllegalArgumentException("you must supply a question, siteId & open and close dates");
         }
+        if (poll.getTypeOfAccess() == Poll.Access.GROUP && (poll.getGroupIds() == null || poll.getGroupIds().isEmpty())) {
+            throw new IllegalArgumentException("you must select at least one group when poll access is set to GROUP");
+        }
         String userId = sessionManager.getCurrentSessionUserId();
         String siteRef = siteService.siteReference(poll.getSiteId());
         if (!securityService.unlock(userId, PERMISSION_ADD, siteRef)) {
@@ -526,10 +529,12 @@ public class PollsServiceImpl implements PollsService, EntityProducer, EntityTra
                 toPoll.setVoteClose(fromPoll.getVoteClose());
                 toPoll.setDisplayResult(fromPoll.getDisplayResult());
                 toPoll.setLimitVoting(fromPoll.isLimitVoting());
-                Set<String> fromGroupIds = fromPoll.getGroupIds();
-                if (Objects.equals(fromContext, toContext) && fromGroupIds != null && !fromGroupIds.isEmpty()) {
-                    toPoll.setGroupIds(new HashSet<>(fromGroupIds));
+                if (Objects.equals(fromContext, toContext)) {
+                    toPoll.setTypeOfAccess(fromPoll.getTypeOfAccess());
+                    Set<String> fromGroupIds = fromPoll.getGroupIds();
+                    toPoll.setGroupIds(fromGroupIds != null ? new HashSet<>(fromGroupIds) : new HashSet<>());
                 } else {
+                    toPoll.setTypeOfAccess(Poll.Access.SITE);
                     toPoll.setGroupIds(new HashSet<>());
                 }
                 String description = fromPoll.getDescription();
@@ -1206,30 +1211,24 @@ public class PollsServiceImpl implements PollsService, EntityProducer, EntityTra
     @Override
     public boolean userCanViewPoll(Poll poll, String userId) {
 
-        // poll.add always see all polls
-        String siteRef = siteService.siteReference(poll.getSiteId());
-        if (securityService.unlock(userId, PERMISSION_ADD, siteRef)) {
-            return true;
-        }
-
-        // Poll without groups: visible to all users
-        if (poll.getGroupIds() == null || poll.getGroupIds().isEmpty()) {
-            return true;
-        }
-
-        Set<String> userGroups;
-        try {
-            userGroups = siteService.getSite(poll.getSiteId())
-                    .getGroupsWithMember(userId)
-                    .stream()
-                    .map(Group::getId)
-                    .map(id -> id.contains("/group/") ? id.substring(id.lastIndexOf("/") + 1) : id)
-                    .collect(Collectors.toSet());
-        } catch (IdUnusedException e) {
+        if (poll == null) {
             return false;
         }
 
-        return !Collections.disjoint(poll.getGroupIds(), userGroups);
+        String siteRef = siteService.siteReference(poll.getSiteId());
+        if (userId != null && securityService.unlock(userId, PERMISSION_ADD, siteRef)) {
+            return true;
+        }
+
+        if (poll.isPublic()) {
+            return true;
+        }
+
+        if (poll.getTypeOfAccess() != Poll.Access.GROUP) {
+            return true;
+        }
+
+        return userIsInPollGroup(poll, userId);
     }
 
     @Override
@@ -1237,7 +1236,7 @@ public class PollsServiceImpl implements PollsService, EntityProducer, EntityTra
     public boolean userIsInPollGroup(Poll poll, String userId) {
 
         // Strict membership semantics: poll without groups means no group membership match.
-        if (poll.getGroupIds() == null || poll.getGroupIds().isEmpty()) {
+        if (poll == null || userId == null || poll.getGroupIds() == null || poll.getGroupIds().isEmpty()) {
             return false;
         }
 

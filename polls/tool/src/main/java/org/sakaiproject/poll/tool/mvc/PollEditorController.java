@@ -20,6 +20,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
@@ -135,6 +136,10 @@ public class PollEditorController {
                 new DisplayOption("afterClosing", "new_poll_afterClosing"),
                 new DisplayOption("never", "new_poll_never")
         ));
+        model.addAttribute("accessChoices", List.of(
+            new DisplayOption(Poll.Access.SITE.name(), "new_poll_access_site"),
+            new DisplayOption(Poll.Access.GROUP.name(), "new_poll_access_groups")
+        ));
 
         model.addAttribute("canAdd", isAllowedPollAdd());
         model.addAttribute("isSiteOwner", isSiteOwner());
@@ -217,6 +222,13 @@ public class PollEditorController {
             return "polls/edit";
         }
 
+        if (pollForm.getTypeOfAccess() == Poll.Access.GROUP
+                && (pollForm.getSelectedGroupIds() == null || pollForm.getSelectedGroupIds().isEmpty())) {
+            bindingResult.addError(new FieldError("pollForm", "selectedGroupIds", messageSource.getMessage("new_poll_groups_required", null, locale)));
+            populateModelForEdit(model, pollForm, pollEditContext.options(), pollEditContext.hasVotes());
+            return "polls/edit";
+        }
+
         int optionCount = pollEditContext.options().size();
         if (!isNewPoll && (pollForm.getMinOptions() > optionCount || pollForm.getMaxOptions() > optionCount)) {
             bindingResult.addError(new FieldError("pollForm", "maxOptions", messageSource.getMessage("invalid_poll_limits", null, locale)));
@@ -253,6 +265,10 @@ public class PollEditorController {
                 new DisplayOption("afterVoting", "new_poll_aftervoting"),
                 new DisplayOption("afterClosing", "new_poll_afterClosing"),
                 new DisplayOption("never", "new_poll_never")
+        ));
+        model.addAttribute("accessChoices", List.of(
+            new DisplayOption(Poll.Access.SITE.name(), "new_poll_access_site"),
+            new DisplayOption(Poll.Access.GROUP.name(), "new_poll_access_groups")
         ));
         model.addAttribute("isNew", StringUtils.isBlank(pollForm.getPollId()));
         model.addAttribute("canAdd", isAllowedPollAdd());
@@ -310,6 +326,7 @@ public class PollEditorController {
         poll.setDescription(org.sakaiproject.poll.api.util.PollUtils.cleanupHtmlPtags(sanitizedDescription));
 
         poll.setPublic(form.isPublic());
+        poll.setTypeOfAccess(form.getTypeOfAccess() != null ? form.getTypeOfAccess() : Poll.Access.SITE);
         poll.setMinOptions(form.getMinOptions());
         poll.setMaxOptions(form.getMaxOptions());
         poll.setDisplayResult(form.getDisplayResult());
@@ -325,7 +342,7 @@ public class PollEditorController {
         if (form.getCloseDate() != null) {
             poll.setVoteClose(form.getCloseDate().atZone(zoneId).toInstant());
         }
-        poll.setGroupIds(form.getSelectedGroupIds());
+        poll.setGroupIds(form.getSelectedGroupIds() != null ? new HashSet<>(form.getSelectedGroupIds()) : new HashSet<>());
 
         return poll;
     }
@@ -342,6 +359,7 @@ public class PollEditorController {
         form.setDisplayResult("open");
         form.setOpenDate(defaultOpen);
         form.setCloseDate(defaultOpen.plusYears(1));
+        form.setTypeOfAccess(Poll.Access.SITE);
         return form;
     }
 
@@ -356,7 +374,8 @@ public class PollEditorController {
         form.setDisplayResult(poll.getDisplayResult());
         form.setOpenDate(truncateToMinutes(toLocalDateTime(poll.getVoteOpen(), zoneId)));
         form.setCloseDate(truncateToMinutes(toLocalDateTime(poll.getVoteClose(), zoneId)));
-        form.setSelectedGroupIds(poll.getGroupIds());
+        form.setTypeOfAccess(poll.getTypeOfAccess() != null ? poll.getTypeOfAccess() : Poll.Access.SITE);
+        form.setSelectedGroupIds(poll.getGroupIds() != null ? new HashSet<>(poll.getGroupIds()) : new HashSet<>());
         return form;
     }
 

@@ -39,6 +39,8 @@ import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -65,6 +67,11 @@ import lombok.extern.slf4j.Slf4j;
 @Table(name = "POLL_POLL")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Poll implements PersistableEntity<String> {
+
+    public enum Access {
+        SITE,
+        GROUP
+    }
 
     @Id
     @GeneratedValue(generator = "uuid2")
@@ -118,12 +125,16 @@ public class Poll implements PersistableEntity<String> {
     @Column(name = "POLL_IS_PUBLIC", nullable = false)
     private boolean isPublic = false;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "ACCESS_TYPE", nullable = false, length = 10)
+    private Access typeOfAccess = Access.SITE;
+
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(
         name = "POLL_GROUPS",
         joinColumns = @JoinColumn(name = "POLL_ID")
     )
-    @Column(name = "GROUP_ID", length=99, nullable = false)
+    @Column(name = "GROUP_ID", length = 99, nullable = false)
     private Set<String> groupIds = new HashSet<>();
 
     public Poll() {
@@ -133,6 +144,7 @@ public class Poll implements PersistableEntity<String> {
         this.maxOptions = 1;
         this.limitVoting = true;
         this.isPublic = false;
+        this.typeOfAccess = Access.SITE;
         this.voteOpen = Instant.now();
         this.voteClose = Instant.now().plus(7, ChronoUnit.DAYS);
         this.displayResult = "open";
@@ -169,6 +181,7 @@ public class Poll implements PersistableEntity<String> {
     private static final String MIN_OPTIONS = "min-options";
     private static final String MAX_OPTIONS = "max-options";
     private static final String DISPLAY_RESULT = "display-result";
+    private static final String ACCESS_TYPE = "access-type";
     private static final String GROUP_IDS = "groupIds";
     private static final String GROUP_ID = "groupId";
 
@@ -210,6 +223,15 @@ public class Poll implements PersistableEntity<String> {
             }
         }
         poll.setLimitVoting(Boolean.parseBoolean(element.getAttribute(LIMIT_VOTING)));
+
+        String accessType = element.getAttribute(ACCESS_TYPE);
+        if (accessType != null && !accessType.isBlank()) {
+            try {
+                poll.setTypeOfAccess(Access.valueOf(accessType));
+            } catch (IllegalArgumentException e) {
+                log.warn("Ignoring invalid poll access type {} while reading XML for poll {}", accessType, poll.getId());
+            }
+        }
 
         Set<String> groupIds = new HashSet<>();
         NodeList children = element.getChildNodes();
@@ -260,6 +282,7 @@ public class Poll implements PersistableEntity<String> {
         poll.setAttribute(VOTE_CLOSE, dformat.format(Date.from(this.voteClose)));
         poll.setAttribute(LIMIT_VOTING, Boolean.toString(limitVoting));
         poll.setAttribute(DISPLAY_RESULT, this.displayResult);
+        poll.setAttribute(ACCESS_TYPE, (this.typeOfAccess != null ? this.typeOfAccess : Access.SITE).name());
 
         if (groupIds != null && !groupIds.isEmpty()) {
             Element groupIdsElement = doc.createElement(GROUP_IDS);

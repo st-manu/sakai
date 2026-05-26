@@ -149,9 +149,11 @@ public class PollController {
 
             String visibilityDisplay;
             Set<String> pollGroupIds = poll.getGroupIds();
-            if (pollGroupIds != null && !pollGroupIds.isEmpty()) {
+            if (poll.isPublic()) {
+                visibilityDisplay = messageSource.getMessage("poll_visibility_public", null, effectiveLocale);
+            } else if (poll.getTypeOfAccess() == Poll.Access.GROUP) {
                 List<String> titles = new ArrayList<>();
-                for (String gid : pollGroupIds) {
+                for (String gid : pollGroupIds != null ? pollGroupIds : List.<String>of()) {
                     String title = groupTitleById.get(gid);
                     if (title != null) {
                         titles.add(title);
@@ -162,8 +164,6 @@ public class PollController {
                 } else {
                     visibilityDisplay = String.join(", ", titles);
                 }
-            } else if (poll.isPublic()) {
-                visibilityDisplay = messageSource.getMessage("poll_visibility_public", null, effectiveLocale);
             } else {
                 visibilityDisplay = messageSource.getMessage("poll_visibility_site", null, effectiveLocale);
             }

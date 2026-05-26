@@ -120,6 +120,18 @@
       </div>
 
       <div class="mt-4">
+        <h2 class="h5" th:text="#{new_poll_access_title}">Release to</h2>
+        <label class="form-label" for="type-of-access" th:text="#{new_poll_access_label}">Release to:</label>
+        <select class="form-select" id="type-of-access" th:field="*{typeOfAccess}">
+          <option th:each="choice : ${accessChoices}"
+                  th:value="${choice.value}"
+                  th:text="#{${choice.labelKey}}"></option>
+        </select>
+      </div>
+
+      <div id="poll-groups-wrapper"
+           class="mt-4"
+           th:classappend="${pollForm.typeOfAccess != null and pollForm.typeOfAccess.name() == 'GROUP'} ? '' : ' d-none'">
         <h2 class="h5" th:text="#{new_poll_groups_title}">Groups</h2>
         <label class="form-label" for="selected-group-ids" th:text="#{new_poll_groups_label}">Select groups allowed to vote</label>
         <select class="form-select"
@@ -128,13 +140,13 @@
                 th:field="*{selectedGroupIds}">
           <option th:each="g : ${groups}"
                   th:value="${g.id}"
-                  th:text="${g.title}"
-                  th:selected="${pollForm.selectedGroupIds != null and pollForm.selectedGroupIds.contains(g.id)}">
+                  th:text="${g.title}">
           </option>
         </select>
         <small class="form-text text-muted" th:text="#{new_poll_groups_instruction}">
-          If no groups are selected, the poll will be visible to all students.
+          Select the groups used when the poll is released to Groups.
         </small>
+        <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('selectedGroupIds')}" th:errors="*{selectedGroupIds}">Select at least one group</div>
       </div>
 
       <div class="form-check form-switch mt-4" th:if="${showPublicAccess}">
@@ -159,5 +171,6 @@
     </form>
 
   </div>
+  <script th:src="@{/js/polls-edit-access.js}"></script>
 </body>
 </html>

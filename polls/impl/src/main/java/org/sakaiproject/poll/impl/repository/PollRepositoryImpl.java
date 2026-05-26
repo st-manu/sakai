@@ -22,8 +22,6 @@ import java.util.Optional;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Join;
-import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
@@ -101,36 +99,5 @@ public class PollRepositoryImpl extends SpringCrudRepositoryImpl<Poll, String> i
     public Optional<Option> findOptionByOptionId(Long optionId) {
         if (optionId == null) return Optional.empty();
         return Optional.ofNullable(sessionFactory.getCurrentSession().get(Option.class, optionId));
-    }
-
-    @Override
-    public List<Poll> findBySiteIdAndGroupIdsIn(String siteId, List<String> groupIds) {
-
-        if (siteId == null) {
-            return Collections.emptyList();
-        }
-
-        CriteriaBuilder cb = sessionFactory.getCriteriaBuilder();
-        CriteriaQuery<Poll> query = cb.createQuery(Poll.class);
-        Root<Poll> root = query.from(Poll.class);
-
-        Predicate sitePredicate = cb.equal(root.get("siteId"), siteId);
-        Predicate noGroupsPredicate = cb.isEmpty(root.get("groupIds"));
-        Predicate groupPredicate = noGroupsPredicate;
-
-        if (groupIds != null && !groupIds.isEmpty()) {
-            Join<Poll, String> groupJoin = root.join("groupIds", JoinType.LEFT);
-            Predicate groupInPredicate = groupJoin.in(groupIds);
-            groupPredicate = cb.or(groupInPredicate, noGroupsPredicate);
-            query.distinct(true);
-        }
-
-        query.select(root)
-            .where(cb.and(sitePredicate, groupPredicate))
-            .orderBy(cb.desc(root.get("creationDate")));
-
-        return sessionFactory.getCurrentSession()
-                .createQuery(query)
-                .getResultList();
     }
 }

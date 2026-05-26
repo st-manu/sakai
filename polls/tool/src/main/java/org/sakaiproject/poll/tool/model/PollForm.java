@@ -21,6 +21,7 @@ import java.util.HashSet;
 import java.util.Set;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.sakaiproject.poll.api.model.Poll;
 
 @Data
 public class PollForm {
@@ -31,6 +32,7 @@ public class PollForm {
     private Integer minOptions = 1;
     private Integer maxOptions = 1;
     private String displayResult = "open";
+    private Poll.Access typeOfAccess = Poll.Access.SITE;
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private LocalDateTime openDate;
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
