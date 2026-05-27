@@ -24,7 +24,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.Set;
 import java.util.TimeZone;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.sakaiproject.authz.api.SecurityService;
@@ -229,6 +231,17 @@ public class PollEditorController {
             return "polls/edit";
         }
 
+        if (pollForm.getTypeOfAccess() == Poll.Access.GROUP) {
+            Set<String> validGroupIds = getCurrentSiteGroupIds();
+            boolean hasInvalidGroupIds = pollForm.getSelectedGroupIds().stream()
+                    .anyMatch(groupId -> !validGroupIds.contains(groupId));
+            if (hasInvalidGroupIds) {
+                bindingResult.addError(new FieldError("pollForm", "selectedGroupIds", messageSource.getMessage("new_poll_groups_required", null, locale)));
+                populateModelForEdit(model, pollForm, pollEditContext.options(), pollEditContext.hasVotes());
+                return "polls/edit";
+            }
+        }
+
         int optionCount = pollEditContext.options().size();
         if (!isNewPoll && (pollForm.getMinOptions() > optionCount || pollForm.getMaxOptions() > optionCount)) {
             bindingResult.addError(new FieldError("pollForm", "maxOptions", messageSource.getMessage("invalid_poll_limits", null, locale)));
@@ -342,7 +355,7 @@ public class PollEditorController {
         if (form.getCloseDate() != null) {
             poll.setVoteClose(form.getCloseDate().atZone(zoneId).toInstant());
         }
-        poll.setGroupIds(form.getSelectedGroupIds() != null ? new HashSet<>(form.getSelectedGroupIds()) : new HashSet<>());
+        poll.setGroupIds(filterValidGroupIds(form.getSelectedGroupIds()));
 
         return poll;
     }
@@ -394,6 +407,29 @@ public class PollEditorController {
     private boolean isSiteOwner() {
         String siteRef = siteService.siteReference(toolManager.getCurrentPlacement().getContext());
         return securityService.isSuperUser() || securityService.unlock("site.upd", siteRef);
+    }
+
+    private Set<String> getCurrentSiteGroupIds() {
+        String siteId = toolManager.getCurrentPlacement().getContext();
+        try {
+            return siteService.getSite(siteId).getGroups().stream()
+                    .map(Group::getId)
+                    .collect(Collectors.toSet());
+        } catch (IdUnusedException e) {
+            log.warn("Site not found for id {} when validating poll groups", siteId, e);
+            return Set.of();
+        }
+    }
+
+    private Set<String> filterValidGroupIds(Set<String> selectedGroupIds) {
+        if (selectedGroupIds == null || selectedGroupIds.isEmpty()) {
+            return new HashSet<>();
+        }
+
+        Set<String> validGroupIds = getCurrentSiteGroupIds();
+        return selectedGroupIds.stream()
+                .filter(validGroupIds::contains)
+                .collect(Collectors.toCollection(HashSet::new));
     }
 
     private boolean canEditPoll(Poll poll) {
