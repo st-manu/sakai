@@ -373,6 +373,26 @@ public interface PollsService {
     int getNumberUsersCanVote(String siteId);
 
     /**
+     * Return a map of group id -> group title for the given site. Returns an empty map if site not found.
+     */
+    java.util.Map<String, String> getGroupTitlesForSite(String siteId);
+
+    /**
+     * Filter the provided candidate group ids keeping only those valid for the site.
+     */
+    java.util.Set<String> filterValidGroupIds(String siteId, java.util.Set<String> candidateIds);
+
+    /**
+     * Return only the polls visible to the given user from the provided collection.
+     */
+    java.util.List<Poll> filterPollsVisibleToUser(java.util.Collection<Poll> polls, String userId);
+
+    /**
+     * Return the site groups for the given site id (empty collection if site not found).
+     */
+    java.util.Collection<org.sakaiproject.site.api.Group> getSiteGroups(String siteId);
+
+    /**
      * Check whether a user belongs to at least one of the groups assigned to a poll.
      * This method answers strict membership only and does not apply visibility defaults.
      *

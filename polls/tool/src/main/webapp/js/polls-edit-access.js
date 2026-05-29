@@ -7,7 +7,12 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   const updateGroupsVisibility = () => {
-    groupsWrapper.classList.toggle("d-none", typeOfAccess.value !== "GROUP");
+    const isGroupAccess = typeOfAccess.value === "GROUP";
+    groupsWrapper.classList.toggle("d-none", !isGroupAccess);
+    const groupSelect = groupsWrapper.querySelector("select");
+    if (groupSelect) {
+      groupSelect.disabled = !isGroupAccess;
+    }
   };
 
   typeOfAccess.addEventListener("change", updateGroupsVisibility);

@@ -19,9 +19,7 @@ package org.sakaiproject.poll.tool.mvc;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -29,13 +27,11 @@ import java.util.Objects;
 import java.util.Set;
 
 import org.sakaiproject.authz.api.SecurityService;
-import org.sakaiproject.exception.IdUnusedException;
 import static org.sakaiproject.poll.api.PollConstants.PERMISSION_ADD;
 import static org.sakaiproject.poll.api.PollConstants.PERMISSION_EDIT_ANY;
 import static org.sakaiproject.poll.api.PollConstants.PERMISSION_EDIT_OWN;
 import org.sakaiproject.poll.api.model.Poll;
 import org.sakaiproject.poll.api.service.PollsService;
-import org.sakaiproject.site.api.Group;
 import org.sakaiproject.site.api.SiteService;
 import org.sakaiproject.time.api.UserTimeService;
 import org.sakaiproject.tool.api.SessionManager;
@@ -94,22 +90,13 @@ public class PollController {
             return "polls/list";
         }
 
-        Collection<Group> siteGroups = List.of();
-        try {
-            siteGroups = siteService.getSite(siteId).getGroups();
-        } catch (IdUnusedException e) {
-            log.warn("Site not found: {}", siteId);
-        }
-        Map<String, String> groupTitleById = new HashMap<>();
-        for (Group group : siteGroups) {
-            groupTitleById.put(group.getId(), group.getTitle());
-        }
+        Map<String, String> groupTitleById = pollsService.getGroupTitlesForSite(siteId);
 
-        List<Poll> polls = new ArrayList<>(pollsService.findAllPolls(siteId));
+        List<Poll> visiblePolls = new ArrayList<>(pollsService.findAllPolls(siteId));
 
         String userId = sessionManager.getCurrentSessionUserId();
         if (!(isSiteOwner() || isAllowedPollAdd())) {
-            polls.removeIf(p -> !pollsService.userCanViewPoll(p, userId));
+            visiblePolls = pollsService.filterPollsVisibleToUser(visiblePolls, userId);
         }
 
         Locale effectiveLocale = normaliseLocale(locale != null ? locale : Locale.getDefault());
@@ -120,7 +107,7 @@ public class PollController {
 
         List<PollRow> rows = new ArrayList<>();
         boolean renderDelete = false;
-        for (Poll poll : polls) {
+        for (Poll poll : visiblePolls) {
             boolean canVote = pollsService.pollIsVotable(poll);
             boolean canEdit = pollCanEdit(poll);
             boolean canDelete = pollsService.userCanDeletePoll(poll);

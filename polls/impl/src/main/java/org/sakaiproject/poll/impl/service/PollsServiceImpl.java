@@ -1257,4 +1257,53 @@ public class PollsServiceImpl implements PollsService, EntityProducer, EntityTra
 
         return !Collections.disjoint(poll.getGroupIds(), userGroupIds);
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public java.util.Map<String, String> getGroupTitlesForSite(String siteId) {
+        if (siteId == null) return Collections.emptyMap();
+        try {
+            Site site = siteService.getSite(siteId);
+            return site.getGroups().stream()
+                    .collect(Collectors.toMap(org.sakaiproject.site.api.Group::getId, org.sakaiproject.site.api.Group::getTitle));
+        } catch (IdUnusedException e) {
+            log.warn("Site {} not found when getting group titles", siteId);
+            return Collections.emptyMap();
+        }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public java.util.Collection<org.sakaiproject.site.api.Group> getSiteGroups(String siteId) {
+        if (siteId == null) return List.of();
+        try {
+            return siteService.getSite(siteId).getGroups();
+        } catch (IdUnusedException e) {
+            log.warn("Site {} not found when getting groups", siteId);
+            return List.of();
+        }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public java.util.Set<String> filterValidGroupIds(String siteId, java.util.Set<String> candidateIds) {
+        if (candidateIds == null || candidateIds.isEmpty() || siteId == null) {
+            return new HashSet<>();
+        }
+        try {
+            java.util.Set<String> valid = siteService.getSite(siteId).getGroups().stream()
+                    .map(org.sakaiproject.site.api.Group::getId)
+                    .collect(Collectors.toSet());
+            return candidateIds.stream().filter(valid::contains).collect(Collectors.toCollection(HashSet::new));
+        } catch (IdUnusedException e) {
+            log.warn("Site {} not found when filtering group ids", siteId);
+            return new HashSet<>();
+        }
+    }
+
+    @Override
+    public java.util.List<Poll> filterPollsVisibleToUser(java.util.Collection<Poll> polls, String userId) {
+        if (polls == null) return new ArrayList<>();
+        return polls.stream().filter(p -> userCanViewPoll(p, userId)).collect(Collectors.toList());
+    }
 }
