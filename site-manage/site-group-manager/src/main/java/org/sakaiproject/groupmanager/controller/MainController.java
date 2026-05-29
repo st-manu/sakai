@@ -38,7 +38,6 @@ import org.sakaiproject.authz.api.AuthzRealmLockException;
 import org.sakaiproject.groupmanager.constants.GroupManagerConstants;
 import org.sakaiproject.groupmanager.form.MainForm;
 import org.sakaiproject.groupmanager.service.SakaiService;
-import org.sakaiproject.poll.api.model.Poll;
 import org.sakaiproject.poll.api.service.PollsService;
 import org.sakaiproject.samigo.util.SamigoConstants;
 import org.sakaiproject.site.api.Group;
@@ -110,13 +109,7 @@ public class MainController {
         List<String> lockedGroupList = new ArrayList<>();
         List<String> lockedForDeletionGroupList = new ArrayList<>();
         Map<String, Map<String, List<String>>> lockedGroupsEntityMap = new HashMap<>();
-        Map<String, List<String>> pollTitlesByGroupId = new HashMap<>();
-
-        pollsService.findAllPolls(site.getId()).stream()
-            .filter(poll -> Poll.Access.GROUP.equals(poll.getTypeOfAccess()))
-            .filter(poll -> poll.getGroupIds() != null && !poll.getGroupIds().isEmpty())
-            .forEach(poll -> poll.getGroupIds().forEach(groupId ->
-                pollTitlesByGroupId.computeIfAbsent(groupId, key -> new ArrayList<>()).add(poll.getText())));
+        Map<String, List<String>> pollTitlesByGroupId = pollsService.getPollTitlesByGroupId(site.getId());
 
         // For each group of the site, get the members separated by comma, the joinable sets and the size of the joinable sets.
         for (Group group: groupList) {
@@ -290,11 +283,7 @@ public class MainController {
         boolean anyGroupDeleted = false;
 
         Set<String> deletedGroupIds = new HashSet<>(deleteGroupsForm.getDeletedGroupList());
-        Set<String> groupIdsUsedByPolls = pollsService.findAllPolls(site.getId()).stream()
-            .filter(poll -> Poll.Access.GROUP.equals(poll.getTypeOfAccess()))
-            .filter(poll -> poll.getGroupIds() != null && !poll.getGroupIds().isEmpty())
-            .flatMap(poll -> poll.getGroupIds().stream())
-            .collect(Collectors.toSet());
+        Set<String> groupIdsUsedByPolls = pollsService.getGroupIdsUsedByPolls(site.getId());
 
         List<String> blockedGroups = new ArrayList<>();
 

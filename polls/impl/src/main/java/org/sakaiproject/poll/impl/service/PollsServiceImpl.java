@@ -25,6 +25,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -1209,6 +1210,7 @@ public class PollsServiceImpl implements PollsService, EntityProducer, EntityTra
     }
 
     @Override
+    @Transactional(readOnly = true)
     public boolean userCanViewPoll(Poll poll, String userId) {
 
         if (poll == null) {
@@ -1260,12 +1262,12 @@ public class PollsServiceImpl implements PollsService, EntityProducer, EntityTra
 
     @Override
     @Transactional(readOnly = true)
-    public java.util.Map<String, String> getGroupTitlesForSite(String siteId) {
+    public Map<String, String> getGroupTitlesForSite(String siteId) {
         if (siteId == null) return Collections.emptyMap();
         try {
             Site site = siteService.getSite(siteId);
             return site.getGroups().stream()
-                    .collect(Collectors.toMap(org.sakaiproject.site.api.Group::getId, org.sakaiproject.site.api.Group::getTitle));
+                    .collect(Collectors.toMap(Group::getId, Group::getTitle));
         } catch (IdUnusedException e) {
             log.warn("Site {} not found when getting group titles", siteId);
             return Collections.emptyMap();
@@ -1274,7 +1276,7 @@ public class PollsServiceImpl implements PollsService, EntityProducer, EntityTra
 
     @Override
     @Transactional(readOnly = true)
-    public java.util.Collection<org.sakaiproject.site.api.Group> getSiteGroups(String siteId) {
+    public Collection<Group> getSiteGroups(String siteId) {
         if (siteId == null) return List.of();
         try {
             return siteService.getSite(siteId).getGroups();
@@ -1286,13 +1288,13 @@ public class PollsServiceImpl implements PollsService, EntityProducer, EntityTra
 
     @Override
     @Transactional(readOnly = true)
-    public java.util.Set<String> filterValidGroupIds(String siteId, java.util.Set<String> candidateIds) {
+    public Set<String> filterValidGroupIds(String siteId, Set<String> candidateIds) {
         if (candidateIds == null || candidateIds.isEmpty() || siteId == null) {
             return new HashSet<>();
         }
         try {
-            java.util.Set<String> valid = siteService.getSite(siteId).getGroups().stream()
-                    .map(org.sakaiproject.site.api.Group::getId)
+            Set<String> valid = siteService.getSite(siteId).getGroups().stream()
+                    .map(Group::getId)
                     .collect(Collectors.toSet());
             return candidateIds.stream().filter(valid::contains).collect(Collectors.toCollection(HashSet::new));
         } catch (IdUnusedException e) {
@@ -1302,8 +1304,39 @@ public class PollsServiceImpl implements PollsService, EntityProducer, EntityTra
     }
 
     @Override
-    public java.util.List<Poll> filterPollsVisibleToUser(java.util.Collection<Poll> polls, String userId) {
+    @Transactional(readOnly = true)
+    public List<Poll> filterPollsVisibleToUser(Collection<Poll> polls, String userId) {
         if (polls == null) return new ArrayList<>();
         return polls.stream().filter(p -> userCanViewPoll(p, userId)).collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Set<String> getGroupIdsUsedByPolls(String siteId) {
+        if (siteId == null) {
+            return new HashSet<>();
+        }
+        return findAllPolls(siteId).stream()
+                .filter(poll -> Poll.Access.GROUP.equals(poll.getTypeOfAccess()))
+                .filter(poll -> poll.getGroupIds() != null && !poll.getGroupIds().isEmpty())
+                .flatMap(poll -> poll.getGroupIds().stream())
+                .collect(Collectors.toSet());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Map<String, List<String>> getPollTitlesByGroupId(String siteId) {
+        Map<String, List<String>> pollTitlesByGroupId = new HashMap<>();
+        if (siteId == null) {
+            return pollTitlesByGroupId;
+        }
+
+        findAllPolls(siteId).stream()
+                .filter(poll -> Poll.Access.GROUP.equals(poll.getTypeOfAccess()))
+                .filter(poll -> poll.getGroupIds() != null && !poll.getGroupIds().isEmpty())
+                .forEach(poll -> poll.getGroupIds().forEach(groupId ->
+                        pollTitlesByGroupId.computeIfAbsent(groupId, key -> new ArrayList<>()).add(poll.getText())));
+
+        return pollTitlesByGroupId;
     }
 }

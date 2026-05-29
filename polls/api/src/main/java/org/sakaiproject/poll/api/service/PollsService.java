@@ -21,15 +21,18 @@
 
 package org.sakaiproject.poll.api.service;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import org.sakaiproject.poll.api.entity.PollEntity;
 import org.sakaiproject.poll.api.model.Option;
 import org.sakaiproject.poll.api.model.Poll;
 import org.sakaiproject.poll.api.model.Vote;
 import org.sakaiproject.poll.api.model.VoteCollection;
+import org.sakaiproject.site.api.Group;
 
 /**
  * This is the interface for the Manager for our poll tool, 
@@ -375,22 +378,32 @@ public interface PollsService {
     /**
      * Return a map of group id -> group title for the given site. Returns an empty map if site not found.
      */
-    java.util.Map<String, String> getGroupTitlesForSite(String siteId);
+    Map<String, String> getGroupTitlesForSite(String siteId);
 
     /**
      * Filter the provided candidate group ids keeping only those valid for the site.
      */
-    java.util.Set<String> filterValidGroupIds(String siteId, java.util.Set<String> candidateIds);
+    Set<String> filterValidGroupIds(String siteId, Set<String> candidateIds);
 
     /**
      * Return only the polls visible to the given user from the provided collection.
      */
-    java.util.List<Poll> filterPollsVisibleToUser(java.util.Collection<Poll> polls, String userId);
+    List<Poll> filterPollsVisibleToUser(Collection<Poll> polls, String userId);
 
     /**
      * Return the site groups for the given site id (empty collection if site not found).
      */
-    java.util.Collection<org.sakaiproject.site.api.Group> getSiteGroups(String siteId);
+    Collection<Group> getSiteGroups(String siteId);
+
+    /**
+     * Get the group ids referenced by GROUP-access polls in the given site.
+     */
+    Set<String> getGroupIdsUsedByPolls(String siteId);
+
+    /**
+     * Get poll titles grouped by group id for the given site.
+     */
+    Map<String, List<String>> getPollTitlesByGroupId(String siteId);
 
     /**
      * Check whether a user belongs to at least one of the groups assigned to a poll.
