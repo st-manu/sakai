@@ -234,17 +234,19 @@ public class Poll implements PersistableEntity<String> {
         }
 
         Set<String> groupIds = new HashSet<>();
-        NodeList children = element.getChildNodes();
-        for (int i = 0; i < children.getLength(); i++) {
-            Node child = children.item(i);
-            if (child.getNodeType() == Node.ELEMENT_NODE && GROUP_IDS.equals(child.getNodeName())) {
-                NodeList groupIdNodes = child.getChildNodes();
-                for (int j = 0; j < groupIdNodes.getLength(); j++) {
-                    Node groupIdNode = groupIdNodes.item(j);
-                    if (groupIdNode.getNodeType() == Node.ELEMENT_NODE && GROUP_ID.equals(groupIdNode.getNodeName())) {
-                        String groupId = groupIdNode.getTextContent();
-                        if (groupId != null && !groupId.trim().isEmpty()) {
-                            groupIds.add(groupId);
+        if (poll.getTypeOfAccess() == Access.GROUP) {
+            NodeList children = element.getChildNodes();
+            for (int i = 0; i < children.getLength(); i++) {
+                Node child = children.item(i);
+                if (child.getNodeType() == Node.ELEMENT_NODE && GROUP_IDS.equals(child.getNodeName())) {
+                    NodeList groupIdNodes = child.getChildNodes();
+                    for (int j = 0; j < groupIdNodes.getLength(); j++) {
+                        Node groupIdNode = groupIdNodes.item(j);
+                        if (groupIdNode.getNodeType() == Node.ELEMENT_NODE && GROUP_ID.equals(groupIdNode.getNodeName())) {
+                            String groupId = groupIdNode.getTextContent();
+                            if (groupId != null && !groupId.trim().isEmpty()) {
+                                groupIds.add(groupId);
+                            }
                         }
                     }
                 }
