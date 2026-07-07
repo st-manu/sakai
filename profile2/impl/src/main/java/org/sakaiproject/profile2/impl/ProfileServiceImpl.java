@@ -901,6 +901,21 @@ public class ProfileServiceImpl implements ProfileService, EntityProducer {
             sp.setMobile(profileBean.mobile);
         });
 
+        // The account email is not stored in SakaiPerson, it needs its own update. Only touch the
+        // account when the email actually changes: isAccountUpdateAllowed() is an expensive user
+        // edit/cancel round-trip, so it (and the duplicate check) run only for a real change. A
+        // change to an email already used by another account is discarded.
+        if (profileBean.email != null) {
+            String newEmail = StringUtils.trimToNull(profileBean.email);
+            User user = sakaiProxy.getUserById(profileBean.id);
+            String currentEmail = user != null ? StringUtils.trimToNull(user.getEmail()) : null;
+            if (!StringUtils.equals(newEmail, currentEmail)
+                    && sakaiProxy.isAccountUpdateAllowed(profileBean.id)
+                    && !sakaiProxy.isEmailDuplicate(profileBean.id, newEmail)) {
+                sakaiProxy.updateEmailForUser(profileBean.id, newEmail);
+            }
+        }
+
         SocialNetworkingInfo socialInfo
           = dao.getSocialNetworkingInfo(profileBean.id).orElseGet(() -> new SocialNetworkingInfo(profileBean.id));
 
@@ -950,6 +965,12 @@ public class ProfileServiceImpl implements ProfileService, EntityProducer {
     public void assertCanModifyProfile(String userUuid) {
 
         checkCanModifyProfile(sakaiProxy.getCurrentUserId(), userUuid, "modify this profile");
+    }
+
+    @Override
+    public boolean isEmailDuplicate(String userId, String email) {
+
+        return sakaiProxy.isEmailDuplicate(userId, email);
     }
 
     @Override
