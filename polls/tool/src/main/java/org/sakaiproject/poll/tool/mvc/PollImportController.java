@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.StandardCharsets;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -30,6 +31,9 @@ import org.sakaiproject.poll.api.service.PollsService;
 import org.sakaiproject.tool.api.SessionManager;
 import org.sakaiproject.tool.api.ToolManager;
 import org.springframework.context.MessageSource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -72,6 +76,21 @@ public class PollImportController {
 
         populateModel(model);
         return "polls/import";
+    }
+
+    @GetMapping("/pollImport/sample")
+    public Object downloadSample(Locale locale) {
+        String currentSiteId = toolManager.getCurrentPlacement().getContext();
+        if (!pollsService.isAllowedPollAdd(currentSiteId)) {
+            return "redirect:/votePolls";
+        }
+
+        String csv = pollsService.buildPollImportSampleCsv(buildImportColumnHeaders(locale));
+        String filename = messageSource.getMessage("poll_import_sample_filename", null, locale);
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"")
+                .contentType(MediaType.parseMediaType("text/csv;charset=UTF-8"))
+                .body(csv.getBytes(StandardCharsets.UTF_8));
     }
 
     @PostMapping(value = "/pollImport", consumes = "multipart/form-data")
@@ -117,6 +136,25 @@ public class PollImportController {
         String currentSiteId = toolManager.getCurrentPlacement().getContext();
         model.addAttribute("canAdd", pollsService.isAllowedPollAdd(currentSiteId));
         model.addAttribute("isSiteOwner", pollsService.isSiteOwner(currentSiteId));
+    }
+
+    private List<String> buildImportColumnHeaders(Locale locale) {
+        List<String> headers = new ArrayList<>();
+        headers.add(messageSource.getMessage("poll_import_header_question", null, locale));
+        headers.add(messageSource.getMessage("poll_import_header_description", null, locale));
+        headers.add(messageSource.getMessage("poll_import_header_open_date", null, locale));
+        headers.add(messageSource.getMessage("poll_import_header_open_time", null, locale));
+        headers.add(messageSource.getMessage("poll_import_header_close_date", null, locale));
+        headers.add(messageSource.getMessage("poll_import_header_close_time", null, locale));
+        headers.add(messageSource.getMessage("poll_import_header_min_options", null, locale));
+        headers.add(messageSource.getMessage("poll_import_header_max_options", null, locale));
+        headers.add(messageSource.getMessage("poll_import_header_display_result", null, locale));
+        for (int optionNumber = 1; optionNumber <= 3; optionNumber++) {
+            headers.add(MessageFormat.format(
+                    messageSource.getMessage("poll_import_header_option", null, locale),
+                    optionNumber));
+        }
+        return headers;
     }
 
     private String showImportError(Model model, String errorMessage, String pollUploadedText) {

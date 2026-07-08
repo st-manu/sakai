@@ -14,14 +14,21 @@
         <div id="bulk-creation-requirements">
           <strong th:utext="#{poll_import_requirements}"></strong>
           <ul>
-            <li th:utext="#{poll_import_requirements_step1}">Each CSV row should contain the poll details in the same order as the manual form.</li>
-            <li th:utext="#{poll_import_requirements_step2}">Columns must be in the order above, but do not include a row of column headers.</li>
-            <li th:text="#{poll_import_requirements_step3}">Leave a field blank to use the same defaults as the manual form. Dates must use ISO 8601 local date-time format yyyy-MM-dd'T'HH:mm. The server will interpret the value using the user's time zone.</li>
+            <li th:utext="#{poll_import_requirements_step1}">The first row must contain column headings.</li>
+            <li th:utext="#{poll_import_requirements_step2}">Download the sample file below and use it as a template.</li>
+            <li th:text="#{poll_import_requirements_step3}">Leave a field blank to use the same defaults as the manual form. Dates use yyyy-MM-dd and times use HH:mm.</li>
             <li th:text="#{poll_import_requirements_step4}">Results visibility codes: 1=open, 2=after participants who have voted or after the closing date, 3=after closing date, 4=never.</li>
             <li th:text="#{poll_import_requirements_step5}">Each poll must have at least two options. Minimum and maximum options must fit within the number of options provided.</li>
           </ul>
+          <p class="mb-2">
+            <a th:href="@{/pollImport/sample}">
+              <span aria-hidden="true" class="bi bi-download me-2"></span>
+              <span th:text="#{poll_import_download_sample}">Download sample file</span>
+            </a>
+          </p>
           <div id="example">
-            <pre><code th:utext="#{poll_import_example}">What is your favorite color?,,2026-05-29T09:00,2026-05-30T17:00,1,1,1,Blue,Green,Red</code></pre>
+            <pre><code th:utext="#{poll_import_example}">Question,Description,Opening date,Opening time,Closing date,Closing time,Minimum options,Maximum options,Results visibility,Option 1,Option 2,Option 3
+What is your favorite color?,,2026-05-29,09:00,2026-05-30,17:00,1,1,1,Blue,Green,Red</code></pre>
           </div>
         </div>
       </div>
