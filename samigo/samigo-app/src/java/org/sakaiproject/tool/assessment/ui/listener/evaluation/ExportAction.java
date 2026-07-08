@@ -41,6 +41,7 @@ import com.lowagie.text.pdf.PdfWriter;
 import com.lowagie.text.Rectangle;
 
 import java.awt.Color;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.text.DecimalFormat;
@@ -64,6 +65,8 @@ import org.scilab.forge.jlatexmath.TeXFormula;
 
 import org.sakaiproject.component.cover.ServerConfigurationService;
 import org.sakaiproject.content.api.ContentHostingService;
+import org.sakaiproject.site.api.Site;
+import org.sakaiproject.site.cover.SiteService;
 import org.sakaiproject.tool.assessment.data.dao.grading.ItemGradingData;
 import org.sakaiproject.tool.assessment.data.dao.grading.MediaData;
 import org.sakaiproject.tool.assessment.data.ifc.shared.TypeIfc;
@@ -79,20 +82,56 @@ import org.sakaiproject.tool.assessment.ui.bean.delivery.SelectionBean;
 import org.sakaiproject.tool.assessment.ui.bean.evaluation.StudentScoresBean;
 import org.sakaiproject.tool.assessment.ui.listener.util.ContextUtil;
 import org.sakaiproject.util.ResourceLoader;
+import org.springframework.http.ContentDisposition;
+import org.springframework.http.HttpHeaders;
 
 @Slf4j
 public class ExportAction implements ActionListener {
 
     private ContentHostingService contentHostingService = org.sakaiproject.content.cover.ContentHostingService.getInstance();
 	private static final ResourceLoader rb = new ResourceLoader("org.sakaiproject.tool.assessment.bundle.AuthorMessages");
-	private Color gray = new Color(221, 219, 219);
-	private Color grayLight = new Color(231, 228, 228);
-	private Color green = new Color(9, 215, 71);
-	private Font boldFont = new Font(Font.TIMES_ROMAN, 13, Font.BOLD);
+	private static final ResourceLoader rbEval = new ResourceLoader("org.sakaiproject.tool.assessment.bundle.EvaluationMessages");
+
+	// Color constants
+	private static final Color PRIMARY_COLOR = new Color(60, 64, 67);           // Dark gray
+	private static final Color SECONDARY_COLOR = new Color(95, 99, 104);        // Medium gray
+	private static final Color BACKGROUND_GRAY = new Color(243, 244, 246);      // Light gray background
+	private static final Color BORDER_COLOR = new Color(229, 231, 235);         // Border gray
+	private static final Color TEXT_PRIMARY = new Color(17, 24, 39);            // Dark gray (almost black)
+	private static final Color TEXT_SECONDARY = new Color(107, 114, 128);       // Medium gray
+	private static final Color SUCCESS_COLOR = new Color(16, 185, 129);         // Green for correct answers
+	private static final Color SUCCESS_BG = new Color(220, 252, 231);           // Light green background
+	private static final Color WARNING_COLOR = new Color(245, 158, 11);         // Amber for warnings
+	private static final Color WARNING_BG = new Color(254, 243, 199);           // Light amber background
+	private static final Color ERROR_COLOR = new Color(239, 68, 68);            // Red for errors
+	private static final Color INFO_BG = new Color(219, 234, 254);              // Light blue background
+	private static final Color FEEDBACK_BG = new Color(233, 213, 255);          // Light purple background
+	private static final Color WHITE_COLOR = new Color(255, 255, 255);          // White color
+
+	// Font constants
+	private static final Font TITLE_FONT = new Font(Font.HELVETICA, 20, Font.BOLD);
+	private static final Font HEADING_FONT = new Font(Font.HELVETICA, 14, Font.BOLD);
+	private static final Font HEADING_NORMAL_FONT = new Font(Font.HELVETICA, 14, Font.NORMAL);
+	private static final Font BODY_BOLD_FONT = new Font(Font.HELVETICA, 10, Font.BOLD);
+	private static final Font BODY_FONT = new Font(Font.HELVETICA, 10, Font.NORMAL);
+	private static final Font BODY_ITALIC_FONT = new Font(Font.HELVETICA, 10, Font.ITALIC);
+	private static final Font SMALL_FONT = new Font(Font.HELVETICA, 8, Font.NORMAL);
+	private static final Font SMALL_BOLD_FONT = new Font(Font.HELVETICA, 8, Font.BOLD);
+
 	private boolean isTable = false;
 	private String LATEX_SEPARATOR_DOLLAR = "$$";
 	private String[] LATEX_SEPARATOR_START = {"\\(", "\\["};
 	private String[] LATEX_SEPARATOR_FINAL = {"\\)", "\\]"};
+
+	/**
+	 * Helper method to create a font with a specific color based on a base font.
+	 * @param baseFont The base font to clone
+	 * @param color The color to apply
+	 * @return A new Font with the specified color
+	 */
+	private Font getFontWithColor(Font baseFont, Color color) {
+		return new Font(baseFont.getFamily(), baseFont.getSize(), baseFont.getStyle(), color);
+	}
 
 	/**
 	 * Standard process action method.
@@ -104,144 +143,300 @@ public class ExportAction implements ActionListener {
 		DeliveryBean deliveryBean = (DeliveryBean) ContextUtil.lookupBean("delivery");
 		StudentScoresBean studentScoreBean = (StudentScoresBean) ContextUtil.lookupBean("studentScores");
 
-		Document document = new Document(PageSize.A4, 20, 20, 20, 20);
+		Document document = new Document(PageSize.A4, 45, 45, 45, 45);
 		try {
 			ServletOutputStream outputStream = response.getOutputStream();
-			PdfWriter docWriter = PdfWriter.getInstance(document, outputStream);
+			PdfWriter.getInstance(document, outputStream);
 			document.open();
 			response.setContentType("application/pdf");
-			response.setHeader("Content-Disposition", "attachment; filename=Report_" + studentScoreBean.getFirstName() + "_" + deliveryBean.getAssessmentTitle() + ".pdf");
-			Paragraph studentNameParagraph = new Paragraph(studentScoreBean.getStudentName(), new Font(Font.TIMES_ROMAN, 22, Font.BOLD));
+			String reportFilename = "Report_" + studentScoreBean.getFirstName() + "_" + deliveryBean.getAssessmentTitle() + ".pdf";
+			response.setHeader(HttpHeaders.CONTENT_DISPOSITION, ContentDisposition.attachment().filename(reportFilename, StandardCharsets.UTF_8).build().toString());
+
+			DecimalFormat twoDecimalsFormat = new DecimalFormat("0.00");
+
+			// Student name
+			Paragraph studentNameParagraph = new Paragraph(studentScoreBean.getStudentName(), getFontWithColor(TITLE_FONT, TEXT_PRIMARY));
+			studentNameParagraph.setSpacingBefore(5f);
+			studentNameParagraph.setSpacingAfter(5f);
 			document.add(studentNameParagraph);
+
+			// Student email
 			if (studentScoreBean.getEmail() != null && !StringUtils.equals(studentScoreBean.getEmail(), "")) {
-				Paragraph studentEmailParagraph = new Paragraph("(" + studentScoreBean.getEmail() + ")", new Font(Font.TIMES_ROMAN, 8, Font.BOLD, Color.GRAY));
+				Paragraph studentEmailParagraph = new Paragraph(studentScoreBean.getEmail(), getFontWithColor(BODY_FONT, TEXT_PRIMARY));
+				studentEmailParagraph.setSpacingAfter(10f);
 				document.add(studentEmailParagraph);
 			}
-			
-			float[] pdfTableWidth = {2f, 1f};
-			PdfPTable shortSummaryTable = new PdfPTable(pdfTableWidth);
-			this.addCellToTable(shortSummaryTable, deliveryBean.getAssessmentTitle(), 0, 0);
+
+			// Separator line
+			PdfPTable separatorTable = new PdfPTable(1);
+			separatorTable.setWidthPercentage(100f);
+			separatorTable.setSpacingAfter(15f);
+			PdfPCell separatorCell = new PdfPCell();
+			separatorCell.setBorder(Rectangle.NO_BORDER);
+			separatorCell.setBorderWidthBottom(1f);
+			separatorCell.setBorderColorBottom(BORDER_COLOR);
+			separatorCell.setFixedHeight(1f);
+			separatorTable.addCell(separatorCell);
+			document.add(separatorTable);
+
+			// Assessment title
+			Paragraph assessmentTitle = new Paragraph(deliveryBean.getAssessmentTitle(), getFontWithColor(HEADING_FONT, PRIMARY_COLOR));
+			assessmentTitle.setSpacingBefore(10f);
+			assessmentTitle.setSpacingAfter(8f);
+			document.add(assessmentTitle);
+
+			// Site title
+			String siteTitle = "";
+			try {
+				Site site = SiteService.getSite(deliveryBean.getSiteId());
+				siteTitle = site.getTitle();
+			} catch (Exception e) {
+				log.debug("Could not get site title: {}", e.getMessage());
+			}
+
+			if (StringUtils.isNotBlank(siteTitle)) {
+				Paragraph siteParagraph = new Paragraph();
+				Chunk siteValue = new Chunk(siteTitle, getFontWithColor(BODY_FONT, TEXT_PRIMARY));
+				siteParagraph.add(siteValue);
+				siteParagraph.setSpacingAfter(16f);
+				document.add(siteParagraph);
+			}
+
+			// Score
 			double currentScore = deliveryBean.getTableOfContents().getCurrentScore();
 			double maxScore = deliveryBean.getTableOfContents().getMaxScore();
-			DecimalFormat twoDecimalsFormat = new DecimalFormat("0.00");
 			String scorePercentageString = (maxScore == 0) ? "0" : twoDecimalsFormat.format((currentScore / maxScore) * 100);
-			this.addCellToTable(shortSummaryTable, rb.getFormattedMessage("score_format", (Object[]) new String[] { twoDecimalsFormat.format(currentScore), twoDecimalsFormat.format(maxScore), scorePercentageString }), 0, 0);
-			document.add(shortSummaryTable);
-			document.add(new Paragraph(Chunk.NEWLINE));
+			Paragraph scoreParagraph = new Paragraph();
+			scoreParagraph.add(new Chunk(rbEval.getString("score") + ": ", getFontWithColor(BODY_FONT, TEXT_PRIMARY)));
+			scoreParagraph.add(new Chunk(twoDecimalsFormat.format(currentScore) + " / " + twoDecimalsFormat.format(maxScore), getFontWithColor(BODY_BOLD_FONT, TEXT_PRIMARY)));
+			scoreParagraph.add(new Chunk(" (" + scorePercentageString + "%)", getFontWithColor(BODY_FONT, TEXT_PRIMARY)));
+			scoreParagraph.setSpacingAfter(8f);
+			document.add(scoreParagraph);
 
 			int index = 0;
 			List<SectionContentsBean> deliveryParts = deliveryBean.getPageContents().getPartsContents();
+
+			// Calculate total questions
+			int totalQuestions = 0;
+			for (SectionContentsBean part : deliveryParts) {
+				totalQuestions += part.getItemContents().size();
+			}
+
 			for (SectionContentsBean deliveryPart : deliveryParts) {
-				List<ItemContentsBean> items =	deliveryPart.getItemContents();
-				
-				Font blueBoldFont = new Font(Font.TIMES_ROMAN, 16, Font.BOLD);
-				blueBoldFont.setColor(new Color(15, 76, 114));
+				List<ItemContentsBean> items = deliveryPart.getItemContents();
+
+				// New page for each part
+				document.newPage();
+
 				String partNumber = String.valueOf(deliveryPart.getNumber());
-				String partTitle = deliveryPart.getText();
 				String answeredQuestions = String.valueOf((deliveryPart.getQuestions() - deliveryPart.getUnansweredQuestions()));
 				String questionsNumber = String.valueOf(deliveryPart.getQuestions());
 				String partScore = twoDecimalsFormat.format(deliveryPart.getPoints());
 				String partMaxScore = twoDecimalsFormat.format(deliveryPart.getMaxPoints());
-				document.add(new Paragraph(rb.getFormattedMessage("short_summary.part_title", (Object[]) new String[]{partNumber, partTitle, answeredQuestions, questionsNumber, partScore, partMaxScore}), blueBoldFont));
-				
-				document.add(new Paragraph("\n"));
 
-				shortSummaryTable = new PdfPTable(new float[]{2f, 0.5f, 0.7f, 0.7f});
-				shortSummaryTable.setWidthPercentage(95f);
-				this.addCellToTable(shortSummaryTable, rb.getString("short_summary.title"), 1, 0);
-				this.addCellToTable(shortSummaryTable, rb.getString("short_summary.type"), 1, 0);
-				this.addCellToTable(shortSummaryTable, rb.getString("short_summary.answered"), 1, 0);
-				this.addCellToTable(shortSummaryTable, rb.getString("short_summary.score"), 1, 0);
+				// Part header
+				Paragraph partHeader = new Paragraph();
+				partHeader.setSpacingBefore(5f);
+				partHeader.setSpacingAfter(10f);
+				String nonDefaultTitle = deliveryPart.getNonDefaultText();
+				if (StringUtils.isNotEmpty(nonDefaultTitle)) {
+					partHeader.add(new Chunk(rbEval.getString("part") + " " + partNumber + ": ", getFontWithColor(HEADING_FONT, PRIMARY_COLOR)));
+					partHeader.add(new Chunk(nonDefaultTitle, getFontWithColor(HEADING_NORMAL_FONT, TEXT_PRIMARY)));
+				} else {
+					partHeader.add(new Chunk(rbEval.getString("part") + " " + partNumber, getFontWithColor(HEADING_FONT, PRIMARY_COLOR)));
+				}
+				document.add(partHeader);
+
+				// Part stats
+				PdfPTable statsTable = new PdfPTable(2);
+				statsTable.setWidthPercentage(100f);
+				statsTable.setSpacingBefore(5f);
+				statsTable.setSpacingAfter(10f);
+
+				PdfPCell questionsCell = new PdfPCell(new Paragraph(rb.getString("question_s_lower_case") + ": " + answeredQuestions + " / " + questionsNumber + " " + rbEval.getString("submitted"), getFontWithColor(BODY_FONT, TEXT_PRIMARY)));
+				styleStatsCell(questionsCell, false);
+				statsTable.addCell(questionsCell);
+
+				PdfPCell scoreStatsCell = new PdfPCell(new Paragraph(rbEval.getString("score") + ": " + partScore + " / " + partMaxScore, getFontWithColor(BODY_BOLD_FONT, TEXT_PRIMARY)));
+				styleStatsCell(scoreStatsCell, true);
+				statsTable.addCell(scoreStatsCell);
+
+				document.add(statsTable);
+
+				// Question summary table
+				PdfPTable shortSummaryTable = new PdfPTable(new float[]{3f, 1.2f, 0.8f, 1f});
+				shortSummaryTable.setWidthPercentage(100f);
+				shortSummaryTable.setSpacingBefore(5f);
+
+				shortSummaryTable.addCell(createSummaryHeaderCell(rbEval.getString("question"), false));
+				shortSummaryTable.addCell(createSummaryHeaderCell(rb.getString("type"), false));
+				shortSummaryTable.addCell(createSummaryHeaderCell(rbEval.getString("status"), false));
+				shortSummaryTable.addCell(createSummaryHeaderCell(rbEval.getString("points"), true));
+
 				for (ItemContentsBean item : items) {
-					int tableColor = (index % 2 == 0)? 1 : 2;
+					// Question text cell
 					PdfPCell questionTextCell = new PdfPCell(this.getQuestionTitle(++index + ". " + item.getText(), false));
-					questionTextCell.setMinimumHeight(25f);
-					questionTextCell.setPadding(5f);
-					questionTextCell.setBorderWidth(0);
-					questionTextCell.setBackgroundColor((tableColor == 1)? gray : grayLight);
+					styleSummaryBodyCell(questionTextCell, false);
 					shortSummaryTable.addCell(questionTextCell);
-					this.addCellToTable(shortSummaryTable, rb.getString("type." + item.getItemData().getTypeId()), 2, tableColor);
-					this.addCellToTable(shortSummaryTable, (!item.isUnanswered() ? rb.getString("short_summary.answered.yes") : rb.getString("short_summary.answered.no")), 2, tableColor);
-					this.addCellToTable(shortSummaryTable, (twoDecimalsFormat.format(item.getPoints()) + "/" + twoDecimalsFormat.format(item.getMaxPoints())), 2, tableColor);
+
+					// Type cell
+					PdfPCell typeCell = new PdfPCell(new Paragraph(rb.getString("type." + item.getItemData().getTypeId()), getFontWithColor(SMALL_FONT, TEXT_SECONDARY)));
+					styleSummaryBodyCell(typeCell, false);
+					shortSummaryTable.addCell(typeCell);
+
+					// Answered status cell
+					String answeredText = !item.isUnanswered() ? rbEval.getString("submitted") : rbEval.getString("no_answer");
+					PdfPCell answeredCell = new PdfPCell(new Paragraph(answeredText, getFontWithColor(SMALL_FONT, TEXT_PRIMARY)));
+					styleSummaryBodyCell(answeredCell, false);
+					shortSummaryTable.addCell(answeredCell);
+
+					// Score cell
+					PdfPCell scoreItemCell = new PdfPCell(new Paragraph(twoDecimalsFormat.format(item.getPoints()) + " / " + twoDecimalsFormat.format(item.getMaxPoints()), getFontWithColor(SMALL_FONT, TEXT_PRIMARY)));
+					styleSummaryBodyCell(scoreItemCell, true);
+					shortSummaryTable.addCell(scoreItemCell);
 				}
 				document.add(shortSummaryTable);
+
 				document.add(new Paragraph("\n"));
-			}
 
-			String comments = studentScoreBean.getComments();
-			if (StringUtils.isNotEmpty(comments)) {
-				document.add(new Paragraph(rb.getString("comments_for_student"), boldFont));
-				document.add(new Paragraph(Chunk.NEWLINE));
-				PdfPTable commentsTable = new PdfPTable(1);
-				commentsTable.setHorizontalAlignment(PdfPTable.ALIGN_LEFT);
-				this.addCellToTable(commentsTable, comments, 3, 0);
-				document.add(commentsTable);
-			}
-			document.newPage();
-
-			int questionsCuantity = index;
-			int itemsIndex = 0;
-			for (SectionContentsBean deliveryPart : deliveryParts) {
-				List<ItemContentsBean> items =	deliveryPart.getItemContents();
+				int questionStartIndex = index - items.size();
 				for (ItemContentsBean item : items) {
+					questionStartIndex++;
 					Long questionType = item.getItemData().getTypeId();
-					PdfPTable questionTable = new PdfPTable(2);
-					questionTable.setWidthPercentage(50f);
-					questionTable.setHorizontalAlignment(PdfPTable.ALIGN_LEFT);
-					this.addCellToTable(questionTable, ( rb.getFormattedMessage("current_question", (Object[]) new String[]{String.valueOf(++itemsIndex), String.valueOf(questionsCuantity)}) ), 3, 1);
-					this.addCellToTable(questionTable, (twoDecimalsFormat.format(item.getPoints()) + "/" + twoDecimalsFormat.format(item.getMaxPoints())), 3, 0);
-					document.add(new Paragraph(Chunk.NEWLINE));
+
+					// Question header
+					PdfPTable questionTable = new PdfPTable(new float[]{3f, 1f});
+					questionTable.setWidthPercentage(100f);
+					questionTable.setSpacingBefore(20f);
+
+					PdfPCell questionNumCell = new PdfPCell(new Paragraph(rbEval.getString("question") + " " + questionStartIndex + " / " + totalQuestions, getFontWithColor(BODY_BOLD_FONT, TEXT_PRIMARY)));
+					styleQuestionHeaderCell(questionNumCell, false);
+					questionTable.addCell(questionNumCell);
+
+					PdfPCell scoreHeaderCell = new PdfPCell(new Paragraph(twoDecimalsFormat.format(item.getPoints()) + " / " + twoDecimalsFormat.format(item.getMaxPoints()) + " pts", getFontWithColor(BODY_BOLD_FONT, TEXT_PRIMARY)));
+					styleQuestionHeaderCell(scoreHeaderCell, true);
+					questionTable.addCell(scoreHeaderCell);
+
 					document.add(questionTable);
+
+					// Question title and details
 					if (Objects.equals(questionType, TypeIfc.FILL_IN_NUMERIC) || Objects.equals(questionType, TypeIfc.CALCULATED_QUESTION) || Objects.equals(questionType, TypeIfc.FILL_IN_BLANK)) {
 						this.processFillInQuestion(document, (!questionType.equals(TypeIfc.FILL_IN_BLANK))? item.getFinArray() : item.getFibArray(), (!questionType.equals(TypeIfc.FILL_IN_BLANK)));
 					} else {
 						document.add(this.getQuestionTitle(item.getText(), true));
+						document.add(new Paragraph("\n"));
 					}
+
+					// ESSAY_QUESTION question type
 					if (Objects.equals(questionType, TypeIfc.ESSAY_QUESTION)) {
 						PdfPTable responseTable = new PdfPTable(1);
-						responseTable.setWidthPercentage(95f);
-						this.addCellToTable(responseTable, (item.getResponseText() != null) ? this.cleanText(item.getResponseText()) : item.getResponseText(), 4, 0);
+						responseTable.setWidthPercentage(100f);
+						PdfPCell responseCell = new PdfPCell(new Paragraph((item.getResponseText() != null) ? this.cleanText(item.getResponseText()) : rbEval.getString("no_answer"), getFontWithColor(BODY_FONT, TEXT_PRIMARY)));
+						responseCell.setPadding(8f);
+						responseCell.setBackgroundColor(BACKGROUND_GRAY);
+						responseCell.setBorder(Rectangle.NO_BORDER);
+						responseTable.addCell(responseCell);
 						document.add(responseTable);
 					}
+
+					// FILE_UPLOAD and AUDIO_RECORDING question types
 					if (Objects.equals(questionType, TypeIfc.FILE_UPLOAD)) {
+						PdfPTable attachmentTable = new PdfPTable(1);
+						attachmentTable.setWidthPercentage(100f);
+						attachmentTable.setSpacingBefore(12f);
+
 						if (!item.getMediaArray().isEmpty()) {
-							document.add(new Paragraph(rb.getString("attachments") + ":"));
 							for (MediaData mediaData : item.getMediaArray()) {
-								document.add(new Paragraph(rb.getString("attachments.name") + mediaData.getFilename()));
+								PdfPCell fileCell = new PdfPCell(new Paragraph(mediaData.getFilename(), getFontWithColor(BODY_FONT, TEXT_PRIMARY)));
+								fileCell.setPadding(8f);
+								fileCell.setBackgroundColor(BACKGROUND_GRAY);
+								fileCell.setBorder(Rectangle.NO_BORDER);
+								fileCell.setBorderWidthBottom(1f);
+								fileCell.setBorderColorBottom(BORDER_COLOR);
+								attachmentTable.addCell(fileCell);
 							}
-							
 						} else {
-							document.add(new Paragraph(rb.getString("no_attachments")));
+							PdfPCell noFileCell = new PdfPCell(new Paragraph(rbEval.getString("no_attachments_yet"), getFontWithColor(BODY_ITALIC_FONT, TEXT_SECONDARY)));
+							noFileCell.setPadding(8f);
+							noFileCell.setBackgroundColor(BACKGROUND_GRAY);
+							noFileCell.setBorder(Rectangle.NO_BORDER);
+							attachmentTable.addCell(noFileCell);
 						}
-						
+						document.add(attachmentTable);
+
 					} else if (Objects.equals(questionType, TypeIfc.AUDIO_RECORDING)) {
+						PdfPTable audioTable = new PdfPTable(1);
+						audioTable.setWidthPercentage(100f);
+						audioTable.setSpacingBefore(12f);
+
+						PdfPCell audioCell;
 						if (!item.getMediaArray().isEmpty()) {
-							document.add(new Paragraph(rb.getString("audio.record")));
+							audioCell = new PdfPCell(new Paragraph(rbEval.getString("alt_recording") + " - " + rbEval.getString("submitted"), getFontWithColor(BODY_FONT, TEXT_PRIMARY)));
+							audioCell.setBackgroundColor(SUCCESS_BG);
 						} else {
-							document.add(new Paragraph(rb.getString("audio.no_record")));
+							audioCell = new PdfPCell(new Paragraph(rbEval.getString("no_answer"), getFontWithColor(BODY_ITALIC_FONT, TEXT_SECONDARY)));
+							audioCell.setBackgroundColor(BACKGROUND_GRAY);
 						}
+						audioCell.setPadding(8f);
+						audioCell.setBorder(Rectangle.NO_BORDER);
+						audioTable.addCell(audioCell);
+						document.add(audioTable);
 					}
+
+					// MATRIX_CHOICES_SURVEY question type
 					List matrixArray = item.getMatrixArray();
 					List<Integer> columnsIndex = item.getColumnIndexList();
 					String[] columns = item.getColumnArray();
 
 					if (columns != null && columnsIndex != null && matrixArray != null) {
-						
 						PdfPTable matrixTable = new PdfPTable(columnsIndex.size()+1);
 						matrixTable.setWidthPercentage(100f);
-						this.addCellToTable(matrixTable, "", 4, 0);
+						matrixTable.setSpacingBefore(12f);
 
+						// Empty corner cell
+						PdfPCell cornerCell = new PdfPCell(new Paragraph(""));
+						cornerCell.setPadding(8f);
+						cornerCell.setBackgroundColor(BACKGROUND_GRAY);
+						cornerCell.setBorder(Rectangle.NO_BORDER);
+						cornerCell.setBorderWidthBottom(1.5f);
+						cornerCell.setBorderColorBottom(BORDER_COLOR);
+						matrixTable.addCell(cornerCell);
+
+						// Column headers
 						for (String column : columns) {
-							this.addCellToTable(matrixTable, column, 5, 0);
+							PdfPCell matrixHeaderCell = new PdfPCell(new Paragraph(column, getFontWithColor(BODY_BOLD_FONT, TEXT_PRIMARY)));
+							matrixHeaderCell.setPadding(8f);
+							matrixHeaderCell.setBackgroundColor(BACKGROUND_GRAY);
+							matrixHeaderCell.setBorder(Rectangle.NO_BORDER);
+							matrixHeaderCell.setBorderWidthBottom(1.5f);
+							matrixHeaderCell.setBorderColorBottom(BORDER_COLOR);
+							matrixHeaderCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+							matrixTable.addCell(matrixHeaderCell);
 						}
+
+						// Matrix rows
 						for (Object matrix : matrixArray) {
 							if (Objects.equals(questionType, TypeIfc.MATRIX_CHOICES_SURVEY)) {
-								this.addCellToTable(matrixTable, (((MatrixSurveyBean) matrix).getItemText().getText()), 6, 0);
+								// Row label
+								PdfPCell rowLabelCell = new PdfPCell(new Paragraph((((MatrixSurveyBean) matrix).getItemText().getText()), getFontWithColor(BODY_FONT, TEXT_PRIMARY)));
+								rowLabelCell.setPadding(8f);
+								rowLabelCell.setBackgroundColor(Color.WHITE);
+								rowLabelCell.setBorder(Rectangle.NO_BORDER);
+								rowLabelCell.setBorderWidthBottom(1f);
+								rowLabelCell.setBorderColorBottom(BORDER_COLOR);
+								matrixTable.addCell(rowLabelCell);
+
+								// Radio buttons
 								for (String answer : ((MatrixSurveyBean) matrix).getAnswerSid()) {
 									PdfPCell circleCell = new PdfPCell(new Paragraph(" "));
-									circleCell.setBorderWidth(0);
-									circleCell.setBorderWidthTop(1);
-									circleCell.setMinimumHeight(20f);
+									circleCell.setPadding(0f);
+									circleCell.setBackgroundColor(Color.WHITE);
+									circleCell.setBorder(Rectangle.NO_BORDER);
+									circleCell.setBorderWidthBottom(1f);
+									circleCell.setBorderColorBottom(BORDER_COLOR);
+									circleCell.setMinimumHeight(30f);
+									circleCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+									circleCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 									circleCell.setCellEvent(new CircleCellEvent(StringUtils.equals(answer, ((MatrixSurveyBean) matrix).getResponseId()), true));
 									matrixTable.addCell(circleCell);
 								}
@@ -249,9 +444,10 @@ public class ExportAction implements ActionListener {
 						}
 						document.add(matrixTable);
 					}
+
+					// IMAGEMAP_QUESTION question type
 					String imageSrc = ServerConfigurationService.getServerUrl() + item.getImageSrc();
 					if (Objects.equals(questionType, TypeIfc.IMAGEMAP_QUESTION) && !imageSrc.isEmpty()) {
-						document.add(new Paragraph(Chunk.NEWLINE));
 						Image image = Image.getInstance(imageSrc);
 
 						PdfPTable tableImage = new PdfPTable(1);
@@ -285,12 +481,12 @@ public class ExportAction implements ActionListener {
 						cellImage.setCellEvent(new ImageMapQuestionCellEvent(answerCircles, answerRectangles, image.getWidth(), image.getHeight()));
 						tableImage.addCell(cellImage);
 						document.add(tableImage);
+						document.add(new Paragraph(Chunk.NEWLINE));
 					}
 
+					// MULTIPLE_CHOICE, MULTIPLE_CORRECT_SINGLE_SELECTION, MULTIPLE_CHOICE_SURVEY, MULTIPLE_CORRECT, MATCHING, EXTENDED_MATCHING_ITEMS and TRUE_FALSE question types
 					for (Object answer : item.getAnswers()) {
-						if (Objects.equals(questionType, TypeIfc.MULTIPLE_CHOICE) || Objects.equals(questionType, TypeIfc.MULTIPLE_CORRECT_SINGLE_SELECTION)
-								|| Objects.equals(questionType, TypeIfc.MULTIPLE_CHOICE_SURVEY) || Objects.equals(questionType, TypeIfc.MULTIPLE_CORRECT))
-							{
+						if (Objects.equals(questionType, TypeIfc.MULTIPLE_CHOICE) || Objects.equals(questionType, TypeIfc.MULTIPLE_CORRECT_SINGLE_SELECTION) || Objects.equals(questionType, TypeIfc.MULTIPLE_CHOICE_SURVEY) || Objects.equals(questionType, TypeIfc.MULTIPLE_CORRECT)) {
 							SelectionBean selectionBean = (SelectionBean) answer;
 							PdfPTable multipleTable = new PdfPTable(1);
 							multipleTable.setWidthPercentage(100f);
@@ -299,14 +495,14 @@ public class ExportAction implements ActionListener {
 							if (questionType.equals(TypeIfc.MULTIPLE_CHOICE_SURVEY)) {
 								String answerText = selectionBean.getAnswer().getText();
 								if (answerText.matches("-?\\d+")) {
-									multipleCell.setPhrase(new Paragraph("  " + answerText));
+									multipleCell.setPhrase(new Paragraph("  " + answerText, getFontWithColor(BODY_FONT, TEXT_PRIMARY)));
 								} else {
-									multipleCell.setPhrase(new Paragraph("  " + rb.getString(this.cleanText(answerText))));
+									multipleCell.setPhrase(new Paragraph("  " + rb.getString(this.cleanText(answerText)), getFontWithColor(BODY_FONT, TEXT_PRIMARY)));
 								}
 							} else {
-								multipleCell.setPhrase(createLatexParagraph("  " + selectionBean.getAnswer().getLabel() + ". " + this.cleanText(selectionBean.getAnswer().getText())));
+								multipleCell.setPhrase(createLatexParagraph("  " + selectionBean.getAnswer().getLabel() + ". " + this.cleanText(selectionBean.getAnswer().getText()), getFontWithColor(BODY_FONT, TEXT_PRIMARY)));
 							}
-							multipleCell.setBorderWidth(0);
+							styleAnswerCell(multipleCell, 15f);
 							if (questionType.equals(TypeIfc.MULTIPLE_CORRECT)) {
 								multipleCell.setCellEvent(new CheckboxCellEvent(selectionBean.getResponse()));
 							} else {
@@ -319,13 +515,18 @@ public class ExportAction implements ActionListener {
 							multipleTable.addCell(finalCell);
 							document.add(multipleTable);
 						} else if (Objects.equals(questionType, TypeIfc.MATCHING) || Objects.equals(questionType, TypeIfc.EXTENDED_MATCHING_ITEMS)) {
-							document.add(new Paragraph(" - " + ((String) answer)));
+							PdfPTable matchingAnswerTable = new PdfPTable(1);
+							matchingAnswerTable.setWidthPercentage(100f);
+							PdfPCell matchingAnswerCell = new PdfPCell(new Paragraph(((String) answer), getFontWithColor(BODY_FONT, TEXT_PRIMARY)));
+							styleAnswerCell(matchingAnswerCell, 4f);
+							matchingAnswerTable.addCell(matchingAnswerCell);
+							document.add(matchingAnswerTable);
 						} else if (Objects.equals(questionType, TypeIfc.TRUE_FALSE)) {
 							PdfPTable trueFalsequestionTable = new PdfPTable(1);
 							trueFalsequestionTable.setHorizontalAlignment(PdfPTable.ALIGN_LEFT);
 							SelectItem selectItem = (SelectItem) answer;
-							PdfPCell questionCell = new PdfPCell(new Paragraph("  " + selectItem.getLabel()));
-							questionCell.setBorderWidth(0);
+							PdfPCell questionCell = new PdfPCell(new Paragraph("  " + selectItem.getLabel(), getFontWithColor(BODY_FONT, TEXT_PRIMARY)));
+							styleAnswerCell(questionCell, 15f);
 							questionCell.setCellEvent(new CircleCellEvent(selectItem.getValue().equals(item.getResponseId())));
 							PdfPCell finalCell = new PdfPCell(questionCell);
 							if (selectItem.getValue().equals(item.getResponseId())) {
@@ -335,82 +536,85 @@ public class ExportAction implements ActionListener {
 							document.add(trueFalsequestionTable);
 						}
 					}
+
+					// MATCHING, EXTENDED_MATCHING_ITEMS and IMAGEMAP_QUESTION question types
 					List matchingItems = item.getMatchingArray();
 					if (matchingItems != null) {
 						PdfPTable matchingTable = new PdfPTable(1);
 						matchingTable.setWidthPercentage(100f);
 						for (Object matchingItem : matchingItems) {
 							if (Objects.equals(questionType, TypeIfc.IMAGEMAP_QUESTION)) {
-								PdfPCell matchingCell = new PdfPCell(new Phrase(rb.getString("item") + " " + ((ImageMapQuestionBean) matchingItem).getText()));
-								matchingCell.setBorderWidth(0);
+								PdfPCell matchingCell = new PdfPCell(new Phrase(rb.getString("item") + " " + ((ImageMapQuestionBean) matchingItem).getText(), getFontWithColor(BODY_FONT, TEXT_PRIMARY)));
+								styleAnswerCell(matchingCell, 4f);
 								matchingCell.setCellEvent(new CheckOrCrossCellEvent((((ImageMapQuestionBean) matchingItem).getIsCorrect() != null)? ((ImageMapQuestionBean) matchingItem).getIsCorrect() : false));
 								matchingTable.addCell(matchingCell);
 							} else if (Objects.equals(questionType, TypeIfc.MATCHING) || Objects.equals(questionType, TypeIfc.EXTENDED_MATCHING_ITEMS)) {
+								// Always show the matching item, with or without student response
+								boolean responseFound = false;
 								for (Object choice : ((MatchingBean) matchingItem).getChoices()) {
 									if (((MatchingBean) matchingItem).getResponse() != null && ((MatchingBean) matchingItem).getResponse().equals(((SelectItem) choice).getValue())) {
-										PdfPCell matchingCell = new PdfPCell(new Phrase(((SelectItem) choice).getLabel() + " ··> " + ((MatchingBean) matchingItem).getText()));
-										matchingCell.setBorderWidth(0);
-										matchingCell.setCellEvent(new CheckOrCrossCellEvent(((MatchingBean) matchingItem).getIsCorrect()));
+										// Student answered: show "A ··> Item text"
+										PdfPCell matchingCell = new PdfPCell(new Phrase(((SelectItem) choice).getLabel() + " ··> " + ((MatchingBean) matchingItem).getText(), getFontWithColor(BODY_FONT, TEXT_PRIMARY)));
+										styleAnswerCell(matchingCell, 4f);
+										matchingCell.setCellEvent(new CheckOrCrossCellEvent(Boolean.TRUE.equals(((MatchingBean) matchingItem).getIsCorrect())));
 										matchingTable.addCell(matchingCell);
+										responseFound = true;
+										break;
 									}
 								}
-								
+								if (!responseFound) {
+									// No answer: show just the item text with sequence number
+									PdfPCell matchingCell = new PdfPCell(new Phrase(((MatchingBean) matchingItem).getText(), getFontWithColor(BODY_FONT, TEXT_PRIMARY)));
+									styleAnswerCell(matchingCell, 4f);
+									matchingTable.addCell(matchingCell);
+								}
 							}
 						}
 						document.add(matchingTable);
 					}
-					
-					Paragraph paragraph = new Paragraph();
-					Font redFont = new Font();
-					redFont.setColor(Color.RED);
-					redFont.setStyle(Font.BOLD);
-					if (Objects.equals(questionType, TypeIfc.CALCULATED_QUESTION)) {
-						paragraph.add(new Phrase(rb.getString("correct_response") + ": ", redFont));
-						paragraph.add(new Phrase(item.getKey()));
-						document.add(paragraph);
-					} else if (Objects.equals(questionType, TypeIfc.FILL_IN_BLANK) || Objects.equals(questionType, TypeIfc.FILL_IN_NUMERIC)) {
-						paragraph.add(new Phrase(rb.getString("correct_response") + ": ", redFont));
-						paragraph.add(new Phrase(item.getKey()));
-						document.add(paragraph);
+
+					// Correct answer
+					if (Objects.equals(questionType, TypeIfc.CALCULATED_QUESTION) || Objects.equals(questionType, TypeIfc.FILL_IN_BLANK) || Objects.equals(questionType, TypeIfc.FILL_IN_NUMERIC)) {
+						addCorrectResponseBox(document, item.getKey());
 					} else if (Objects.equals(questionType, TypeIfc.ESSAY_QUESTION)) {
 						if (item.getModelAnswerIsNotEmpty()) {
-							paragraph.add(new Phrase(rb.getString("preview_model_short_answer") + ": ", redFont));
-							paragraph.add(new Phrase(item.getKey()));
-							document.add(paragraph);
+							Paragraph modelPar = new Paragraph();
+							modelPar.setLeading(0f, 1.2f);
+							modelPar.add(new Chunk(rbEval.getString("model"), getFontWithColor(SMALL_BOLD_FONT, PRIMARY_COLOR)));
+							modelPar.add(new Chunk(item.getKey(), getFontWithColor(SMALL_FONT, TEXT_PRIMARY)));
+							addInfoBox(document, INFO_BG, PRIMARY_COLOR, modelPar);
 						}
-					} else if (!Objects.equals(questionType, TypeIfc.MULTIPLE_CHOICE_SURVEY) && !Objects.equals(questionType, TypeIfc.MATRIX_CHOICES_SURVEY)
-							&& !Objects.equals(questionType, TypeIfc.FILE_UPLOAD) && !Objects.equals(questionType, TypeIfc.IMAGEMAP_QUESTION)
-							&& !Objects.equals(questionType, TypeIfc.AUDIO_RECORDING))
-					{
-						paragraph.add(new Phrase(rb.getString("correct_response") + ": ", redFont));
-						paragraph.add(new Phrase(item.getAnswerKeyTF()));
-						document.add(paragraph);
-					} 
+					} else if (!Objects.equals(questionType, TypeIfc.MULTIPLE_CHOICE_SURVEY) && !Objects.equals(questionType, TypeIfc.MATRIX_CHOICES_SURVEY) && !Objects.equals(questionType, TypeIfc.FILE_UPLOAD) && !Objects.equals(questionType, TypeIfc.IMAGEMAP_QUESTION) && !Objects.equals(questionType, TypeIfc.AUDIO_RECORDING)) {
+						addCorrectResponseBox(document, item.getAnswerKeyTF());
+					}
 
+					// Grading comment and feedback
 					if (item.getGradingCommentIsNotEmpty() || item.getFeedbackIsNotEmpty()) {
-						document.add(new Paragraph(rb.getString("comment_for_student"), boldFont));
-						document.add(new Paragraph(Chunk.NEWLINE));
 						PdfPTable commentTable = new PdfPTable(1);
-						commentTable.setWidthPercentage(90f);
-						commentTable.setHorizontalAlignment(PdfPTable.ALIGN_LEFT);
+						commentTable.setWidthPercentage(100f);
+						commentTable.setSpacingBefore(12f);
+
 						if (item.getGradingCommentIsNotEmpty()) {
-							PdfPCell commentCell = new PdfPCell(new Paragraph(createLatexParagraph(this.cleanText(item.getGradingComment()))));
-							commentCell.setMinimumHeight(25f);
-							commentCell.setPadding(5f);
-							commentCell.setBorderColor(gray);
+							PdfPCell commentCell = createInfoBoxCell(WARNING_BG, WARNING_COLOR);
+							Paragraph commentPar = new Paragraph();
+							commentPar.setLeading(0f, 1.2f);
+							commentPar.add(new Chunk(rbEval.getString("comment") + ": ", getFontWithColor(SMALL_BOLD_FONT, WARNING_COLOR)));
+							commentPar.add(createLatexParagraph(this.cleanText(item.getGradingComment()), getFontWithColor(SMALL_FONT, TEXT_PRIMARY)));
+							commentCell.addElement(commentPar);
 							commentTable.addCell(commentCell);
 						}
 						if (item.getFeedbackIsNotEmpty()) {
-							PdfPCell commentCell = null;
+							PdfPCell feedbackCell = createInfoBoxCell(FEEDBACK_BG, SECONDARY_COLOR);
+							Paragraph feedbackPar = new Paragraph();
+							feedbackPar.setLeading(0f, 1.2f);
+							feedbackPar.add(new Chunk(rb.getString("generalItemFeedback") + ": ", getFontWithColor(SMALL_BOLD_FONT, SECONDARY_COLOR)));
 							if (Objects.equals(questionType, TypeIfc.CALCULATED_QUESTION)) {
-								commentCell = new PdfPCell(new Paragraph(createLatexParagraph(this.cleanText(item.getFeedbackValue()))));
+								feedbackPar.add(createLatexParagraph(this.cleanText(item.getFeedbackValue()), getFontWithColor(SMALL_FONT, TEXT_PRIMARY)));
 							} else {
-								commentCell = new PdfPCell(new Paragraph(createLatexParagraph(this.cleanText(item.getFeedback()))));
+								feedbackPar.add(createLatexParagraph(this.cleanText(item.getFeedback()), getFontWithColor(SMALL_FONT, TEXT_PRIMARY)));
 							}
-							commentCell.setMinimumHeight(25f);
-							commentCell.setPadding(5f);
-							commentCell.setBorderColor(gray);
-							commentTable.addCell(commentCell);
+							feedbackCell.addElement(feedbackPar);
+							commentTable.addCell(feedbackCell);
 						}
 						document.add(commentTable);
 					}
@@ -429,93 +633,142 @@ public class ExportAction implements ActionListener {
 	}
 
 	/**
-	 * Method to create a cell using the sent text and configuration and added to the table sent.
-	 * In the configuration variable there are 7 differents configurations. So:
-	 *  - 0: create a cell without border, simulating bold black or gray content
-	 *  - 1: create a cell without border and bolder text, setting gray color to the background
-	 *  - 2: create a cell without border and setting gray colors to the background
-	 *  - 3: create a cell and setting gray color to the border and background
-	 *  - 4: create a cell, without border and with a special coloured font (black, green, gray or red)
-	 *  - 5: create a cell, without border and center align
-	 *  - 6: create a cell, without only the top border
-	 * 
-	 * And some of these configurations, like the 0, 2, 3 and 4 configuration, has selection of colors:
-	 *  - 0. Font colors:
-	 * 		· Black (color = 1)
-	 * 		· Gray (color is something else)
-	 *  - 2. BackgroundColor colors:
-	 * 		· Gray (color = 1)
-	 * 		· Light Gray (color is something else)
-	 *  - 3. BackgroundColor colors:
-	 * 		· Light Gray (color = 1)
-	 * 		· Default color (color is something else)
-	 *  - 4. Font colors:
-	 * 		· Black (color = 0)
-	 * 		· Green (color = 1)
-	 * 		· Gray (color = 2)
-	 * 		· Red (color is something else)
-	 * 
-	 * @param table - PdfPTable
-	 * @param content - String
-	 * @param configuration - int
-	 * @param color - int
+	 * Applies the shared styling for a part-stats cell.
+	 * @param cell - PdfPCell to style
+	 * @param rightAlign - whether the content should be right aligned
 	 */
-	private void addCellToTable(PdfPTable table, String content, int configuration, int color) {
-		PdfPCell cell = new PdfPCell();
-		cell.setBorderWidth(0);
-		switch (configuration) {
-			case 0:
-				table.setWidthPercentage(100f);
-				cell.setPhrase(new Paragraph(content, new Font(Font.TIMES_ROMAN, 12, Font.BOLD, (color == 1)? Color.BLACK : Color.GRAY)));
-				break;
-			case 1:
-				cell.setPhrase(new Paragraph(content, boldFont));
-				cell.setMinimumHeight(25f);
-				cell.setPadding(5f);
-				cell.setBackgroundColor(grayLight);
-				break;
-			case 2:
-				cell.setPhrase(new Paragraph(content));
-				cell.setMinimumHeight(25f);
-				cell.setPadding(5f);
-				cell.setBackgroundColor((color == 1)? gray : grayLight);
-				break;
-			case 3:
-				cell.setPhrase(new Paragraph(content));
-				cell.setBorderColor(gray);
-				cell.setBorderWidth(1);
-				if (color == 1) {
-					cell.setBackgroundColor(grayLight);
-				}
-				cell.setPadding(8f);
-				break;
-			case 5:
-				cell.setPhrase(new Paragraph(content));
-				cell.setMinimumHeight(20f);
-				cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-				break;
-			case 6:
-				cell.setPhrase(new Paragraph(content));
-				cell.setBorderWidthTop(1);
-				cell.setMinimumHeight(20f);
-				break;
-			default:
-				cell.setPhrase(new Paragraph(content));
-				break;
+	private void styleStatsCell(PdfPCell cell, boolean rightAlign) {
+		cell.setPaddingTop(8f);
+		cell.setPaddingBottom(8f);
+		cell.setPaddingLeft(0f);
+		cell.setPaddingRight(0f);
+		cell.setBorder(Rectangle.NO_BORDER);
+		cell.setBorderWidthBottom(1f);
+		cell.setBorderColorBottom(BORDER_COLOR);
+		if (rightAlign) {
+			cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
 		}
-		table.addCell(cell);
 	}
 
 	/**
-	 * Method to get the question text and parse if has html and get only the table transforming 
+	 * Creates a header cell for the question summary table.
+	 * @param text - header text
+	 * @param rightAlign - whether the content should be right aligned
+	 * @return - PdfPCell
+	 */
+	private PdfPCell createSummaryHeaderCell(String text, boolean rightAlign) {
+		PdfPCell cell = new PdfPCell(new Paragraph(text, getFontWithColor(BODY_BOLD_FONT, TEXT_PRIMARY)));
+		cell.setPadding(8f);
+		cell.setBorder(Rectangle.NO_BORDER);
+		if (rightAlign) {
+			cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+		}
+		return cell;
+	}
+
+	/**
+	 * Applies the shared styling for a body cell of the question summary table.
+	 * @param cell - PdfPCell to style
+	 * @param rightAlign - whether the content should be right aligned
+	 */
+	private void styleSummaryBodyCell(PdfPCell cell, boolean rightAlign) {
+		cell.setPadding(8f);
+		cell.setBackgroundColor(BACKGROUND_GRAY);
+		cell.setBorder(Rectangle.NO_BORDER);
+		cell.setBorderWidthBottom(1.5f);
+		cell.setBorderColorBottom(WHITE_COLOR);
+		if (rightAlign) {
+			cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+		}
+	}
+
+	/**
+	 * Applies the shared styling for a question detail header cell.
+	 * @param cell - PdfPCell to style
+	 * @param rightAlign - whether the content should be right aligned
+	 */
+	private void styleQuestionHeaderCell(PdfPCell cell, boolean rightAlign) {
+		cell.setPaddingLeft(0f);
+		cell.setPaddingRight(0f);
+		cell.setPaddingTop(10f);
+		cell.setPaddingBottom(10f);
+		cell.setBorder(Rectangle.NO_BORDER);
+		cell.setBorderWidthTop(1.5f);
+		cell.setBorderColorTop(TEXT_PRIMARY);
+		if (rightAlign) {
+			cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+		}
+	}
+
+	/**
+	 * Applies the shared styling for an answer/option cell.
+	 * @param cell - PdfPCell to style
+	 * @param paddingLeft - left padding used to indent the option
+	 */
+	private void styleAnswerCell(PdfPCell cell, float paddingLeft) {
+		cell.setBorderWidth(0);
+		cell.setPaddingLeft(paddingLeft);
+		cell.setPaddingTop(0f);
+		cell.setPaddingBottom(2f);
+	}
+
+	/**
+	 * Creates a styled "info box" cell with a coloured left accent border.
+	 * @param backgroundColor - the cell background color
+	 * @param leftBorderColor - the color of the left accent border
+	 * @return - PdfPCell
+	 */
+	private PdfPCell createInfoBoxCell(Color backgroundColor, Color leftBorderColor) {
+		PdfPCell cell = new PdfPCell();
+		cell.setPadding(8f);
+		cell.setBackgroundColor(backgroundColor);
+		cell.setBorder(Rectangle.NO_BORDER);
+		cell.setBorderWidthLeft(2f);
+		cell.setBorderColorLeft(leftBorderColor);
+		return cell;
+	}
+
+	/**
+	 * Adds a standalone "info box" (single cell table) to the document.
+	 * @param document - the PDF document
+	 * @param backgroundColor - the box background color
+	 * @param leftBorderColor - the color of the left accent border
+	 * @param content - the paragraph to render inside the box
+	 */
+	private void addInfoBox(Document document, Color backgroundColor, Color leftBorderColor, Paragraph content) throws Exception {
+		PdfPTable table = new PdfPTable(1);
+		table.setWidthPercentage(100f);
+		table.setSpacingBefore(12f);
+		PdfPCell cell = createInfoBoxCell(backgroundColor, leftBorderColor);
+		cell.addElement(content);
+		table.addCell(cell);
+		document.add(table);
+	}
+
+	/**
+	 * Adds the "Correct Responses" info box for the given answer key value.
+	 * @param document - the PDF document
+	 * @param value - the correct answer key text
+	 */
+	private void addCorrectResponseBox(Document document, String value) throws Exception {
+		Paragraph paragraph = new Paragraph();
+		paragraph.setLeading(0f, 1.2f);
+		paragraph.add(new Chunk(rbEval.getString("correct_responses") + ": ", getFontWithColor(SMALL_BOLD_FONT, SECONDARY_COLOR)));
+		paragraph.add(new Chunk(value, getFontWithColor(SMALL_FONT, TEXT_PRIMARY)));
+		addInfoBox(document, BACKGROUND_GRAY, SECONDARY_COLOR, paragraph);
+	}
+
+	/**
+	 * Method to get the question text and parse if has html and get only the table transforming
 	 * it into a PdfPTable
-	 * 
 	 * @param questionText - String
 	 * @param showAllInformation - boolean
 	 * @return - PdfPTable
 	 */
 	private PdfPTable getQuestionTitle(String questionText, boolean showAllInformation) {
 		PdfPTable auxTable = new PdfPTable(1);
+		auxTable.setWidthPercentage(100f);
+
 		String[] textSeparatedByLineBreak = questionText.split("<br />");
 		String finalText = "";
 		if (textSeparatedByLineBreak.length > 1) {
@@ -534,50 +787,42 @@ public class ExportAction implements ActionListener {
 				}
 			}
 		}
+		finalText = finalText.trim();
+
 		DeliveryBean deliveryBean = (DeliveryBean) ContextUtil.lookupBean("delivery");
+
+		PdfPCell textCell = new PdfPCell();
+		textCell.setBorder(Rectangle.NO_BORDER);
+		textCell.setPadding(0f);
+
+		Font textFont = showAllInformation ? getFontWithColor(BODY_FONT, TEXT_PRIMARY) : getFontWithColor(SMALL_FONT, TEXT_PRIMARY);
+		Paragraph textParagraph;
 		if ((finalText.indexOf(LATEX_SEPARATOR_DOLLAR) != -1 || finalText.indexOf(LATEX_SEPARATOR_START[0]) != -1 || finalText.indexOf(LATEX_SEPARATOR_START[1]) != -1) && deliveryBean.getIsMathJaxEnabled()) {
-			addLatexFunctionsToTable(finalText, auxTable);
+			textParagraph = createLatexParagraph(finalText, textFont);
 		} else {
-			this.addCellToTable(auxTable, finalText, 0, 1);
+			textParagraph = new Paragraph(finalText, textFont);
 		}
+		textParagraph.setSpacingBefore(0f);
+		textParagraph.setSpacingAfter(0f);
+		textParagraph.setLeading(0f, 1.0f);
+		textCell.addElement(textParagraph);
+		auxTable.addCell(textCell);
 
 		if (showAllInformation) {
 			addTableElementsToTable(questionText, auxTable);
 			addImageElementsToTable(questionText, auxTable);
 		}
 
-		PdfPCell finalQuestionCell = new PdfPCell(auxTable);
-		finalQuestionCell.setBorderWidth(1);
-		finalQuestionCell.setBorderColor(grayLight);
-		finalQuestionCell.setPadding(8f);
-		PdfPTable finalTable = new PdfPTable(1);
-		finalTable.setWidthPercentage(90f);
-		finalTable.setHorizontalAlignment(PdfPTable.ALIGN_LEFT);
-		finalTable.addCell(finalQuestionCell);
-
-		return finalTable;
-	}
-
-	/**
-	 * Method to add the Table Elements from a String to a PdfPTable
-	 * 
-	 * @param text - string that contain the latex functions
-	 * @param table - PdfPTable where save the resolved text
-	 */
-	private void addLatexFunctionsToTable(String text, PdfPTable table) {
-		Paragraph latexParagraph = createLatexParagraph(text);
-		PdfPCell latexCell = new PdfPCell(latexParagraph);
-		latexCell.setBorderWidth(0);
-		table.addCell(latexCell);
+		return auxTable;
 	}
 
 	/**
 	 * Method to create a Paragraph with Latex functions.
-	 * 
 	 * @param text
+	 * @param font
 	 * @return Paragraph latexParagraph
 	 */
-	private Paragraph createLatexParagraph(String text) {
+	private Paragraph createLatexParagraph(String text, Font font) {
 		Paragraph latexParagraph = new Paragraph();
 		String[] searchIndex = {LATEX_SEPARATOR_DOLLAR, LATEX_SEPARATOR_START[0], LATEX_SEPARATOR_START[1]};
 		DeliveryBean deliveryBean = (DeliveryBean) ContextUtil.lookupBean("delivery");
@@ -592,9 +837,12 @@ public class ExportAction implements ActionListener {
 			} else if (text.indexOf(searchIndex[2]) != -1) {
 				currentSearch = (text.indexOf(searchIndex[0]) != -1 && text.indexOf(searchIndex[0]) < text.indexOf(searchIndex[2]))? 0 : 2;
 			}
-			
+
 			int latexInitIndex = text.indexOf(searchIndex[currentSearch]);
 			int latexFinalIndex = text.indexOf(finalSearchIndex[currentSearch], latexInitIndex + 2);
+			// Tracks the last matched closing delimiter so trailing text can still be emitted
+			// safely if an opening delimiter is left unclosed (latexFinalIndex == -1).
+			int lastValidIndex = 0;
 			while (latexInitIndex != -1 && latexFinalIndex != -1) {
 				String textBeforeLatex = text.substring(0, latexInitIndex);
 				String latex = text.substring(latexInitIndex + 2, latexFinalIndex).replace(searchIndex[currentSearch], "").replace(finalSearchIndex[currentSearch], "");
@@ -610,7 +858,7 @@ public class ExportAction implements ActionListener {
 				float finalHeight = formula.createBufferedImage(TeXFormula.BOLD, 10, null, null).getHeight(null);
 				pdfLatexImage.scaleAbsolute(finalWidth, finalHeight);
 
-				latexParagraph.add(new Chunk(textBeforeLatex));
+				latexParagraph.add(new Chunk(textBeforeLatex, font));
 				latexParagraph.add(new Chunk(pdfLatexImage, -1, -2, true));
 
 				currentSearch = 1;
@@ -624,25 +872,29 @@ public class ExportAction implements ActionListener {
 				}
 
 				latexInitIndex = text.indexOf(searchIndex[currentSearch], latexFinalIndex + 1);
-				
+
 				if (latexInitIndex != -1) {
 					textBeforeLatex = text.substring(latexFinalIndex, latexInitIndex).replace(LATEX_SEPARATOR_DOLLAR, "")
 							.replace(LATEX_SEPARATOR_START[0], "").replace(LATEX_SEPARATOR_FINAL[0], "")
 							.replace(LATEX_SEPARATOR_START[1], "").replace(LATEX_SEPARATOR_FINAL[1], "");
+					lastValidIndex = latexFinalIndex;
 					latexFinalIndex = text.indexOf(finalSearchIndex[currentSearch], latexInitIndex + 2);
 				}
 			}
-			latexParagraph.add(new Chunk(text.substring(latexFinalIndex).replace(LATEX_SEPARATOR_DOLLAR, "").replace(LATEX_SEPARATOR_START[0], "")
-					.replace(LATEX_SEPARATOR_FINAL[0], "").replace(LATEX_SEPARATOR_START[1], "").replace(LATEX_SEPARATOR_FINAL[1], "")));
+			// An unclosed opening delimiter leaves latexFinalIndex == -1; fall back to the last
+			// matched closing delimiter (or the start of the text) so the remaining text is emitted safely.
+			int remainingIndex = latexFinalIndex != -1 ? latexFinalIndex : lastValidIndex;
+			latexParagraph.add(new Chunk(text.substring(remainingIndex).replace(LATEX_SEPARATOR_DOLLAR, "").replace(LATEX_SEPARATOR_START[0], "")
+					.replace(LATEX_SEPARATOR_FINAL[0], "").replace(LATEX_SEPARATOR_START[1], "").replace(LATEX_SEPARATOR_FINAL[1], ""), font));
 		} else {
-			latexParagraph.add(new Chunk(text));
+			latexParagraph.add(new Chunk(text, font));
 		}
 		return latexParagraph;
 	}
 
 	/**
 	 * Method to add the Table Elements from a String to a PdfPTable
-	 * 
+	 *
 	 * @param text - string that contain the Table Elements functions
 	 * @param table - PdfPTable where save the resolved text
 	 */
@@ -656,7 +908,7 @@ public class ExportAction implements ActionListener {
 						PdfPCell contentCell = new PdfPCell(new Paragraph(cell.text()));
 						contentCell.setBorderWidth(0);
 						contentCell.setBorderWidthBottom(1);
-						
+
 						contentCell.setPadding(5f);
 						pdfTable.addCell(contentCell);
 					}
@@ -675,7 +927,7 @@ public class ExportAction implements ActionListener {
 
 	/**
 	 * Method to add the Image Elements from a String to a PdfPTable
-	 * 
+	 *
 	 * @param text - string that contain the Image Elements functions
 	 * @param table - PdfPTable where save the resolved text
 	 */
@@ -706,7 +958,6 @@ public class ExportAction implements ActionListener {
 
 	/**
 	 * Method to get only the text without the html tag
-	 * 
 	 * @param text - String
 	 * @return - String
 	 */
@@ -729,51 +980,66 @@ public class ExportAction implements ActionListener {
 				} else {
 					isTable = false;
 				}
-								
 			} else {
 				textAux = "";
 			}
 		}
 		return Jsoup.parse(textAux).text();
 	}
-	
+
 	/**
 	 * Method to process the fill in questions text
-	 * 
+	 *
 	 * @param Document - document
 	 * @param List - fillInArray
 	 * @param boolean - numeric
 	 */
 	private void processFillInQuestion(Document document, List fillInArray, boolean numeric) throws Exception {
 		PdfPTable fillInTable = new PdfPTable(1);
+		fillInTable.setWidthPercentage(100f);
 		fillInTable.setHorizontalAlignment(PdfPTable.ALIGN_LEFT);
 		int i = 0;
 		String questionText = "";
 		for (Object fillInObject : fillInArray) {
-  			if (numeric) {
+			if (numeric) {
+				FinBean fillInBean = (FinBean) fillInObject;
 				if (i + 1 != fillInArray.size()) {
-					questionText += ((FinBean) fillInObject).getText() + "(" + (++i) + ")";
-					PdfPCell fillInCell = new PdfPCell(new Phrase((i) + ". " + (StringUtils.equals(((FinBean) fillInObject).getResponse(), "")? rb.getString("no_answer.text") : ((FinBean) fillInObject).getResponse())));
-					fillInCell.setBorderWidth(0);
-					fillInCell.setCellEvent(new CheckOrCrossCellEvent(((FinBean) fillInObject).getIsCorrect()!= null && ((FinBean) fillInObject).getIsCorrect()));
-					fillInTable.addCell(fillInCell);
+					questionText += fillInBean.getText() + " (" + (++i) + ") ";
+					fillInTable.addCell(createFillInCell(i, fillInBean.getResponse(), fillInBean.getIsCorrect()));
 				} else {
-					questionText += ((FinBean) fillInObject).getText();
+					questionText += fillInBean.getText();
 				}
 			} else {
+				FibBean fillInBean = (FibBean) fillInObject;
 				if (i + 1 != fillInArray.size()) {
-					questionText += ((FibBean) fillInObject).getText() + "(" + (++i) + ")";
-					PdfPCell fillInCell = new PdfPCell(new Phrase((i) + ". " + (StringUtils.equals(((FibBean) fillInObject).getResponse(), "")? rb.getString("no_answer.text") : ((FibBean) fillInObject).getResponse())));
-					fillInCell.setBorderWidth(0);
-					fillInCell.setCellEvent(new CheckOrCrossCellEvent(((FibBean) fillInObject).getIsCorrect()!= null && ((FibBean) fillInObject).getIsCorrect()));
-					fillInTable.addCell(fillInCell);
+					questionText += fillInBean.getText() + " (" + (++i) + ") ";
+					fillInTable.addCell(createFillInCell(i, fillInBean.getResponse(), fillInBean.getIsCorrect()));
 				} else {
-					questionText += ((FibBean) fillInObject).getText();
+					questionText += fillInBean.getText();
 				}
 			}
 		}
 		document.add(this.getQuestionTitle(questionText, true));
+		fillInTable.setSpacingBefore(12f);
+		fillInTable.setSpacingAfter(8f);
 		document.add(fillInTable);
+	}
+
+	/**
+	 * Builds the response cell of a fill-in blank/numeric question.
+	 * @param position - 1-based blank position
+	 * @param response - the student response (may be empty)
+	 * @param isCorrect - whether the response is correct
+	 * @return - PdfPCell
+	 */
+	private PdfPCell createFillInCell(int position, String response, Boolean isCorrect) {
+		String responseText = StringUtils.equals(response, "") ? rb.getString("no_answer.text") : response;
+		PdfPCell fillInCell = new PdfPCell(new Phrase("(" + position + ") " + responseText, getFontWithColor(BODY_FONT, TEXT_PRIMARY)));
+		fillInCell.setPaddingBottom(2f);
+		fillInCell.setPaddingLeft(2f);
+		fillInCell.setBorder(Rectangle.NO_BORDER);
+		fillInCell.setCellEvent(new CheckOrCrossCellEvent(isCorrect != null && isCorrect));
+		return fillInCell;
 	}
 
 	/**
@@ -793,8 +1059,8 @@ public class ExportAction implements ActionListener {
 
 		public void cellLayout(PdfPCell cell, Rectangle position, PdfContentByte[] canvases) {
 			PdfContentByte canvas = canvases[PdfPTable.TEXTCANVAS];
-			float xAux = (centered) ? (position.getRight() - position.getLeft()) / 2 + position.getLeft() + 1 : position.getLeft() + 1;
-			float yAux = position.getTop() - 10;
+			float xAux = (centered) ? (position.getRight() - position.getLeft()) / 2 + position.getLeft() : position.getLeft() + 10;
+			float yAux = (centered) ? (position.getTop() + position.getBottom()) / 2 : position.getTop() - 6f;
 			float radius = 5f;
 
 			canvas.circle(xAux, yAux, radius);
@@ -826,8 +1092,8 @@ public class ExportAction implements ActionListener {
 
 		public void cellLayout(PdfPCell cell, Rectangle position, PdfContentByte[] canvases) {
 			PdfContentByte canvas = canvases[PdfPTable.TEXTCANVAS];
-			float xAux = position.getLeft() - 1;
-			float yAux = position.getTop() - 14;
+			float xAux = position.getLeft() + 6;
+			float yAux = position.getTop() - 10;
 
 			canvas.rectangle(xAux, yAux, 8, 8);
 			canvas.stroke();
@@ -862,7 +1128,7 @@ public class ExportAction implements ActionListener {
 			PdfContentByte canvas = canvases[PdfPTable.TEXTCANVAS];
 			float x = position.getLeft();
 			float y = position.getBottom();
-			
+
 			float scaleX = position.getWidth() / (originalWidth);
 			float scaleY = position.getHeight() / (originalHeight);
 			for (Rectangle answerRectangle : answerRectangles) {
@@ -880,7 +1146,7 @@ public class ExportAction implements ActionListener {
 			}
 			canvas.fillStroke();
 			canvas.fill();
-			
+
 			float radius = 3f;
 			int smallestValue = (answerCircles.size() > 0)? answerCircles.get(0).getPublishedItemId() + 1 : 0;
 			for (Circle answerCircle : answerCircles) {
@@ -911,7 +1177,6 @@ public class ExportAction implements ActionListener {
 				float transformedX = x + answerRectangle.getLeft() * scaleX;
 				float transformedY = y + position.getHeight() - answerRectangle.getTop() * scaleY;
 				float transformedW = answerRectangle.getWidth() * scaleX;
-				float transformedH = answerRectangle.getHeight() * scaleY;
 				canvas.setGState(transparentState);
 				try {
 					canvas.beginText();
@@ -965,30 +1230,36 @@ public class ExportAction implements ActionListener {
 
 		public void cellLayout(PdfPCell cell, Rectangle position, PdfContentByte[] canvases) {
 			PdfContentByte canvas = canvases[PdfPTable.TEXTCANVAS];
-			float xAux = position.getLeft() - (isCheckIcon? 12 : 10);
-			float yAux = position.getTop() - (isCheckIcon? 12 : 10);
-			canvas.setLineWidth(2.5f);
+			float xAux = position.getLeft() + 2;
+			float yAux = position.getTop() - 10;
 
 			if (isCheckIcon) {
-				canvas.setColorFill(new Color(9, 215, 71));
-				canvas.setColorStroke(new Color(9, 215, 71));
-				canvas.moveTo(xAux - 3, yAux + 3);
-				canvas.lineTo(xAux, yAux);
-				canvas.lineTo(xAux + 6, yAux + 5);
+				// Check mark
+				canvas.setLineWidth(2.5f);
+				canvas.setColorStroke(SUCCESS_COLOR);
+				canvas.setLineCap(PdfContentByte.LINE_CAP_ROUND);
+				canvas.moveTo(xAux - 3, yAux + 1);
+				canvas.lineTo(xAux, yAux - 2);
+				canvas.lineTo(xAux + 6, yAux + 6);
+				canvas.stroke();
 			} else {
-				canvas.setColorFill(Color.RED);
-				canvas.setColorStroke(Color.RED);
-				canvas.moveTo(xAux, yAux);
-				canvas.lineTo(xAux - 3, yAux + 3);
-				canvas.lineTo(xAux + 3, yAux - 3);
-				canvas.moveTo(xAux, yAux);
+				// X mark
+				canvas.setLineWidth(2.5f);
+				canvas.setColorStroke(ERROR_COLOR);
+				canvas.setLineCap(PdfContentByte.LINE_CAP_ROUND);
+				canvas.moveTo(xAux - 3, yAux - 3);
 				canvas.lineTo(xAux + 3, yAux + 3);
-				canvas.lineTo(xAux - 3, yAux - 3);
+				canvas.stroke();
+				canvas.moveTo(xAux - 3, yAux + 3);
+				canvas.lineTo(xAux + 3, yAux - 3);
+				canvas.stroke();
 			}
-			canvas.stroke();
+
+			// Reset to defaults
 			canvas.setLineWidth(1f);
 			canvas.setColorFill(Color.BLACK);
 			canvas.setColorStroke(Color.BLACK);
+			canvas.setLineCap(PdfContentByte.LINE_CAP_BUTT);
 		}
 	}
 
