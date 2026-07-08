@@ -1106,9 +1106,8 @@ $(document).ready(function(){
 									#end
 
 									#if ($submission && $submission.Properties)
-										#set($isAutoSubmitEnabled = "false")
-										#set($isAutoSubmitEnabled = $submission.Properties.get("auto_submit_enabled"))
-										#if ($isAutoSubmitEnabled.equalsIgnoreCase("true"))
+										#set($isAutoSubmitted = $submission.Properties.get("auto_submitted"))
+										#if ("true".equalsIgnoreCase($isAutoSubmitted))
 											<span class="sak-banner-warn">$tlang.getString("auto.submit.warning.message")</span>
 										#end
 									#end

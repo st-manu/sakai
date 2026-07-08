@@ -125,10 +125,10 @@ public class AutoSubmitAssignmentsJobTest {
         // Auto-submit enabled
         when(serverConfigurationService.getBoolean(AssignmentConstants.SAK_PROP_AUTO_SUBMIT_ENABLED, AssignmentConstants.SAK_PROP_AUTO_SUBMIT_ENABLED_DFLT)).thenReturn(true);
         when(serverConfigurationService.getServerName()).thenReturn("localhost");
-        when(serverConfigurationService.getInt("assignment.autoSubmit.batchSize", 1000)).thenReturn(1000);
+        when(serverConfigurationService.getInt("assignment.autoSubmit.batchSize", 100)).thenReturn(100);
 
         // No eligible submissions to process - return empty list
-        when(assignmentService.getAllEligibleDraftSubmissions(1000, 0)).thenReturn(Collections.emptyList());
+        when(assignmentService.getAllEligibleDraftSubmissions(100, 0)).thenReturn(Collections.emptyList());
 
         job.execute(jobContext);
 
@@ -147,12 +147,12 @@ public class AutoSubmitAssignmentsJobTest {
         setupEnabledJob();
 
         // Return empty list to test the job flow without actual processing
-        when(assignmentService.getAllEligibleDraftSubmissions(1000, 0)).thenReturn(Collections.emptyList());
+        when(assignmentService.getAllEligibleDraftSubmissions(100, 0)).thenReturn(Collections.emptyList());
 
         job.execute(jobContext);
 
         // Verify the job executed successfully without processing any submissions
-        verify(assignmentService).getAllEligibleDraftSubmissions(1000, 0);
+        verify(assignmentService).getAllEligibleDraftSubmissions(100, 0);
         verify(eventTrackingService, atLeast(2)).post(any(Event.class)); // login and job start events
         verify(usageSessionService).logout();
     }
@@ -171,7 +171,7 @@ public class AutoSubmitAssignmentsJobTest {
         draftDTO.draft = true;
         draftDTO.dateModified = Instant.now().minusSeconds(1800);
 
-        when(assignmentService.getAllEligibleDraftSubmissions(1000, 0))
+        when(assignmentService.getAllEligibleDraftSubmissions(100, 0))
             .thenReturn(List.of(draftDTO))
             .thenReturn(List.of());
 
@@ -220,7 +220,7 @@ public class AutoSubmitAssignmentsJobTest {
         draftDTO.submitted = false;
         draftDTO.draft = true;
 
-        when(assignmentService.getAllEligibleDraftSubmissions(1000, 0))
+        when(assignmentService.getAllEligibleDraftSubmissions(100, 0))
             .thenReturn(List.of(draftDTO))
             .thenReturn(List.of());
 
@@ -247,7 +247,7 @@ public class AutoSubmitAssignmentsJobTest {
         draftDTO.draft = true;
         draftDTO.dateModified = Instant.now().minusSeconds(1800);
 
-        when(assignmentService.getAllEligibleDraftSubmissions(1000, 0))
+        when(assignmentService.getAllEligibleDraftSubmissions(100, 0))
             .thenReturn(List.of(draftDTO))
             .thenReturn(List.of());
 
@@ -291,7 +291,7 @@ public class AutoSubmitAssignmentsJobTest {
         draftDTO.draft = true;
         draftDTO.dateModified = Instant.now().minusSeconds(1800);
 
-        when(assignmentService.getAllEligibleDraftSubmissions(1000, 0))
+        when(assignmentService.getAllEligibleDraftSubmissions(100, 0))
             .thenReturn(List.of(draftDTO))
             .thenReturn(List.of());
 
@@ -327,7 +327,7 @@ public class AutoSubmitAssignmentsJobTest {
         // Auto-submit enabled
         when(serverConfigurationService.getBoolean(AssignmentConstants.SAK_PROP_AUTO_SUBMIT_ENABLED, AssignmentConstants.SAK_PROP_AUTO_SUBMIT_ENABLED_DFLT)).thenReturn(true);
         when(serverConfigurationService.getServerName()).thenReturn("localhost");
-        when(serverConfigurationService.getInt("assignment.autoSubmit.batchSize", 1000)).thenReturn(1000);
+        when(serverConfigurationService.getInt("assignment.autoSubmit.batchSize", 100)).thenReturn(100);
 
         // Email notification enabled
         when(serverConfigurationService.getBoolean(AssignmentConstants.SAK_PROP_AUTO_SUBMIT_ERROR_NOTIFICATION_ENABLED, AssignmentConstants.SAK_PROP_AUTO_SUBMIT_ERROR_NOTIFICATION_ENABLED_DFLT)).thenReturn(true);
@@ -340,7 +340,7 @@ public class AutoSubmitAssignmentsJobTest {
         when(emailTemplateService.getRenderedTemplate(any(), any(), any())).thenReturn(template);
 
         // Force failure by throwing exception when getting eligible submissions
-        when(assignmentService.getAllEligibleDraftSubmissions(1000, 0)).thenThrow(new RuntimeException("Simulated failure"));
+        when(assignmentService.getAllEligibleDraftSubmissions(100, 0)).thenThrow(new RuntimeException("Simulated failure"));
 
         job.execute(jobContext);
 
@@ -363,6 +363,6 @@ public class AutoSubmitAssignmentsJobTest {
     private void setupEnabledJob() {
         when(serverConfigurationService.getBoolean(AssignmentConstants.SAK_PROP_AUTO_SUBMIT_ENABLED, AssignmentConstants.SAK_PROP_AUTO_SUBMIT_ENABLED_DFLT)).thenReturn(true);
         when(serverConfigurationService.getServerName()).thenReturn("localhost");
-        when(serverConfigurationService.getInt("assignment.autoSubmit.batchSize", 1000)).thenReturn(1000);
+        when(serverConfigurationService.getInt("assignment.autoSubmit.batchSize", 100)).thenReturn(100);
     }
 }

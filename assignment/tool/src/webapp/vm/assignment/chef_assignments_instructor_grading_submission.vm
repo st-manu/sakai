@@ -178,9 +178,8 @@
                     $!submissionStatus
 
                     #if ($submission && $submission.Properties)
-                        #set($isAutoSubmitted = "false")
-                        #set($isAutoSubmitted = $submission.Properties.get("auto_submitted"))
-                        #if ($isAutoSubmitted.equalsIgnoreCase("true"))
+							#set($isAutoSubmitted = $submission.Properties.get("auto_submitted"))
+							#if ("true".equalsIgnoreCase($isAutoSubmitted))
                             <br/>
                             <span class="badge bg-info" title="$tlang.getString('auto.submit.indicator')">
                                 <span class="bi bi-clock-history me-1" aria-hidden="true"></span>

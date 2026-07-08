@@ -6413,29 +6413,29 @@ public class AssignmentServiceImpl implements AssignmentService, EntityTransferr
                 .collect(Collectors.toList());
     }
 
+    private SimpleSubmissionDraft toSimpleSubmissionDraft(AssignmentSubmission s) {
+        SimpleSubmissionDraft dto = new SimpleSubmissionDraft();
+        dto.id = s.getId();
+        dto.gradableId = s.getAssignment().getId();
+        dto.submitted = Boolean.TRUE.equals(s.getSubmitted());
+        dto.draft = !Boolean.TRUE.equals(s.getSubmitted());
+        dto.submittedText = s.getSubmittedText();
+        dto.attachments = Collections.unmodifiableSet(
+            s.getAttachments() != null ? new HashSet<>(s.getAttachments()) : Collections.emptySet());
+        dto.properties = Collections.unmodifiableMap(
+            s.getProperties() != null ? new HashMap<>(s.getProperties()) : Collections.emptyMap());
+        dto.submitterIds = s.getSubmitters() != null ?
+            Collections.unmodifiableSet(s.getSubmitters().stream().map(sub -> sub.getSubmitter()).collect(Collectors.toSet())) :
+            Collections.emptySet();
+        dto.dateModified = s.getDateModified();
+        return dto;
+    }
+
     @Override
     public List<SimpleSubmissionDraft> getDraftSubmissionsForAssignment(String assignmentId) {
         if (StringUtils.isBlank(assignmentId)) return List.of();
         List<AssignmentSubmission> submissions = assignmentRepository.findDraftSubmissionsForAssignment(assignmentId);
-        return submissions.stream()
-                .map(s -> {
-                    SimpleSubmissionDraft dto = new SimpleSubmissionDraft();
-                    dto.id = s.getId();
-                    dto.gradableId = s.getAssignment().getId();
-                    dto.submitted = Boolean.TRUE.equals(s.getSubmitted());
-                    dto.draft = !Boolean.TRUE.equals(s.getSubmitted());
-                    dto.submittedText = s.getSubmittedText();
-                    dto.attachments = Collections.unmodifiableSet(
-                        s.getAttachments() != null ? new HashSet<>(s.getAttachments()) : Collections.emptySet());
-                    dto.properties = Collections.unmodifiableMap(
-                        s.getProperties() != null ? new HashMap<>(s.getProperties()) : Collections.emptyMap());
-                    dto.submitterIds = s.getSubmitters() != null ?
-                        Collections.unmodifiableSet(s.getSubmitters().stream().map(sub -> sub.getSubmitter()).collect(Collectors.toSet())) :
-                        Collections.emptySet();
-                    dto.dateModified = s.getDateModified();
-                    return dto;
-                })
-                .collect(Collectors.toList());
+        return submissions.stream().map(this::toSimpleSubmissionDraft).collect(Collectors.toList());
     }
 
     @Override
@@ -6444,24 +6444,6 @@ public class AssignmentServiceImpl implements AssignmentService, EntityTransferr
             return List.of();
         }
         List<AssignmentSubmission> submissions = assignmentRepository.findAllEligibleDraftSubmissions(limit, offset);
-        return submissions.stream()
-                .map(s -> {
-                    SimpleSubmissionDraft dto = new SimpleSubmissionDraft();
-                    dto.id = s.getId();
-                    dto.gradableId = s.getAssignment().getId();
-                    dto.submitted = Boolean.TRUE.equals(s.getSubmitted());
-                    dto.draft = !Boolean.TRUE.equals(s.getSubmitted());
-                    dto.submittedText = s.getSubmittedText();
-                    dto.attachments = Collections.unmodifiableSet(
-                        s.getAttachments() != null ? new HashSet<>(s.getAttachments()) : Collections.emptySet());
-                    dto.properties = Collections.unmodifiableMap(
-                        s.getProperties() != null ? new HashMap<>(s.getProperties()) : Collections.emptyMap());
-                    dto.submitterIds = s.getSubmitters() != null ?
-                        Collections.unmodifiableSet(s.getSubmitters().stream().map(sub -> sub.getSubmitter()).collect(Collectors.toSet())) :
-                        Collections.emptySet();
-                    dto.dateModified = s.getDateModified();
-                    return dto;
-                })
-                .collect(Collectors.toList());
+        return submissions.stream().map(this::toSimpleSubmissionDraft).collect(Collectors.toList());
     }
 }

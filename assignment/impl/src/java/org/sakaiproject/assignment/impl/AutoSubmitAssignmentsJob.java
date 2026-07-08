@@ -142,11 +142,11 @@ public class AutoSubmitAssignmentsJob implements Job {
     private int autoSubmitDraftSubmissions() {
 
         int failures = 0;
-        int batchSize = serverConfigurationService.getInt("assignment.autoSubmit.batchSize", 1000);
+        int batchSize = serverConfigurationService.getInt("assignment.autoSubmit.batchSize", 100);
 
         if (batchSize <= 0) {
-            log.warn("Invalid batchSize configuration: {}. Using default value of 1000.", batchSize);
-            batchSize = 1000;
+            log.warn("Invalid batchSize configuration: {}. Using default value of 100.", batchSize);
+            batchSize = 100;
         }
 
         Set<String> assignmentsWithAutoSubmits = new HashSet<>();
@@ -177,6 +177,10 @@ public class AutoSubmitAssignmentsJob implements Job {
                             successfulInBatch++;
                             // Track which assignment had an auto-submit
                             assignmentsWithAutoSubmits.add(submission.gradableId);
+                        } else {
+                            // Not throwing doesn't mean it's resolved; surface it so it isn't
+                            // silently retried forever and admins are notified.
+                            failures++;
                         }
                     } catch (Exception e) {
                         log.error("Error auto-submitting submission {}: {}", submission.id, e.getMessage(), e);
