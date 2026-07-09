@@ -3895,7 +3895,7 @@ SiteContentAdvisorProvider, SiteContentAdvisorTypeRegistry, HardDeleteAware
 					log.debug("Copying attachment {} to site {} content toolTitle {}", oAttachmentPath, toContext, toolTitle);
 					attachment = this.addResource(
 							Validator.escapeResourceName(oAttachment.getProperties().getProperty(ResourceProperties.PROP_DISPLAY_NAME)),
-							toContext,
+							getSiteCollection(toContext),
 							1,
 							oAttachment.getContentType(),
 							content,
