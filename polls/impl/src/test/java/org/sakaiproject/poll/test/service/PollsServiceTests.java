@@ -788,11 +788,11 @@ public class PollsServiceTests {
 
     @Test
     public void testImportPollsFromCsvCreatesMultiplePolls() {
-        String csv1 = "Question,Description,Opening date,Opening time,Closing date,Closing time,Minimum options,Maximum options,Results visibility,Option 1,Option 2\n"
-            + "Bulk import Q1,,2026-06-01,09:00,2026-06-02,17:00,1,1,1,A,B\n";
-        String csv2 = "Bulk import Q2,,2026-07-01,09:00,2026-07-02,17:00,1,1,1,X,Y\n";
+        String csv = "Question,Description,Opening date,Opening time,Closing date,Closing time,Minimum options,Maximum options,Results visibility,Option 1,Option 2\n"
+            + "Bulk import Q1,,2026-06-01,09:00,2026-06-02,17:00,1,1,1,A,B\n"
+            + "Bulk import Q2,,2026-07-01,09:00,2026-07-02,17:00,1,1,1,X,Y\n";
 
-        pollsService.importPollsFromCsv(List.of(csv1, csv2), LOCATION1_ID, USER);
+        pollsService.importPollsFromCsv(List.of(csv), LOCATION1_ID, USER);
 
         List<String> pollTitles = pollsService.findAllPolls(LOCATION1_ID).stream().map(Poll::getText).toList();
         Assert.assertTrue(pollTitles.contains("Bulk import Q1"));
