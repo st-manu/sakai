@@ -156,13 +156,6 @@ public interface PollsService {
     void importPollsFromCsv(List<String> csvContents, String siteId, String ownerId);
 
     /**
-     * Build a sample CSV file for poll import.
-     * @param columnHeaders localized column header labels in column order
-     * @return CSV content suitable for download as an import template
-     */
-    String buildPollImportSampleCsv(List<String> columnHeaders);
-
-    /**
      * Is this poll public?
      * @param poll
      * @return

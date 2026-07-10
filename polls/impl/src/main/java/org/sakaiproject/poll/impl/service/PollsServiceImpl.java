@@ -21,18 +21,15 @@
 
 package org.sakaiproject.poll.impl.service;
 
-import java.io.IOException;
 import java.io.StringReader;
-import java.io.StringWriter;
 import java.time.Instant;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.function.Function;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
@@ -71,6 +68,7 @@ import org.sakaiproject.poll.api.model.VoteCollection;
 import org.sakaiproject.poll.api.service.PollImportError;
 import org.sakaiproject.poll.api.service.PollImportException;
 import org.sakaiproject.poll.api.service.PollsService;
+import org.sakaiproject.poll.api.importformat.PollImportCsvFormat;
 import org.sakaiproject.poll.api.model.Option;
 import org.sakaiproject.poll.api.model.Poll;
 import org.sakaiproject.poll.api.model.Vote;
@@ -98,7 +96,6 @@ import org.w3c.dom.NodeList;
 import static org.sakaiproject.poll.api.PollConstants.*;
 
 import com.opencsv.CSVReader;
-import com.opencsv.CSVWriter;
 
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -109,18 +106,6 @@ public class PollsServiceImpl implements PollsService, EntityProducer, EntityTra
 
     private static final String DEFAULT_IP_ADDRESS = "Nothing";
     public static final String EMAIL_TEMPLATE_NOTIFY_DELETED_OPTION = "polls.notifyDeletedOption";
-    private static final int IMPORT_COL_QUESTION = 0;
-    private static final int IMPORT_COL_DESCRIPTION = 1;
-    private static final int IMPORT_COL_OPEN_DATE = 2;
-    private static final int IMPORT_COL_OPEN_TIME = 3;
-    private static final int IMPORT_COL_CLOSE_DATE = 4;
-    private static final int IMPORT_COL_CLOSE_TIME = 5;
-    private static final int IMPORT_COL_MIN_OPTIONS = 6;
-    private static final int IMPORT_COL_MAX_OPTIONS = 7;
-    private static final int IMPORT_COL_DISPLAY_RESULT = 8;
-    private static final int IMPORT_COL_FIRST_OPTION = 9;
-    private static final DateTimeFormatter IMPORT_DATE_FORMAT = DateTimeFormatter.ISO_LOCAL_DATE;
-    private static final DateTimeFormatter IMPORT_TIME_FORMAT = DateTimeFormatter.ofPattern("H:mm");
 
     @Setter private AuthzGroupService authzGroupService;
     @Setter private EmailService emailService;
@@ -242,40 +227,6 @@ public class PollsServiceImpl implements PollsService, EntityProducer, EntityTra
         }
     }
 
-    @Override
-    public String buildPollImportSampleCsv(List<String> columnHeaders) {
-        if (columnHeaders == null || columnHeaders.isEmpty()) {
-            throw new IllegalArgumentException("columnHeaders must not be empty");
-        }
-
-        try (StringWriter writer = new StringWriter();
-             CSVWriter csvWriter = new CSVWriter(writer,
-                     CSVWriter.DEFAULT_SEPARATOR,
-                     CSVWriter.DEFAULT_QUOTE_CHARACTER,
-                     CSVWriter.DEFAULT_ESCAPE_CHARACTER,
-                     CSVWriter.RFC4180_LINE_END)) {
-            csvWriter.writeNext(columnHeaders.toArray(new String[0]));
-            csvWriter.writeNext(new String[] {
-                "What is your favorite color?",
-                "",
-                "2026-05-29",
-                "09:00",
-                "2026-05-30",
-                "17:00",
-                "1",
-                "1",
-                "1",
-                "Blue",
-                "Green",
-                "Red"
-            });
-            csvWriter.flush();
-            return writer.toString();
-        } catch (IOException e) {
-            throw new IllegalStateException("Unable to build poll import sample CSV", e);
-        }
-    }
-
     private List<ImportedPoll> parseImportedPolls(String csvContent) {
         List<ImportedPoll> importedPolls = new ArrayList<>();
         if (StringUtils.isBlank(csvContent)) {
@@ -283,28 +234,33 @@ public class PollsServiceImpl implements PollsService, EntityProducer, EntityTra
         }
 
         try (CSVReader reader = new CSVReader(new StringReader(csvContent))) {
+            boolean headerValidated = false;
             String[] row;
             while ((row = reader.readNext()) != null) {
-                if (isBlankImportedPollRow(row)) {
+                if (PollImportCsvFormat.isBlankRow(row)) {
                     continue;
                 }
 
-                if (isImportHeaderRow(row)) {
+                if (!headerValidated) {
+                    if (!PollImportCsvFormat.isValidHeaderRow(row, importHeaderLabelResolver())) {
+                        throw new PollImportException(PollImportError.WRONG_FORMAT);
+                    }
+                    headerValidated = true;
                     continue;
                 }
 
-                String question = normalizeImportedPollCell(row[IMPORT_COL_QUESTION]);
-                String details = importedPollCellValue(row, IMPORT_COL_DESCRIPTION);
-                String openDate = importedPollCellValue(row, IMPORT_COL_OPEN_DATE);
-                String openTime = importedPollCellValue(row, IMPORT_COL_OPEN_TIME);
-                String closeDate = importedPollCellValue(row, IMPORT_COL_CLOSE_DATE);
-                String closeTime = importedPollCellValue(row, IMPORT_COL_CLOSE_TIME);
-                String minOptions = importedPollCellValue(row, IMPORT_COL_MIN_OPTIONS);
-                String maxOptions = importedPollCellValue(row, IMPORT_COL_MAX_OPTIONS);
-                String displayResult = importedPollCellValue(row, IMPORT_COL_DISPLAY_RESULT);
+                String question = PollImportCsvFormat.cellValue(row, PollImportCsvFormat.COL_QUESTION);
+                String details = PollImportCsvFormat.cellValue(row, PollImportCsvFormat.COL_DESCRIPTION);
+                String openDate = PollImportCsvFormat.cellValue(row, PollImportCsvFormat.COL_OPEN_DATE);
+                String openTime = PollImportCsvFormat.cellValue(row, PollImportCsvFormat.COL_OPEN_TIME);
+                String closeDate = PollImportCsvFormat.cellValue(row, PollImportCsvFormat.COL_CLOSE_DATE);
+                String closeTime = PollImportCsvFormat.cellValue(row, PollImportCsvFormat.COL_CLOSE_TIME);
+                String minOptions = PollImportCsvFormat.cellValue(row, PollImportCsvFormat.COL_MIN_OPTIONS);
+                String maxOptions = PollImportCsvFormat.cellValue(row, PollImportCsvFormat.COL_MAX_OPTIONS);
+                String displayResult = PollImportCsvFormat.cellValue(row, PollImportCsvFormat.COL_DISPLAY_RESULT);
                 List<String> options = new ArrayList<>();
-                for (int i = IMPORT_COL_FIRST_OPTION; i < row.length; i++) {
-                    String optionText = normalizeImportedPollCell(row[i]);
+                for (int i = PollImportCsvFormat.COL_FIRST_OPTION; i < row.length; i++) {
+                    String optionText = PollImportCsvFormat.cellValue(row, i);
                     if (StringUtils.isNotBlank(optionText)) {
                         options.add(optionText);
                     }
@@ -332,6 +288,13 @@ public class PollsServiceImpl implements PollsService, EntityProducer, EntityTra
         }
 
         return importedPolls;
+    }
+
+    private Function<String, String> importHeaderLabelResolver() {
+        if (pollsBundle != null) {
+            return PollImportCsvFormat.headerLabelResolver(pollsBundle::getString);
+        }
+        return PollImportCsvFormat::defaultEnglishHeader;
     }
 
     private Poll buildImportedPoll(ImportedPoll importedPoll, String siteId, String ownerId) {
@@ -396,72 +359,10 @@ public class PollsServiceImpl implements PollsService, EntityProducer, EntityTra
         return poll;
     }
 
-    private boolean isBlankImportedPollRow(String[] row) {
-        if (row == null || row.length == 0) {
-            return true;
-        }
-
-        for (String cell : row) {
-            if (StringUtils.isNotBlank(normalizeImportedPollCell(cell))) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    private String normalizeImportedPollCell(String value) {
-        String normalized = StringUtils.defaultString(value);
-        if (normalized.startsWith("\uFEFF")) {
-            normalized = normalized.substring(1);
-        }
-        return StringUtils.trimToEmpty(normalized);
-    }
-
-    private String importedPollCellValue(String[] row, int index) {
-        if (row == null || index < 0 || index >= row.length) {
-            return StringUtils.EMPTY;
-        }
-        return normalizeImportedPollCell(row[index]);
-    }
-
-    private boolean isImportHeaderRow(String[] row) {
-        String firstCell = normalizeImportedPollCell(row[IMPORT_COL_QUESTION]);
-        if (StringUtils.isBlank(firstCell)) {
-            return false;
-        }
-
-        if ("question".equalsIgnoreCase(firstCell)) {
-            return true;
-        }
-
-        if (pollsBundle != null) {
-            return firstCell.equalsIgnoreCase(pollsBundle.getString("poll_import_header_question"));
-        }
-
-        return "Question".equalsIgnoreCase(firstCell);
-    }
-
     private LocalDateTime parseImportedPollDateTime(String dateValue, String timeValue) {
-        if (StringUtils.isAllBlank(dateValue, timeValue)) {
-            return null;
-        }
-
-        if (StringUtils.isBlank(dateValue)) {
-            throw new PollImportException(PollImportError.INVALID_DATES);
-        }
-
         try {
-            if (dateValue.contains("T")) {
-                return LocalDateTime.parse(dateValue);
-            }
-
-            LocalDate date = LocalDate.parse(dateValue, IMPORT_DATE_FORMAT);
-            LocalTime time = LocalTime.MIDNIGHT;
-            if (StringUtils.isNotBlank(timeValue)) {
-                time = LocalTime.parse(timeValue, IMPORT_TIME_FORMAT);
-            }
-            return LocalDateTime.of(date, time);
-        } catch (Exception e) {
+            return PollImportCsvFormat.parseDateTime(dateValue, timeValue);
+        } catch (DateTimeParseException e) {
             throw new PollImportException(PollImportError.INVALID_DATES, e);
         }
     }
