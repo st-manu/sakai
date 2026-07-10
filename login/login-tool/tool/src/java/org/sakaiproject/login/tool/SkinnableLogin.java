@@ -26,6 +26,9 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
 import javax.security.auth.login.LoginException;
 import javax.servlet.ServletConfig;
@@ -379,6 +382,10 @@ public class SkinnableLogin extends HttpServlet implements Login {
 				} else if (message.equals(EXCEPTION_MISSING_CREDENTIALS)) {
 					rcontext.put(ATTR_MSG, rb.getString("log.tryagain"));
 					//Do we need to log this one? You can't really brute force with empty credentials...
+				} else if (message.equals(EXCEPTION_SSO_REQUIRED)) {
+					rcontext.put(ATTR_MSG, rb.getString("log.sso.required"));
+					sendResponse(rcontext, res, "xlogin", null);
+					return;
 				} else {
 					rcontext.put(ATTR_MSG, rb.getString("log.invalid"));
 					logFailedAttempt(credentials);
