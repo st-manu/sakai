@@ -31,6 +31,7 @@ import org.sakaiproject.poll.api.service.PollsService;
 import org.sakaiproject.tool.api.SessionManager;
 import org.sakaiproject.tool.api.ToolManager;
 import org.springframework.context.MessageSource;
+import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -87,8 +88,13 @@ public class PollImportController {
 
         String csv = PollImportCsvFormat.buildSampleCsv(buildImportColumnHeaders(locale));
         String filename = messageSource.getMessage("poll_import_sample_filename", null, locale);
+
+        ContentDisposition contentDisposition = ContentDisposition.attachment()
+                .filename(filename, StandardCharsets.UTF_8)
+                .build();
+
         return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"")
+                .header(HttpHeaders.CONTENT_DISPOSITION, contentDisposition.toString())
                 .contentType(MediaType.parseMediaType("text/csv;charset=UTF-8"))
                 .body(csv.getBytes(StandardCharsets.UTF_8));
     }
