@@ -353,6 +353,44 @@ class SamigoTest extends SakaiUiTestBase {
         assertThat(permissions.locator("button[data-perm^='assessment.template.']")).hasCount(0);
     }
 
+    @Test
+    @Order(9)
+    void canOpenPrintPreviewWithPdfViewer() {
+        String courseUrl = ensureCourseUrl();
+
+        sakai.login("instructor1");
+        page.navigate(courseUrl);
+        sakai.toolClick("Tests");
+
+        editWorkingCopyFromAssessmentsTable();
+
+        Locator printLink = page.locator("#assessmentForm a").filter(
+            new Locator.FilterOptions().setHasText(Pattern.compile("^Print$", Pattern.CASE_INSENSITIVE))
+        ).first();
+        assertThat(printLink).isVisible(new LocatorAssertions.IsVisibleOptions().setTimeout(15_000));
+        printLink.click(new Locator.ClickOptions().setForce(true));
+        page.waitForLoadState(LoadState.DOMCONTENTLOADED);
+
+        assertThat(page.locator("#qb_print")).isVisible(new LocatorAssertions.IsVisibleOptions().setTimeout(20_000));
+
+        Locator previewIframe = page.locator("#print-pdf-preview");
+        assertThat(previewIframe).isVisible();
+
+        page.waitForFunction("() => {"
+            + "const iframe = document.getElementById('print-pdf-preview');"
+            + "const url = document.getElementById('pdf-preview-url');"
+            + "return iframe && url && url.textContent.trim().length > 0;"
+            + "}", null, new com.microsoft.playwright.Page.WaitForFunctionOptions().setTimeout(30_000));
+
+        Locator showAnswerKey = page.locator("#assessmentForm\\:showKeys");
+        if (isVisible(showAnswerKey, 5_000)) {
+            showAnswerKey.check(new Locator.CheckOptions().setForce(true));
+            page.waitForLoadState(LoadState.NETWORKIDLE);
+            assertThat(page.locator("#qb_print")).isVisible();
+            assertThat(previewIframe).isVisible();
+        }
+    }
+
     private void addMultipleChoiceQuestion(String points, String questionText, List<String> choices, int correctIndex) {
         selectQuestionType(Pattern.compile("multiple\\s*choice", Pattern.CASE_INSENSITIVE));
         page.locator("#itemForm\\:answerptr").fill(points);
