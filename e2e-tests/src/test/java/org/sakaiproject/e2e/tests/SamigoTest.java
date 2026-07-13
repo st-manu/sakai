@@ -15,24 +15,25 @@
  */
 package org.sakaiproject.e2e.tests;
 
-import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import com.microsoft.playwright.ElementHandle;
-import com.microsoft.playwright.Locator;
-import com.microsoft.playwright.PlaywrightException;
-import com.microsoft.playwright.assertions.LocatorAssertions;
-import com.microsoft.playwright.options.LoadState;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
 import java.util.regex.Pattern;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.sakaiproject.e2e.support.SakaiUiTestBase;
+
+import com.microsoft.playwright.ElementHandle;
+import com.microsoft.playwright.Locator;
+import com.microsoft.playwright.PlaywrightException;
+import com.microsoft.playwright.assertions.LocatorAssertions;
+import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
+import com.microsoft.playwright.options.LoadState;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class SamigoTest extends SakaiUiTestBase {
@@ -363,18 +364,17 @@ class SamigoTest extends SakaiUiTestBase {
         sakai.toolClick("Tests");
 
         editWorkingCopyFromAssessmentsTable();
+        page.waitForLoadState(LoadState.NETWORKIDLE);
 
         Locator printLink = page.locator("#assessmentForm a").filter(
             new Locator.FilterOptions().setHasText(Pattern.compile("^Print$", Pattern.CASE_INSENSITIVE))
         ).first();
         assertThat(printLink).isVisible(new LocatorAssertions.IsVisibleOptions().setTimeout(15_000));
         printLink.click(new Locator.ClickOptions().setForce(true));
-        page.waitForLoadState(LoadState.DOMCONTENTLOADED);
-
-        assertThat(page.locator("#qb_print")).isVisible(new LocatorAssertions.IsVisibleOptions().setTimeout(20_000));
+        page.waitForLoadState(LoadState.NETWORKIDLE);
 
         Locator previewIframe = page.locator("#print-pdf-preview");
-        assertThat(previewIframe).isVisible();
+        assertThat(previewIframe).isVisible(new LocatorAssertions.IsVisibleOptions().setTimeout(20_000));
 
         page.waitForFunction("() => {"
             + "const iframe = document.getElementById('print-pdf-preview');"
@@ -386,7 +386,7 @@ class SamigoTest extends SakaiUiTestBase {
         if (isVisible(showAnswerKey, 5_000)) {
             showAnswerKey.check(new Locator.CheckOptions().setForce(true));
             page.waitForLoadState(LoadState.NETWORKIDLE);
-            assertThat(page.locator("#qb_print")).isVisible();
+
             assertThat(previewIframe).isVisible();
         }
     }

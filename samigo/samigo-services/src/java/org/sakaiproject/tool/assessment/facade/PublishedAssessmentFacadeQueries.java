@@ -2200,7 +2200,11 @@ public class PublishedAssessmentFacadeQueries extends HibernateDaoSupport implem
 		List<AuthorizationData> l = getHibernateTemplate().execute(hcb);
 
 		PublishedAssessmentData publishedAssessment = loadPublishedAssessment(Long.valueOf(publishedAssessmentId));
-		boolean releaseToGroups = AssessmentAccessControl.RELEASE_TO_SELECTED_GROUPS.equals(publishedAssessment.getAssessmentAccessControl().getReleaseTo());
+		boolean releaseToGroups = false;
+		if (publishedAssessment != null && publishedAssessment.getAssessmentAccessControl() != null) {
+			releaseToGroups = AssessmentAccessControl.RELEASE_TO_SELECTED_GROUPS.equals(
+					publishedAssessment.getAssessmentAccessControl().getReleaseTo());
+		}
 		for (AuthorizationData a : l) {
 			if (releaseToGroups) {
 				String agentId = a.getAgentIdString();

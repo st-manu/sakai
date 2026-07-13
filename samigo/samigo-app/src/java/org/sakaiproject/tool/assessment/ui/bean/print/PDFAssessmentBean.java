@@ -42,6 +42,7 @@ import org.sakaiproject.tool.assessment.data.ifc.assessment.ItemTextIfc;
 import org.sakaiproject.tool.assessment.ui.bean.delivery.DeliveryBean;
 import org.sakaiproject.tool.assessment.ui.bean.delivery.ItemContentsBean;
 import org.sakaiproject.tool.assessment.ui.bean.print.settings.PrintSettingsBean;
+import org.sakaiproject.tool.assessment.ui.listener.author.RemovePublishedAssessmentThread;
 import org.sakaiproject.tool.assessment.ui.listener.delivery.BeginDeliveryActionListener;
 import org.sakaiproject.tool.assessment.ui.listener.delivery.DeliveryActionListener;
 import org.sakaiproject.tool.assessment.ui.listener.util.ContextUtil;
@@ -150,6 +151,7 @@ public class PDFAssessmentBean implements Serializable {
 		setDeliveryParts(deliveryBean.getTableOfContents().getPartsContents());
 		setTitle(deliveryBean.getAssessmentTitle());
 		updateCachedPreviewPdf();
+		cleanupPreviewPublishedAssessment(deliveryBean);
 
 		return "print";
 	}
@@ -157,6 +159,18 @@ public class PDFAssessmentBean implements Serializable {
 	public String applyPrintSettings() {
 		updateCachedPreviewPdf();
 		return "print";
+	}
+
+	private void cleanupPreviewPublishedAssessment(DeliveryBean deliveryBean) {
+		if (!deliveryBean.isFromPrint()) {
+			return;
+		}
+		String publishedId = deliveryBean.getAssessmentId();
+		if (StringUtils.isBlank(publishedId)) {
+			return;
+		}
+		RemovePublishedAssessmentThread thread = new RemovePublishedAssessmentThread(publishedId, "preview");
+		thread.start();
 	}
 
 	public void updateCachedPreviewPdf() {
