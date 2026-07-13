@@ -35,8 +35,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeUnit;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.CollectionUtils;
@@ -253,8 +251,7 @@ public class SiteManageServiceImpl implements SiteManageService {
 
                                 String description = site.getDescription();
                                 if (StringUtils.isNotBlank(description) && description.contains(oSiteId)) {
-                                    description = rewriteSiteIdInDescription(description, oSiteId, nSiteId);
-                                    site.setDescription(description);
+                                    site.setDescription(rewriteSiteIdInDescription(description, oSiteId, nSiteId));
                                 }
 
                                 saveSite(site);
@@ -1168,8 +1165,7 @@ public class SiteManageServiceImpl implements SiteManageService {
      * @param toSiteId The site ID to replace with
      **/
     private String rewriteSiteIdInDescription(String description, String fromSiteId, String toSiteId) {
-        String regex = "(?<![a-zA-Z0-9])" + Pattern.quote(fromSiteId) + "(?![a-zA-Z0-9])";
-        String replacement = Matcher.quoteReplacement(toSiteId);
-        return description.replaceAll(regex, replacement);
+        return StringUtils.replace(description, fromSiteId, toSiteId);
     }
+
 }
