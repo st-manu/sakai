@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.TimeZone;
 import java.util.UUID;
+import java.util.function.Function;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -35,6 +36,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.sakaiproject.authz.api.SecurityService;
+import org.sakaiproject.poll.api.importformat.PollImportCsvFormat;
 import org.sakaiproject.poll.api.model.Option;
 import org.sakaiproject.poll.api.model.Poll;
 import org.sakaiproject.poll.api.model.Vote;
@@ -712,9 +714,16 @@ public class PollsServiceTests {
 
     // ========== Bulk Import Tests ==========
 
+    private static final Function<String, String> ENGLISH_IMPORT_HEADERS = PollImportCsvFormat::defaultEnglishHeader;
+
+    private String importCsvHeader(int optionColumnCount) {
+        return PollImportCsvFormat.formatHeaderRow(ENGLISH_IMPORT_HEADERS, optionColumnCount);
+    }
+
     @Test
     public void testImportPollsFromCsvCreatesPolls() {
-        String csv = "What is your favorite color?,,2026-06-01T09:00,2026-06-02T17:00,1,1,1,Blue,Green,Red\n";
+        String csv = importCsvHeader(3) + "\n"
+            + "What is your favorite color?,,2026-06-01,09:00,2026-06-02,17:00,1,1,1,Blue,Green,Red\n";
 
         pollsService.importPollsFromCsv(List.of(csv), LOCATION1_ID, USER);
 
@@ -728,7 +737,8 @@ public class PollsServiceTests {
 
     @Test
     public void testImportPollsFromCsvRejectsInvalidCsv() {
-        String csv = "Question?,,2026-06-01T09:00,2026-06-02T17:00,1,1,1,OnlyOneOption\n";
+        String csv = importCsvHeader(2) + "\n"
+            + "Question?,,2026-06-01,09:00,2026-06-02,17:00,1,1,1,OnlyOneOption\n";
 
         PollImportException exception = Assert.assertThrows(PollImportException.class, () ->
             pollsService.importPollsFromCsv(List.of(csv), LOCATION1_ID, USER)
@@ -750,7 +760,8 @@ public class PollsServiceTests {
 
     @Test
     public void testImportPollsFromCsvHandlesQuotedDescriptionWithCommas() {
-        String csv = "Question with quoted description?,\"This, description, has, commas\",2026-06-01T09:00,2026-06-02T17:00,1,1,1,Opt1,Opt2\n";
+        String csv = importCsvHeader(2) + "\n"
+            + "Question with quoted description?,\"This, description, has, commas\",2026-06-01,09:00,2026-06-02,17:00,1,1,1,Opt1,Opt2\n";
 
         pollsService.importPollsFromCsv(List.of(csv), LOCATION1_ID, USER);
 
@@ -763,7 +774,8 @@ public class PollsServiceTests {
 
     @Test
     public void testImportPollsFromCsvRejectsInvalidDates() {
-        String csv = "Q?,,06/01/2026 09:00,2026-06-02T17:00,1,1,1,One,Two\n";
+        String csv = importCsvHeader(2) + "\n"
+            + "Q?,,06/01/2026,09:00,2026-06-02,17:00,1,1,1,One,Two\n";
 
         PollImportException exception = Assert.assertThrows(PollImportException.class, () ->
             pollsService.importPollsFromCsv(List.of(csv), LOCATION1_ID, USER)
@@ -773,7 +785,8 @@ public class PollsServiceTests {
 
     @Test
     public void testImportPollsFromCsvRejectsInvalidLimits() {
-        String csv = "Q?,,2026-06-01T09:00,2026-06-02T17:00,5,1,1,One,Two,Three\n";
+        String csv = importCsvHeader(3) + "\n"
+            + "Q?,,2026-06-01,09:00,2026-06-02,17:00,5,1,1,One,Two,Three\n";
 
         PollImportException exception = Assert.assertThrows(PollImportException.class, () ->
             pollsService.importPollsFromCsv(List.of(csv), LOCATION1_ID, USER)
@@ -783,14 +796,47 @@ public class PollsServiceTests {
 
     @Test
     public void testImportPollsFromCsvCreatesMultiplePolls() {
-        String csv1 = "Bulk import Q1,,2026-06-01T09:00,2026-06-02T17:00,1,1,1,A,B\n";
-        String csv2 = "Bulk import Q2,,2026-07-01T09:00,2026-07-02T17:00,1,1,1,X,Y\n";
+        String csv = importCsvHeader(2) + "\n"
+            + "Bulk import Q1,,2026-06-01,09:00,2026-06-02,17:00,1,1,1,A,B\n"
+            + "Bulk import Q2,,2026-07-01,09:00,2026-07-02,17:00,1,1,1,X,Y\n";
 
-        pollsService.importPollsFromCsv(List.of(csv1, csv2), LOCATION1_ID, USER);
+        pollsService.importPollsFromCsv(List.of(csv), LOCATION1_ID, USER);
 
         List<String> pollTitles = pollsService.findAllPolls(LOCATION1_ID).stream().map(Poll::getText).toList();
         Assert.assertTrue(pollTitles.contains("Bulk import Q1"));
         Assert.assertTrue(pollTitles.contains("Bulk import Q2"));
+    }
+
+    @Test
+    public void testImportPollsFromCsvImportsPollNamedQuestion() {
+        String csv = importCsvHeader(2) + "\n"
+            + "Question,,2026-06-01,09:00,2026-06-02,17:00,1,1,1,Yes,No\n";
+
+        pollsService.importPollsFromCsv(List.of(csv), LOCATION1_ID, USER);
+
+        Assert.assertTrue(pollsService.findAllPolls(LOCATION1_ID).stream()
+            .anyMatch(p -> "Question".equals(p.getText())));
+    }
+
+    @Test
+    public void testImportSampleCsvCreatesImportablePoll() {
+        String csv = PollImportCsvFormat.buildSampleCsv(
+            PollImportCsvFormat.buildColumnHeaders(ENGLISH_IMPORT_HEADERS));
+
+        pollsService.importPollsFromCsv(List.of(csv), LOCATION1_ID, USER);
+
+        Assert.assertTrue(pollsService.findAllPolls(LOCATION1_ID).stream()
+            .anyMatch(p -> "What is your favorite color?".equals(p.getText())));
+    }
+
+    @Test
+    public void testImportPollsFromCsvRejectsMissingHeaderRow() {
+        String csv = "Bulk import Q1,,2026-06-01,09:00,2026-06-02,17:00,1,1,1,A,B\n";
+
+        PollImportException exception = Assert.assertThrows(PollImportException.class, () ->
+            pollsService.importPollsFromCsv(List.of(csv), LOCATION1_ID, USER)
+        );
+        Assert.assertEquals(PollImportError.WRONG_FORMAT, exception.getError());
     }
 
     // ========== Helper Methods ==========

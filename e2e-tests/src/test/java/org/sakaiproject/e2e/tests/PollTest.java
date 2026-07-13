@@ -238,13 +238,20 @@ class PollTest extends SakaiUiTestBase {
         assertThat(page.locator("#poll-uploaded-text")).isVisible();
         assertThat(page.locator("label[for=\"poll-uploaded-text\"]")).isVisible();
         assertThat(page.locator("label[for=\"poll-upload-file\"]")).isVisible();
+        assertThat(page.locator("a[href*='/pollImport/sample']")).isVisible();
+
+        Download sampleDownload = page.waitForDownload(
+            () -> page.locator("a[href*='/pollImport/sample']").click(new Locator.ClickOptions().setForce(true))
+        );
+        assertTrue(sampleDownload.suggestedFilename().endsWith(".csv"));
 
         LocalDateTime now = LocalDateTime.now();
-        String openDateTime = now.minusDays(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm"));
-        String closeDateTime = now.plusDays(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm"));
+        String openDate = now.minusDays(1).format(DateTimeFormatter.ISO_LOCAL_DATE);
+        String closeDate = now.plusDays(1).format(DateTimeFormatter.ISO_LOCAL_DATE);
         String csv = String.join("\n",
-            BULK_POLL_TITLE_ONE + ",Bulk import details," + openDateTime + "," + closeDateTime + ",1,1,1,Alpha,Beta",
-            BULK_POLL_TITLE_TWO + ",Bulk import details," + openDateTime + "," + closeDateTime + ",1,1,1,Yes,No"
+            "Question,Description,Opening date,Opening time,Closing date,Closing time,Minimum options,Maximum options,Results visibility,Option 1,Option 2",
+            BULK_POLL_TITLE_ONE + ",Bulk import details," + openDate + ",09:00," + closeDate + ",17:00,1,1,1,Alpha,Beta",
+            BULK_POLL_TITLE_TWO + ",Bulk import details," + openDate + ",09:00," + closeDate + ",17:00,1,1,1,Yes,No"
         );
 
         page.locator("#poll-uploaded-text").fill(csv);
