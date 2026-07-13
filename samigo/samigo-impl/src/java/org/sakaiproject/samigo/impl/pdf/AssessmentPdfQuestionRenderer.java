@@ -37,8 +37,7 @@ import org.sakaiproject.samigo.impl.pdf.AssessmentPdfCellEvents.CheckboxCellEven
 import org.sakaiproject.samigo.impl.pdf.AssessmentPdfCellEvents.CircleCellEvent;
 import org.sakaiproject.samigo.impl.pdf.AssessmentPdfCellEvents.ImageMapCircle;
 import org.sakaiproject.samigo.impl.pdf.AssessmentPdfCellEvents.ImageMapQuestionCellEvent;
-import org.sakaiproject.tool.assessment.data.dao.grading.ItemGradingData;
-import org.sakaiproject.tool.assessment.data.dao.grading.MediaData;
+import org.sakaiproject.samigo.api.pdf.model.AssessmentPdfValueTypes.AssessmentPdfItemGradingModel;
 import org.sakaiproject.tool.assessment.data.ifc.shared.TypeIfc;
 import static org.sakaiproject.samigo.impl.pdf.AssessmentPdfStyle.BACKGROUND_GRAY;
 import static org.sakaiproject.samigo.impl.pdf.AssessmentPdfStyle.BODY_FONT;
@@ -296,7 +295,7 @@ public class AssessmentPdfQuestionRenderer {
             }
         }
         if (question.isEmiAnswerOptionsRich()) {
-            document.add(new Paragraph(question.getEmiAnswerOptionsRichText(), fontWithColor(context.bodyFont(), TEXT_PRIMARY)));
+            contentHelper.addQuestionTitleToDocument(document, question.getEmiAnswerOptionsRichText(), true, context.isMathJaxEnabled(), context.getFontSizeSetting());
         }
 
         if (StringUtils.isNotBlank(question.getLeadInText())) {
@@ -577,16 +576,19 @@ public class AssessmentPdfQuestionRenderer {
             answerRectangles.add(new Rectangle(jsonObject.getFloat("x1"), jsonObject.getFloat("y1"), jsonObject.getFloat("x2"), jsonObject.getFloat("y2")));
         }
 
-        List<ItemGradingData> itemsGrading = question.getItemGradingData();
+        List<AssessmentPdfItemGradingModel> itemsGrading = question.getItemGradingData();
         ArrayList<ImageMapCircle> answerCircles = new ArrayList<>();
-        for (ItemGradingData itemGrading : itemsGrading) {
+        for (AssessmentPdfItemGradingModel itemGrading : itemsGrading) {
             if (itemGrading.getAnswerText() != null && !StringUtils.equals(itemGrading.getAnswerText(), "")) {
                 JSONObject jsonObject = new JSONObject(itemGrading.getAnswerText());
                 boolean xDefined = !StringUtils.equals(jsonObject.optString("x"), "undefined");
                 boolean yDefined = !StringUtils.equals(jsonObject.optString("y"), "undefined");
                 float x = xDefined ? jsonObject.getFloat("x") : 0f;
                 float y = yDefined ? jsonObject.getFloat("y") : 0f;
-                answerCircles.add(new ImageMapCircle(x, y, itemGrading.getPublishedItemTextId().intValue()));
+                Long publishedItemTextId = itemGrading.getPublishedItemTextId();
+                if (publishedItemTextId != null) {
+                    answerCircles.add(new ImageMapCircle(x, y, publishedItemTextId.intValue()));
+                }
             }
         }
         cellImage.setCellEvent(new ImageMapQuestionCellEvent(answerCircles, answerRectangles, image.getWidth(), image.getHeight()));
@@ -670,7 +672,9 @@ public class AssessmentPdfQuestionRenderer {
                 }
                 PdfPCell matchingCell = new PdfPCell(new Phrase(AssessmentPdfBundle.getAuthorString("item") + " " + imageMapRow.getText(), fontWithColor(BODY_FONT, TEXT_PRIMARY)));
                 contentHelper.styleAnswerCell(matchingCell, 4f);
-                matchingCell.setCellEvent(new CheckOrCrossCellEvent(imageMapRow.getCorrect() != null ? imageMapRow.getCorrect(): false));
+                if (imageMapRow.getCorrect() != null) {
+                    matchingCell.setCellEvent(new CheckOrCrossCellEvent(imageMapRow.getCorrect()));
+                }
                 matchingTable.addCell(matchingCell);
                 cellsAdded++;
             }
@@ -691,7 +695,9 @@ public class AssessmentPdfQuestionRenderer {
                     if (matchingItem.getResponse() != null && matchingItem.getResponse().equals(choice.getValue())) {
                         PdfPCell matchingCell = new PdfPCell(new Phrase(choice.getLabel() + " ··> " + matchingItem.getText(), fontWithColor(BODY_FONT, TEXT_PRIMARY)));
                         contentHelper.styleAnswerCell(matchingCell, 4f);
-                        matchingCell.setCellEvent(new CheckOrCrossCellEvent(Boolean.TRUE.equals(matchingItem.getCorrect())));
+                        if (matchingItem.getCorrect() != null) {
+                            matchingCell.setCellEvent(new CheckOrCrossCellEvent(matchingItem.getCorrect()));
+                        }
                         matchingTable.addCell(matchingCell);
                         cellsAdded++;
                         responseFound = true;

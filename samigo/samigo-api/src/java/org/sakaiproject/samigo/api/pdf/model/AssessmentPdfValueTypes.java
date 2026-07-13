@@ -308,6 +308,54 @@ public final class AssessmentPdfValueTypes {
     }
 
     /**
+     * Uploaded media metadata for PDF report rendering.
+     */
+    public static final class AssessmentPdfMediaModel implements Serializable {
+
+        private static final long serialVersionUID = 1L;
+
+        private final Long mediaId;
+        private final String filename;
+
+        public AssessmentPdfMediaModel(Long mediaId, String filename) {
+            this.mediaId = mediaId;
+            this.filename = filename;
+        }
+
+        public Long getMediaId() {
+            return mediaId;
+        }
+
+        public String getFilename() {
+            return filename;
+        }
+    }
+
+    /**
+     * Grading response metadata for PDF report rendering.
+     */
+    public static final class AssessmentPdfItemGradingModel implements Serializable {
+
+        private static final long serialVersionUID = 1L;
+
+        private final String answerText;
+        private final Long publishedItemTextId;
+
+        public AssessmentPdfItemGradingModel(String answerText, Long publishedItemTextId) {
+            this.answerText = answerText;
+            this.publishedItemTextId = publishedItemTextId;
+        }
+
+        public String getAnswerText() {
+            return answerText;
+        }
+
+        public Long getPublishedItemTextId() {
+            return publishedItemTextId;
+        }
+    }
+
+    /**
      * Print layout options for blank assessment PDFs.
      */
     public static final class AssessmentPdfPrintSettingsModel implements Serializable {
@@ -346,6 +394,10 @@ public final class AssessmentPdfValueTypes {
 
         public Boolean getShowSamePage() {
             return showSamePage;
+        }
+
+        public static AssessmentPdfPrintSettingsModel defaults() {
+            return new AssessmentPdfPrintSettingsModel(Boolean.TRUE, "3", Boolean.TRUE, Boolean.FALSE, Boolean.FALSE);
         }
     }
 }

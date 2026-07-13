@@ -38,7 +38,7 @@ public final class AssessmentPdfTestDataFactory {
     }
 
     public static AssessmentPdfPrintSettingsModel defaultPrintSettings() {
-        return new AssessmentPdfPrintSettingsModel(Boolean.TRUE, "3", Boolean.TRUE, Boolean.FALSE, Boolean.FALSE);
+        return AssessmentPdfPrintSettingsModel.defaults();
     }
 
     public static AssessmentPdfAttachmentModel pngAttachment() {

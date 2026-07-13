@@ -70,7 +70,7 @@ public class QuestionRenderContext {
     }
 
     public DecimalFormat getScoreFormat() {
-        return reportModel != null ? new DecimalFormat("0.00") : null;
+        return reportModel != null ? AssessmentPdfLocaleSupport.scoreFormat() : null;
     }
 
     public AssessmentPdfPrintSettingsModel getPrintSettings() {

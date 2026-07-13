@@ -36,7 +36,7 @@ public final class AssessmentPrintPdfModel implements Serializable {
         this.title = title;
         this.introHtml = introHtml;
         this.mathJaxEnabled = mathJaxEnabled;
-        this.printSettings = printSettings;
+        this.printSettings = printSettings != null ? printSettings : AssessmentPdfValueTypes.AssessmentPdfPrintSettingsModel.defaults();
         this.parts = parts == null ? Collections.emptyList() : List.copyOf(parts);
     }
 

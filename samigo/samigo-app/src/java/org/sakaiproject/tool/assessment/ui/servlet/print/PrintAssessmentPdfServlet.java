@@ -85,14 +85,11 @@ public class PrintAssessmentPdfServlet extends SamigoBaseServlet {
                 : ContentDisposition.inline().filename(filename, StandardCharsets.UTF_8).build();
         response.setHeader(HttpHeaders.CONTENT_DISPOSITION, disposition.toString());
 
-        ServletOutputStream out = response.getOutputStream();
-        try {
+        try (ServletOutputStream out = response.getOutputStream()) {
             out.write(pdfBytes);
             out.flush();
         } catch (IOException e) {
             log.debug("Client disconnected while streaming print preview PDF", e);
-        } finally {
-            out.close();
         }
     }
 

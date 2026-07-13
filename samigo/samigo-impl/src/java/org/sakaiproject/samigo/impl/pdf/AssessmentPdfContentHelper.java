@@ -33,7 +33,7 @@ import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.samigo.api.pdf.model.AssessmentPdfValueTypes.AssessmentPdfAttachmentModel;
 import org.sakaiproject.samigo.api.pdf.model.AssessmentPdfValueTypes.AssessmentPdfFillInRowModel;
-import org.sakaiproject.tool.assessment.data.dao.grading.MediaData;
+import org.sakaiproject.samigo.api.pdf.model.AssessmentPdfValueTypes.AssessmentPdfMediaModel;
 import org.sakaiproject.tool.assessment.data.ifc.assessment.AttachmentIfc;
 
 import com.lowagie.text.Anchor;
@@ -194,7 +194,7 @@ public class AssessmentPdfContentHelper {
                     pdfLatexImage.scaleAbsolute(finalWidth, finalHeight);
                     latexParagraph.add(new Chunk(pdfLatexImage, -1, -2, true));
                 } catch (Exception ex) {
-                    log.error(ex.getMessage());
+                    log.error(ex.getMessage(), ex);
                     latexParagraph.add(new Chunk(chunk.getContent(), font));
                 }
             }
@@ -231,7 +231,7 @@ public class AssessmentPdfContentHelper {
                 table.addCell(blankLine);
             }
         } catch (Exception ex) {
-            log.error(ex.getMessage());
+            log.error(ex.getMessage(), ex);
         }
     }
 
@@ -329,7 +329,7 @@ public class AssessmentPdfContentHelper {
     /**
      * Renders uploaded media files in student reports with clickable filenames.
      */
-    public void addMediaFileListToDocument(Document document, List<MediaData> mediaItems) throws Exception {
+    public void addMediaFileListToDocument(Document document, List<AssessmentPdfMediaModel> mediaItems) throws Exception {
         if (mediaItems == null || mediaItems.isEmpty()) {
             return;
         }
@@ -342,7 +342,7 @@ public class AssessmentPdfContentHelper {
         attachmentTable.setSpacingBefore(12f);
         configureSplittableTable(attachmentTable);
 
-        for (MediaData mediaData : mediaItems) {
+        for (AssessmentPdfMediaModel mediaData : mediaItems) {
             if (mediaData == null || StringUtils.isBlank(mediaData.getFilename())) {
                 continue;
             }
@@ -734,7 +734,7 @@ public class AssessmentPdfContentHelper {
     }
 
     public PdfPCell createFillInCell(int position, String response, Boolean isCorrect) {
-        String responseText = StringUtils.equals(response, "") ? AssessmentPdfBundle.getAuthorString("no_answer.text") : response;
+        String responseText = StringUtils.isEmpty(response) ? AssessmentPdfBundle.getAuthorString("no_answer.text") : response;
         PdfPCell fillInCell = new PdfPCell(new Phrase("(" + position + ") " + responseText, fontWithColor(BODY_FONT, TEXT_PRIMARY)));
         fillInCell.setPaddingBottom(2f);
         fillInCell.setPaddingLeft(2f);

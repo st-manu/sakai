@@ -19,8 +19,8 @@ import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 
-import org.sakaiproject.tool.assessment.data.dao.grading.ItemGradingData;
-import org.sakaiproject.tool.assessment.data.dao.grading.MediaData;
+import org.sakaiproject.samigo.api.pdf.model.AssessmentPdfValueTypes.AssessmentPdfItemGradingModel;
+import org.sakaiproject.samigo.api.pdf.model.AssessmentPdfValueTypes.AssessmentPdfMediaModel;
 
 /**
  * Immutable question snapshot for PDF generation.
@@ -76,8 +76,8 @@ public final class AssessmentPdfQuestionModel implements Serializable {
     private final List<AssessmentPdfValueTypes.AssessmentPdfMatrixRowModel> matrixRows;
     private final List<Integer> columnIndexes;
     private final String[] columnLabels;
-    private final List<MediaData> mediaItems;
-    private final List<ItemGradingData> itemGradingData;
+    private final List<AssessmentPdfMediaModel> mediaItems;
+    private final List<AssessmentPdfItemGradingModel> itemGradingData;
     private final List<String> matchingResponses;
 
     private AssessmentPdfQuestionModel(Builder builder) {
@@ -329,11 +329,11 @@ public final class AssessmentPdfQuestionModel implements Serializable {
         return columnLabels.clone();
     }
 
-    public List<MediaData> getMediaItems() {
+    public List<AssessmentPdfMediaModel> getMediaItems() {
         return mediaItems;
     }
 
-    public List<ItemGradingData> getItemGradingData() {
+    public List<AssessmentPdfItemGradingModel> getItemGradingData() {
         return itemGradingData;
     }
 
@@ -389,8 +389,8 @@ public final class AssessmentPdfQuestionModel implements Serializable {
         private List<AssessmentPdfValueTypes.AssessmentPdfMatrixRowModel> matrixRows;
         private List<Integer> columnIndexes;
         private String[] columnLabels;
-        private List<MediaData> mediaItems;
-        private List<ItemGradingData> itemGradingData;
+        private List<AssessmentPdfMediaModel> mediaItems;
+        private List<AssessmentPdfItemGradingModel> itemGradingData;
         private List<String> matchingResponses;
 
         public Builder typeId(Long typeId) {
@@ -628,12 +628,12 @@ public final class AssessmentPdfQuestionModel implements Serializable {
             return this;
         }
 
-        public Builder mediaItems(List<MediaData> mediaItems) {
+        public Builder mediaItems(List<AssessmentPdfMediaModel> mediaItems) {
             this.mediaItems = mediaItems;
             return this;
         }
 
-        public Builder itemGradingData(List<ItemGradingData> itemGradingData) {
+        public Builder itemGradingData(List<AssessmentPdfItemGradingModel> itemGradingData) {
             this.itemGradingData = itemGradingData;
             return this;
         }

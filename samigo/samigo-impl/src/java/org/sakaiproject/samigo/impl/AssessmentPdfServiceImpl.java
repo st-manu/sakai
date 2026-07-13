@@ -72,6 +72,10 @@ public class AssessmentPdfServiceImpl implements AssessmentPdfService {
             if (document.isOpen()) {
                 document.close();
             }
+            if (ex instanceof RuntimeException) {
+                throw (RuntimeException) ex;
+            }
+            throw new RuntimeException(ex);
         }
         return output.toByteArray();
     }

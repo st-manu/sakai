@@ -69,12 +69,9 @@ public class ExportAction implements ActionListener {
             response.setHeader(HttpHeaders.CONTENT_DISPOSITION, ContentDisposition.attachment().filename(reportFilename, StandardCharsets.UTF_8).build().toString());
             response.setContentLength(pdfBytes.length);
 
-            ServletOutputStream outputStream = response.getOutputStream();
-            try {
+            try (ServletOutputStream outputStream = response.getOutputStream()) {
                 outputStream.write(pdfBytes);
                 outputStream.flush();
-            } finally {
-                outputStream.close();
             }
             faces.responseComplete();
         } catch (IOException ex) {

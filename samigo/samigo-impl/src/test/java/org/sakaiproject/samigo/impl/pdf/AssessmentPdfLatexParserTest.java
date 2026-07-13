@@ -43,6 +43,14 @@ public class AssessmentPdfLatexParserTest {
     }
 
     @Test
+    public void parseLatexChunksReturnsPlainTextWhenMathEnabledWithoutDelimiters() {
+        java.util.List<LatexChunk> chunks = AssessmentPdfLatexParser.parseLatexChunks("plain text only", true);
+        assertEquals(1, chunks.size());
+        assertEquals(LatexChunk.Type.TEXT, chunks.get(0).getType());
+        assertEquals("plain text only", chunks.get(0).getContent());
+    }
+
+    @Test
     public void parseLatexChunksSupportsParenAndBracketDelimiters() {
         java.util.List<LatexChunk> chunks = AssessmentPdfLatexParser.parseLatexChunks(
                 "a \\(\\alpha\\) b \\[\\beta\\]", true);

@@ -24,7 +24,11 @@ import javax.faces.model.SelectItem;
 
 import org.apache.commons.lang3.StringUtils;
 import org.sakaiproject.exception.IdUnusedException;
+import org.sakaiproject.tool.assessment.data.dao.grading.ItemGradingData;
+import org.sakaiproject.tool.assessment.data.dao.grading.MediaData;
 import org.sakaiproject.samigo.api.pdf.model.AssessmentPdfValueTypes.AssessmentPdfAttachmentModel;
+import org.sakaiproject.samigo.api.pdf.model.AssessmentPdfValueTypes.AssessmentPdfItemGradingModel;
+import org.sakaiproject.samigo.api.pdf.model.AssessmentPdfValueTypes.AssessmentPdfMediaModel;
 import org.sakaiproject.samigo.api.pdf.model.AssessmentPdfValueTypes.AssessmentPdfChoiceOptionModel;
 import org.sakaiproject.samigo.api.pdf.model.AssessmentPdfValueTypes.AssessmentPdfEmiPromptModel;
 import org.sakaiproject.samigo.api.pdf.model.AssessmentPdfValueTypes.AssessmentPdfFillInRowModel;
@@ -193,8 +197,8 @@ public final class AssessmentPdfSnapshotBuilder {
                 .matrixRows(toMatrixRows(item.getMatrixArray()))
                 .columnIndexes(item.getColumnIndexList())
                 .columnLabels(item.getColumnArray())
-                .mediaItems(item.getMediaArray())
-                .itemGradingData(item.getItemGradingDataArray())
+                .mediaItems(toMediaItems(item.getMediaArray()))
+                .itemGradingData(toItemGradingData(item.getItemGradingDataArray()))
                 .matchingResponses(matchingResponses);
         applyItemDataSnapshot(builder, item.getItemData());
         return builder.build();
@@ -349,7 +353,8 @@ public final class AssessmentPdfSnapshotBuilder {
                         continue;
                     }
                     SelectItem choice = (SelectItem) choiceObject;
-                    choices.add(new AssessmentPdfChoiceOptionModel(choice.getLabel(), String.valueOf(choice.getValue()), choice.getDescription()));
+                    Object choiceValue = choice.getValue();
+                    choices.add(new AssessmentPdfChoiceOptionModel(choice.getLabel(), choiceValue == null ? null : String.valueOf(choiceValue), choice.getDescription()));
                 }
             }
             rows.add(new AssessmentPdfMatchingRowModel(
@@ -445,6 +450,36 @@ public final class AssessmentPdfSnapshotBuilder {
             }
         }
         return attachments;
+    }
+
+    private static List<AssessmentPdfMediaModel> toMediaItems(List mediaArray) {
+        if (mediaArray == null) {
+            return Collections.emptyList();
+        }
+        List<AssessmentPdfMediaModel> items = new ArrayList<>();
+        for (Object mediaObject : mediaArray) {
+            if (!(mediaObject instanceof MediaData)) {
+                continue;
+            }
+            MediaData mediaData = (MediaData) mediaObject;
+            items.add(new AssessmentPdfMediaModel(mediaData.getMediaId(), mediaData.getFilename()));
+        }
+        return items;
+    }
+
+    private static List<AssessmentPdfItemGradingModel> toItemGradingData(List itemGradingDataArray) {
+        if (itemGradingDataArray == null) {
+            return Collections.emptyList();
+        }
+        List<AssessmentPdfItemGradingModel> items = new ArrayList<>();
+        for (Object gradingObject : itemGradingDataArray) {
+            if (!(gradingObject instanceof ItemGradingData)) {
+                continue;
+            }
+            ItemGradingData itemGradingData = (ItemGradingData) gradingObject;
+            items.add(new AssessmentPdfItemGradingModel(itemGradingData.getAnswerText(), itemGradingData.getPublishedItemTextId()));
+        }
+        return items;
     }
 
     private static AssessmentPdfPrintSettingsModel toPrintSettings(PrintSettingsBean printSettings) {

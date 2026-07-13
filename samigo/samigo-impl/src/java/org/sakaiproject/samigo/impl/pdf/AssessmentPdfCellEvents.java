@@ -127,6 +127,9 @@ public final class AssessmentPdfCellEvents {
 
         @Override
         public void cellLayout(PdfPCell cell, Rectangle position, PdfContentByte[] canvases) {
+            if (originalWidth <= 0f || originalHeight <= 0f) {
+                return;
+            }
             PdfContentByte canvas = canvases[PdfPTable.TEXTCANVAS];
             float x = position.getLeft();
             float y = position.getBottom();
@@ -188,7 +191,7 @@ public final class AssessmentPdfCellEvents {
                     canvas.endText();
                     questionIndex++;
                 } catch (Exception ex) {
-                    log.error("Cannot write the number of the ImageMap. {}", ex.getMessage());
+                    log.error("Cannot write the number of the ImageMap.", ex);
                 }
             }
 
@@ -206,7 +209,7 @@ public final class AssessmentPdfCellEvents {
                         canvas.endText();
                         canvas.fill();
                     } catch (Exception ex) {
-                        log.error("Cannot write the number of the ImageMap. {}", ex.getMessage());
+                        log.error("Cannot write the number of the ImageMap.", ex);
                     }
                 }
             }

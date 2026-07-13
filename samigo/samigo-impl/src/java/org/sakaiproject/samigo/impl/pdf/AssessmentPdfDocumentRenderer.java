@@ -92,7 +92,7 @@ public class AssessmentPdfDocumentRenderer {
 
         int index = 0;
         int totalQuestions = model.totalQuestions();
-        DecimalFormat scoreFormat = new DecimalFormat("0.00");
+        DecimalFormat scoreFormat = AssessmentPdfLocaleSupport.scoreFormat();
 
         for (AssessmentPdfPartModel deliveryPart : model.getParts()) {
             List<AssessmentPdfQuestionModel> items = deliveryPart.getQuestions();
@@ -155,7 +155,7 @@ public class AssessmentPdfDocumentRenderer {
     }
 
     private void renderReportHeader(Document document, AssessmentStudentReportPdfModel model) throws Exception {
-        DecimalFormat scoreFormat = new DecimalFormat("0.00");
+        DecimalFormat scoreFormat = AssessmentPdfLocaleSupport.scoreFormat();
         Paragraph studentNameParagraph = new Paragraph(model.getStudentName(), fontWithColor(TITLE_FONT, TEXT_PRIMARY));
         studentNameParagraph.setSpacingBefore(5f);
         studentNameParagraph.setSpacingAfter(5f);

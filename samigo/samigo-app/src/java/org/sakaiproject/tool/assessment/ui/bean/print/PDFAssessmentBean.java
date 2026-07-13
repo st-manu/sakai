@@ -126,8 +126,8 @@ public class PDFAssessmentBean implements Serializable {
 		LocalDateTime now = LocalDateTime.now();
 		String timestamp = now.format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
 
-		String plainTitle = formattedText.convertFormattedTextToPlaintext(title)
-				.substring(0, Math.min(title.length(), 9));
+		String plainTitle = formattedText.convertFormattedTextToPlaintext(title);
+		plainTitle = plainTitle.substring(0, Math.min(plainTitle.length(), 9));
 
 		return formattedText.escapeUrl(
 				String.format("%s%s.pdf", plainTitle, timestamp)

@@ -15,6 +15,7 @@
  */
 package org.sakaiproject.samigo.impl.pdf;
 
+import java.util.Locale;
 import java.util.ResourceBundle;
 
 public final class AssessmentPdfBundle {
@@ -25,67 +26,31 @@ public final class AssessmentPdfBundle {
     private static final String COMMON = "org.sakaiproject.tool.assessment.bundle.CommonMessages";
     private static final String DELIVERY = "org.sakaiproject.tool.assessment.bundle.DeliveryMessages";
 
-    private static ResourceBundle authorBundle;
-    private static ResourceBundle evaluationBundle;
-    private static ResourceBundle printBundle;
-    private static ResourceBundle commonBundle;
-    private static ResourceBundle deliveryBundle;
-
     private AssessmentPdfBundle() {
     }
 
     public static String getAuthorString(String key) {
-        return authorBundle().getString(key);
+        return getString(AUTHOR, key);
     }
 
     public static String getEvaluationString(String key) {
-        return evaluationBundle().getString(key);
+        return getString(EVALUATION, key);
     }
 
     public static String getPrintString(String key) {
-        return printBundle().getString(key);
+        return getString(PRINT, key);
     }
 
     public static String getCommonString(String key) {
-        return commonBundle().getString(key);
+        return getString(COMMON, key);
     }
 
     public static String getDeliveryString(String key) {
-        return deliveryBundle().getString(key);
+        return getString(DELIVERY, key);
     }
 
-    private static ResourceBundle authorBundle() {
-        if (authorBundle == null) {
-            authorBundle = ResourceBundle.getBundle(AUTHOR);
-        }
-        return authorBundle;
-    }
-
-    private static ResourceBundle evaluationBundle() {
-        if (evaluationBundle == null) {
-            evaluationBundle = ResourceBundle.getBundle(EVALUATION);
-        }
-        return evaluationBundle;
-    }
-
-    private static ResourceBundle printBundle() {
-        if (printBundle == null) {
-            printBundle = ResourceBundle.getBundle(PRINT);
-        }
-        return printBundle;
-    }
-
-    private static ResourceBundle commonBundle() {
-        if (commonBundle == null) {
-            commonBundle = ResourceBundle.getBundle(COMMON);
-        }
-        return commonBundle;
-    }
-
-    private static ResourceBundle deliveryBundle() {
-        if (deliveryBundle == null) {
-            deliveryBundle = ResourceBundle.getBundle(DELIVERY);
-        }
-        return deliveryBundle;
+    private static String getString(String baseName, String key) {
+        Locale locale = AssessmentPdfLocaleSupport.effectiveLocale();
+        return ResourceBundle.getBundle(baseName, locale).getString(key);
     }
 }
