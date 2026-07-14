@@ -50,9 +50,12 @@
           refreshPrintPdfPreview();
           window.addEventListener('resize', refreshPrintPdfPreview);
 
-          document.querySelectorAll('.form-check-input, .form-select').forEach(control => {
-            control.addEventListener('change', function() {
-              applyPrintSettingsFromControl(control);
+          document.querySelectorAll('form').forEach(form => {
+            form.addEventListener('change', function(event) {
+              const control = event.target;
+              if (control.matches('.form-check-input, .form-select, input[type="radio"]')) {
+                applyPrintSettingsFromControl(control);
+              }
             });
           });
         });
@@ -76,11 +79,11 @@
                 </h:outputLabel>
               </div>
 
-              <div class="form-check">
-                <h:selectBooleanCheckbox id="showFeedback" value="#{printSettings.showKeysFeedback}" styleClass="form-check-input" />
-                <h:outputLabel for="showFeedback" styleClass="form-check-label">
-                  <h:outputText value="#{printMessages.show_answer_feedback}" />
-                </h:outputLabel>
+              <div class="ms-4 mb-2">
+                <h:selectOneRadio id="answerKeyFeedbackMode" value="#{printSettings.showKeysFeedback}" layout="pageDirection" styleClass="form-check" disabled="#{not printSettings.showKeys}">
+                  <f:selectItem itemValue="#{false}" itemLabel="#{printMessages.show_answer_key_only}" />
+                  <f:selectItem itemValue="#{true}" itemLabel="#{printMessages.show_answer_key_with_feedback}" />
+                </h:selectOneRadio>
               </div>
 
               <div class="form-check">

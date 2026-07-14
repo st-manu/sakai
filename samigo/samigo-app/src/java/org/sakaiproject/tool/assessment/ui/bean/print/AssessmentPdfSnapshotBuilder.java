@@ -197,6 +197,8 @@ public final class AssessmentPdfSnapshotBuilder {
                 .matrixRows(toMatrixRows(item.getMatrixArray()))
                 .columnIndexes(item.getColumnIndexList())
                 .columnLabels(item.getColumnArray())
+                .matrixAddComment(item.getAddComment())
+                .matrixCommentField(item.getCommentField())
                 .mediaItems(toMediaItems(item.getMediaArray()))
                 .itemGradingData(toItemGradingData(item.getItemGradingDataArray()))
                 .matchingResponses(matchingResponses);

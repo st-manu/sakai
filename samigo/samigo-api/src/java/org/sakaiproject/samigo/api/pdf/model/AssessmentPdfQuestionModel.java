@@ -79,6 +79,8 @@ public final class AssessmentPdfQuestionModel implements Serializable {
     private final List<AssessmentPdfMediaModel> mediaItems;
     private final List<AssessmentPdfItemGradingModel> itemGradingData;
     private final List<String> matchingResponses;
+    private final boolean matrixAddComment;
+    private final String matrixCommentField;
 
     private AssessmentPdfQuestionModel(Builder builder) {
         this.typeId = builder.typeId;
@@ -131,6 +133,8 @@ public final class AssessmentPdfQuestionModel implements Serializable {
         this.mediaItems = copy(builder.mediaItems);
         this.itemGradingData = copy(builder.itemGradingData);
         this.matchingResponses = copy(builder.matchingResponses);
+        this.matrixAddComment = builder.matrixAddComment;
+        this.matrixCommentField = builder.matrixCommentField;
     }
 
     private static <T> List<T> copy(List<T> source) {
@@ -341,6 +345,14 @@ public final class AssessmentPdfQuestionModel implements Serializable {
         return matchingResponses;
     }
 
+    public boolean isMatrixAddComment() {
+        return matrixAddComment;
+    }
+
+    public String getMatrixCommentField() {
+        return matrixCommentField;
+    }
+
     public static final class Builder {
         private Long typeId;
         private String itemHtmlText;
@@ -392,6 +404,8 @@ public final class AssessmentPdfQuestionModel implements Serializable {
         private List<AssessmentPdfMediaModel> mediaItems;
         private List<AssessmentPdfItemGradingModel> itemGradingData;
         private List<String> matchingResponses;
+        private boolean matrixAddComment;
+        private String matrixCommentField;
 
         public Builder typeId(Long typeId) {
             this.typeId = typeId;
@@ -640,6 +654,16 @@ public final class AssessmentPdfQuestionModel implements Serializable {
 
         public Builder matchingResponses(List<String> matchingResponses) {
             this.matchingResponses = matchingResponses;
+            return this;
+        }
+
+        public Builder matrixAddComment(boolean matrixAddComment) {
+            this.matrixAddComment = matrixAddComment;
+            return this;
+        }
+
+        public Builder matrixCommentField(String matrixCommentField) {
+            this.matrixCommentField = matrixCommentField;
             return this;
         }
 
