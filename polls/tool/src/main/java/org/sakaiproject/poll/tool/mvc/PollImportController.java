@@ -21,16 +21,22 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.StringJoiner;
 
 import org.apache.commons.lang3.StringUtils;
 import org.sakaiproject.poll.api.importformat.PollImportCsvFormat;
 import org.sakaiproject.poll.api.service.PollImportException;
 import org.sakaiproject.poll.api.service.PollsService;
+import org.sakaiproject.site.api.Group;
 import org.sakaiproject.tool.api.SessionManager;
 import org.sakaiproject.tool.api.ToolManager;
+import org.sakaiproject.user.api.User;
 import org.sakaiproject.user.api.UserDirectoryService;
+import org.sakaiproject.user.api.UserNotDefinedException;
+import org.sakaiproject.util.comparator.UserSortNameComparator;
 import org.springframework.context.MessageSource;
 import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
@@ -146,7 +152,26 @@ public class PollImportController {
         String currentSiteId = toolManager.getCurrentPlacement().getContext();
         model.addAttribute("canAdd", pollsService.isAllowedPollAdd(currentSiteId));
         model.addAttribute("isSiteOwner", pollsService.isSiteOwner(currentSiteId));
+        List<PollGroupInfo> groups = pollsService.getSiteGroups(currentSiteId).stream()
+                .map(group -> toGroupInfo(group, locale))
+                .toList();
+        model.addAttribute("groups", groups);
         model.addAttribute("importExample", PollImportCsvFormat.buildSampleCsv(buildImportColumnHeaders(locale)));
+    }
+
+    private PollGroupInfo toGroupInfo(Group group, Locale locale) {
+        List<User> members = new ArrayList<>();
+        group.getMembers().forEach(member -> {
+            try {
+                members.add(userDirectoryService.getUser(member.getUserId()));
+            } catch (UserNotDefinedException e) {
+                log.debug("User {} not found for group {}", member.getUserId(), group.getId());
+            }
+        });
+        Collections.sort(members, new UserSortNameComparator(locale));
+        StringJoiner joiner = new StringJoiner(", ");
+        members.forEach(user -> joiner.add(user.getDisplayName()));
+        return new PollGroupInfo(group.getTitle(), joiner.toString());
     }
 
     private List<String> buildImportColumnHeaders(Locale locale) {
@@ -183,4 +208,6 @@ public class PollImportController {
             throw new IllegalArgumentException(messageSource.getMessage("poll_import_error_file", null, locale), e);
         }
     }
+
+    private record PollGroupInfo(String title, String members) { }
 }

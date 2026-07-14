@@ -25,6 +25,7 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.TimeZone;
 import java.util.UUID;
 import java.util.function.Function;
@@ -866,6 +867,36 @@ public class PollsServiceTests {
         Assert.assertNotNull(saved);
         Assert.assertEquals(Poll.Access.GROUP, saved.getTypeOfAccess());
         Assert.assertTrue(saved.getGroupIds().contains("g1"));
+    }
+
+    @Test
+    public void testSavePollRejectsInvalidGroupIds() {
+        Poll poll = new Poll();
+        poll.setCreationDate(Instant.now());
+        poll.setVoteOpen(Instant.now());
+        poll.setVoteClose(Instant.now().plus(1, ChronoUnit.DAYS));
+        poll.setDescription("this is some text");
+        poll.setText("group poll");
+        poll.setOwner(USER);
+        poll.setSiteId(LOCATION1_ID);
+        poll.setTypeOfAccess(Poll.Access.GROUP);
+        poll.setGroupIds(Set.of("foreign-group-id"));
+
+        Mockito.when(sessionManager.getCurrentSessionUserId()).thenReturn(USER);
+        Assert.assertThrows(IllegalArgumentException.class, () -> pollsService.savePoll(poll));
+    }
+
+    @Test
+    public void testImportPollsFromCsvFailsWhenSomeGroupsMissing() {
+        Mockito.when(sessionManager.getCurrentSessionUserId()).thenReturn(USER);
+
+        String csv = importCsvHeader(2) + "\n"
+            + "Import access poll - partial group,Bulk import details,group,\"Group 1,Missing Group\",2026-06-01,09:00,2026-06-02,17:00,1,1,1,Yes,No\n";
+
+        PollImportException exception = Assert.assertThrows(PollImportException.class, () ->
+            pollsService.importPollsFromCsv(List.of(csv), LOCATION1_ID, USER)
+        );
+        Assert.assertEquals(PollImportError.INVALID_GROUPS, exception.getError());
     }
 
     @Test

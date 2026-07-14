@@ -29,7 +29,6 @@ import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.function.Function;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -41,6 +40,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.Stack;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -66,17 +66,26 @@ import org.sakaiproject.event.api.UsageSession;
 import org.sakaiproject.event.api.UsageSessionService;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.lti.api.LTIService;
+import static org.sakaiproject.poll.api.PollConstants.APPLICATION_ID;
+import static org.sakaiproject.poll.api.PollConstants.PERMISSION_ADD;
+import static org.sakaiproject.poll.api.PollConstants.PERMISSION_DELETE_ANY;
+import static org.sakaiproject.poll.api.PollConstants.PERMISSION_DELETE_OWN;
+import static org.sakaiproject.poll.api.PollConstants.PERMISSION_EDIT_ANY;
+import static org.sakaiproject.poll.api.PollConstants.PERMISSION_EDIT_OWN;
+import static org.sakaiproject.poll.api.PollConstants.PERMISSION_PREFIX;
+import static org.sakaiproject.poll.api.PollConstants.PERMISSION_VOTE;
+import static org.sakaiproject.poll.api.PollConstants.REFERENCE_ROOT;
 import org.sakaiproject.poll.api.entity.PollEntity;
-import org.sakaiproject.poll.api.model.VoteCollection;
-import org.sakaiproject.poll.api.service.PollImportError;
-import org.sakaiproject.poll.api.service.PollImportException;
-import org.sakaiproject.poll.api.service.PollsService;
 import org.sakaiproject.poll.api.importformat.PollImportCsvFormat;
 import org.sakaiproject.poll.api.model.Option;
 import org.sakaiproject.poll.api.model.Poll;
 import org.sakaiproject.poll.api.model.Vote;
+import org.sakaiproject.poll.api.model.VoteCollection;
 import org.sakaiproject.poll.api.repository.PollRepository;
 import org.sakaiproject.poll.api.repository.VoteRepository;
+import org.sakaiproject.poll.api.service.PollImportError;
+import org.sakaiproject.poll.api.service.PollImportException;
+import org.sakaiproject.poll.api.service.PollsService;
 import org.sakaiproject.poll.api.util.PollUtil;
 import org.sakaiproject.poll.api.util.PollUtils;
 import org.sakaiproject.site.api.Group;
@@ -96,8 +105,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
-
-import static org.sakaiproject.poll.api.PollConstants.*;
 
 import com.opencsv.CSVReader;
 
@@ -180,12 +187,17 @@ public class PollsServiceImpl implements PollsService, EntityProducer, EntityTra
 
     @Override
     public Poll savePoll(final Poll poll) throws SecurityException, IllegalArgumentException {
-        if (poll == null
-                || StringUtils.isAnyBlank(poll.getText(), poll.getSiteId(), poll.getVoteOpen().toString(), poll.getVoteClose().toString())) {
+        if (poll == null || StringUtils.isAnyBlank(poll.getText(), poll.getSiteId(), poll.getVoteOpen().toString(), poll.getVoteClose().toString())) {
             throw new IllegalArgumentException(pollsBundle.getString("poll_error_missing_fields"));
         }
         if (poll.getTypeOfAccess() == Poll.Access.GROUP && (poll.getGroupIds() == null || poll.getGroupIds().isEmpty())) {
             throw new IllegalArgumentException(pollsBundle.getString("poll_error_groups_required"));
+        }
+        if (poll.getTypeOfAccess() == Poll.Access.GROUP) {
+            Set<String> validGroupIds = filterValidGroupIds(poll.getSiteId(), poll.getGroupIds());
+            if (!validGroupIds.equals(poll.getGroupIds())) {
+                throw new IllegalArgumentException(pollsBundle.getString("poll_error_invalid_groups"));
+            }
         }
         String userId = sessionManager.getCurrentSessionUserId();
         String siteRef = siteService.siteReference(poll.getSiteId());
@@ -359,7 +371,10 @@ public class PollsServiceImpl implements PollsService, EntityProducer, EntityTra
                         .collect(Collectors.toMap(Group::getTitle, Group::getId));
                 for (String name : importedPoll.groupNames()) {
                     String id = titleToId.get(name);
-                    if (id != null) resolvedIds.add(id);
+                    if (id == null) {
+                        throw new PollImportException(PollImportError.INVALID_GROUPS);
+                    }
+                    resolvedIds.add(id);
                 }
             } catch (IdUnusedException e) {
                 log.warn("Site {} not found when resolving group names", siteId);
@@ -459,9 +474,7 @@ public class PollsServiceImpl implements PollsService, EntityProducer, EntityTra
         return PollUtils.cleanupHtmlPtags(processed);
     }
 
-    private record ImportedPoll(String question, String details, LocalDateTime openDate, LocalDateTime closeDate,
-                                int minOptions, int maxOptions, String displayResult, List<String> options,
-                                Poll.Access access, Set<String> groupNames) { }
+    private record ImportedPoll(String question, String details, LocalDateTime openDate, LocalDateTime closeDate, int minOptions, int maxOptions, String displayResult, List<String> options, Poll.Access access, Set<String> groupNames) { }
 
     @Override
     public void deletePoll(final String id) throws SecurityException, IllegalArgumentException {
@@ -795,6 +808,7 @@ public class PollsServiceImpl implements PollsService, EntityProducer, EntityTra
                     Set<String> fromGroupIds = fromPoll.getGroupIds();
                     toPoll.setGroupIds(fromGroupIds != null ? new HashSet<>(fromGroupIds) : new HashSet<>());
                 } else {
+                    // TODO: Cross-site copy resets GROUP access to SITE.
                     toPoll.setTypeOfAccess(Poll.Access.SITE);
                     toPoll.setGroupIds(new HashSet<>());
                 }
