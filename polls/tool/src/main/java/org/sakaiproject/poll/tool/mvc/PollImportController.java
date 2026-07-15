@@ -35,7 +35,6 @@ import org.sakaiproject.tool.api.SessionManager;
 import org.sakaiproject.tool.api.ToolManager;
 import org.sakaiproject.user.api.User;
 import org.sakaiproject.user.api.UserDirectoryService;
-import org.sakaiproject.user.api.UserNotDefinedException;
 import org.sakaiproject.util.comparator.UserSortNameComparator;
 import org.springframework.context.MessageSource;
 import org.springframework.http.ContentDisposition;
@@ -160,14 +159,10 @@ public class PollImportController {
     }
 
     private PollGroupInfo toGroupInfo(Group group, Locale locale) {
-        List<User> members = new ArrayList<>();
-        group.getMembers().forEach(member -> {
-            try {
-                members.add(userDirectoryService.getUser(member.getUserId()));
-            } catch (UserNotDefinedException e) {
-                log.debug("User {} not found for group {}", member.getUserId(), group.getId());
-            }
-        });
+        List<String> memberUserIds = group.getMembers().stream()
+                .map(member -> member.getUserId())
+                .toList();
+        List<User> members = new ArrayList<>(userDirectoryService.getUsers(memberUserIds));
         Collections.sort(members, new UserSortNameComparator(locale));
         StringJoiner joiner = new StringJoiner(", ");
         members.forEach(user -> joiner.add(user.getDisplayName()));
