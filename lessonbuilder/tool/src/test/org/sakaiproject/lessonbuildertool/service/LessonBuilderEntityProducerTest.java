@@ -19,12 +19,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.xml.parsers.DocumentBuilderFactory;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicLong;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import org.junit.Before;
@@ -32,7 +31,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -43,7 +41,14 @@ import org.sakaiproject.lessonbuildertool.SimplePage;
 import org.sakaiproject.lessonbuildertool.SimplePageImpl;
 import org.sakaiproject.lessonbuildertool.SimplePageItem;
 import org.sakaiproject.lessonbuildertool.SimplePageItemImpl;
+import org.sakaiproject.lessonbuildertool.api.LessonBuilderConstants;
 import org.sakaiproject.lessonbuildertool.model.SimplePageToolDao;
+import org.sakaiproject.site.api.Site;
+import org.sakaiproject.site.api.SitePage;
+import org.sakaiproject.site.api.SiteService;
+import org.sakaiproject.site.api.ToolConfiguration;
+import org.sakaiproject.util.MergeConfig;
+import org.sakaiproject.util.Xml;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -60,10 +65,14 @@ public class LessonBuilderEntityProducerTest {
     @Mock
     private Reference ref;
 
+    @Mock
+    private SiteService siteService;
+
     @Before
     public void setUp() {
         producer = new LessonBuilderEntityProducer();
         producer.setSimplePageToolDao(dao);
+        producer.setSiteService(siteService);
     }
 
     @Test
@@ -126,334 +135,165 @@ public class LessonBuilderEntityProducerTest {
     }
 
     /**
-     * findReferencedPagesByItems identifies parent-child links from PAGE items.
+     * SAK-52251: exercise the archive-only merge workflow with no live source site. A
+     * pseudo-orphan with no archived parent is recovered from its regular PAGE reference,
+     * an archived parent remains authoritative when another page links to it, and neither
+     * next-page nor regular links to a placed top-level page alter either placement.
      */
     @Test
-    public void testFindReferencedPagesByItems() {
-        String siteId = "test-site-1";
+    public void testMergeRestoresPseudoOrphanWithoutReparentingLinkedPages() throws Exception {
+        String sourceSiteId = "source-site";
+        String destinationSiteId = "destination-site";
 
-        SimplePage parentPage = newPage(100L, siteId, "Parent Page", "tool-abc", null, null);
-        SimplePage subpage1 = newPage(101L, siteId, "Subpage 1", "tool-abc", 100L, 100L);
-        SimplePage subpage2 = newPage(102L, siteId, "Subpage 2", "tool-abc", 100L, 100L);
+        long oldPageA = 100L;
+        long oldPageB = 200L;
+        long oldPseudoOrphan = 300L;
+        long oldSharedPage = 400L;
+        long newPageA = 1100L;
+        long newPageB = 1200L;
+        long newPseudoOrphan = 1300L;
+        long newSharedPage = 1400L;
 
-        List<SimplePageItem> allItems = new ArrayList<>();
-        allItems.add(pageItem(1L, 100L, "101"));
-        allItems.add(pageItem(2L, 100L, "102"));
-        SimplePageItem textItem = new SimplePageItemImpl();
-        textItem.setId(3L);
-        textItem.setPageId(100L);
-        textItem.setType(SimplePageItem.TEXT);
-        textItem.setHtml("Some text");
-        allItems.add(textItem);
+        Map<Long, List<SimplePageItem>> itemsByPage = new HashMap<>();
+        Map<Long, SimplePage> pagesById = new HashMap<>();
 
-        when(dao.getSitePages(siteId)).thenReturn(List.of(parentPage, subpage1, subpage2));
-        when(dao.findItemsOnPage(100L)).thenReturn(allItems);
-        when(dao.getPage(101L)).thenReturn(subpage1);
-        when(dao.getPage(102L)).thenReturn(subpage2);
+        when(dao.findItemsOnPage(Mockito.anyLong())).thenAnswer(invocation ->
+                itemsByPage.getOrDefault(invocation.getArgument(0), List.of()));
+        when(dao.getPage(Mockito.anyLong())).thenAnswer(invocation -> pagesById.get(invocation.getArgument(0)));
 
-        Map<Long, List<Long>> result = producer.findReferencedPagesByItems(siteId);
+        Map<String, Long> importedPageIds = Map.of(
+                "Lesson A", newPageA,
+                "Lesson B", newPageB,
+                "Pseudo orphan", newPseudoOrphan,
+                "Shared page", newSharedPage);
+        when(dao.makePage(Mockito.eq("0"), Mockito.eq(destinationSiteId), Mockito.anyString(), Mockito.isNull(), Mockito.isNull()))
+                .thenAnswer(invocation -> {
+                    String title = invocation.getArgument(2);
+                    SimplePage page = newPage(importedPageIds.get(title), destinationSiteId, title, "0", null, null);
+                    pagesById.put(page.getPageId(), page);
+                    return page;
+                });
 
-        assertNotNull(result);
-        assertTrue(result.containsKey(100L));
-        List<Long> referencedPages = result.get(100L);
-        assertEquals(2, referencedPages.size());
-        assertTrue(referencedPages.contains(101L));
-        assertTrue(referencedPages.contains(102L));
-    }
-
-    /**
-     * Pseudo-orphan intermediate pages (toolId "0") must still be scanned so nested
-     * subpages are discovered when re-importing a previously broken site.
-     */
-    @Test
-    public void testFindReferencedPagesByItemsIncludesPseudoOrphanIntermediates() {
-        String siteId = "test-site-pseudo";
-
-        // Broken import left Subpage 1 as toolId "0" with null parent, but it still has a PAGE item
-        SimplePage page1 = newPage(200L, siteId, "Page 1", "sakai-page-tool", null, null);
-        SimplePage sub1 = newPage(201L, siteId, "Subpage 1", "0", null, null);
-        SimplePage nested = newPage(202L, siteId, "Nested", "0", null, null);
-
-        when(dao.getSitePages(siteId)).thenReturn(List.of(page1, sub1, nested));
-        when(dao.findItemsOnPage(200L)).thenReturn(List.of(pageItem(1L, 200L, "201")));
-        when(dao.findItemsOnPage(201L)).thenReturn(List.of(pageItem(2L, 201L, "202")));
-        when(dao.getPage(201L)).thenReturn(sub1);
-        when(dao.getPage(202L)).thenReturn(nested);
-
-        Map<Long, List<Long>> result = producer.findReferencedPagesByItems(siteId);
-
-        assertTrue(result.containsKey(200L));
-        assertEquals(List.of(201L), result.get(200L));
-        assertTrue("Pseudo-orphan intermediate must contribute nested refs", result.containsKey(201L));
-        assertEquals(List.of(202L), result.get(201L));
-    }
-
-    /**
-     * Hierarchy maps from item references (including nested).
-     */
-    @Test
-    public void testHierarchyCalculationFromReferences() {
-        Map<Long, List<Long>> subpageRefs = new HashMap<>();
-        subpageRefs.put(100L, List.of(101L, 102L));
-        subpageRefs.put(101L, List.of(103L));
-
-        Map<Long, Long> pageMap = new HashMap<>();
-        pageMap.put(100L, 100L);
-        pageMap.put(101L, 101L);
-        pageMap.put(102L, 102L);
-        pageMap.put(103L, 103L);
-
-        Map<Long, Long> calculatedParentMap = new HashMap<>();
-        Map<Long, Long> calculatedTopParentMap = new HashMap<>();
-
-        producer.buildParentMapFromReferences(subpageRefs, pageMap, calculatedParentMap);
-        producer.calculateTopParentMap(calculatedParentMap, calculatedTopParentMap);
-
-        assertEquals(Long.valueOf(100L), calculatedParentMap.get(101L));
-        assertEquals(Long.valueOf(100L), calculatedParentMap.get(102L));
-        assertEquals(Long.valueOf(101L), calculatedParentMap.get(103L));
-
-        assertEquals(Long.valueOf(100L), calculatedTopParentMap.get(101L));
-        assertEquals(Long.valueOf(100L), calculatedTopParentMap.get(102L));
-        assertEquals(Long.valueOf(100L), calculatedTopParentMap.get(103L));
-    }
-
-    /**
-     * Selective import only links pages present in pageMap.
-     */
-    @Test
-    public void testHierarchyCalculationWithSelectiveImport() {
-        Map<Long, Long> pageMap = new HashMap<>();
-        pageMap.put(100L, 5000L);
-        pageMap.put(101L, 5001L);
-
-        Map<Long, List<Long>> subpageRefs = new HashMap<>();
-        subpageRefs.put(100L, List.of(101L, 102L));
-        subpageRefs.put(200L, List.of(103L));
-
-        Map<Long, Long> calculatedParentMap = new HashMap<>();
-        producer.buildParentMapFromReferences(subpageRefs, pageMap, calculatedParentMap);
-
-        assertEquals(Long.valueOf(100L), calculatedParentMap.get(101L));
-        assertFalse(calculatedParentMap.containsKey(102L));
-        assertFalse(calculatedParentMap.containsKey(103L));
-    }
-
-    /**
-     * Cycles in the parent map must not hang and must not invent a topParent.
-     */
-    @Test
-    public void testCalculateTopParentMapDetectsCycles() {
-        Map<Long, Long> calculatedParentMap = new HashMap<>();
-        calculatedParentMap.put(1L, 2L);
-        calculatedParentMap.put(2L, 1L);
-
-        Map<Long, Long> calculatedTopParentMap = new HashMap<>();
-        producer.calculateTopParentMap(calculatedParentMap, calculatedTopParentMap);
-
-        assertTrue(calculatedTopParentMap.isEmpty());
-    }
-
-    /**
-     * XML parent attributes fill gaps when item refs are unavailable (cross-server archive).
-     */
-    @Test
-    public void testFillUnresolvedParentsFromXml() throws Exception {
-        Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
-        Element pageEl = doc.createElement("page");
-        pageEl.setAttribute("parent", "100");
-
-        Map<Long, Element> pageElementMap = new HashMap<>();
-        pageElementMap.put(101L, pageEl);
-
-        Map<Long, Long> pageMap = new HashMap<>();
-        pageMap.put(100L, 5000L);
-        pageMap.put(101L, 5001L);
-
-        Map<Long, Long> calculatedParentMap = new HashMap<>();
-        producer.fillUnresolvedParentsFromXml(pageElementMap, pageMap, calculatedParentMap);
-
-        assertEquals(Long.valueOf(100L), calculatedParentMap.get(101L));
-    }
-
-    /**
-     * parent="0" / empty must not invent relationships (matches the old broken export).
-     */
-    @Test
-    public void testFillUnresolvedParentsFromXmlIgnoresZeroParent() throws Exception {
-        Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
-        Element pageEl = doc.createElement("page");
-        pageEl.setAttribute("parent", "0");
-
-        Map<Long, Element> pageElementMap = new HashMap<>();
-        pageElementMap.put(101L, pageEl);
-
-        Map<Long, Long> pageMap = new HashMap<>();
-        pageMap.put(100L, 5000L);
-        pageMap.put(101L, 5001L);
-
-        Map<Long, Long> calculatedParentMap = new HashMap<>();
-        producer.fillUnresolvedParentsFromXml(pageElementMap, pageMap, calculatedParentMap);
-
-        assertFalse(calculatedParentMap.containsKey(101L));
-    }
-
-    /**
-     * SAK-52251: after import, subpages must not remain as pseudo-orphans
-     * (toolId "0", parent/topParent null/0). They must share the top Lesson toolId
-     * and point parent/topParent at the new top-level page.
-     *
-     * Expected shape (new IDs):
-     *   Page 1:   toolId=sakai-page-xyz, parent=null, topParent=null
-     *   Subpage1: toolId=sakai-page-xyz, parent=Page1, topParent=Page1
-     *   Subpage2: toolId=sakai-page-xyz, parent=Page1, topParent=Page1
-     */
-    @Test
-    public void testImportAppliesHierarchyAndToolIdLikeSiteImport() {
-        String destSiteId = "site-2";
-        String realToolId = "sakai-page-xyz";
-
-        // Old source ids
-        long oldPage1 = 7953115L;
-        long oldSub1 = 7953116L;
-        long oldSub2 = 7953117L;
-
-        // New destination ids after makePage("0", site, title, null, null)
-        long newPage1 = 9001L;
-        long newSub1 = 9002L;
-        long newSub2 = 9003L;
-
-        SimplePage importedPage1 = newPage(newPage1, destSiteId, "Page 1", "0", null, null);
-        SimplePage importedSub1 = newPage(newSub1, destSiteId, "Subpage 1", "0", null, null);
-        SimplePage importedSub2 = newPage(newSub2, destSiteId, "Subpage 2", "0", null, null);
-
-        Map<Long, Long> pageMap = new HashMap<>();
-        pageMap.put(oldPage1, newPage1);
-        pageMap.put(oldSub1, newSub1);
-        pageMap.put(oldSub2, newSub2);
-
-        Map<Long, List<Long>> subpageRefs = new HashMap<>();
-        subpageRefs.put(oldPage1, List.of(oldSub1, oldSub2));
-
-        Map<Long, Long> calculatedParentMap = new HashMap<>();
-        Map<Long, Long> calculatedTopParentMap = new HashMap<>();
-        producer.buildParentMapFromReferences(subpageRefs, pageMap, calculatedParentMap);
-        producer.calculateTopParentMap(calculatedParentMap, calculatedTopParentMap);
-
-        when(dao.getPage(newPage1)).thenReturn(importedPage1);
-        when(dao.getPage(newSub1)).thenReturn(importedSub1);
-        when(dao.getPage(newSub2)).thenReturn(importedSub2);
+        AtomicLong importedItemId = new AtomicLong(1000L);
+        when(dao.makeItem(Mockito.anyLong(), Mockito.anyInt(), Mockito.anyInt(), Mockito.anyString(), Mockito.anyString()))
+                .thenAnswer(invocation -> {
+                    long pageId = invocation.getArgument(0);
+                    int sequence = invocation.getArgument(1);
+                    int type = invocation.getArgument(2);
+                    String sakaiId = invocation.getArgument(3);
+                    String name = invocation.getArgument(4);
+                    SimplePageItem item = new SimplePageItemImpl();
+                    item.setId(importedItemId.incrementAndGet());
+                    item.setPageId(pageId);
+                    item.setSequence(sequence);
+                    item.setType(type);
+                    item.setSakaiId(sakaiId);
+                    item.setName(name);
+                    itemsByPage.computeIfAbsent(pageId, key -> new ArrayList<>()).add(item);
+                    return item;
+                });
+        when(dao.quickSaveItem(Mockito.any())).thenReturn(true);
         when(dao.quickUpdate(Mockito.any())).thenReturn(true);
 
-        int hierarchyUpdates = producer.applyCalculatedHierarchy(pageMap, calculatedParentMap, calculatedTopParentMap);
-        assertEquals(2, hierarchyUpdates);
+        Site destinationSite = Mockito.mock(Site.class);
+        when(destinationSite.getId()).thenReturn(destinationSiteId);
+        when(destinationSite.getTools(Mockito.any(String[].class))).thenReturn(List.of());
+        when(siteService.getSite(destinationSiteId)).thenReturn(destinationSite);
+        when(siteService.getOptionalSite(sourceSiteId)).thenReturn(Optional.empty());
 
-        // Simulate placement creation assigning the real toolId to the top-level page
-        importedPage1.setToolId(realToolId);
-        importedPage1.setParent(null);
-        importedPage1.setTopParent(null);
+        SitePage navigationPageA = Mockito.mock(SitePage.class);
+        SitePage navigationPageB = Mockito.mock(SitePage.class);
+        ToolConfiguration placementA = Mockito.mock(ToolConfiguration.class);
+        ToolConfiguration placementB = Mockito.mock(ToolConfiguration.class);
+        when(destinationSite.addPage()).thenReturn(navigationPageA, navigationPageB);
+        when(navigationPageA.addTool(LessonBuilderConstants.TOOL_ID)).thenReturn(placementA);
+        when(navigationPageB.addTool(LessonBuilderConstants.TOOL_ID)).thenReturn(placementB);
+        when(navigationPageA.getId()).thenReturn("navigation-a");
+        when(navigationPageB.getId()).thenReturn("navigation-b");
+        when(placementA.getPageId()).thenReturn("destination-placement-a");
+        when(placementB.getPageId()).thenReturn("destination-placement-b");
 
-        int toolIdUpdates = producer.updateChildPageToolIds(pageMap, calculatedTopParentMap);
-        assertEquals(2, toolIdUpdates);
+        Document document = Xml.createDocument();
+        Element root = document.createElement("service");
+        document.appendChild(root);
+        Element lessonBuilder = document.createElement("lessonbuilder");
+        root.appendChild(lessonBuilder);
 
-        // Top-level Lesson stays a root
-        assertEquals(realToolId, importedPage1.getToolId());
-        assertNull(importedPage1.getParent());
-        assertNull(importedPage1.getTopParent());
+        Element pageA = pageElement(document, oldPageA, sourceSiteId, "Lesson A", null);
+        addPageItem(document, pageA, 1L, oldPageA, oldPseudoOrphan, false, "Pseudo orphan");
+        addPageItem(document, pageA, 2L, oldPageA, oldPageB, true, "Lesson B");
+        lessonBuilder.appendChild(pageA);
 
-        // Subpages are linked and share the Lesson toolId (not "0")
-        assertEquals(Long.valueOf(newPage1), importedSub1.getParent());
-        assertEquals(Long.valueOf(newPage1), importedSub1.getTopParent());
-        assertEquals(realToolId, importedSub1.getToolId());
+        Element pageB = pageElement(document, oldPageB, sourceSiteId, "Lesson B", null);
+        addPageItem(document, pageB, 3L, oldPageB, oldSharedPage, false, "Shared page");
+        addPageItem(document, pageB, 4L, oldPageB, oldPageA, false, "Lesson A");
+        lessonBuilder.appendChild(pageB);
+        lessonBuilder.appendChild(pageElement(document, oldPseudoOrphan, sourceSiteId, "Pseudo orphan", null));
+        lessonBuilder.appendChild(pageElement(document, oldSharedPage, sourceSiteId, "Shared page", oldPageA));
+        lessonBuilder.appendChild(placementElement(document, oldPageA, "Lesson A"));
+        lessonBuilder.appendChild(placementElement(document, oldPageB, "Lesson B"));
 
-        assertEquals(Long.valueOf(newPage1), importedSub2.getParent());
-        assertEquals(Long.valueOf(newPage1), importedSub2.getTopParent());
-        assertEquals(realToolId, importedSub2.getToolId());
+        String result = producer.mergeInternal(destinationSiteId, root, "", sourceSiteId,
+                new MergeConfig(), new HashMap<>(), false);
 
-        verify(dao, atLeastOnce()).quickUpdate(importedSub1);
-        verify(dao, atLeastOnce()).quickUpdate(importedSub2);
+        assertFalse(result, result.contains("failed"));
+
+        SimplePage importedPageA = pagesById.get(newPageA);
+        SimplePage importedPageB = pagesById.get(newPageB);
+        SimplePage importedPseudoOrphan = pagesById.get(newPseudoOrphan);
+        SimplePage importedSharedPage = pagesById.get(newSharedPage);
+
+        assertNull(importedPageA.getParent());
+        assertNull(importedPageA.getTopParent());
+        assertEquals("destination-placement-a", importedPageA.getToolId());
+        assertNull(importedPageB.getParent());
+        assertNull(importedPageB.getTopParent());
+        assertEquals("destination-placement-b", importedPageB.getToolId());
+
+        assertEquals(Long.valueOf(newPageA), importedPseudoOrphan.getParent());
+        assertEquals(Long.valueOf(newPageA), importedPseudoOrphan.getTopParent());
+        assertEquals("destination-placement-a", importedPseudoOrphan.getToolId());
+
+        assertEquals(Long.valueOf(newPageA), importedSharedPage.getParent());
+        assertEquals(Long.valueOf(newPageA), importedSharedPage.getTopParent());
+        assertEquals("destination-placement-a", importedSharedPage.getToolId());
+
+        verify(dao, never()).getPage(oldPseudoOrphan);
+        verify(dao, never()).getPage(oldSharedPage);
     }
 
-    /**
-     * Re-import from a site whose subpages are already pseudo-orphans: item refs on the
-     * top Lesson (and on intermediate pseudo-orphans) still rebuild hierarchy + toolId.
-     */
-    @Test
-    public void testReimportFromPseudoOrphanSourceRebuildsNestedHierarchy() {
-        String sourceSiteId = "site-2-broken";
-        String destSiteId = "site-3";
-        String realToolId = "dest-tool-placement";
-
-        // Source: Page1 OK; Sub1 and Nested are pseudo-orphans (toolId 0 / null parents)
-        long srcPage1 = 100L;
-        long srcSub1 = 101L;
-        long srcNested = 102L;
-
-        SimplePage srcPage1Page = newPage(srcPage1, sourceSiteId, "Page 1", "src-tool", null, null);
-        SimplePage srcSub1Page = newPage(srcSub1, sourceSiteId, "Subpage 1", "0", null, null);
-        SimplePage srcNestedPage = newPage(srcNested, sourceSiteId, "Nested", "0", null, null);
-
-        when(dao.getSitePages(sourceSiteId)).thenReturn(List.of(srcPage1Page, srcSub1Page, srcNestedPage));
-        when(dao.findItemsOnPage(srcPage1)).thenReturn(List.of(pageItem(1L, srcPage1, "101")));
-        when(dao.findItemsOnPage(srcSub1)).thenReturn(List.of(pageItem(2L, srcSub1, "102")));
-        when(dao.getPage(srcSub1)).thenReturn(srcSub1Page);
-        when(dao.getPage(srcNested)).thenReturn(srcNestedPage);
-
-        Map<Long, List<Long>> subpageRefs = producer.findReferencedPagesByItems(sourceSiteId);
-        assertEquals(List.of(101L), subpageRefs.get(100L));
-        assertEquals(List.of(102L), subpageRefs.get(101L));
-
-        long newPage1 = 2001L;
-        long newSub1 = 2002L;
-        long newNested = 2003L;
-
-        SimplePage destPage1 = newPage(newPage1, destSiteId, "Page 1", "0", null, null);
-        SimplePage destSub1 = newPage(newSub1, destSiteId, "Subpage 1", "0", null, null);
-        SimplePage destNested = newPage(newNested, destSiteId, "Nested", "0", null, null);
-
-        Map<Long, Long> pageMap = new HashMap<>();
-        pageMap.put(srcPage1, newPage1);
-        pageMap.put(srcSub1, newSub1);
-        pageMap.put(srcNested, newNested);
-
-        Map<Long, Long> calculatedParentMap = new HashMap<>();
-        Map<Long, Long> calculatedTopParentMap = new HashMap<>();
-        producer.buildParentMapFromReferences(subpageRefs, pageMap, calculatedParentMap);
-        producer.calculateTopParentMap(calculatedParentMap, calculatedTopParentMap);
-
-        when(dao.getPage(newPage1)).thenReturn(destPage1);
-        when(dao.getPage(newSub1)).thenReturn(destSub1);
-        when(dao.getPage(newNested)).thenReturn(destNested);
-        when(dao.quickUpdate(Mockito.any())).thenReturn(true);
-
-        assertEquals(2, producer.applyCalculatedHierarchy(pageMap, calculatedParentMap, calculatedTopParentMap));
-
-        destPage1.setToolId(realToolId);
-        assertEquals(2, producer.updateChildPageToolIds(pageMap, calculatedTopParentMap));
-
-        assertEquals(Long.valueOf(newPage1), destSub1.getParent());
-        assertEquals(Long.valueOf(newPage1), destSub1.getTopParent());
-        assertEquals(realToolId, destSub1.getToolId());
-
-        assertEquals(Long.valueOf(newSub1), destNested.getParent());
-        assertEquals(Long.valueOf(newPage1), destNested.getTopParent());
-        assertEquals(realToolId, destNested.getToolId());
+    private static Element pageElement(Document document, long pageId, String siteId, String title, Long parentId) {
+        Element page = document.createElement("page");
+        page.setAttribute("pageid", Long.toString(pageId));
+        page.setAttribute("siteid", siteId);
+        page.setAttribute("title", title);
+        if (parentId != null) {
+            page.setAttribute("parent", parentId.toString());
+        }
+        return page;
     }
 
-    /**
-     * Top-level pages are not in calculatedTopParentMap, so their toolId is left alone.
-     */
-    @Test
-    public void testUpdateChildPageToolIdsDoesNotTouchTopLevel() {
-        Map<Long, Long> pageMap = new HashMap<>();
-        pageMap.put(100L, 5000L);
+    private static void addPageItem(Document document, Element page, long itemId, long pageId,
+            long referencedPageId, boolean nextPage, String name) {
+        Element item = document.createElement("item");
+        item.setAttribute("id", Long.toString(itemId));
+        item.setAttribute("pageId", Long.toString(pageId));
+        item.setAttribute("sequence", Long.toString(itemId));
+        item.setAttribute("type", Integer.toString(SimplePageItem.PAGE));
+        item.setAttribute("sakaiid", Long.toString(referencedPageId));
+        item.setAttribute("name", name);
+        item.setAttribute("nextpage", Boolean.toString(nextPage));
+        item.setAttribute("gradebookPoints", "null");
+        item.setAttribute("altPoints", "null");
+        page.appendChild(item);
+    }
 
-        SimplePage top = newPage(5000L, "site", "Page 1", "real-tool", null, null);
-
-        int updates = producer.updateChildPageToolIds(pageMap, new HashMap<>());
-        assertEquals(0, updates);
-        assertEquals("real-tool", top.getToolId());
-        verify(dao, never()).quickUpdate(top);
+    private static Element placementElement(Document document, long pageId, String name) {
+        Element placement = document.createElement("lessonbuilder");
+        placement.setAttribute("toolid", Long.toString(pageId));
+        placement.setAttribute("pageId", Long.toString(pageId));
+        placement.setAttribute("name", name);
+        return placement;
     }
 
     private static SimplePage newPage(long pageId, String siteId, String title, String toolId, Long parent, Long topParent) {
@@ -465,14 +305,5 @@ public class LessonBuilderEntityProducerTest {
         page.setParent(parent);
         page.setTopParent(topParent);
         return page;
-    }
-
-    private static SimplePageItem pageItem(long id, long pageId, String sakaiId) {
-        SimplePageItem item = new SimplePageItemImpl();
-        item.setId(id);
-        item.setPageId(pageId);
-        item.setType(SimplePageItem.PAGE);
-        item.setSakaiId(sakaiId);
-        return item;
     }
 }

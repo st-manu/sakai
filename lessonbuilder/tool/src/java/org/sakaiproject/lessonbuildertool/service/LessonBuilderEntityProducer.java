@@ -842,20 +842,24 @@ public class LessonBuilderEntityProducer extends AbstractEntityProvider
 	 * This helps identify orphaned subpages that should be included in exports
 	 * but lack proper parent/topparent/toolid fields
 	 */
-	public Map<Long, List<Long>> findReferencedPagesByItems(String siteId) {
+	private Map<Long, List<Long>> findReferencedPagesByItems(String siteId) {
 		List<SimplePage> allPages = simplePageToolDao.getSitePages(siteId);
-		return findReferencedPagesByItems(siteId, allPages);
+		return findReferencedPagesByItems(allPages);
 	}
 
 	/**
-	 * Finds pages referenced by SimplePageItems of type PAGE (subpages)
+	 * Finds pages referenced by PAGE items for selective export.
 	 */
-	private Map<Long, List<Long>> findReferencedPagesByItems(String siteId, List<SimplePage> allPages) {
+	private Map<Long, List<Long>> findReferencedPagesByItems(List<SimplePage> allPages) {
 		Map<Long, List<Long>> pageToReferencedPages = new HashMap<>();
 
 		if (allPages == null || allPages.isEmpty()) {
 			return pageToReferencedPages;
 		}
+
+		Set<Long> pageIds = allPages.stream()
+			.map(SimplePage::getPageId)
+			.collect(Collectors.toSet());
 
 		for (SimplePage page : allPages) {
 			List<SimplePageItem> items = simplePageToolDao.findItemsOnPage(page.getPageId());
@@ -864,9 +868,7 @@ public class LessonBuilderEntityProducer extends AbstractEntityProvider
 					if (item.getType() == SimplePageItem.PAGE) {
 						try {
 							Long referencedPageId = Long.valueOf(item.getSakaiId());
-							// Verify that the referenced page exists
-							SimplePage referencedPage = simplePageToolDao.getPage(referencedPageId);
-							if (referencedPage != null && siteId.equals(referencedPage.getSiteId())) {
+							if (pageIds.contains(referencedPageId)) {
 								pageToReferencedPages.computeIfAbsent(page.getPageId(), k -> new ArrayList<>())
 									.add(referencedPageId);
 								log.debug("Found subpage reference: page {} references subpage {}", page.getPageId(), referencedPageId);
@@ -884,48 +886,35 @@ public class LessonBuilderEntityProducer extends AbstractEntityProvider
 	}
 
 	/**
-	 * Builds a parent map from subpage references, considering only pages in pageMap (for selective import).
-	 * @param subpageRefs Map of parent page IDs to lists of child page IDs
-	 * @param pageMap Map of old page IDs to new page IDs (determines which pages are being imported)
-	 * @param calculatedParentMap Output map to populate with child -> parent relationships
-	 */
-	Map<Long, Long> buildParentMapFromReferences(Map<Long, List<Long>> subpageRefs, Map<Long, Long> pageMap, Map<Long, Long> calculatedParentMap) {
-		for (Map.Entry<Long, List<Long>> entry : subpageRefs.entrySet()) {
-			Long oldParentPageId = entry.getKey();
-			List<Long> oldChildPageIds = entry.getValue();
-
-			if (!pageMap.containsKey(oldParentPageId)) continue;
-
-			for (Long oldChildPageId : oldChildPageIds) {
-				if (pageMap.containsKey(oldChildPageId)) {
-					calculatedParentMap.put(oldChildPageId, oldParentPageId);
-				}
-			}
-		}
-		return calculatedParentMap;
-	}
-
-	/**
 	 * Calculates top parent relationships by walking up the parent chain.
 	 * @param calculatedParentMap Map of child -> parent relationships
 	 * @param calculatedTopParentMap Output map to populate with page -> top parent relationships
 	 */
-	Map<Long, Long> calculateTopParentMap(Map<Long, Long> calculatedParentMap, Map<Long, Long> calculatedTopParentMap) {
+	private Map<Long, Long> calculateTopParentMap(Map<Long, Long> calculatedParentMap, Map<Long, Long> calculatedTopParentMap) {
+		Set<Long> invalidHierarchyPageIds = new HashSet<>();
 		for (Long pageId : calculatedParentMap.keySet()) {
 			Long currentPageId = pageId;
-			Long topParent = null;
-			boolean cycleDetected = false;
 			Set<Long> visited = new HashSet<>();
 			while (calculatedParentMap.containsKey(currentPageId)) {
 				if (!visited.add(currentPageId)) {
 					log.warn("Cycle detected in page hierarchy at page {}", currentPageId);
-					cycleDetected = true;
+					invalidHierarchyPageIds.addAll(visited);
 					break;
 				}
+				currentPageId = calculatedParentMap.get(currentPageId);
+			}
+		}
+
+		invalidHierarchyPageIds.forEach(calculatedParentMap::remove);
+
+		for (Long pageId : calculatedParentMap.keySet()) {
+			Long currentPageId = pageId;
+			Long topParent = null;
+			while (calculatedParentMap.containsKey(currentPageId)) {
 				topParent = calculatedParentMap.get(currentPageId);
 				currentPageId = topParent;
 			}
-			if (!cycleDetected && topParent != null) {
+			if (topParent != null) {
 				calculatedTopParentMap.put(pageId, topParent);
 			}
 		}
@@ -933,31 +922,10 @@ public class LessonBuilderEntityProducer extends AbstractEntityProvider
 	}
 
 	/**
-	 * Fills missing parent relationships from page XML attributes when item-based
-	 * references did not resolve them (e.g. cross-server archive with no live source site).
-	 */
-	void fillUnresolvedParentsFromXml(Map<Long, Element> pageElementMap, Map<Long, Long> pageMap, Map<Long, Long> calculatedParentMap) {
-		for (Map.Entry<Long, Element> pageEntry : pageElementMap.entrySet()) {
-			Long oldPageId = pageEntry.getKey();
-			if (calculatedParentMap.containsKey(oldPageId)) {
-				continue;
-			}
-			Element pageElement = pageEntry.getValue();
-			String parentAttr = pageElement.getAttribute("parent");
-			if (StringUtils.isNotEmpty(parentAttr)) {
-				long parentId = NumberUtils.toLong(parentAttr, 0L);
-				if (parentId > 0 && pageMap.containsKey(parentId) && pageMap.containsKey(oldPageId)) {
-					calculatedParentMap.put(oldPageId, parentId);
-				}
-			}
-		}
-	}
-
-	/**
 	 * Applies calculated parent/topParent values onto newly imported pages (new IDs from pageMap).
 	 * @return number of pages updated
 	 */
-	int applyCalculatedHierarchy(Map<Long, Long> pageMap, Map<Long, Long> calculatedParentMap, Map<Long, Long> calculatedTopParentMap) {
+	private int applyCalculatedHierarchy(Map<Long, Long> pageMap, Map<Long, Long> calculatedParentMap, Map<Long, Long> calculatedTopParentMap) {
 		int hierarchyUpdates = 0;
 		for (Map.Entry<Long, Long> entry : pageMap.entrySet()) {
 			Long oldPageId = entry.getKey();
@@ -1001,7 +969,7 @@ public class LessonBuilderEntityProducer extends AbstractEntityProvider
 	 * toolId "0" / empty (pseudo-orphans). Must run after top-level pages have their real toolId.
 	 * @return number of child pages updated
 	 */
-	int updateChildPageToolIds(Map<Long, Long> pageMap, Map<Long, Long> calculatedTopParentMap) {
+	private int updateChildPageToolIds(Map<Long, Long> pageMap, Map<Long, Long> calculatedTopParentMap) {
 		int toolIdUpdates = 0;
 		for (Map.Entry<Long, Long> entry : pageMap.entrySet()) {
 			Long oldPageId = entry.getKey();
@@ -1735,11 +1703,10 @@ public class LessonBuilderEntityProducer extends AbstractEntityProvider
 			return "Lessons merge stopped siteId is not provided";
 		}
 
-		// Check if there is nothing to import and build trees of pages in the import
+		// Build the archive hierarchy once. Immediate parents remain authoritative;
+		// roots are derived separately for duplicate detection.
 		NodeList lessonBuilderTools = root.getElementsByTagName("lessonbuilder");
-		boolean lessonHasContent = false;
 		Map<Long, String> placementPageMap = new HashMap<>();
-		Map<Long, Long> parentPage = new HashMap<>();
 
 		for (int toolIndex = 0; toolIndex < lessonBuilderTools.getLength(); toolIndex++) {
 			Node lessonBuilderNode = lessonBuilderTools.item(toolIndex);
@@ -1751,49 +1718,73 @@ public class LessonBuilderEntityProducer extends AbstractEntityProvider
 					log.debug("Found root lessonbuilder {} {}", rootPageName, rootPageId);
 					placementPageMap.put(rootPageId, rootPageName);
 				}
+			}
+		}
 
-				NodeList lessonPages = lessonBuilderElement.getElementsByTagName("page");
-				for (int pageIndex = 0; pageIndex < lessonPages.getLength(); pageIndex++) {
-					Element currentPage = (Element) lessonPages.item(pageIndex);
-					Long pageId = NumberUtils.toLong(currentPage.getAttribute("pageid"), 0L); // Lower case is correct
-					Long pageParentId = NumberUtils.toLong(currentPage.getAttribute("parent"), 0L);
-					if ( pageId > 0 && pageParentId > 0 ) {
-						parentPage.put(pageId, pageParentId);
-					} else if ( pageId > 0 ) {
-						parentPage.put(pageId, pageId);  // Top level page is its own parent
-					}
+		NodeList pageNodes = root.getElementsByTagName("page");
+		boolean lessonHasContent = false;
+		Set<Long> archivePageIds = new HashSet<>();
+		Map<Long, String> archivePageTitles = new HashMap<>();
+		Map<Long, Long> archiveParentMap = new HashMap<>();
+		Map<Long, Set<Long>> archiveParentCandidates = new HashMap<>();
 
-					NodeList pageItems = currentPage.getElementsByTagName("item");
+		for (int pageIndex = 0; pageIndex < pageNodes.getLength(); pageIndex++) {
+			Node pageNode = pageNodes.item(pageIndex);
+			if (pageNode.getNodeType() != Node.ELEMENT_NODE) continue;
 
-					if (pageItems != null && pageItems.getLength() > 0) {
-						lessonHasContent = true;
-					}
+			Element currentPage = (Element) pageNode;
+			Long pageId = NumberUtils.toLong(currentPage.getAttribute("pageid"), 0L);
+			if (pageId < 1) continue;
+
+			archivePageIds.add(pageId);
+			archivePageTitles.put(pageId, currentPage.getAttribute("title"));
+
+			Long pageParentId = NumberUtils.toLong(currentPage.getAttribute("parent"), 0L);
+			if (pageParentId > 0 && !placementPageMap.containsKey(pageId)) {
+				archiveParentMap.put(pageId, pageParentId);
+			}
+
+			NodeList pageItems = currentPage.getElementsByTagName("item");
+			if (pageItems.getLength() > 0) {
+				lessonHasContent = true;
+			}
+			for (int itemIndex = 0; itemIndex < pageItems.getLength(); itemIndex++) {
+				Node itemNode = pageItems.item(itemIndex);
+				if (itemNode.getNodeType() != Node.ELEMENT_NODE) continue;
+
+				Element itemElement = (Element) itemNode;
+				int itemType = NumberUtils.toInt(itemElement.getAttribute("type"), -1);
+				boolean nextPage = Boolean.parseBoolean(itemElement.getAttribute("nextpage"));
+				Long referencedPageId = NumberUtils.toLong(itemElement.getAttribute("sakaiid"), 0L);
+				if (itemType == SimplePageItem.PAGE && !nextPage && referencedPageId > 0) {
+					archiveParentCandidates.computeIfAbsent(referencedPageId, key -> new HashSet<>()).add(pageId);
 				}
 			}
 		}
+
+		for (Map.Entry<Long, Set<Long>> entry : archiveParentCandidates.entrySet()) {
+			Long childPageId = entry.getKey();
+			Set<Long> candidateParents = entry.getValue();
+			if (!archiveParentMap.containsKey(childPageId) && !placementPageMap.containsKey(childPageId)
+					&& archivePageIds.contains(childPageId) && candidateParents.size() == 1) {
+				Long candidateParentId = candidateParents.iterator().next();
+				if (archivePageIds.contains(candidateParentId)) {
+					archiveParentMap.put(childPageId, candidateParentId);
+				}
+			} else if (!archiveParentMap.containsKey(childPageId) && candidateParents.size() > 1) {
+				log.warn("Unable to infer parent for page {} because it is referenced by multiple pages {}", childPageId, candidateParents);
+			}
+		}
+
+		Map<Long, Long> archiveTopParentMap = new HashMap<>();
+		calculateTopParentMap(archiveParentMap, archiveTopParentMap);
 
 		if (!lessonHasContent) {
 			log.debug("No lessonbuilder pages to import");
 			return "No lessonbuilder pages to import";
 		}
 
-		// Do the transitive closure
-		log.debug("Pre-transitive closure {} {}", placementPageMap, parentPage);
-		for(int i=0; i< 1000; i++ ) {
-			boolean changed = false;
-			for (Map.Entry<Long, Long> entry : parentPage.entrySet()) {
-				Long page = entry.getKey();
-				Long parent = entry.getValue();
-				if ( parent < 1 ) continue;
-				Long parentOfParent = parentPage.getOrDefault(parent, 0L);
-				if ( parentOfParent < 1 ) continue;
-				log.debug("Walking page {} up tree from {} to {}", page, parent, parentOfParent);
-				changed = true;
-				parentPage.put(page, parentOfParent);
-			}
-			if ( changed ) break;
-		}
-		log.debug("Post-transitive closure {} {}", placementPageMap, parentPage);
+		log.debug("Archive hierarchy placements={} parents={} topParents={}", placementPageMap, archiveParentMap, archiveTopParentMap);
 
 		// If this is a transferCopy operation, cleanup is handled based on the user's
 		// selection before we are called and we put items into existing or new placements
@@ -1879,8 +1870,6 @@ public class LessonBuilderEntityProducer extends AbstractEntityProvider
 		log.debug("Finished scanning placements full {} empty {} / {}", fullPlacements, emptyTopLevelPageIds, emptySakaiIds);
 
 		// Lets start the actual merge()
-		NodeList pageNodes = root.getElementsByTagName("page");
-
 		Map <Long,Long> pageMap = new HashMap<Long,Long>();
 
 		// a convenient map of the xml page id and its corresponding element
@@ -1890,33 +1879,7 @@ public class LessonBuilderEntityProducer extends AbstractEntityProvider
 
 		String oldServer = root.getAttribute("server");
 
-		// Scan pages and find the root pages in the import
-
-		log.debug("Scanning for root pages in the import");
-		Map<Long, String> rootOldPageIds = new HashMap<>();
 		int numPages = pageNodes.getLength();
-		for (int p = 0; p < numPages; p++) {
-			Node pageNode = pageNodes.item(p);
-			if (pageNode.getNodeType() != Node.ELEMENT_NODE) continue;
-
-			Element pageElement = (Element) pageNode;
-			String title = pageElement.getAttribute("title");
-			if (title == null) continue;
-
-			String oldPageIdString = pageElement.getAttribute("pageid");
-			Long oldPageId = NumberUtils.toLong(oldPageIdString, 0L);
-			if ( oldPageId < 1 ) continue;
-
-			String oldParentString = pageElement.getAttribute("parent");
-			Long oldParent = NumberUtils.toLong(oldParentString, 0L);
-			if ( oldParent < 1 ) {
-				log.debug("Found root page in archive pageId {}", oldPageId);
-				rootOldPageIds.put(oldPageId, title);
-			}
-		}
-
-		log.debug("Found root pages in import {}", rootOldPageIds);
-
 		Map<String, Long> toolsReused = new HashMap<>();
 
 		// create pages first, build up map of old to new page.
@@ -1941,10 +1904,11 @@ public class LessonBuilderEntityProducer extends AbstractEntityProvider
 
 				// Duplicate remove:
 				// Check if the page is associated with an existing complete top level page/placement
-				// Recall that parentPage really points to the top page above a page because we
-				// walked up the tree to compute the closure of the child-parent relationships
-				Long rootPageId = parentPage.getOrDefault(oldPageId, 0L);
-				String rootTitle = rootOldPageIds.getOrDefault(rootPageId, null);
+				Long rootPageId = archiveTopParentMap.getOrDefault(oldPageId, oldPageId);
+				String rootTitle = placementPageMap.get(rootPageId);
+				if (StringUtils.isBlank(rootTitle)) {
+					rootTitle = archivePageTitles.get(rootPageId);
+				}
 				if ( StringUtils.isNotBlank(rootTitle) && fullPlacements.containsKey(rootTitle) ) {
 					log.debug("Skipping page {} because root page {} {} is already in site {}", oldPageId, rootPageId, rootTitle, siteId);
 					continue;
@@ -1955,7 +1919,9 @@ public class LessonBuilderEntityProducer extends AbstractEntityProvider
 				SimplePage page = null;
 				boolean reused = false;
 				log.debug("Extracting {} oldPageId: {} parent {} isTransferCopy {}", title, oldPageId, oldParentId, isTransferCopy);
-				if ( ! isTransferCopy && oldParentId < 1 ) {
+				boolean archiveRoot = placementPageMap.containsKey(oldPageId)
+					|| (!archiveParentMap.containsKey(oldPageId) && !archiveParentCandidates.containsKey(oldPageId));
+				if ( ! isTransferCopy && archiveRoot ) {
 					Long emptyPageId = emptyTopLevelPageIds.get(title);
 					log.debug("Extracting page {} oldPageId: {} emptyPageId {}", title, oldPageId, emptyPageId);
 
@@ -2038,18 +2004,7 @@ public class LessonBuilderEntityProducer extends AbstractEntityProvider
 				pageElementMap.put(oldPageId, pageElement);
 			}
 
-			log.debug("Starting hierarchy calculation for {} pages", pageMap.size());
-
-			Map<Long, Long> calculatedParentMap = new HashMap<>();
-			Map<Long, Long> calculatedTopParentMap = new HashMap<>();
-
-			// Get parent-child relationships from source site
-			Map<Long, List<Long>> subpageRefs = findReferencedPagesByItems(fromSiteId);
-			buildParentMapFromReferences(subpageRefs, pageMap, calculatedParentMap);
-			fillUnresolvedParentsFromXml(pageElementMap, pageMap, calculatedParentMap);
-			calculateTopParentMap(calculatedParentMap, calculatedTopParentMap);
-
-			int hierarchyUpdates = applyCalculatedHierarchy(pageMap, calculatedParentMap, calculatedTopParentMap);
+			int hierarchyUpdates = applyCalculatedHierarchy(pageMap, archiveParentMap, archiveTopParentMap);
 			if (hierarchyUpdates > 0) {
 				log.debug("Updated page hierarchies for {} imported pages", hierarchyUpdates);
 			}
@@ -2231,7 +2186,7 @@ public class LessonBuilderEntityProducer extends AbstractEntityProvider
 				results.append(result);
 			}
 
-			int toolIdUpdates = updateChildPageToolIds(pageMap, calculatedTopParentMap);
+			int toolIdUpdates = updateChildPageToolIds(pageMap, archiveTopParentMap);
 			if (toolIdUpdates > 0) {
 				log.debug("Updated toolIds for {} child pages", toolIdUpdates);
 			}
@@ -2343,7 +2298,7 @@ public class LessonBuilderEntityProducer extends AbstractEntityProvider
 		}
 
 		// Find pages referenced by items, but only from valid (non-orphan) pages
-		Map<Long, List<Long>> referencedPages = findReferencedPagesByItems(fromContext, sitePages);
+		Map<Long, List<Long>> referencedPages = findReferencedPagesByItems(sitePages);
 		Set<Long> validReferencedPageIds = new HashSet<>();
 
 		for (Map.Entry<Long, List<Long>> entry : referencedPages.entrySet()) {
