@@ -14202,6 +14202,7 @@ public class AssignmentAction extends PagedResourceActionII {
             // we are changing the view, so start with first page again.
             resetPaging(state);
 
+            String tagSelector = (String) state.getAttribute(TAG_SELECTOR);
             String sortedBy = (String) state.getAttribute(SORTED_BY);
             String sortedAsc = (String) state.getAttribute(SORTED_ASC);
             Map<String, String> listSortBackup = new HashMap<>();
@@ -14223,8 +14224,12 @@ public class AssignmentAction extends PagedResourceActionII {
             for (Map.Entry<String, String> entry : listSortBackup.entrySet()) {
                 state.setAttribute(entry.getKey(), entry.getValue());
             }
-            
-            state.removeAttribute(TAG_SELECTOR);
+
+            if (StringUtils.isNotBlank(tagSelector)) {
+                state.setAttribute(TAG_SELECTOR, tagSelector);
+            } else {
+                state.removeAttribute(TAG_SELECTOR);
+            }
 
             String viewMode = data.getParameters().getString("view");
             state.setAttribute(STATE_SELECTED_VIEW, viewMode);
