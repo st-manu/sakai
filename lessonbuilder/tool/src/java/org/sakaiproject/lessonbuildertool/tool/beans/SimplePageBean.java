@@ -148,6 +148,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -636,6 +637,7 @@ public class SimplePageBean {
 	static MemoryService memoryService = (MemoryService)org.sakaiproject.component.cover.ComponentManager.get("org.sakaiproject.memory.api.MemoryService");
 	private static Cache<String, Object> groupCache = memoryService.getCache("org.sakaiproject.lessonbuildertool.tool.beans.SimplePageBean.groupCache");  // itemId => grouplist
 	private static Cache<String, List> resourceCache = memoryService.getCache("org.sakaiproject.lessonbuildertool.tool.beans.SimplePageBean.resourceCache");
+	private static final ConcurrentHashMap<String, Object> ADD_OLD_PAGE_LOCKS = new ConcurrentHashMap<>();
 	protected static final int DEFAULT_EXPIRATION = 10 * 60;
 
 	public static class PathEntry {
@@ -5130,12 +5132,25 @@ public class SimplePageBean {
 		    return "permission-failed";
 		if (!checkCsrf())
 		    return "permission-failed";
-		
-		SimplePage target = getPage(Long.valueOf(selectedEntity));
-		if(target != null)
-			addPage(target.getTitle(), target.getPageId(), false, true);
-		
-		return "success";
+
+		if (selectedEntity == null || selectedEntity.isEmpty()) {
+			log.warn("addOldPage rejected invalid or already top-level page: {}", selectedEntity);
+			return "failure";
+		}
+
+		Object lock = ADD_OLD_PAGE_LOCKS.computeIfAbsent(selectedEntity, k -> new Object());
+		synchronized (lock) {
+			if (simplePageToolDao.findTopLevelPageItemBySakaiId(selectedEntity) != null) {
+				log.warn("addOldPage rejected invalid or already top-level page: {}", selectedEntity);
+				return "failure";
+			}
+
+			SimplePage target = getPage(Long.valueOf(selectedEntity));
+			if (target != null)
+				addPage(target.getTitle(), target.getPageId(), false, true);
+
+			return "success";
+		}
 	}
 
 	public SimplePage addPage(String title, boolean copyCurrent) {
