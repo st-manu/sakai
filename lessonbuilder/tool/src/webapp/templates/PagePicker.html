@@ -59,12 +59,12 @@
                 <input type="checkbox" rsf:id="select-for-deletion" class="deletebox"/>
                 <span rsf:id="status-image" class="bi" style="display:inline-block; width:18px; margin-right:3px"></span>
                 <a href="#" rsf:id="link"><span rsf:id="link-note" class="lb-offscreen"></span><span rsf:id="link-text"></span></a><span rsf:id="shared" class="page-picker-note small"></span><span rsf:id="page1">page1</span><span rsf:id="page2">page2</span><span rsf:id="item1">item1</span><span rsf:id="item2">item2</span>
-                <span rsf:id="item-list-toggle"><a href="#" class="itemListToggle"><span class="bi bi-caret-down-fill"></span></a></span>
+                <span rsf:id="item-list-toggle"><a href="#" class="itemListToggle" aria-expanded="false"><span class="bi bi-caret-down-fill" aria-hidden="true"></span><span class="lb-offscreen" rsf:id="msg=simplepage.page.showitems"></span></a></span>
                 <div rsf:id="itemListContainer" class="itemListContainer">
                     <ul rsf:id="itemList" class="itemList" role="menu">
                         <li rsf:id="item:">
                             <div class="contentCol">
-								<span rsf:id="required-image" class="bi bi-asterisk small" style="display:inline-block; width:18px; margin-left:3px"></span>
+								<span rsf:id="required-image" style="display:inline-block; width:18px; margin-left:3px"><span class="bi bi-asterisk small" aria-hidden="true"></span><span class="lb-offscreen" rsf:id="msg=simplepage.status.required"></span></span>
                                 <span rsf:id="not-required-image" class="bi invisible" style="display:inline-block; width:18px; margin-left:3px"></span>
                                 <span rsf:id="item-icon" aria-hidden="true" class="bi" style="position:relative; margin-right:2px"></span>
                                 <span rsf:id="name"></span>
