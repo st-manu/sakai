@@ -178,6 +178,13 @@
   </servlet>
 
   <servlet>
+    <description>Download file upload and audio submissions as a ZIP.</description>
+    <display-name>Download File Submissions</display-name>
+    <servlet-name>DownloadFileSubmissionsServlet</servlet-name>
+    <servlet-class>org.sakaiproject.tool.assessment.ui.servlet.evaluation.DownloadFileSubmissionsServlet</servlet-class>
+  </servlet>
+
+  <servlet>
     <description>Questionpool Statistics</description>
     <servlet-name>QuestionPoolStatistics</servlet-name>
     <servlet-class>org.sakaiproject.tool.assessment.ui.servlet.cp.QuestionPoolStatisticsServlet</servlet-class>
@@ -217,6 +224,11 @@
   <servlet-mapping>
     <servlet-name>ExportReportServlet</servlet-name>
     <url-pattern>/servlet/ExportReport</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>DownloadFileSubmissionsServlet</servlet-name>
+    <url-pattern>/servlet/DownloadFileSubmissions</url-pattern>
   </servlet-mapping>
 
   <servlet-mapping>

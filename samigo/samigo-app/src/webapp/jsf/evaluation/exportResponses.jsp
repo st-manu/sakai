@@ -133,7 +133,11 @@
     </h:panelGroup>
 
     <p class="act">
-      <h:commandButton value="#{evaluationMessages.download}" actionListener="#{downloadFileSubmissions.downloadFiles}" styleClass="active" />
+      <button type="submit" class="active"
+              formaction="/samigo-app/servlet/DownloadFileSubmissions"
+              formmethod="post">
+        <h:outputText value="#{evaluationMessages.download}" />
+      </button>
     </p>
   </h:panelGroup>
 </h:form>
