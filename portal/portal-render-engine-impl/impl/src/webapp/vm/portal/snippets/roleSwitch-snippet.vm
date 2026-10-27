@@ -1,0 +1,27 @@
+#if ($viewAsStudentLink)
+  #if ($roleSwitchState)
+    <div id="roleSwitch" class="sakai-page-header__view-as">
+      <a href="$switchRoleUrl" id="roleSwitchAnchor" class="sakai-page-header__view-as-exit Mrphs-roleSwitch__anchor Mrphs-roleSwitch__exit">
+        <span>$rloader.getFormattedMessage("rs_exitRoleSwapWithRole", $roleUrlValue)</span>
+      </a>
+    </div>
+  #else
+    <div id="roleSwitch" class="sakai-page-header__view-as">
+      <div id="roleSwitchDropDown" class="sakai-page-header__view-as-control">
+        #if ($roleswapdropdown)
+          <label class="visually-hidden" for="roleSwitchSelect">${rloader.rs_menuExplanation}</label>
+          <select id="roleSwitchSelect" class="sakai-page-header__view-as-select Mrphs-roleSwitch__dropdown" aria-label="${rloader.rs_menuExplanation}">
+            <option value="" selected="selected">${rloader.rs_viewSiteAs}</option>
+            #foreach ( $role in $siteRoles )
+              <option value="$switchRoleUrl$role$panelString">$role</option>
+            #end
+          </select>
+        #else
+          <a href="$switchRoleUrl" id="roleSwitchAnchor" class="sakai-page-header__view-as-link Mrphs-roleSwitch__link">
+            <span>$rloader.getFormattedMessage("rs_enterRoleSwapWithRole", $roleUrlValue)</span>
+          </a>
+        #end
+      </div>
+    </div>
+  #end
+#end

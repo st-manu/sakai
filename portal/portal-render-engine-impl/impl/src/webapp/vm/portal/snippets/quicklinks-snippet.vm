@@ -1,0 +1,25 @@
+#if (${quickLinks} && ${userIsLoggedIn})
+<div class="offcanvas offcanvas-end sakai-offcanvas" tabindex="-1" id="sakai-quickLinksPanel" aria-labelledby="sakai-quickLinksPanelLabel">
+  <div class="offcanvas-header sakai-offcanvas__header">
+    <h2 class="offcanvas-title sakai-offcanvas__title" id="sakai-quickLinksPanelLabel">${rloader.sit_quick_links}</h2>
+    <button type="button" class="btn-close sakai-offcanvas__close" data-bs-dismiss="offcanvas" aria-label="Close this quick links panel"></button>
+  </div>
+  <div class="offcanvas-body sakai-offcanvas__body">
+    <p class="sakai-offcanvas__intro">${quickLinksInfo}</p>
+    <ul class="sakai-offcanvas-nav sakai-quickLinksList">
+    #foreach($quickLink in $quickLinks)
+      <li>
+        <a class="sakai-offcanvas-nav__link sakai-quickLink" href="${quickLink.url}" title="$quickLink.title" target="_blank" rel="noreferrer">
+          #if(${quickLink.iconType} == "image")
+            <span class="sakai-quickLinkIcon" style="background-image:url(${quickLink.imageURI})"></span>
+          #elseif (${quickLink.iconType} == "icon")
+            <span class="sakai-quickLinkIcon ${quickLink.iconClass}"></span>
+          #end
+          <span>${quickLink.name}</span>
+        </a>
+      </li>
+    #end
+    </ul>
+  </div>
+</div>
+#end

@@ -1,0 +1,46 @@
+/* L0 — Brand / quick institutional customization
+ *
+ * Override these (~10–15 knobs) for most institutional skins.
+ * Prefer Maven customization that only touches this layer.
+ * See library/docs/sakai-ui-tokens.md
+ */
+
+:root {
+    /////////////////////////////////////////////////////////////
+    // Color palette generation — see themes/_base.scss defineColorHSL
+    /////////////////////////////////////////////////////////////
+    @include defineColorHSL(--sakai-brand, 203, 76%, 25%);
+
+    // Logo
+    --logo: url(./images/brandLogoLight.svg);
+    --icon: url(./images/brandIconLight.svg);
+    --logo-height: 30px;
+    --logo-width: 160px;
+    --icon-height: 21px;
+    --icon-width: 30px;
+    --logo-opacity: 1;
+    --logo-background-color: var(--sakai-primary-color-1);
+
+    .logo-light {
+        display: block;
+    }
+    .logo-dark {
+        display: none;
+    }
+
+    // Page canvas vs content card (Canvas-inspired shell)
+    --sakai-page-background: var(--sakai-background-color-2);
+    --sakai-card-background: var(--sakai-background-color-1);
+    --sakai-radius-sm: 0.375rem;
+    --sakai-radius-md: 0.5rem;
+    --sakai-radius-lg: 0.75rem;
+    --sakai-radius-xl: 1rem;
+
+    // Spacing scale (use in new UI; maps from $standard-space*)
+    --sakai-space-1: 4px;
+    --sakai-space-2: 8px;
+    --sakai-space-3: 12px;
+    --sakai-space-4: 16px;
+    --sakai-space-5: 24px;
+    --sakai-space-6: 32px;
+}

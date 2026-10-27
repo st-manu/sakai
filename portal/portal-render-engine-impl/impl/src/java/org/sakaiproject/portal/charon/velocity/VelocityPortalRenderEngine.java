@@ -64,7 +64,7 @@ public class VelocityPortalRenderEngine implements PortalRenderEngine
 	private List<Map<String, String>> availablePortalSkins;
 	@Setter private ServletContext context;
 	@Setter @Getter private boolean debug = false;
-	private String defaultSkin = "morpheus";
+	private String defaultSkin = "portal";
 	@Setter private String portalConfig = "portalvelocity.config";
 	@Setter PortalService portalService;
 	@Setter ServerConfigurationService serverConfigurationService;
@@ -81,7 +81,7 @@ public class VelocityPortalRenderEngine implements PortalRenderEngine
 		try
 		{
 			//this variable will decide which templates and configs (bundle) are picked
-			defaultSkin = serverConfigurationService.getString("portal.templates", "morpheus");
+			defaultSkin = serverConfigurationService.getString("portal.templates", "portal");
 		}
 		catch (Exception ex)
 		{

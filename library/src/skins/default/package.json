@@ -13,7 +13,7 @@
     "test": "npm run css-lint && npm run css-compile"
   },
   "dependencies": {
-    "bootstrap": "^5.2.0",
+    "bootstrap": "^5.3.8",
     "bootstrap-icons": "^1.11.3"
   },
   "devDependencies": {

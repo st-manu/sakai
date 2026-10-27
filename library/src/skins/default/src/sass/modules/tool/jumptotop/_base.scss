@@ -1,16 +1,7 @@
 .jump-to-top {
-    position: fixed;
-    bottom: 40px;
-    right: 50px;
-    z-index: 100;
-    display: none;
-    font-size: 40px;
-    border: transparent;
-    background: transparent;
-    color: var(--button-text-color)
-  }
-  
-  .jump-to-top.show {
-    display: block;
-  }
-  
+  display: none !important;
+}
+
+.jump-to-top.show {
+  display: inline-flex !important;
+}

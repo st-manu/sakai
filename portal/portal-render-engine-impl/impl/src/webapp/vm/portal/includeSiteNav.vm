@@ -1,0 +1,265 @@
+#macro(siteListItem $type $site $isExpanded $indentation)
+
+    ## Remove those special site chars. They don't play well with html attributes.
+    #set ($safeSiteId = $site.id.replace("!", "").replace("~", "").replace(".",""))
+
+    #if ($site.isPinned)
+        #set ($pinTitle = $rloader.sitenav_btn_unpin)
+    #else
+        #set ($pinTitle = $rloader.sitenav_btn_pin)
+    #end
+
+    #if ($site.isCurrent)
+        #set ($currentSiteClass = "is-current-site sakai-sidebar-site--current")
+        #set ($isExpanded = $currentExpanded)
+    #elseif ($type == "gateway")
+        #set ($isExpanded = "true")
+    #else
+        #set ($currentSiteClass = "")
+        #set ($isExpanded = "false")
+    #end
+
+    <li id="site-list-${type}-item-${safeSiteId}" class="site-list-item sakai-sidebar-site $!{currentSiteClass}" data-type="${type}" data-site="${site.id}">
+        #if ($site.isCurrent && ${sitePages.pageNavIconUrl} != "")
+            <img src="${sitePages.pageNavIconUrl}" alt="${rloader.sit_icon_alt}" class="img_site_toolmenu">
+        #end
+        <div class="site-list-item-head sakai-sidebar-site__head">
+            <div class="site-link-block sakai-sidebar-site__link-block">
+                <button class="sakai-btn-icon btn icon-button sakai-sidebar-site__toggle collapsed"
+                        data-site-id="${site.id}"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#${type}-site-${safeSiteId}-page-list"
+                        aria-expanded="${isExpanded}"
+                        title="#if ($isExpanded == "true")$rloader.sitenav_collapse_tools#else$rloader.sitenav_expand_tools#end"
+                        aria-controls="${type}-site-${safeSiteId}-page-list">
+                    <i class="bi bi-chevron-right" aria-hidden="true"></i>
+                </button>
+
+                ## Do not use $siteTitle — that name is portal context for the current site (breadcrumb).
+                #set ($sidebarSiteTitle = $ftext.escapeHtml(${site.title}))
+                #set ($displayTitle = $sidebarSiteTitle)
+                #if ( ( ${tabDisplayLabel} == 2 ) && ( ${site.shortDescription} ) )
+                    #set ($displayTitle = $ftext.escapeHtml(${site.shortDescription}))
+                #end
+                <a href="$site.url" class="sidebar-site-title sakai-sidebar-site__title" title="${sidebarSiteTitle}">${displayTitle}</a>
+
+            </div>
+            #if ($loggedIn && !${site.isHome})
+                #if (!$site.isHidden)
+                    <button type="button"
+                        class="sakai-sidebar-site__pin site-opt-pin btn btn-transparent"
+                        data-pin-site="${site.id}"
+                        data-pinned="$!{site.isPinned}"
+                        data-site-title="${sidebarSiteTitle}"
+                        title="${pinTitle}"
+                        aria-label="${pinTitle}">
+                      <i class="si si-pin sakai-pin-icon__outline" aria-hidden="true"></i>
+                      <i class="si si-pin-fill sakai-pin-icon__fill" aria-hidden="true"></i>
+                    </button>
+                #else
+                    <span class="sakai-sidebar-site__hidden bi si si-eye-slash-fill"
+                        title="$rloader.sitenav_btn_hide"
+                        aria-label="$rloader.sitenav_btn_hide">
+                    </span>
+                #end
+            #end
+        </div>
+        <div id="${type}-site-${safeSiteId}-page-list" data-site-id="${site.id}" class="site-list-item-collapse sakai-sidebar-site__pages collapse #if ($isExpanded == "true") show #end">
+            <ul class="site-page-list sakai-sidebar-page-list">
+            #foreach ( $page in $site.pages )
+                #if ($site.isCurrent && $activePageId == $page.id)
+                    #set ($pageUrl = $page.resetUrl)
+                #else
+                    #set ($pageUrl = $page.url)
+                #end
+                #pageListItem ($page, $pageUrl, "${page.icon}", 0)
+            #end
+            #if ($site.childSites)
+                #set($subsiteCollapseId = "${type}-site-${safeSiteId}-subsites")
+
+                <li class="nav-item sakai-sidebar-page">
+                    <button class="sakai-sidebar-page__link collapsed"
+                            data-bs-toggle="collapse"
+                            data-bs-target="#${subsiteCollapseId}"
+                            aria-expanded="false"
+                            aria-controls="${subsiteCollapseId}">
+                        <span class="bi bi-diagram-3" aria-hidden="true"></span>
+                        <span>$rloader.sitenav_sub_sites</span>
+                    </button>
+
+                    <div id="${subsiteCollapseId}" class="collapse">
+                        <ul class="sakai-sidebar-page-list">
+                            #foreach($childSite in $site.childSites)
+                                <li class="nav-item sakai-sidebar-page">
+                                    <a class="sakai-sidebar-page__link sakai-sidebar-page__link--child" href="$!{childSite.url}">
+                                        <span class="bi bi-arrow-return-right" aria-hidden="true"></span>
+                                        <span>$ftext.escapeHtml(${childSite.title})</span>
+                                    </a>
+                                </li>
+                            #end
+                        </ul>
+                    </div>
+                </li>
+            #end
+            </ul>
+        </div>
+    </li>
+#end
+
+#macro( pageListItem $page $url $icon $indentation)
+
+    #set ($hideClass = "")
+    #if ($page.isHiddenFromNavigation)
+        #set ($hideClass = "sakai-is-hidden")
+    #end
+
+    <li class="nav-item sakai-sidebar-page $!{hideClass}">
+        <a class="sakai-sidebar-page__link #if ($activePageId == $page.id)selected-page is-selected#end"
+                data-page-id="${page.id}"
+                data-tool-id="$!{page.wellKnownToolId}"
+                href="$!{url}"
+                title="${page.title}"
+                aria-label="${page.title}">
+            <span class="sakai-sidebar-page__icon-wrap">
+                <span class="sakai-sidebar-page__icon $!{icon}" aria-hidden="true"></span>
+            </span>
+            <span class="sakai-sidebar-page__label">${page.title}</span>
+            #if ($page.hidden)
+                <span class="bi bi-eye-slash-fill" aria-hidden="true"></span>
+            #end
+            #if ($page.locked)
+                <span class="bi bi-lock-fill" aria-hidden="true"></span>
+            #end
+        </a>
+    </li>
+#end
+
+<!-- START VM includeSiteNav.vm -->
+<aside id="portal-nav-sidebar" class="sakai-is-hidden portal-nav-sidebar sakai-sidebar #if (${sidebarCollapsed})sidebar-collapsed#end" tabindex="-1" data-bs-backdrop="true" aria-labelledby="totoolmenu">
+    <div class="offcanvas-header sakai-sidebar__mobile-header">
+        <h2 class="offcanvas-title">${rloader.sitenav_title}</h2>
+        <button type="button" class="btn-close text-reset sakai-sidebar__close" data-bs-dismiss="offcanvas" aria-label="Close the sites sidebar"></button>
+    </div>
+
+    <div class="sakai-sidebar__brand">
+      <a class="sakai-sidebar__logo" href="/portal" title="$rloader.portal_home">
+        <span class="visually-hidden">$rloader.portal_home</span>
+      </a>
+      <a class="sakai-sidebar__rail-home" href="/portal" title="$rloader.portal_home" aria-label="$rloader.portal_home">
+        <span class="sakai-sidebar__icon" aria-hidden="true"></span>
+        <span class="bi bi-house" aria-hidden="true"></span>
+      </a>
+    </div>
+
+    #if (${userIsLoggedIn})
+    <button type="button"
+        class="sakai-sidebar__user"
+        data-bs-toggle="modal"
+        data-bs-target="#sakai-account-panel"
+        aria-controls="sakai-account-panel"
+        title="${rloader.mainnav_btn_account}">
+      <img class="sakai-sidebar__avatar sakai-accountProfileImage"
+          src="${profileImageUrl}"
+          alt="">
+      <span class="sakai-sidebar__user-text">
+        <span class="sakai-sidebar__user-name">$!{loginUserDispName}</span>
+        #if ($userSiteRole)
+        <span class="sakai-sidebar__user-role">$!{userSiteRole}</span>
+        #elseif ($currentRole)
+        <span class="sakai-sidebar__user-role">$!{currentRole}</span>
+        #end
+      </span>
+      <span class="bi bi-chevron-right sakai-sidebar__user-chevron" aria-hidden="true"></span>
+    </button>
+    #end
+
+    <nav id="toolMenu" role="navigation" aria-label="${rloader.sit_toolshead}" class="Mrphs-toolsNav__menu sakai-sitesAndToolsNav sakai-sidebar__nav">
+        <h2 class="visually-hidden" id="totoolmenu">${rloader.sitenav_title}</h2>
+        #if (${userIsLoggedIn})
+            <div id="sites-section-first" class="sites-section sakai-sidebar__section">
+                <ul class="sakai-sidebar__list">
+                    #siteListItem("home", $sidebarSites.homeSite, false, 0)
+                </ul>
+            </div>
+            <div class="sites-section pinned-site-section sakai-sidebar__section">
+                <h3 class="sites-section-heading sakai-sidebar__heading#if (!$showSiteLabels) sakai-is-hidden#end">${rloader.sitenav_title_pinned}</h3>
+                <ul id="pinned-site-list" class="sakai-sidebar__list #if ($sidebarSites.pinnedSites.empty) sakai-is-hidden#end">
+                    #foreach ($site in $sidebarSites.pinnedSites)
+                        #siteListItem("pinned", $site, false, 0)
+                    #end
+                </ul>
+                #if (${showSiteLabels})
+                <div id="sites-no-pinned-label" class="sakai-sidebar__empty#if (!$sidebarSites.pinnedSites.empty) sakai-is-hidden#end">${rloader.sitenav_no_pinned}</div>
+                #else
+                <span id="sites-no-pinned-label"></span>
+                #end
+            </div>
+            <div class="sites-section sakai-sidebar__section#if ($sidebarSites.recentSites.empty) sakai-is-hidden#end">
+                <h3 class="sites-section-heading sakai-sidebar__heading#if (!$showSiteLabels) sakai-is-hidden#end">${rloader.sitenav_title_recent}</h3>
+                <ul id="recent-site-list" class="sakai-sidebar__list">
+                    #foreach ($site in $sidebarSites.recentSites)
+                        #siteListItem("recent", $site, false, 0)
+                    #end
+                </ul>
+            </div>
+        #else
+            #if ($sidebarSites.gatewaySite)
+                <div class="sites-section sakai-sidebar__section">
+                    <h3 class="visually-hidden sites-section-heading">${rloader.sitenav_title_current}</h3>
+                    <ul class="sakai-sidebar__list">
+                        #siteListItem("gateway", $sidebarSites.gatewaySite, true, 0)
+                    </ul>
+                </div>
+            #end
+        #end
+    </nav>
+
+    <div class="sakai-sidebar__footer">
+      #if (${userIsLoggedIn})
+      <button id="sakai-view-all-sites"
+              type="button"
+              class="sakai-sidebar__all-sites"
+              data-bs-toggle="modal"
+              data-bs-target="#select-site-sidebar"
+              aria-controls="select-site-sidebar"
+              aria-label="$rloader.sit_allsites"
+              title="$rloader.sit_allsites">
+          <span class="bi bi-grid-3x3-gap-fill" aria-hidden="true"></span>
+          <span>${rloader.sitenav_link_allsites}</span>
+      </button>
+      #end
+      <button id="sidebar-collapse-button"
+          class="sakai-sidebar__collapse"
+          type="button"
+          data-portal-sidebar-collapsed="$!{sidebarCollapsed}"
+          title="${sidebarCollapseBtnTitle}"
+          aria-label="${sidebarCollapseBtnTitle}"
+          aria-controls="portal-nav-sidebar">
+        <span class="bi ${portalNavSidebarIcon}" aria-hidden="true"></span>
+        <span class="sakai-sidebar__collapse-label">${sidebarCollapseBtnTitle}</span>
+      </button>
+    </div>
+
+</aside>
+
+<script>
+    window.addEventListener('load', () => {
+        setTimeout(function() {
+            if (!["eid", "pw"].includes(document.activeElement?.id)) {
+                document.querySelector('.sakai-portal-wrapper')?.focus();
+            }
+        }, 50);
+
+        [...document.querySelectorAll('[data-bs-toggle="popover"]')].forEach((el) => {
+            let opts = {
+                animation: false,
+            };
+            if (el.hasAttribute('data-bs-content-id')) {
+	        opts.content = document.getElementById(el.getAttribute('data-bs-content-id')).innerHTML;
+	        opts.html = true;
+                new bootstrap.Popover(el, opts);
+            }
+        })
+    });
+</script>
+<!-- END VM includeSiteNav.vm -->

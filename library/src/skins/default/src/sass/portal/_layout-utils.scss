@@ -1,0 +1,195 @@
+.sakai-is-hidden {
+  display: none !important;
+}
+
+.sakai-portal-header--mobile {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: var(--sakai-mobile-header-height);
+  padding-inline: var(--sakai-space-2);
+  background-color: var(--sakai-background-color-1);
+  border-bottom: 1px solid var(--sakai-border-color);
+
+  @include media-breakpoint-up(md) {
+    display: none;
+  }
+}
+
+.sakai-portal-header__start,
+.sakai-portal-header__logo {
+  display: flex;
+  align-items: center;
+  gap: var(--sakai-space-1);
+  height: 100%;
+  min-width: 0;
+}
+
+.sakai-portal-header--mobile .portal-header-hamburger-button.sakai-btn-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 2.75rem;
+  height: 2.75rem;
+  min-width: 2.75rem;
+  min-height: 2.75rem;
+  padding: 0;
+  color: var(--sakai-text-color-1) !important;
+
+  .bi,
+  .bi::before {
+    font-size: 1.5rem !important;
+    line-height: 1;
+  }
+
+  &:hover,
+  &:focus-visible {
+    color: var(--sakai-text-color-1) !important;
+    background-color: var(--sakai-background-color-2);
+  }
+}
+
+.sakai-portal-header__home {
+  margin-inline: var(--sakai-space-1) 0;
+  background-image: var(--logo);
+  background-position: left center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  display: block;
+  height: 2rem;
+  width: var(--logo-width, 7rem);
+  max-width: 40vw;
+  border: none;
+  padding: 0;
+}
+
+.sakai-portal-header__account {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  min-width: 2.75rem;
+  min-height: 2.75rem;
+  margin-inline-end: var(--sakai-space-1);
+  padding: 0;
+
+  .sakai-accountProfileImage {
+    width: 2rem;
+    height: 2rem;
+  }
+}
+
+.sakai-accountProfileImage {
+  border-radius: 50%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  padding: 0;
+}
+
+.sakai-main-toolbar {
+  display: none;
+
+  @include media-breakpoint-up(md) {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--sakai-space-3);
+  }
+}
+
+.sakai-main-toolbar__breadcrumbs {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.sakai-main-toolbar__utilities {
+  flex-shrink: 0;
+}
+
+.sakai-main-toolbar__icons {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: var(--sakai-space-1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.sakai-page-chrome__mobile-breadcrumb,
+.sakai-page-content__mobile-breadcrumb {
+  @include media-breakpoint-up(md) {
+    display: none;
+  }
+}
+
+.sakai-page-chrome__mobile-breadcrumb .portal-header-breadcrumb,
+.sakai-page-content__mobile-breadcrumb .portal-header-breadcrumb {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0 var(--sakai-space-1);
+  margin: 0 0 var(--sakai-space-2);
+
+  .portal-header-breadcrumb-item {
+    flex: 0 1 auto;
+    max-width: min(12rem, 65%);
+  }
+
+  .portal-header-breadcrumb-separator {
+    flex: 0 0 auto;
+  }
+}
+
+.sakai-mobilebar {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  min-height: var(--sakai-mobilebar-height);
+  padding: var(--sakai-space-1) var(--sakai-space-2);
+  background-color: var(--sakai-background-color-1);
+  border-top: 1px solid var(--sakai-border-color);
+  box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.04);
+
+  @include media-breakpoint-up(md) {
+    display: none;
+  }
+}
+
+.sakai-mobilebar__list {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: space-around;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  gap: var(--sakai-space-1);
+}
+
+.sakai-mobilebar__list .sakai-btn-icon {
+  min-width: 2.75rem;
+  min-height: 2.75rem;
+}
+
+.sakai-mobilebar .sakai-accountProfileImage {
+  width: 1.75rem;
+  height: 1.75rem;
+}
+
+.sakai-breadcrumb-manage {
+  display: none;
+
+  @include media-breakpoint-up(lg) {
+    display: block;
+  }
+}
+
+.sakai-page-content,
+.sakai-tool-body {
+  container-type: inline-size;
+  container-name: sakai-tool;
+}

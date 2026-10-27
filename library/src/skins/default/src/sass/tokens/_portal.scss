@@ -1,0 +1,55 @@
+/* L3 — Portal region tokens
+ *
+ * Sidebar, header, page chrome. Tool-specific L3 lives under tokens/tools/ (future).
+ */
+
+:root {
+    --portal-background-color: var(--sakai-page-background);
+    --portal-mask-background: rgba(0,0,0,0.5);
+
+    --tool-background-color: var(--sakai-card-background);
+    --tool-menu-background-color: var(--sakai-background-color-1);
+    --tool-menu-hover-background-color: var(--sakai-background-color-2);
+    --tool-menu-color: var(--sakai-text-color-1);
+    --tool-border-color: var(--sakai-border-color);
+    --tool-tab-text-color: var(--tool-menu-color);
+    --tool-tab-background-color: var(--sakai-passive-color-1);
+    --tool-tab-border-color: var(--sakai-border-color);
+    --tool-tab-hover-text-color: var(--sakai-text-color-3);
+    --tool-tab-hover-background-color: var(--sakai-passive-color-2);
+    --tool-tab-hover-highlight-color: var(--sakai-active-color-2);
+    --tool-tab-active-text-color: var(--sakai-text-color-inverted);
+    --tool-tab-active-background-color: var(--sakai-primary-color-1);
+    --tool-tab-active-highlight-color: var(--sakai-active-color-3);
+
+    --top-header-background: var(--sakai-background-color-1);
+    --top-header-background-logo: var(--top-header-background);
+    --top-header-border-color: transparent;
+    --top-header-text-color: var(--sakai-text-color-1);
+    --top-header-profile-border-color-top: var(--sakai-secondary-color-1);
+    --top-header-profile-border-color-right: var(--sakai-secondary-color-1);
+    --top-header-profile-border-color-bottom: var(--sakai-tertiary-color-1);
+    --top-header-profile-border-color-left: var(--sakai-tertiary-color-1);
+    --top-header-profile-border-color-inner: var(--sakai-background-color-1);
+
+    --sites-nav-background: var(--sakai-background-color-1);
+    --breadcrumbs-color: var(--sakai-text-color-1);
+    --breadcrumbs-tool-color: var(--sakai-primary-color-1);
+    --breadcrumbs-hover-color: var(--sakai-primary-color-1);
+
+    --sakai-page-content-max-width: none;
+    --sakai-page-content-padding: var(--sakai-space-5);
+    --sakai-sidebar-width: var(--portal-nav-sidebar-width);
+    --sakai-sidebar-collapsed-width: 3.75rem;
+    --sakai-main-toolbar-height: 3.25rem;
+    --sakai-mobile-header-height: 4.25rem;
+    --sakai-mobilebar-height: 3.5rem;
+    --sakai-sidebar-user-bg: var(--sakai-background-color-2);
+    --sakai-offcanvas-width: 24rem;
+    --sakai-offcanvas-header-bg: var(--sakai-background-color-1);
+    --sakai-offcanvas-header-color: var(--sakai-text-color-1);
+    --sakai-offcanvas-close-btn-bg: transparent;
+
+    --sakai-selected-page-bg-color: var(--sakai-background-color-3);
+    --sakai-selected-page-color: var(--sakai-text-color-1);
+}

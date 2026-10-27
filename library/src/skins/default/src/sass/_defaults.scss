@@ -1,6 +1,9 @@
-/* Global namespace */
-
+/* Global namespace
+ * Historical Morpheus prefix kept for legacy tool markup aliases.
+ * New portal / component classes use the sakai- prefix without this variable.
+ */
 $namespace : "Mrphs-" !default;
+$sakai-namespace : "sakai-" !default;
 
 $break-tiny-end:	400px !default;
 $break-small-end: 	800px !default;
@@ -18,11 +21,6 @@ $standard-space: 4px !default; // the width of a keyboard space
 $standard-space-2x: 8px !default;
 $standard-space-3x: 12px !default;
 $standard-space-4x: 16px !default;
-// For the "More Sites" drawer, just use one column if there's not
-// enough room to show two side-by-side.
-$break-more-sites-single-column: 1200px !default;
-$more-sites-single-column: "only screen and (max-width : #{$break-more-sites-single-column})" !default;
-
 /* Typography*/
 
 //Google family Fonts URL
@@ -32,6 +30,7 @@ $font-family-url: "https://fonts.googleapis.com/css?family=Open+Sans:400,600,700
 //Typography variables
 $default-font-size: 14px !default;
 $default-font-size-small: 12px !default;
+$default-font-size-x-small: 11px !default;
 $default-font-weight: 400 !default;										// 400 or 700 as you wish
 $default-line-height: 1.42857 !default;											// 20px / 14px = 1.42857
 
@@ -84,15 +83,13 @@ $button-primary-font-weight: 600 !default;
 
 $instruction-size:          $default-font-size-small !default;
 
-/* Sakai Banners */
-$infoBanner-icon: ".fa-info-circle";
-$successBanner-icon: ".fa-check-circle";
-$warnBanner-icon: ".fa-exclamation-circle";
-$errorBanner-icon: ".fa-ban";
-/* end of Sakai Banners */
+$infoBanner-icon: ".bi-info-circle";
+$successBanner-icon: ".bi-check-circle";
+$warnBanner-icon: ".bi-exclamation-circle";
+$errorBanner-icon: ".bi-x-circle";
 
 /* Swapped 'View As' view */
-$swapped-view-enabled: false !default;
+$swapped-view-enabled: true !default;
 
 /* Favorites */
 $sites-nav-menu-item-border-thickness: 1px !default;
@@ -279,7 +276,7 @@ $breadcrumb-divider: '>';
 :root {
     font-size: 14px;
     --default-font-size: #{$default-font-size};
-    --portal-nav-sidebar-width: 22rem;
+    --portal-nav-sidebar-width: 17.5rem;
     --select-background-image-url: url(#{$skin-path}/images/icon-arrow-down.png);
 
     //Dashboard
@@ -287,4 +284,7 @@ $breadcrumb-divider: '>';
     --sakai-title-bar-font-weight: #{$button-font-weight};
 
     --sakai-font-family: #{$font-family};
+    --sakai-font-size: #{$default-font-size};
+    --sakai-font-size-sm: #{$default-font-size-small};
+    --sakai-font-size-xs: #{$default-font-size-x-small};
 }

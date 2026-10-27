@@ -1,0 +1,56 @@
+#if (!$pagepopup)
+    <footer class="portal-footer">
+        <ul class="portal-footer__links">
+          #foreach ( $footerLink in $footerLinks )
+              <li>
+                  <a class="portal-footer__link" href="${footerLink.href}" target="$!{footerLink.target}">${footerLink.text}</a>
+              </li>
+          #end
+          <li>
+              <button id="server-info"
+                      class="portal-footer__info"
+                      title="${rloader.footer_serverinfo_title}"
+                      data-bs-container="footer"
+                      data-bs-toggle="popover"
+                      data-bs-placement="top"
+                      data-bs-html="true"
+                      data-bs-content='#parse("/vm/portal/snippets/serverInfoPopover-snippet.vm")'
+                      data-bs-template='${popoverTemplate}'
+              >
+                  <span class="bi bi-info-circle" aria-hidden="true"></span>
+                  <span class="visually-hidden">${rloader.footer_serverinfo_title}</span>
+              </button>
+          </li>
+        </ul>
+        <div class="portal-footer__meta">
+            <span class="portal-footer__copyright">${bottomNavCopyright}</span>
+            #if ($bottomNavPoweredBy && !$bottomNavPoweredBy.isEmpty())
+            <ul class="portal-footer__powered">
+                #foreach($item in $bottomNavPoweredBy)
+                    #set($poweredImage = $!{item.poweredByImage})
+                    #set($showCustomMark = false)
+                    #if ($poweredImage && !$poweredImage.endsWith("poweredBySakai.png") && !$poweredImage.endsWith("poweredBySakai.svg"))
+                        #set($showCustomMark = true)
+                    #end
+                    <li>
+                        <a class="portal-footer__powered-link" href="$item.poweredByUrl" target="_blank" rel="noopener noreferrer">
+                            #if ($showCustomMark)
+                                <img class="portal-footer__mark" src="$poweredImage" alt="" />
+                            #end
+                            <span class="portal-footer__powered-text">$item.poweredByAltText</span>
+                        </a>
+                    </li>
+                #end
+            </ul>
+            #end
+        </div>
+        <div id="tutorial" class="Mrphs-tutorial Mrphs-modal"></div>
+    </footer>
+
+    #parse("/vm/portal/includeFooterExtras.vm")
+
+#else
+
+    <!-- dont compact -->
+
+#end

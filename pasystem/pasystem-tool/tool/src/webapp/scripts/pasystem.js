@@ -21,13 +21,13 @@ PASystemBannerAlerts.prototype.showAllAlerts = async function() {
     const accountPanel = document.getElementById("sakai-account-panel");
     if (accountPanel?.classList.contains("showing")) {
       await new Promise(resolve => {
-        accountPanel.addEventListener("shown.bs.offcanvas", resolve, { once: true });
+        accountPanel.addEventListener("shown.bs.modal", resolve, { once: true });
       });
     }
     if (accountPanel?.classList.contains("show")) {
       await new Promise(resolve => {
-        accountPanel.addEventListener("hidden.bs.offcanvas", resolve, { once: true });
-        bootstrap.Offcanvas.getInstance(accountPanel).hide();
+        accountPanel.addEventListener("hidden.bs.modal", resolve, { once: true });
+        (bootstrap.Modal.getInstance(accountPanel) || bootstrap.Offcanvas.getInstance(accountPanel))?.hide();
       });
     }
     this.container.querySelector(".pasystem-banner-alert-close")?.focus();

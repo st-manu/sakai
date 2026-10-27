@@ -15,7 +15,7 @@
 	<properties>
 		<!-- This is used in re-write rules as well -->
 		<ckeditor.version>4.22.1</ckeditor.version>
-		<bootstrap-version>5.2.0</bootstrap-version>
+		<bootstrap-version>5.3.8</bootstrap-version>
 		<!-- Default extra plugins enabled -->
 		<ckeditor-extra-plugins>sakaipreview,sakaidropdowntoolbar,sakaiopenlink,</ckeditor-extra-plugins>
 		<!-- Default math extra plugins enabled -->

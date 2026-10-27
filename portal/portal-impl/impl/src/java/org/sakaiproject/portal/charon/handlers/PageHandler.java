@@ -330,7 +330,7 @@ public class PageHandler extends BasePortalHandler
 					List<Object> l = new ArrayList<Object>();
 					Map<String, Object> m = new HashMap<String, Object>();
 					m.put("poweredByUrl", "https://www.sakailms.org/");
-					m.put("poweredByImage", "/library/image/poweredBySakai.png");
+					m.put("poweredByImage", "");
 					m.put("poweredByAltText", "Powered by Sakai");
 					l.add(m);
 					rcontext.put("bottomNavPoweredBy", l);

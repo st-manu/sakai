@@ -5,9 +5,9 @@ class SidebarCollapseButton {
   }
 
   set collapsed(newValue) {
-
-    this._element.setAttribute("data-portal-sidebar-collapsed", newValue);
-    this.setCollapsed(newValue)
+    const collapsed = Boolean(newValue);
+    this._element.setAttribute("data-portal-sidebar-collapsed", String(collapsed));
+    this.setCollapsed(collapsed);
   }
 
   constructor(element, config) {
@@ -18,22 +18,48 @@ class SidebarCollapseButton {
     this._sitesSidebar = config?.sitesSidebar;
     this._element = element;
     this._element.addEventListener("click", this.toggle.bind(this));
+    this._syncUi(this.collapsed);
+  }
+
+  _syncUi(collapsed) {
+    this._element.title = collapsed ? this._i18n.titleCollapsed : this._i18n.titleExpanded;
+    this._element.setAttribute("aria-label", this._element.title);
+
+    const label = this._element.querySelector(".sakai-sidebar__collapse-label");
+    if (label) {
+      label.textContent = collapsed ? this._i18n.titleCollapsed : this._i18n.titleExpanded;
+    }
+
+    this._syncToolTooltips(collapsed);
+  }
+
+  _syncToolTooltips(collapsed) {
+    if (typeof bootstrap === "undefined" || !bootstrap.Tooltip) {
+      return;
+    }
+    const links = this._sitesSidebar?.querySelectorAll(".is-current-site .sakai-sidebar-page__link[title], .sakai-sidebar-site--current .sakai-sidebar-page__link[title]");
+    links?.forEach((link) => {
+      const existing = bootstrap.Tooltip.getInstance(link);
+      if (collapsed) {
+        if (!existing) {
+          new bootstrap.Tooltip(link, {
+            container: "body",
+            placement: "right",
+            trigger: "hover focus",
+            delay: { show: 150, hide: 0 },
+          });
+        }
+      } else {
+        existing?.dispose();
+      }
+    });
   }
 
   toggle() {
-
     this.collapsed = !this.collapsed;
-    this._portalContainer.classList.toggle(this._toggleClass, this.collapsed);
-    this._sitesSidebar.classList.toggle(this._toggleClass, this.collapsed);
-    this._element.title = this.collapsed ? this._i18n.titleCollapsed : this._i18n.titleExpanded;
-
-    const iconElement = this._element.querySelector("span");
-    if (iconElement) {
-        const collapsedIconClass = "portal-nav-sidebar-icon-collapsed";
-        const expandedIconClass = "portal-nav-sidebar-icon";
-        iconElement.classList.toggle(collapsedIconClass, this.collapsed);
-        iconElement.classList.toggle(expandedIconClass, !this.collapsed);
-    }
+    this._portalContainer?.classList.toggle(this._toggleClass, this.collapsed);
+    this._sitesSidebar?.classList.toggle(this._toggleClass, this.collapsed);
+    this._syncUi(this.collapsed);
   }
 
   async setCollapsed(collapsed) {

@@ -1,22 +1,50 @@
-@if $swapped-view-enabled {
-	.#{$namespace}portalWrapper{
-		&.swapped-view{
-			border-left: 7px solid var(--become-user-primary);
-			border-right: 7px solid var(--become-user-primary);
-			border-bottom: 7px solid var(--become-user-primary);
-			.#{$namespace}topHeader, .#{$namespace}headerLogo {
-				background: var(--swapped-view-primary);
-			}
-		}
-	}
+@mixin sakai-impersonation-chrome($accent, $page-bg) {
+  --sakai-page-background: #{$page-bg};
+  border: none;
+  box-shadow: inset 0 0.25rem 0 0 #{$accent};
+
+  .sakai-main-toolbar,
+  .sakai-portal-header--mobile {
+    box-shadow: inset 0 0.25rem 0 0 #{$accent};
+  }
 }
 
-// Admin Become User view
+@if $swapped-view-enabled {
+  .#{$namespace}portalWrapper,
+  .sakai-portal-wrapper {
+    &.swapped-view {
+      @include sakai-impersonation-chrome(
+        var(--swapped-view-primary, var(--warnBanner-bgcolor)),
+        var(--sakai-brand--lighter-6)
+      );
+    }
+  }
+
+  :root.sakaiUserTheme-dark {
+    .#{$namespace}portalWrapper,
+    .sakai-portal-wrapper {
+      &.swapped-view {
+        --sakai-page-background: var(--sakai-brand--darker-3);
+      }
+    }
+  }
+}
+
 body.Mrphs-become-user-enabled {
-	.#{$namespace}portalWrapper{
-		border-left: 7px solid var(--become-user-primary);
-		border-right: 7px solid var(--become-user-primary);
-		border-bottom: 7px solid var(--become-user-primary);
-		border-top: 7px solid var(--become-user-primary);
-	}		
+  .#{$namespace}portalWrapper,
+  .sakai-portal-wrapper,
+  .portal-container {
+    @include sakai-impersonation-chrome(
+      var(--become-user-primary),
+      var(--sakai-brand--lighter-6)
+    );
+  }
+}
+
+:root.sakaiUserTheme-dark body.Mrphs-become-user-enabled {
+  .#{$namespace}portalWrapper,
+  .sakai-portal-wrapper,
+  .portal-container {
+    --sakai-page-background: var(--sakai-brand--darker-3);
+  }
 }

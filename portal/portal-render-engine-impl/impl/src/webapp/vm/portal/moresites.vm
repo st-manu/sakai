@@ -1,0 +1,119 @@
+#if (${userIsLoggedIn})
+  <div id="maxToolsText" style="display: none">${rloader.sit_alltools}</div>
+  <div id="maxToolsInt" style="display: none">${maxToolsInt}</div>
+  <div id="refresh-notification-text" style="display: none">${rloader.sit_refresh_favorites}</div>
+  <div id="maxFavoritesLimitReachedText" style="display: none">$rloader.getFormattedMessage("sit_favorite_limit_reached", $tabsSites.maxFavoritesShown)</div>
+
+  <div id="select-site-sidebar"
+      class="modal fade sakai-sites-launcher"
+      tabindex="-1"
+      data-current-site-id="${currentSiteId}"
+      aria-labelledby="select-site-label"
+      aria-modal="true"
+      role="dialog">
+    <div class="modal-dialog sakai-sites-launcher__dialog">
+      <div class="modal-content sakai-sites-launcher__panel">
+        <div class="sakai-sites-launcher__top">
+          <h2 class="sakai-sites-launcher__title" id="select-site-label">${rloader.sit_allsites}</h2>
+          <div class="sakai-sites-launcher__search">
+            <span class="bi bi-search" aria-hidden="true"></span>
+            <input type="search"
+                id="search-all-sites"
+                maxlength="50"
+                placeholder="${rloader.sit_search}"
+                aria-label="${rloader.sit_search}"
+                autocomplete="off"
+                spellcheck="false">
+          </div>
+          <div class="sakai-sites-launcher__top-tools">
+            #if (${tabsSites.worksiteToolUrl})
+            <ul class="sakai-sites-launcher__actions" id="otherSitesMenu" role="menubar">
+              <li role="menuitem">
+                <a id="allSites" class="sakai-sites-launcher__action" href="${tabsSites.mrphs_worksiteToolUrl}" title="${rloader.sit_editsites}">
+                  <span class="bi bi-pencil-square" aria-hidden="true"></span>
+                  <span class="sakai-sites-launcher__action-label">${rloader.sit_editsites}</span>
+                </a>
+              </li>
+              #if ($allowAddSite)
+              <li role="menuitem">
+                <a id="newSite" class="sakai-sites-launcher__action" href="${tabsSites.mrphs_worksiteToolUrl}?sakai_action=doNew_site" title="${rloader.sit_newsite}">
+                  <span class="bi bi-plus-lg" aria-hidden="true"></span>
+                  <span class="sakai-sites-launcher__action-label">${rloader.sit_newsite}</span>
+                </a>
+              </li>
+              #end
+            </ul>
+            #end
+            <button type="button" class="btn-close sakai-sites-launcher__close" data-bs-dismiss="modal" aria-label="${rloader.sit_closepage}"></button>
+          </div>
+        </div>
+
+        <div class="sakai-sites-launcher__body">
+          <div id="allsites-refresh-notification" class="sak-banner-info" style="display: none">${rloader.sit_refresh_favorites}</div>
+          <div class="sakai-is-hidden" id="max-favorite-entries">${tabsSites.maxFavoritesShown}</div>
+          <div id="sites-launcher-i18n"
+              hidden
+              data-projects="${rloader.moresite_projects}"
+              data-other="${rloader.moresite_other}"
+              data-administration="${rloader.moresite_administration}"
+              data-unknown-term="${rloader.moresite_unknown_term}"></div>
+
+          <div id="selectSite">
+            <ul class="sakai-sites-launcher__tabs" role="tablist">
+              <li id="tab-othersites" role="presentation">
+                <button class="sakai-sites-launcher__tab active"
+                    id="allsites-other-sites-tab"
+                    data-bs-toggle="tab"
+                    data-bs-target="#other-sites-category-wrap"
+                    type="button"
+                    role="tab"
+                    aria-controls="other-sites-category-wrap"
+                    aria-selected="true">
+                  ${rloader.sit_worksites}
+                </button>
+              </li>
+              <li id="tab-favorites" role="presentation">
+                <button class="sakai-sites-launcher__tab"
+                    id="allsites-organize-favourites-tab"
+                    data-bs-toggle="tab"
+                    data-bs-target="#organize-favorites"
+                    type="button"
+                    role="tab"
+                    aria-controls="organize-favorites"
+                    aria-selected="false">
+                  <span class="favorites-desktop">${rloader.moresite_organize_favorites}</span>
+                  <span class="favorites-mobile">${rloader.moresite_favorites}</span>
+                </button>
+              </li>
+            </ul>
+
+            <div class="tab-content">
+              <div class="tab-pane show active sakai-sites-launcher__pane" id="other-sites-category-wrap" aria-labelledby="tab-othersites" role="tabpanel">
+                <div id="all-sites-no-search-results" class="sakai-sites-launcher__empty is-hidden">${rloader.sit_search_none}</div>
+
+                <div id="moresites-content" class="sakai-sites-launcher__sections" aria-busy="true">
+                  <div id="moresites-loading" class="sakai-sites-launcher__loading">
+                    <span class="spinner-border" role="status" aria-hidden="true"></span>
+                    <span>${rloader.moresite_loading}</span>
+                  </div>
+                  <div id="moresites-error" class="sak-banner-error" style="display: none">${rloader.moresite_loading_error}</div>
+                </div>
+              </div>
+
+              <div class="tab-pane sakai-sites-launcher__pane sakai-reorder" id="organize-favorites" aria-labelledby="tab-favorites" role="tabpanel">
+                <div id="organize-favorites-pane"
+                    data-label-drag="${rloader.moresite_organize_favorites}"
+                    data-label-move-up="${rloader.sit_move_pinned_up}"
+                    data-label-move-down="${rloader.sit_move_pinned_down}">
+                  <p id="pinned-to-show" class="sakai-sites-launcher__hint sakai-is-hidden">$rloader.getFormattedMessage("sit_drag_sites_to_reorder", $tabsSites.maxFavoritesShown)</p>
+                  <p class="sak-banner-info" id="no-pinned-to-show">${rloader.sit_no_favorites_selected}</p>
+                  <ul id="organize-favorites-list" class="list-group sakai-reorder-list"></ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+#end
