@@ -1,22 +1,31 @@
 ---
-description: Sakai Frontend rules
+description: Sakai Frontend rules (Niobe)
 alwaysApply: false
 ---
 
-# Sakai Frontend rules
+# Sakai Frontend rules (Niobe)
 
-Sakai frontends use many different UI frameworks including JSF 2.3, Wicket 9, Apache Velocity, ThymeLeaf, Reasonable Server Faces (RSF), and LIT Webcomponents.
+Sakai frontends use many UI frameworks (JSF 2.3, Wicket, Velocity, Thymeleaf, RSF, Lit web components). New and renovated UI must follow Niobe: shared primitives, tokens, and portal chrome — not per-tool one-offs.
+
+## Canonical references
+- Tokens: `library/docs/sakai-ui-tokens.md` + `library/src/skins/default/src/sass/tokens/`
+- Portal chrome: `library/docs/sakai-ui-chrome.md`
+- Icons: `library/docs/sakai-ui-icons.md`
+- Renovation plan / roadmap: `niobe-front-rules/` (temporary; delete when done)
+- Repo-wide agent summary: `AGENTS.md` (UI Framework section)
 
 ## UI Framework
-- **Bootstrap**: Bootstrap 5.2 is the preferred UI framework for styling
-- **Responsive Design**: Ensure all UI components work across different screen sizes
-- **Components**: Leverage Bootstrap 5 components for consistent UI/UX
+- **Bootstrap**: Bootstrap 5.3 for **components** only (offcanvas, modal, collapse, dropdown, form controls when wrapped by Sakai primitives). **Do not** use Bootstrap layout/spacing utilities in new markup (`d-flex`, `d-md-none`, `align-items-*`, `justify-content-*`, `ms-*`, `me-*`, `p-*`, `gap-*`, `w-100`, `flex-*`, etc.). Express layout in Sakai SCSS under `sakai-*` classes.
+- **No Bootstrap soup**: Prefer Sakai CSS variables / tokens over hard-coded Bootstrap look. Institutions own the skin.
+- **Responsive — portal vs tools**: Viewport `@include media-breakpoint-*` is for **portal shell** chrome (sidebar vs mobile bar). Inside a **tool**, use available content width: portal sets `container-type: inline-size` on `.sakai-page-content` / `.sakai-tool-body`; tools use `@container sakai-tool (...)`.
+- **Components**: Public API is `sakai-*` (e.g. `sakai-tool-header`, `sakai-table`, `sakai-actions`, `sakai-btn`, `sakai-overflow-menu`). Bootstrap may sit underneath; do not invent tool-local copies of shared behavior.
+- **Icons**: Bootstrap Icons (`bi` / tool map `si`); do not add Font Awesome in new work.
+- **Platform unison**: Shared behavior (tables, actions, banners, permissions matrix, overflow menus) lives in shared SCSS/components — not tool-scoped duplicates.
 
 ## JavaScript Development
-- **Modern JavaScript**: Use clean, standard modern JavaScript where possible
-- **Legacy Code**: The codebase contains legacy frameworks and libraries that should be gradually modernized
-- **jQuery**: Update jQuery code to modern JavaScript when making changes, if the changes are minimal
-- **ES6+**: Prefer ES6+ features (arrow functions, template literals, destructuring, etc.)
-- **Modular Code**: Write modular, reusable JavaScript components
-- **Avoid Global Scope**: Minimize use of global variables and functions
-- **Use Webcomponents**: Use the web components in the webcomponents/ directory when possible
+- **Modern JavaScript**: Target evergreen browsers; assume ES2022+ (`fetch` keepalive, etc.).
+- **Lean Code Paths**: Avoid legacy branches, UA sniffing, or fallbacks unless a documented evergreen gap requires them.
+- **jQuery**: Replace with modern DOM APIs when touching code; new work must not add jQuery.
+- **Modular Code**: Lit components, ES modules, encapsulated helpers; keep state local and explicit.
+- **No Global Side Channels**: Prefer module scope or class fields; expose intentional APIs.
+- **Web components**: Prefer packages under `webcomponents/`; Lit internals stay `_`-prefixed; use `renderRoot` for queries, not `shadowRoot`.
