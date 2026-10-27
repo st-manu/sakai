@@ -1,0 +1,211 @@
+.sakai-table {
+  @extend .table;
+  width: 100%;
+  margin-bottom: var(--sakai-space-4);
+  color: var(--sakai-text-color-1);
+  border-color: var(--sakai-border-color);
+
+  > :not(caption) > * > * {
+    border-bottom-color: var(--sakai-border-color);
+  }
+
+  thead th {
+    font-weight: 600;
+    color: var(--sakai-text-color-2);
+    border-bottom-color: var(--sakai-border-color);
+    white-space: nowrap;
+    vertical-align: bottom;
+  }
+
+  &--striped {
+    @extend .table-striped;
+  }
+
+  &--hover {
+    @extend .table-hover;
+  }
+
+  &--sm {
+    @extend .table-sm;
+  }
+}
+
+.sakai-table__select {
+  width: 2.25rem;
+  text-align: center;
+  vertical-align: top;
+}
+
+.sakai-table__sort {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sakai-space-1);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: start;
+
+  &::after {
+    content: "↕";
+    font-size: 0.75em;
+    opacity: 0.45;
+  }
+
+  &.is-sorted-asc::after {
+    content: "↑";
+    opacity: 1;
+  }
+
+  &.is-sorted-desc::after {
+    content: "↓";
+    opacity: 1;
+  }
+
+  &:hover,
+  &:focus {
+    color: var(--link-color);
+    outline: none;
+  }
+
+  &:focus-visible {
+    box-shadow: 0 0 0 3px var(--focus-outline-color);
+    border-radius: var(--sakai-radius-sm);
+  }
+}
+
+.sakai-table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  margin-bottom: var(--sakai-space-4);
+}
+
+@container sakai-tool (max-width: 40rem) {
+  .sakai-table--stack {
+    thead {
+      display: block;
+
+      tr {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--sakai-space-1);
+        padding: 0 0 var(--sakai-space-3);
+        border-bottom: 1px solid var(--sakai-border-color);
+      }
+
+      th {
+        display: block;
+        border: 0;
+        padding: 0;
+
+        &.no-sort {
+          display: none;
+        }
+      }
+    }
+
+    tbody {
+      display: block;
+    }
+
+    tbody tr {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: var(--sakai-space-2) var(--sakai-space-3);
+      margin: var(--sakai-space-3) 0 0;
+      padding: var(--sakai-space-3);
+      border: 1px solid var(--sakai-border-color);
+      border-radius: var(--sakai-radius-md);
+      background-color: var(--sakai-background-color-1);
+      color: var(--sakai-text-color-1);
+      transition: background-color 0.12s ease, border-color 0.12s ease;
+
+      &:has(> .sakai-table__select) {
+        grid-template-columns: auto 1fr;
+      }
+
+      &:hover,
+      &:focus-within {
+        background-color: var(--sakai-background-color-2);
+      }
+
+      &:has(input[type="checkbox"]:checked) {
+        background-color: var(--sakai-background-color-2);
+        border-color: var(--sakai-active-color-1);
+      }
+    }
+
+    &,
+    &.sakai-table--striped,
+    &.table-striped,
+    &.sakai-table--hover,
+    &.table-hover {
+      > tbody > tr > *,
+      > tbody > tr:nth-of-type(odd) > *,
+      > tbody > tr:nth-of-type(even) > *,
+      > tbody > tr:hover > *,
+      > tbody > tr:focus-within > *,
+      > tbody > tr.table-active > *,
+      > tbody > tr:has(input[type="checkbox"]:checked) > * {
+        --bs-table-bg: transparent;
+        --bs-table-accent-bg: transparent;
+        --bs-table-bg-type: transparent;
+        --bs-table-bg-state: transparent;
+        --bs-table-color-type: inherit;
+        --bs-table-color-state: inherit;
+        background-color: transparent;
+        box-shadow: none;
+        color: inherit;
+      }
+    }
+
+    tbody td {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: flex-start;
+      gap: var(--sakai-space-2);
+      border: 0;
+      padding: var(--sakai-space-1) 0;
+
+      &::before {
+        content: attr(data-label);
+        flex: 0 0 auto;
+        font-size: 0.8125rem;
+        font-weight: 600;
+        color: var(--sakai-text-color-dimmed);
+      }
+    }
+
+    tbody tr:has(> .sakai-table__select) > td {
+      grid-column: 2;
+    }
+
+    tbody td.sakai-table__select {
+      grid-column: 1;
+      grid-row: 1 / -1;
+      width: auto;
+      padding-top: 0.25rem;
+      align-items: flex-start;
+      justify-content: flex-start;
+
+      &::before {
+        display: none;
+      }
+    }
+
+    tbody td:first-child:not(.sakai-table__select),
+    tbody td.sakai-table__select + td {
+      flex-direction: column;
+      align-items: stretch;
+
+      &::before {
+        display: none;
+      }
+    }
+  }
+}

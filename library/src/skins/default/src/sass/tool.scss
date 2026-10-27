@@ -119,6 +119,9 @@ $jumbotron-heading-font-size: $h4-font-size;
 @import "modules/notifications/notifications";
 @import "modules/picture-changer/picture-changer";
 
+// Sakai design-system primitives (public API over Bootstrap)
+@import "components/index";
+
 // Portal chrome
 @import "portal/portal";
 @import "modules/tool/portal/pasystem";

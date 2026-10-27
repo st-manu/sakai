@@ -1,0 +1,56 @@
+/* Page header within the portal content card */
+
+.sakai-page-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--sakai-space-3);
+  margin-bottom: var(--sakai-space-5);
+  padding-bottom: var(--sakai-space-4);
+  border-bottom: 1px solid var(--sakai-border-color);
+}
+
+.sakai-page-header__main {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.sakai-page-header__title {
+  margin: 0;
+  font-size: 1.75rem;
+  font-weight: $header-font-weight;
+  font-family: $header-font-family;
+  color: var(--sakai-text-color-1);
+  line-height: 1.25;
+}
+
+.sakai-page-header__main > .sakai-page-header__meta {
+  margin-top: var(--sakai-space-2);
+  font-size: 0.875rem;
+  color: var(--sakai-text-color-dimmed);
+}
+
+.sakai-page-header__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sakai-space-2);
+  flex-shrink: 0;
+}
+
+.sakai-page-header__breadcrumb {
+  margin-bottom: var(--sakai-space-2);
+  font-size: 0.8125rem;
+  color: var(--breadcrumbs-color);
+
+  a {
+    color: var(--breadcrumbs-tool-color);
+    text-decoration: none;
+
+    &:hover {
+      color: var(--breadcrumbs-hover-color);
+      text-decoration: underline;
+    }
+  }
+}

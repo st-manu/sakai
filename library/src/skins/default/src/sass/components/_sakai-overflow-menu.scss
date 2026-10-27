@@ -1,0 +1,134 @@
+/* Overflow / “…” menu — header utilities (narrow) and per-row secondary actions */
+
+.sakai-overflow-menu {
+  position: relative;
+  display: inline-block;
+}
+
+.sakai-overflow-menu__toggle {
+  list-style: none;
+  cursor: pointer;
+
+  &::-webkit-details-marker {
+    display: none;
+  }
+
+  &::marker {
+    content: "";
+  }
+}
+
+.sakai-overflow-menu__panel {
+  display: none;
+  flex-direction: column;
+  gap: var(--sakai-space-1);
+  position: absolute;
+  top: calc(100% + var(--sakai-space-1));
+  right: 0;
+  z-index: 30;
+  min-width: 12rem;
+  padding: var(--sakai-space-2);
+  background: var(--sakai-background-color-1);
+  border: 1px solid var(--sakai-border-color);
+  border-radius: var(--sakai-radius-md);
+  box-shadow: var(--sakai-shadow-medium, 0 4px 16px rgba(0, 0, 0, 0.12));
+
+  > a:not(.sakai-btn),
+  > button:not(.sakai-btn) {
+    display: flex;
+    align-items: center;
+    gap: var(--sakai-space-2);
+    width: 100%;
+    justify-content: flex-start;
+    margin: 0;
+    padding: var(--sakai-space-2) var(--sakai-space-3);
+    border: 0;
+    border-radius: var(--sakai-radius-sm);
+    background: transparent;
+    color: var(--sakai-text-color-1);
+    font: inherit;
+    font-size: 0.875rem;
+    text-align: start;
+    text-decoration: none;
+    cursor: pointer;
+
+    &:hover,
+    &:focus {
+      background: var(--sakai-background-color-2);
+      color: var(--sakai-text-color-1);
+      text-decoration: none;
+    }
+  }
+
+  > .sakai-btn {
+    width: 100%;
+  }
+}
+
+.sakai-overflow-menu[open] > .sakai-overflow-menu__panel {
+  display: flex;
+}
+
+/* Compact row actions: quiet text + icon “…”, not full secondary buttons */
+.sakai-row-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sakai-space-2);
+  margin-top: var(--sakai-space-1);
+}
+
+.sakai-row-actions__link {
+  display: inline-flex;
+  align-items: center;
+  margin: 0;
+  border: 0;
+  border-radius: var(--sakai-radius-sm);
+  background: transparent;
+  color: var(--link-color);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  line-height: 1.2;
+  text-decoration: none;
+  cursor: pointer;
+
+  &:hover,
+  &:focus {
+    color: var(--link-hover-color);
+    background: var(--sakai-background-color-2);
+    text-decoration: underline;
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px var(--focus-outline-color);
+  }
+}
+
+.sakai-row-actions .sakai-overflow-menu__toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--link-color);
+  font-size: 1rem;
+  line-height: 1;
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px var(--focus-outline-color);
+  }
+}
+
+.sakai-row-actions .sakai-overflow-menu__panel {
+  right: auto;
+  left: 0;
+  min-width: 10.5rem;
+}
+
+.sakai-table-wrap:has(.sakai-overflow-menu[open]) {
+  overflow: visible;
+}

@@ -1,0 +1,25 @@
+/* Form controls — Bootstrap forms + Sakai tokens */
+
+.sakai-form-control {
+  @extend .form-control;
+  border-radius: var(--sakai-radius-md);
+  border-color: var(--sakai-border-color);
+  color: var(--sakai-text-color-1);
+  background-color: var(--sakai-background-color-1);
+
+  &:focus {
+    border-color: var(--sakai-primary-color-1);
+    box-shadow: $sakai-box-shadow-emulate-focus var(--focus-outline-color);
+  }
+}
+
+.sakai-form-label {
+  display: block;
+  margin-bottom: var(--sakai-space-2);
+  font-weight: 600;
+  color: var(--sakai-text-color-2);
+}
+
+.sakai-form-group {
+  margin-bottom: var(--sakai-space-4);
+}
