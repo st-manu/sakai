@@ -2,16 +2,17 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{fragments/common :: head}"></head>
 <body>
-  <div class="portletBody container-fluid">
-    <div th:replace="~{fragments/common :: menu('list')}"></div>
+  <div class="portletBody sakai-tool-body">
+    <header class="sakai-tool-header">
+      <h1 class="sakai-tool-header__title" th:text="#{thanks_msg}">Thank you for voting</h1>
+      <div th:replace="~{fragments/common :: toolActions('list')}"></div>
+    </header>
 
-    <h1 class="h4 mb-3" th:text="#{thanks_msg}">Thank you for voting</h1>
     <p th:text="#{thanks_ref}">Your reference number:</p>
-    <p class="fw-bold" th:text="${voteRef}">reference</p>
+    <p class="sakai-polls-question" th:text="${voteRef}">reference</p>
 
-    <div class="act">
-      <input type="button" class="active" th:onclick="|location.href='@{/votePolls}'|"
-             th:value="#{thanks_done}" value="Back" />
+    <div class="sakai-actions">
+      <a class="sakai-btn sakai-btn-primary" role="button" th:href="@{/votePolls}" th:text="#{thanks_done}">Back</a>
     </div>
   </div>
 </body>

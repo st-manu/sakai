@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const updateGroupsVisibility = () => {
     const isGroupAccess = typeOfAccess.value === "GROUP";
-    groupsWrapper.classList.toggle("d-none", !isGroupAccess);
+    groupsWrapper.classList.toggle("sakai-polls-is-hidden", !isGroupAccess);
     const groupSelect = groupsWrapper.querySelector("select");
     if (groupSelect) {
       groupSelect.disabled = !isGroupAccess;

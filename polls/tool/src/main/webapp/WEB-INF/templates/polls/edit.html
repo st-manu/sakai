@@ -2,23 +2,24 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{fragments/common :: head}"></head>
 <body>
-  <div class="portletBody container-fluid">
-    <div th:replace="~{fragments/common :: menu('add')}"></div>
+  <div class="portletBody sakai-tool-body">
+    <header class="sakai-tool-header">
+      <h1 class="sakai-tool-header__title" th:text="${isNew} ? #{new_poll_title} : #{new_poll_title_edit}">Poll</h1>
+      <div th:replace="~{fragments/common :: toolActions('add')}"></div>
+    </header>
 
     <div th:if="${success}" class="sak-banner-success" role="status" th:text="${success}">Saved</div>
     <div th:if="${alert}" class="sak-banner-error" role="alert" th:text="${alert}">Alert</div>
-
-    <h1 class="h3 mb-3" th:text="${isNew} ? #{new_poll_title} : #{new_poll_title_edit}">Poll</h1>
 
     <form th:action="@{/voteAdd}" th:object="${pollForm}" method="post" class="needs-validation" novalidate>
       <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
       <input type="hidden" th:field="*{pollId}" />
 
-      <div class="mb-3">
-        <label class="form-label required" for="poll-text" th:text="#{new_poll_question_label}">Question</label>
+      <div class="sakai-form-group">
+        <label class="sakai-form-label required" for="poll-text" th:text="#{new_poll_question_label}">Question</label>
         <input id="poll-text"
                type="text"
-               class="form-control"
+               class="sakai-form-control"
                th:classappend="${#fields.hasErrors('text')}? ' is-invalid'"
                maxlength="255"
                th:field="*{text}"
@@ -26,31 +27,31 @@
         <div class="invalid-feedback" th:if="${#fields.hasErrors('text')}" th:errors="*{text}">Please enter a question</div>
       </div>
 
-      <div class="mb-3">
-        <label class="form-label" for="poll-details" th:text="#{new_poll_descr_label}">Instructions</label>
+      <div class="sakai-form-group">
+        <label class="sakai-form-label" for="poll-details" th:text="#{new_poll_descr_label}">Instructions</label>
         <textarea id="poll-details"
-                  class="form-control"
+                  class="sakai-form-control"
                   rows="5"
                   th:field="*{details}"></textarea>
-        <small class="form-text text-muted" th:text="#{new_poll_descr_label2}">Additional info</small>
+        <small class="sakai-polls-hint" th:text="#{new_poll_descr_label2}">Additional info</small>
       </div>
 
-      <div class="row g-3">
-        <div class="col-md-6">
-          <label class="form-label required" for="open-date" th:text="#{new_poll_open_label}">Opening</label>
+      <div class="sakai-polls-fields-2">
+        <div class="sakai-form-group">
+          <label class="sakai-form-label required" for="open-date" th:text="#{new_poll_open_label}">Opening</label>
           <input type="datetime-local"
                  id="open-date"
-                 class="form-control"
+                 class="sakai-form-control"
                  th:classappend="${#fields.hasErrors('openDate')}? ' is-invalid'"
                  th:field="*{openDate}"
                  required />
           <div class="invalid-feedback" th:if="${#fields.hasErrors('openDate')}" th:errors="*{openDate}">Provide an opening date</div>
         </div>
-        <div class="col-md-6">
-          <label class="form-label required" for="close-date" th:text="#{new_poll_close_label}">Closing</label>
+        <div class="sakai-form-group">
+          <label class="sakai-form-label required" for="close-date" th:text="#{new_poll_close_label}">Closing</label>
           <input type="datetime-local"
                  id="close-date"
-                 class="form-control"
+                 class="sakai-form-control"
                  th:classappend="${#fields.hasErrors('closeDate')}? ' is-invalid'"
                  th:field="*{closeDate}"
                  required />
@@ -58,58 +59,48 @@
         </div>
       </div>
 
-      <div class="mt-4" th:if="${!isNew}">
-        <div class="d-flex justify-content-between align-items-center mb-2">
-          <h2 class="h5 mb-0" th:text="#{new_poll_option_title}">Answer Options</h2>
+      <div class="sakai-polls-section" th:if="${!isNew}">
+        <div class="sakai-polls-section__heading-row">
+          <h2 class="sakai-polls-section__title" th:text="#{new_poll_option_title}">Answer Options</h2>
         </div>
 
         <div class="sak-banner-warn" th:if="${hasVotes}" th:text="#{warn_poll_has_votes}">Existing votes warning</div>
 
-        <div class="table-responsive" th:if="${!options.isEmpty()}">
-          <table class="table table-sm table-striped align-middle">
-            <thead>
-            <tr>
-              <th scope="col" th:text="#{add_option}">Option</th>
-              <th scope="col" th:text="#{add_actions}">Actions</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="option : ${options}">
-              <td th:utext="${option.text}">Option text</td>
-              <td class="text-nowrap d-flex gap-2">
-                <a class="btn btn-outline-secondary btn-sm" role="button" th:href="@{'/pollOption'(optionId=${option.id})}" th:text="#{new_poll_option_edit}">Edit</a>
-                <a class="btn btn-outline-danger btn-sm" role="button" th:href="@{'/pollOptionDelete'(optionId=${option.id})}" th:text="#{new_poll_option_delete}">Delete</a>
-              </td>
-            </tr>
-            </tbody>
-          </table>
+        <ul class="sakai-polls-option-list" th:if="${!options.isEmpty()}">
+          <li class="sakai-polls-option-list__item" th:each="option : ${options}">
+            <div class="sakai-polls-option-list__text" th:utext="${option.text}">Option text</div>
+            <div class="sakai-polls-option-list__actions">
+              <a class="sakai-btn sakai-btn-secondary" role="button" th:href="@{'/pollOption'(optionId=${option.id})}" th:text="#{new_poll_option_edit}">Edit</a>
+              <a class="sakai-btn sakai-btn-ghost" role="button" th:href="@{'/pollOptionDelete'(optionId=${option.id})}" th:text="#{new_poll_option_delete}">Delete</a>
+            </div>
+          </li>
+        </ul>
+        <div class="sakai-polls-row-actions" role="group" aria-label="Option actions">
+          <button type="button" class="sakai-btn sakai-btn-secondary" th:onclick="|location.href='@{/pollOption(pollId=${pollForm.pollId})}'|" th:text="#{new_poll_option_add}">Add option</button>
+          <button type="button" class="sakai-btn sakai-btn-secondary" th:onclick="|location.href='@{/pollOptionBatch(pollId=${pollForm.pollId})}'|" th:text="#{new_poll_option_add_batch}">Batch add</button>
         </div>
-        <div class="mb-3" role="group" aria-label="Option actions">
-          <input type="button" th:onclick="|location.href='@{/pollOption(pollId=${pollForm.pollId})}'|" th:value="#{new_poll_option_add}"/>
-          <input type="button" th:onclick="|location.href='@{/pollOptionBatch(pollId=${pollForm.pollId})}'|" th:value="#{new_poll_option_add_batch}"/>
-        </div>
-        <p class="text-muted" th:if="${options.isEmpty()}" th:text="#{new_poll_saveoption}">Save to add options</p>
+        <p class="sakai-polls-hint" th:if="${options.isEmpty()}" th:text="#{new_poll_saveoption}">Save to add options</p>
       </div>
 
-      <div class="mt-4">
-        <h2 class="h5" th:text="#{new_poll_limits}">Limits</h2>
-        <div class="row g-3">
-          <div class="col-md-6">
-            <label class="form-label required" for="min-options" th:text="#{new_poll_min_limits}">Min options</label>
+      <div class="sakai-polls-section">
+        <h2 class="sakai-polls-section__title" th:text="#{new_poll_limits}">Limits</h2>
+        <div class="sakai-polls-fields-2">
+          <div class="sakai-form-group">
+            <label class="sakai-form-label required" for="min-options" th:text="#{new_poll_min_limits}">Min options</label>
             <input type="number"
                    id="min-options"
-                   class="form-control"
+                   class="sakai-form-control"
                    th:classappend="${#fields.hasErrors('minOptions')}? ' is-invalid'"
                    min="0"
                    max="50"
                    th:field="*{minOptions}" />
             <div class="invalid-feedback" th:if="${#fields.hasErrors('minOptions')}" th:errors="*{minOptions}">Invalid minimum</div>
           </div>
-          <div class="col-md-6">
-            <label class="form-label required" for="max-options" th:text="#{new_poll_max_limits}">Max options</label>
+          <div class="sakai-form-group">
+            <label class="sakai-form-label required" for="max-options" th:text="#{new_poll_max_limits}">Max options</label>
             <input type="number"
                    id="max-options"
-                   class="form-control"
+                   class="sakai-form-control"
                    th:classappend="${#fields.hasErrors('maxOptions')}? ' is-invalid'"
                    min="1"
                    max="50"
@@ -119,54 +110,58 @@
         </div>
       </div>
 
-      <div class="mt-4">
-        <h2 class="h5" th:text="#{new_poll_access_title}">Release to</h2>
-        <label class="form-label" for="type-of-access" th:text="#{new_poll_access_label}">Release to:</label>
-        <select class="form-select" id="type-of-access" th:field="*{typeOfAccess}">
-          <option th:each="choice : ${accessChoices}"
-                  th:value="${choice.value}"
-                  th:text="#{${choice.labelKey}}"></option>
-        </select>
+      <div class="sakai-polls-section">
+        <h2 class="sakai-polls-section__title" th:text="#{new_poll_access_title}">Release to</h2>
+        <div class="sakai-form-group">
+          <label class="sakai-form-label" for="type-of-access" th:text="#{new_poll_access_label}">Release to:</label>
+          <select class="form-select sakai-form-control" id="type-of-access" th:field="*{typeOfAccess}">
+            <option th:each="choice : ${accessChoices}"
+                    th:value="${choice.value}"
+                    th:text="#{${choice.labelKey}}"></option>
+          </select>
+        </div>
       </div>
 
       <div id="poll-groups-wrapper"
-           class="mt-4"
-           th:classappend="${pollForm.typeOfAccess != null and pollForm.typeOfAccess.name() == 'GROUP'} ? '' : ' d-none'">
-        <h2 class="h5" th:text="#{new_poll_groups_title}">Groups</h2>
-        <label class="form-label" for="selected-group-ids" th:text="#{new_poll_groups_label}">Select groups allowed to vote</label>
-        <select class="form-select"
-                id="selected-group-ids"
-                multiple="multiple"
-                th:field="*{selectedGroupIds}">
-          <option th:each="g : ${groups}"
-                  th:value="${g.id}"
-                  th:text="${g.title}">
-          </option>
-        </select>
-        <small class="form-text text-muted" th:text="#{new_poll_groups_instruction}">
-          Select the groups used when the poll is released to Groups.
-        </small>
-        <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('selectedGroupIds')}" th:errors="*{selectedGroupIds}">Select at least one group</div>
+           class="sakai-polls-section"
+           th:classappend="${pollForm.typeOfAccess != null and pollForm.typeOfAccess.name() == 'GROUP'} ? '' : ' sakai-polls-is-hidden'">
+        <h2 class="sakai-polls-section__title" th:text="#{new_poll_groups_title}">Groups</h2>
+        <div class="sakai-form-group">
+          <label class="sakai-form-label" for="selected-group-ids" th:text="#{new_poll_groups_label}">Select groups allowed to vote</label>
+          <select class="form-select sakai-form-control"
+                  id="selected-group-ids"
+                  multiple="multiple"
+                  th:field="*{selectedGroupIds}">
+            <option th:each="g : ${groups}"
+                    th:value="${g.id}"
+                    th:text="${g.title}">
+            </option>
+          </select>
+          <small class="sakai-polls-hint" th:text="#{new_poll_groups_instruction}">
+            Select the groups used when the poll is released to Groups.
+          </small>
+          <div class="invalid-feedback" th:if="${#fields.hasErrors('selectedGroupIds')}" th:errors="*{selectedGroupIds}">Select at least one group</div>
+        </div>
       </div>
 
-      <div class="form-check form-switch mt-4" th:if="${showPublicAccess}">
+      <div class="sakai-form-group" th:if="${showPublicAccess}">
         <input type="checkbox" th:field="*{public}" />
-        <label class="form-check-label" th:for="*{public}" th:text="#{new_poll_access_public}">Public poll</label>
+        <label th:for="*{public}" th:text="#{new_poll_access_public}">Public poll</label>
       </div>
 
-      <div class="mt-4">
-        <h2 class="h5" th:text="#{new_poll_results_label}">Results visible</h2>
-        <div class="d-flex flex-column gap-2">
-          <div class="form-check" th:each="choice : ${displayResultChoices}">
+      <div class="sakai-polls-section">
+        <h2 class="sakai-polls-section__title" th:text="#{new_poll_results_label}">Results visible</h2>
+        <div class="sakai-polls-choice-list">
+          <div th:each="choice : ${displayResultChoices}">
             <input type="radio" th:field="*{displayResult}" th:value="${choice.value}" />
-            <label class="form-check-label" th:for="*{displayResult}" th:text="#{${choice.labelKey}}">Choice</label>
+            <label th:for="*{displayResult}" th:text="#{${choice.labelKey}}">Choice</label>
           </div>
         </div>
       </div>
 
-      <div class="mt-4 act">
-        <input type="submit" class="active" th:value="#{new_poll_submit}" value="Save" />
-        <input type="button" th:onclick="|location.href='@{/votePolls}'|" th:value="#{new_poll_cancel}" value="Cancel" />
+      <div class="sakai-actions">
+        <button type="submit" class="sakai-btn sakai-btn-primary" th:text="#{new_poll_submit}">Save</button>
+        <a class="sakai-btn sakai-btn-secondary" role="button" th:href="@{/votePolls}" th:text="#{new_poll_cancel}">Cancel</a>
       </div>
     </form>
 

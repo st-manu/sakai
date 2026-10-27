@@ -7,33 +7,46 @@
     <script th:src="@{~/library/js/headscripts.js}"></script>
 </head>
 
-<div th:fragment="menu (current)">
-    <ul class="navIntraTool">
-        <li>
-        <span th:class="${current}=='list' ? 'current'">
-          <span th:if="${current}=='list'" th:text="#{action_main}">Polls</span>
-          <a th:href="@{/votePolls}" th:text="#{action_main}" th:unless="${current}=='list'">Polls</a>
-        </span>
-        </li>
-        <li th:if="${canAdd}">
-        <span th:class="${current}=='add' ? 'current'">
-          <span th:if="${current}=='add'" th:text="#{action_add_poll}">Add</span>
-          <a th:href="@{/voteAdd}" th:text="#{action_add_poll}" th:unless="${current}=='add'">Add</a>
-        </span>
-        </li>
-        <li th:if="${canAdd}">
-        <span th:class="${current}=='import' ? 'current'">
-          <span th:if="${current}=='import'" th:text="#{action_import_polls}">Bulk Creation</span>
-          <a th:href="@{/pollImport}" th:text="#{action_import_polls}" th:unless="${current}=='import'">Bulk Creation</a>
-        </span>
-        </li>
-        <li th:if="${isSiteOwner}">
-        <span th:class="${current}=='permissions' ? 'current'">
-          <span th:if="${current}=='permissions'" th:text="#{action_set_permissions}">Permissions</span>
-          <a th:href="@{/votePermissions}" th:text="#{action_set_permissions}" th:unless="${current}=='permissions'">Permissions</a>
-        </span>
-        </li>
-    </ul>
+<th:block th:fragment="toolSecondaryActions (current)">
+  <a th:if="${canAdd and current != 'import'}"
+     class="sakai-btn sakai-btn-secondary"
+     role="button"
+     th:href="@{/pollImport}">
+    <span class="bi bi-upload" aria-hidden="true"></span>
+    <span th:text="#{action_import_polls}">Bulk Creation</span>
+  </a>
+  <a th:if="${isSiteOwner and current != 'permissions'}"
+     class="sakai-btn sakai-btn-ghost"
+     role="button"
+     th:href="@{/votePermissions}"
+     th:text="#{action_set_permissions}">Permissions</a>
+</th:block>
+
+<div th:fragment="toolActions (current)" class="sakai-tool-header__actions" role="toolbar" aria-label="Poll actions">
+  <a th:if="${canAdd and current != 'add'}"
+     class="sakai-btn sakai-btn-primary"
+     role="button"
+     th:href="@{/voteAdd}">
+    <span class="bi bi-plus-lg" aria-hidden="true"></span>
+    <span th:text="#{action_add_poll}">Add</span>
+  </a>
+
+  <div class="sakai-tool-header__secondary"
+       th:if="${(canAdd and current != 'import') or (isSiteOwner and current != 'permissions')}">
+    <th:block th:replace="~{fragments/common :: toolSecondaryActions(${current})}" />
+  </div>
+
+  <details class="sakai-overflow-menu sakai-tool-header__more"
+           th:if="${(canAdd and current != 'import') or (isSiteOwner and current != 'permissions')}">
+    <summary class="sakai-btn sakai-btn-ghost sakai-overflow-menu__toggle"
+             th:attr="aria-label=#{action_more}">
+      <span class="bi bi-three-dots" aria-hidden="true"></span>
+    </summary>
+    <div class="sakai-overflow-menu__panel" role="menu">
+      <th:block th:replace="~{fragments/common :: toolSecondaryActions(${current})}" />
+    </div>
+  </details>
 </div>
+
 </body>
 </html>

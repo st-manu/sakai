@@ -71,7 +71,7 @@ class PollTest extends SakaiUiTestBase {
         page.navigate(sakaiUrl);
         sakai.toolClick("Poll");
 
-        page.locator(".navIntraTool").getByRole(AriaRole.LINK,
+        page.locator(".sakai-tool-header__actions").getByRole(AriaRole.LINK,
             new Locator.GetByRoleOptions().setName("Add").setExact(true)).click();
 
         page.locator("form:visible input[type=\"text\"]").first().fill(POLL_TITLE);
@@ -126,7 +126,7 @@ class PollTest extends SakaiUiTestBase {
         page.navigate(sakaiUrl);
         sakai.toolClick("Poll");
 
-        page.locator(".navIntraTool").getByRole(AriaRole.LINK,
+        page.locator(".sakai-tool-header__actions").getByRole(AriaRole.LINK,
             new Locator.GetByRoleOptions().setName("Add").setExact(true)).click();
 
         page.locator("form:visible input[type=\"text\"]").first().fill(LIMITS_POLL_TITLE);
@@ -200,7 +200,7 @@ class PollTest extends SakaiUiTestBase {
         page.navigate(sakaiUrl);
         sakai.toolClick("Poll");
 
-        page.locator(".navIntraTool").getByRole(AriaRole.LINK,
+        page.locator(".sakai-tool-header__actions").getByRole(AriaRole.LINK,
             new Locator.GetByRoleOptions().setName("Add").setExact(true)).click();
 
         page.locator("form:visible input[type=\"text\"]").first().fill(DEFAULT_DATES_POLL_TITLE);
@@ -233,7 +233,7 @@ class PollTest extends SakaiUiTestBase {
         page.navigate(sakaiUrl);
         sakai.toolClick("Poll");
 
-        page.locator(".navIntraTool").getByRole(AriaRole.LINK,
+        page.locator(".sakai-tool-header__actions").getByRole(AriaRole.LINK,
             new Locator.GetByRoleOptions().setName("Bulk Creation").setExact(true)).click();
 
         assertThat(page.locator("#poll-uploaded-text")).isVisible();
@@ -272,7 +272,7 @@ class PollTest extends SakaiUiTestBase {
         page.navigate(sakaiUrl);
         sakai.toolClick("Poll");
 
-        Locator pollRow = page.locator("tr").filter(new Locator.FilterOptions().setHasText(POLL_TITLE)).first();
+        Locator pollRow = page.locator("#sortableTable tbody tr").filter(new Locator.FilterOptions().setHasText(POLL_TITLE)).first();
         assertThat(pollRow).isVisible();
 
         pollRow.getByRole(AriaRole.LINK, new Locator.GetByRoleOptions().setName(POLL_TITLE))
@@ -284,7 +284,7 @@ class PollTest extends SakaiUiTestBase {
             .click(new Locator.ClickOptions().setForce(true));
 
         page.waitForURL(Pattern.compile(".*/voteThanks\\?voteRef=.*"));
-        assertThat(page.locator(".portletBody .fw-bold")).containsText(Pattern.compile(".+"));
+        assertThat(page.locator(".sakai-polls-question")).containsText(Pattern.compile(".+"));
 
         page.locator("input[type=\"button\"][onclick*=\"/votePolls\"], button[onclick*=\"/votePolls\"], .act input[type=\"button\"], .act button").first()
             .click(new Locator.ClickOptions().setForce(true));
@@ -309,7 +309,7 @@ class PollTest extends SakaiUiTestBase {
                 + " return Boolean(chart || window.pollResultsChartData); }"
         );
         assertTrue(chartInitialized);
-        Locator resultsTable = page.locator(".table-responsive table").first();
+        Locator resultsTable = page.locator(".sakai-table-wrap table, .sakai-table").first();
         assertThat(resultsTable).containsText("Yes");
         assertThat(resultsTable).containsText(Pattern.compile("100\\s*%"));
 
@@ -332,7 +332,7 @@ class PollTest extends SakaiUiTestBase {
         page.navigate(sakaiUrl);
         sakai.toolClick("Poll");
 
-        page.locator(".navIntraTool").getByRole(AriaRole.LINK,
+        page.locator(".sakai-tool-header__actions").getByRole(AriaRole.LINK,
             new Locator.GetByRoleOptions().setName("Bulk Creation").setExact(true)).click();
 
         LocalDateTime now = LocalDateTime.now();
@@ -360,7 +360,8 @@ class PollTest extends SakaiUiTestBase {
         page.navigate(sakaiUrl);
         sakai.toolClick("Poll");
 
-        page.getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("Bulk Creation")).click();
+        page.locator(".sakai-tool-header__actions").getByRole(AriaRole.LINK,
+            new Locator.GetByRoleOptions().setName("Bulk Creation").setExact(true)).click();
         Download sample = page.waitForDownload(() -> page.locator("a[href*='/pollImport/sample']").click());
         page.locator("#poll-upload-file").setInputFiles(sample.path());
         page.locator("form:visible input[type=\"submit\"], form:visible button[type=\"submit\"]").first().click();
@@ -370,7 +371,7 @@ class PollTest extends SakaiUiTestBase {
     }
 
     private Locator addOptionControl() {
-        return page.locator("input[type=\"button\"][value=\"Add option\"], input[type=\"button\"][value=\"Add Option\"], input[type=\"button\"][value*=\"Add option\"], input[type=\"button\"][value*=\"Add Option\"], button:has-text(\"Add option\"), button:has-text(\"Add Option\"), a:has-text(\"Add option\"), a:has-text(\"Add Option\")").first();
+        return page.locator("button:has-text(\"Add option\"), button:has-text(\"Add Option\"), input[type=\"button\"][value*=\"Add option\"], input[type=\"button\"][value*=\"Add Option\"], a:has-text(\"Add option\"), a:has-text(\"Add Option\")").first();
     }
 
     private boolean isVisible(Locator locator, double timeoutMs) {

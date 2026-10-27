@@ -1,145 +1,206 @@
-.#{$namespace}sakai-poll{
-	.pollEditorSmall{
-		max-width: 60em;;
-	    padding-bottom: 1em;
-	}
+.sakai-polls-fields-2 {
+  display: grid;
+  gap: var(--sakai-space-3);
+  margin-bottom: var(--sakai-space-4);
 
-	/*skinned sortable header - sort icons*/
-	thead{
-		tr{
-			th{
-				font-weight: bold;
-				text-decoration: none;
-			}
-			.header{
-				a{
-					padding-right: 25px;
-				}
-			}
-			div{
-				.reset-order{
-					a{
-						&:after {
-							font-family: FontAwesome;
-							content: "\f0dc"; // fa-sort
-							margin-left: 0.5em;
-						}
-					}
-				}
-			}
-			.headerSortUp{
-				a {
-					padding-right: 25px;
-					&:after {
-						font-family: FontAwesome;
-						content: "\f0dd"; // fa-sort-desc
-						margin-left: 0.5em;
-					}
-				}
-			}
-			.headerSortDown{
-				a {
-					padding-right: 25px;
-					&:after {
-						font-family: FontAwesome; 
-						content: "\f0de"; // fa-sort-asc
-						margin-left: 0.5em;
-					}
-				}
-			}
-		}
-	}
+  @container sakai-tool (min-width: 40rem) {
+    grid-template-columns: 1fr 1fr;
+  }
+}
 
-	#sortableTable {
-		display: table;
-		tr{
-			display: table-row;
-			td{
-				display: table-cell;
-				padding: 8px;
-			}
-		}
-		.reset-order {
-			cursor: pointer;
-			&:after {
-				font-family: FontAwesome;
-				content: "\f0dc"; // fa-sort
-				margin-left: 0.5em;
-			}
-			#reset-order-link span {
-				display: none;
-			}
-		}
-	}
-	#poll_list_remove_confirm, #poll_list_reset_confirm  {
-		display: none;
-	}
-	.addItem {
-		&:before {
-			font-family: FontAwesome;
-			content: "\f067"; // fa-plus
-			margin-right: 0.5em;
-		}
-	}
+.sakai-polls-section {
+  margin-top: var(--sakai-space-4);
+}
 
-	.actionItem, .itemAction{
-		float: none;
-	}
+.sakai-polls-section__title {
+  margin: 0 0 var(--sakai-space-3);
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--sakai-text-color-1);
+}
 
-	/* chart styles */
-	#chart-selector {
-		margin-top: 20px;
-		margin-bottom: 10px;
-		display:block;
-	}
+.sakai-polls-section__heading-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sakai-space-2);
+  margin-bottom: var(--sakai-space-2);
+}
 
-	.icon {
-		background-position: center left;
-	    background-repeat: no-repeat;
-	    padding-left: 18px;
-	}
+.sakai-polls-row-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sakai-space-2);
+  margin-top: var(--sakai-space-3);
+}
 
-	.refresh {
-		&:before {
-			font-family: FontAwesome;
-			content: "\f021"; // fa-refresh
-			margin-right: 0.5em;
-		}
-	}
+.sakai-polls-question-block {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sakai-space-2);
+  min-width: 0;
+}
 
-	 form{
-	 	> table{
-	 		@media #{$phone}{
-	 			display: block;		
-	 			max-width: 100%;
-	 			tr{
-	 				display: inline;
-	 			}
-	 			td{
-	 				display: block;
-	 				max-width: 100%;
-	 			}
-	 		}
-	 	}
-		.listHier{ 
-			tr {
-				td {
-	 				@media #{$phone}{
-						font-size: 12px;
-					}
-		 		}
-		 	}
-		 }
-	 	input{
-	 		@media #{$phone}{
-	 			max-width: 92%;
-	 		}
-	 	}
-	 	label{
-	 		font-weight: 400;
-	 		&[for^="option"]{
-	 			margin: 0 0 5px 0.6em;
-	 		}
-	 	}
-	 }
+
+.sakai-polls-list-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sakai-space-3);
+  margin-bottom: var(--sakai-space-3);
+  padding-left: 0.5rem;
+}
+
+.sakai-polls-select-all {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sakai-space-2);
+  margin: 0;
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--sakai-text-color-1);
+}
+
+.sakai-polls-bulk-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sakai-space-2);
+  margin-top: var(--sakai-space-3);
+}
+
+.sakai-polls-option-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sakai-space-2);
+  margin: 0 0 var(--sakai-space-3);
+  padding: 0;
+  list-style: none;
+  max-height: min(28rem, 60vh);
+  overflow-y: auto;
+  border: 1px solid var(--sakai-border-color);
+  border-radius: var(--sakai-radius-md);
+}
+
+.sakai-polls-option-list__item {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--sakai-space-2) var(--sakai-space-3);
+  padding: var(--sakai-space-3);
+  border-bottom: 1px solid var(--sakai-border-color);
+  background: var(--sakai-background-color-1);
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.sakai-polls-option-list__text {
+  flex: 1 1 12rem;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.sakai-polls-option-list__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sakai-space-2);
+  flex: 0 0 auto;
+}
+
+.sakai-polls-chart-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sakai-space-3);
+  margin-bottom: var(--sakai-space-3);
+}
+
+.sakai-polls-chart-toolbar__controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sakai-space-2);
+}
+
+.sakai-polls-chart-canvas {
+  position: relative;
+  min-height: 20rem;
+}
+
+.sakai-polls-vote-options {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sakai-space-2);
+  margin: 0 0 var(--sakai-space-4);
+  padding: 0;
+  list-style: none;
+}
+
+.sakai-polls-vote-option {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sakai-space-3);
+  padding: var(--sakai-space-3);
+  border: 1px solid var(--sakai-border-color);
+  border-radius: var(--sakai-radius-md);
+  background: var(--sakai-background-color-1);
+}
+
+.sakai-polls-vote-option__label {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.sakai-polls-choice-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sakai-space-2);
+}
+
+.sakai-polls-import-grid {
+  display: grid;
+  gap: var(--sakai-space-4);
+
+  @container sakai-tool (min-width: 48rem) {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.sakai-polls-hint {
+  color: var(--sakai-text-color-dimmed);
+  font-size: 0.875rem;
+}
+
+.sakai-polls-question {
+  font-weight: 600;
+  margin: 0 0 var(--sakai-space-2);
+  overflow-wrap: anywhere;
+}
+
+.sakai-polls-is-hidden {
+  display: none !important;
+}
+
+.sakai-polls-download {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sakai-space-2);
+}
+
+.#{$namespace}sakai-poll {
+  .pollEditorSmall {
+    max-width: 60em;
+    padding-bottom: 1em;
+  }
+
+  #poll_list_remove_confirm,
+  #poll_list_reset_confirm {
+    display: none;
+  }
 }
