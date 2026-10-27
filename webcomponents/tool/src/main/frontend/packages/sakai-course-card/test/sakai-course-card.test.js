@@ -1,5 +1,5 @@
 import "../sakai-course-card.js";
-import { expect, elementUpdated, oneEvent, fixture, html, waitUntil } from "@open-wc/testing";
+import { expect, elementUpdated, fixture, html, waitUntil } from "@open-wc/testing";
 import * as data from "./data.js";
 import { dialogI18nUrl, dialogI18n } from "@sakai-ui/sakai-dialog/test-utils";
 import { imageEditorI18nUrl, imageEditorI18n } from "@sakai-ui/sakai-image-editor/test-utils";
@@ -31,7 +31,7 @@ describe("sakai-course-card tests", () => {
 
     await expect(el).to.be.accessible();
 
-    expect(el.renderRoot.querySelector("div.info-block")).to.exist;
+    expect(el.renderRoot.querySelector(".sakai-course-card__surface")).to.exist;
   });
 
   it ("hides settings button correctly", async () => {
@@ -40,7 +40,7 @@ describe("sakai-course-card tests", () => {
 
     await elementUpdated(el);
 
-    expect(el.querySelector("button.settings-button")).to.not.exist;
+    expect(el.renderRoot.querySelector("button.sakai-course-card__settings")).to.not.exist;
   });
 
   it ("shows settings button correctly", async () => {
@@ -50,7 +50,7 @@ describe("sakai-course-card tests", () => {
 
     await elementUpdated(el);
 
-    const settingsButton = el.renderRoot.querySelector("button.settings-button");
+    const settingsButton = el.renderRoot.querySelector("button.sakai-course-card__settings");
     expect(settingsButton).to.exist;
 
     expect(settingsButton.getAttribute("title")).to.equal(el._i18n.settings_tooltip);
