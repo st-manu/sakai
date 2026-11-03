@@ -52,7 +52,7 @@ class ConversationsTest extends SakaiUiTestBase {
         page.navigate(sakaiUrl);
         sakai.toolClick("Conversation");
 
-        assertThat(page.locator("#content, main, .portletBody, .Mrphs-toolTitle").first()).isVisible();
+        assertThat(page.locator("#content, main, .portletBody, .sakai-page-content, .Mrphs-toolTitle").first()).isVisible();
 
         page.getByRole(AriaRole.BUTTON,
             new Page.GetByRoleOptions().setName("Create new topic").setExact(true)).click();

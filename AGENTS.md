@@ -58,10 +58,15 @@
 - **Framework Selection**: For new tools, prefer Spring MVC/Boot with Hibernate and ThymeLeaf
 - **Modernization**: When making substantial changes to a tool, consider migrating to more modern frameworks
 
-## UI Framework
-- **Bootstrap**: Bootstrap 5.2 is the preferred UI framework for styling
-- **Responsive Design**: Ensure all UI components work across different screen sizes
-- **Components**: Leverage Bootstrap 5 components for consistent UI/UX
+## UI Framework (Niobe)
+- **Bootstrap**: Bootstrap 5.3 for **components** only (offcanvas, modal, collapse, dropdown, form controls such as `.btn` / `.form-control` when wrapped by Sakai primitives). Do **not** use Bootstrap layout/spacing utility classes in new markup (`d-flex`, `d-md-none`, `align-items-*`, `justify-content-*`, `ms-*`, `me-*`, `p-*`, `gap-*`, `w-100`, `flex-*`, etc.). Express layout in Sakai SCSS under `sakai-*` classes.
+- **No Bootstrap soup**: Prefer Sakai tokens / CSS variables over hard-coded Bootstrap look so institutions keep skin control.
+- **Responsive — portal chrome vs tools**: Viewport media queries (`@include media-breakpoint-*`) are for **portal shell** chrome (sidebar vs mobile bar). Inside a **tool**, use available content width, not the viewport: portal sets `container-type: inline-size` on `.sakai-page-content` / `.sakai-tool-body`; tools use `@container sakai-tool (...)`.
+- **Components**: Prefer Sakai `sakai-*` classes as the public API (`sakai-tool-header`, `sakai-table`, `sakai-actions`, `sakai-btn`, `sakai-overflow-menu`, …); Bootstrap underneath where it helps. Do not duplicate shared primitives in tool-local CSS.
+- **Icons**: Use Bootstrap Icons (`bi` / tool map `si`); do not add Font Awesome in new work
+- **Design tokens**: Prefer L0–L2 CSS variables in `library/src/skins/default/src/sass/tokens/` (see `library/docs/sakai-ui-tokens.md`)
+- **Portal chrome**: Use the contract in `library/docs/sakai-ui-chrome.md`
+- **Renovation playbook**: Plan, tool roadmap, and reference migrations live in `niobe-front-rules/` (temporary; delete when renovation is done). Cursor frontend detail: `.cursor/rules/frontend.mdc`
 
 - **Modern JavaScript**: Target evergreen browsers; assume ES2022+ features and browser APIs like `fetch` keepalive are present.
 - **Lean Code Paths**: Avoid legacy branches, UA sniffing, or fallbacks unless a specific evergreen gap is documented.

@@ -1,6 +1,9 @@
 /**
-* For toggling the Minimize and Maximize tools menu in Morpheus: Adds classes to the <body>
-*/
+ * Legacy tool-menu collapse helpers.
+ * The portal shell uses SidebarCollapseButton + class "sidebar-collapsed"
+ * (see portal.sidebar.collapse.js). Mrphs-toolMenu-collapsed is kept as an
+ * alias for older markup / CSS only.
+ */
 
 portal = portal || {};
 
@@ -18,6 +21,7 @@ portal.updateToolsCollapsedPref = function (collapsed) {
 portal.toggleMinimizeNav = function () {
 
   $PBJQ("body").toggleClass("Mrphs-toolMenu-collapsed");
+  $PBJQ(".portal-container, #portal-nav-sidebar").toggleClass("sidebar-collapsed");
 
   var el = $PBJQ("#toolsNav-toggle-li button");
   el.toggleClass('min max').parent().toggleClass('min max');

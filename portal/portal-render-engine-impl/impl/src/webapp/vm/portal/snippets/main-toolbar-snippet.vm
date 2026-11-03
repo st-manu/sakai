@@ -1,0 +1,14 @@
+<div class="sakai-main-toolbar">
+  <div class="sakai-main-toolbar__breadcrumbs">
+    #parse("/vm/portal/includePortalHeaderBreadcrumb.vm")
+  </div>
+  <div class="sakai-main-toolbar__utilities">
+    #if (${userIsLoggedIn})
+      #parse("/vm/portal/includeAccountNav.vm")
+    #elseif (${loginTopLogin})
+      #parse("/vm/portal/includeLoginNav.vm")
+    #else
+      #parse("/vm/portal/snippets/loginImage-snippet.vm")
+    #end
+  </div>
+</div>

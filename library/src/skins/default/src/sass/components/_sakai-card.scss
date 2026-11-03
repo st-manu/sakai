@@ -1,0 +1,18 @@
+/* Content card — Canvas-inspired surface on the page canvas */
+
+.sakai-card {
+  background-color: var(--sakai-card-background);
+  border: 1px solid var(--sakai-card-border-color);
+  border-radius: var(--sakai-card-radius);
+  box-shadow: var(--sakai-card-shadow);
+  padding: var(--sakai-card-padding);
+}
+
+.sakai-page-content {
+  @extend .sakai-card;
+  width: 100%;
+  max-width: var(--sakai-page-content-max-width, none);
+  margin-inline: auto;
+  min-height: 0;
+  flex: 1 1 auto;
+}

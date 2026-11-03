@@ -1,15 +1,153 @@
-const allsites = { pinnedQueue: { favoriteSiteIds: [] } };
+const allsites = { pinnedQueue: { favoriteSiteIds: [] }, sites: [], terms: [], sortable: undefined };
 
-allsites.resetSearch = function () {
+allsites.isWorkspaceSite = site => typeof site?.siteId === "string" && site.siteId.startsWith("~");
 
-  const searchInput = document.getElementById("search-all-sites");
-  searchInput && (searchInput.value = "");
-  searchInput?.focus();
-  document.querySelectorAll(".fav-sites-term, .fav-sites-entry").forEach(el => el.style.display = "block");
-  document.querySelectorAll(".fav-sites-card").forEach(el => el.style.display = "flex");
-  const noResults = document.getElementById("no-search-results");
-  noResults && (noResults.style.display = "none");
-}
+allsites.isAdminSite = site => site?.siteId === "!admin";
+
+allsites.readLabels = function () {
+
+  const el = document.getElementById("sites-launcher-i18n");
+  return {
+    projects: el?.dataset.projects || "PROJECTS",
+    other: el?.dataset.other || "OTHER",
+    administration: el?.dataset.administration || "ADMINISTRATION",
+    unknownTerm: el?.dataset.unknownTerm || "(unknown academic term)",
+  };
+};
+
+allsites.groupKeyForSite = function (site, labels) {
+
+  if (allsites.isAdminSite(site)) {
+    return { key: "administration", label: labels.administration, kind: "administration" };
+  }
+  if (site.course) {
+    const termLabel = (site.term || "").trim() || labels.unknownTerm;
+    return { key: `term:${termLabel}`, label: termLabel, kind: "term" };
+  }
+  if (site.project) {
+    return { key: "projects", label: labels.projects, kind: "projects" };
+  }
+  return { key: "other", label: labels.other, kind: "other" };
+};
+
+allsites.buildGroups = function (sites) {
+
+  const labels = allsites.readLabels();
+  const groups = new Map();
+
+  sites.forEach(site => {
+    const meta = allsites.groupKeyForSite(site, labels);
+    if (!groups.has(meta.key)) {
+      groups.set(meta.key, { ...meta, sites: [] });
+    }
+    groups.get(meta.key).sites.push(site);
+  });
+
+  groups.forEach(group => {
+    group.sites.sort((a, b) => (a.title || "").localeCompare(b.title || "", undefined, { sensitivity: "base" }));
+  });
+
+  const termOrder = new Map(
+    (allsites.terms || []).map((term, index) => [term.name, index])
+  );
+
+  const kindRank = { term: 0, projects: 1, administration: 2, other: 3 };
+
+  return Array.from(groups.values()).sort((a, b) => {
+    const kindDiff = (kindRank[a.kind] ?? 9) - (kindRank[b.kind] ?? 9);
+    if (kindDiff !== 0) return kindDiff;
+    if (a.kind === "term") {
+      const aIdx = termOrder.has(a.label) ? termOrder.get(a.label) : Number.MAX_SAFE_INTEGER;
+      const bIdx = termOrder.has(b.label) ? termOrder.get(b.label) : Number.MAX_SAFE_INTEGER;
+      if (aIdx !== bIdx) return aIdx - bIdx;
+      return a.label.localeCompare(b.label, undefined, { sensitivity: "base" });
+    }
+    return a.label.localeCompare(b.label, undefined, { sensitivity: "base" });
+  });
+};
+
+allsites.createCard = function (site) {
+
+  const card = document.createElement("sakai-course-card");
+  card.courseData = site;
+  card.density = "compact";
+  card.pinned = !!site.pinned;
+  if (!allsites.isWorkspaceSite(site)) {
+    card.showPin = true;
+  }
+  return card;
+};
+
+allsites.organizeLabels = function () {
+
+  const pane = document.getElementById("organize-favorites-pane");
+  return {
+    moveUp: pane?.dataset.labelMoveUp || "Move up",
+    moveDown: pane?.dataset.labelMoveDown || "Move down",
+    drag: pane?.dataset.labelDrag || "Drag to reorder",
+  };
+};
+
+allsites.rebuildOrganizeFromSites = function (sites) {
+
+  const list = document.getElementById("organize-favorites-list");
+  if (!list) {
+    return;
+  }
+
+  list.replaceChildren();
+
+  const pinned = (sites || []).filter(site => site.pinned && !allsites.isWorkspaceSite(site));
+  // Preserve server/API pin order when present via pinnedQueue; otherwise keep API order.
+  const order = allsites.pinnedQueue?.favoriteSiteIds?.length
+    ? allsites.pinnedQueue.favoriteSiteIds
+    : pinned.map(site => site.siteId);
+  const byId = new Map(pinned.map(site => [site.siteId, site]));
+
+  order.forEach(siteId => {
+    const site = byId.get(siteId);
+    if (site) {
+      allsites.addOrganizeItem(site.siteId, site.title);
+      byId.delete(siteId);
+    }
+  });
+  byId.forEach(site => allsites.addOrganizeItem(site.siteId, site.title));
+
+  allsites.refreshOrganizeMoveButtons();
+  allsites.updateOrganizeEmptyState();
+};
+
+allsites.organizeRowHtml = siteTitle => {
+
+  const labels = allsites.organizeLabels();
+  const safeTitle = String(siteTitle || "").replace(/"/g, "&quot;");
+  return `
+  <div class="sakai-reorder-row-main">
+    <div class="sakai-reorder-move-controls">
+      <span class="btn btn-icon sakai-reorder-drag-handle pinned-drag-handle"
+          tabindex="0"
+          role="button"
+          title="${labels.drag}"
+          aria-label="${labels.drag}">
+        <span class="si si-drag-handle" aria-hidden="true"></span>
+      </span>
+      <button type="button" class="btn btn-icon" data-action="move-up" title="${labels.moveUp}" aria-label="${labels.moveUp}">
+        <span class="bi bi-chevron-up" aria-hidden="true"></span>
+      </button>
+      <button type="button" class="btn btn-icon" data-action="move-down" title="${labels.moveDown}" aria-label="${labels.moveDown}">
+        <span class="bi bi-chevron-down" aria-hidden="true"></span>
+      </button>
+    </div>
+    <div class="sakai-reorder-row-content">
+      <div class="sakai-reorder-title-block">
+        <div class="sakai-reorder-display">
+          <span class="sakai-reorder-title" title="${safeTitle}">${safeTitle}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+`;
+};
 
 allsites.updatePinned = function (reorder) {
 
@@ -32,265 +170,240 @@ allsites.updatePinned = function (reorder) {
     if (!r.ok) {
       throw new Error(`Network error while updating pinned sites at url ${url}`);
     } else {
-      document.getElementById("allsites-refresh-notification").style.display = "block";
+      const notification = document.getElementById("allsites-refresh-notification");
+      if (notification) notification.style.display = "block";
     }
   })
-  .catch (error => console.error(error));
+  .catch(error => console.error(error));
 };
 
-allsites.setAllOrNoneStarStates = function () {
+allsites.scheduleUpdatePinned = function (reorder) {
 
-  const sidebar = document.getElementById("select-site-sidebar");
+  clearTimeout(allsites.updateTimeoutId);
+  allsites.updateTimeoutId = setTimeout(() => allsites.updatePinned(reorder), 500);
+};
 
-  sidebar.querySelectorAll(".favorites-select-all-none").forEach(function (selectAllNone) {
+allsites.syncPinnedFromCards = function () {
 
-    const termContainer = selectAllNone.closest(".fav-sites-card");
+  const root = document.getElementById("moresites-content");
+  if (!root) return;
 
-    const siteCount = termContainer.querySelectorAll(".fav-sites-entry:not(.my-workspace)").length;
-    const favoritedSiteCount = termContainer.querySelectorAll(".site-favorite-btn[aria-pressed='true']").length;
+  allsites.pinnedQueue.favoriteSiteIds = Array.from(root.querySelectorAll("sakai-course-card"))
+    .filter(card => card.pinned)
+    .map(card => card.courseData?.siteId)
+    .filter(Boolean);
+};
 
-    if (siteCount === 0) {
-      // No favoritable sites under this section
-      selectAllNone.style.display = "none";
-    } else {
-      if (favoritedSiteCount === siteCount) {
-        selectAllNone.dataset.pinnedState = "pinned";
-        selectAllNone.setAttribute("aria-pressed", "true");
-        selectAllNone.querySelector(".si-pin-fill").style.display = "inline";
-        selectAllNone.querySelector(".si-pin").style.display = "none";
-      } else {
-        selectAllNone.dataset.pinnedState = "unpinned";
-        selectAllNone.querySelector(".si-pin-fill").style.display = "none";
-        selectAllNone.querySelector(".si-pin").style.display = "inline";
-        selectAllNone.setAttribute("aria-pressed", true);
-      }
+allsites.updateOrganizeEmptyState = function () {
 
-      selectAllNone.style.display = "initial";
-    }
+  const list = document.getElementById("organize-favorites-list");
+  const hasItems = !!list?.querySelector(".organize-favorite-item");
+  document.getElementById("pinned-to-show")?.classList.toggle("sakai-is-hidden", !hasItems);
+  document.getElementById("no-pinned-to-show")?.classList.toggle("sakai-is-hidden", hasItems);
+};
+
+allsites.addOrganizeItem = function (siteId, siteTitle) {
+
+  const list = document.getElementById("organize-favorites-list");
+  if (!list || list.querySelector(`.organize-favorite-item[data-site-id="${CSS.escape(siteId)}"]`)) {
+    return;
+  }
+
+  const li = document.createElement("li");
+  li.classList.add("list-group-item", "organize-favorite-item", "sakai-reorder-row");
+  li.dataset.siteId = siteId;
+  li.dataset.sortableId = siteId;
+  li.innerHTML = allsites.organizeRowHtml(siteTitle);
+  list.append(li);
+  allsites.refreshOrganizeMoveButtons();
+  allsites.updateOrganizeEmptyState();
+};
+
+allsites.removeOrganizeItem = function (siteId) {
+
+  document.querySelector(`#organize-favorites-list .organize-favorite-item[data-site-id="${CSS.escape(siteId)}"]`)?.remove();
+  allsites.refreshOrganizeMoveButtons();
+  allsites.updateOrganizeEmptyState();
+};
+
+allsites.handleCardPinChanged = function (e) {
+
+  if (e.detail?.source !== "sites-launcher") return;
+
+  allsites.syncPinnedFromCards();
+  allsites.scheduleUpdatePinned();
+
+  if (e.detail.pinned) {
+    allsites.addOrganizeItem(e.detail.siteId, e.detail.siteTitle);
+  } else {
+    allsites.removeOrganizeItem(e.detail.siteId);
+  }
+};
+
+allsites.renderSiteCards = function (sites, query = "") {
+
+  const content = document.getElementById("moresites-content");
+  const noResults = document.getElementById("all-sites-no-search-results");
+  if (!content) return;
+
+  const needle = query.trim().toLowerCase();
+  const filtered = needle
+    ? sites.filter(site => {
+        const title = (site.title || "").toLowerCase();
+        const desc = (site.shortDescription || "").toLowerCase();
+        const term = (site.term || "").toLowerCase();
+        return title.includes(needle) || desc.includes(needle) || term.includes(needle);
+      })
+    : sites;
+
+  content.replaceChildren();
+  content.className = "sakai-sites-launcher__sections";
+  content.setAttribute("aria-busy", "false");
+
+  if (!filtered.length) {
+    noResults?.classList.remove("is-hidden", "sakai-is-hidden");
+    return;
+  }
+
+  noResults?.classList.add("is-hidden");
+
+  allsites.buildGroups(filtered).forEach(group => {
+    const section = document.createElement("section");
+    section.className = "sakai-sites-launcher__section";
+    section.dataset.groupKey = group.key;
+
+    const heading = document.createElement("h3");
+    heading.className = "sakai-sites-launcher__section-title";
+    heading.textContent = group.label;
+    section.append(heading);
+
+    const grid = document.createElement("div");
+    grid.className = "sakai-sites-launcher__grid";
+    group.sites.forEach(site => grid.append(allsites.createCard(site)));
+    section.append(grid);
+    content.append(section);
   });
 };
 
-allsites.getPinnedSiteIds = () => {
+allsites.resetSearch = function () {
 
-  const sidebar = document.getElementById("select-site-sidebar");
-  return Array.from(sidebar.querySelectorAll(".site-favorite-btn[aria-pressed='true']"))
-      .map(btn => btn.dataset.siteId);
+  const searchInput = document.getElementById("search-all-sites");
+  if (searchInput) searchInput.value = "";
+  searchInput?.focus();
+  allsites.renderSiteCards(allsites.sites);
 };
 
-allsites.updateButton = (btn, state) => {
- 
-  btn.dataset.pinnedState = state;
+allsites.refreshOrganizeMoveButtons = function () {
 
-  if (state === "pinned") {
-    btn.setAttribute("aria-pressed", "true");
-    btn.querySelector(".si-pin-fill").style.display = "inline";
-    btn.querySelector(".si-pin").style.display = "none";
-  } else if (state === "unpinned") {
-    btn.setAttribute("aria-pressed", "false");
-    btn.querySelector(".si-pin-fill").style.display = "none";
-    btn.querySelector(".si-pin").style.display = "inline";
-  } else {
-    btn.removeAttribute("aria-pressed");
-  }
+  const list = document.getElementById("organize-favorites-list");
+  if (!list) return;
 
-  btn.style.display = "initial";
+  const items = [...list.querySelectorAll(".organize-favorite-item")];
+  items.forEach((li, index) => {
+    li.querySelector("[data-action='move-up']")?.toggleAttribute("disabled", index === 0);
+    li.querySelector("[data-action='move-down']")?.toggleAttribute("disabled", index === items.length - 1);
+  });
 };
 
-allsites.setButton = function (btn, state) {
+allsites.moveOrganizeItem = function (li, direction) {
 
-  allsites.updateButton(btn, state);
-  if (state === "unpinned") {
-    document.querySelector(
-      `#organize-favorites-list .organize-favorite-item[data-site-id="${CSS.escape(btn.dataset.siteId)}"]`)?.remove();
+  const list = document.getElementById("organize-favorites-list");
+  const sortable = allsites.sortable;
+  if (!list || !sortable || !li) return;
+
+  const order = sortable.toArray();
+  const sortableId = li.dataset.sortableId;
+  const index = order.indexOf(sortableId);
+  if (index < 0) return;
+
+  const nextIndex = direction === "up" ? index - 1 : index + 1;
+  if (nextIndex < 0 || nextIndex >= order.length) return;
+
+  order.splice(index, 1);
+  order.splice(nextIndex, 0, sortableId);
+  sortable.sort(order, true);
+  allsites.refreshOrganizeMoveButtons();
+  allsites.commitOrganizeOrder();
+};
+
+allsites.commitOrganizeOrder = function () {
+
+  const list = document.getElementById("organize-favorites-list");
+  if (!list) return;
+
+  const orderedIds = Array.from(list.querySelectorAll(".organize-favorite-item"))
+    .map(el => el.dataset.siteId)
+    .filter(Boolean);
+  const remaining = (allsites.pinnedQueue.favoriteSiteIds || []).filter(id => !orderedIds.includes(id));
+  allsites.pinnedQueue.favoriteSiteIds = [...orderedIds, ...remaining];
+  allsites.updatePinned(true);
+};
+
+allsites.setupOrganize = function () {
+
+  const list = document.getElementById("organize-favorites-list");
+  if (!list || typeof Sortable === "undefined") return;
+
+  allsites.updateOrganizeEmptyState();
+  allsites.refreshOrganizeMoveButtons();
+
+  if (allsites.sortable) {
+    allsites.sortable.destroy();
   }
 
-  // TODO: this needs to be implemented at some point. It would remove the annoying 
-  // refresh message in the all sites sidebar
-  //document.body.dispatchEvent(new CustomEvent("site-pin-changed", { detail: { siteId: btn.dataset.siteId, pinned: state === "pinned", source: "all-sites" } }));
+  allsites.sortable = Sortable.create(list, {
+    dataIdAttr: "data-sortable-id",
+    handle: ".sakai-reorder-drag-handle, .pinned-drag-handle",
+    onUpdate: () => {
+      allsites.refreshOrganizeMoveButtons();
+      allsites.commitOrganizeOrder();
+    },
+  });
+
+  if (!list.dataset.moveBound) {
+    list.dataset.moveBound = "true";
+    list.addEventListener("click", e => {
+      const button = e.target.closest("[data-action='move-up'], [data-action='move-down']");
+      if (!button || button.disabled) return;
+      const li = button.closest(".organize-favorite-item");
+      allsites.moveOrganizeItem(li, button.dataset.action === "move-up" ? "up" : "down");
+    });
+  }
+};
+
+allsites.setupSearch = function () {
+
+  const searchInput = document.getElementById("search-all-sites");
+  searchInput?.addEventListener("input", () => {
+    allsites.renderSiteCards(allsites.sites, searchInput.value);
+  });
+  searchInput?.addEventListener("keydown", event => {
+    if (event.key === "Escape") {
+      allsites.resetSearch();
+    }
+  });
 };
 
 allsites.setup = function () {
 
   const sidebar = document.getElementById("select-site-sidebar");
+  sidebar?.querySelector("button, a, input")?.focus();
 
-  sidebar.querySelectorAll("button, a")[0]?.focus();
-
-  allsites.setAllOrNoneStarStates();
-
-  const organizeItems = sidebar.querySelectorAll(".organize-favorite-item");
-
-  if (!organizeItems.length) {
-    document.getElementById("pinned-to-show").classList.add("d-none");
-    document.getElementById("no-pinned-to-show").classList.remove("d-none");
-  }
-
-  sidebar.querySelectorAll(".site-favorite-btn").forEach(btn => {
-
-    btn.addEventListener("click", function () {
-
-      const self = this;
-
-      const siteId = self.dataset.siteId;
-      const originalState = self.dataset.pinnedState;
-
-      if (originalState === 'myworkspace') {
-        // No unfavoriting your workspace!
-        return;
-      }
-
-      const newState = originalState === 'pinned' ? "unpinned" : "pinned";
-      allsites.setButton(self, newState);
-
-      allsites.pinnedQueue.favoriteSiteIds = allsites.getPinnedSiteIds();
-
-      allsites.updateTimeoutId && clearTimeout(allsites.updateTimeoutId);
-      allsites.updateTimeoutId = setTimeout(allsites.updatePinned, 500);
-      allsites.setAllOrNoneStarStates();
-    });
-  });
-
-  sidebar.querySelectorAll(".favorites-select-all-none").forEach(btn => {
-
-    btn.addEventListener("click", function (e) {
-
-      const state = this.dataset.pinnedState;
-      const buttons = this.closest('.fav-sites-card').querySelectorAll(".fav-sites-entry:not(.my-workspace) .site-favorite-btn");
-
-      var newState;
-
-      if (state === 'pinned') {
-        newState = 'unpinned';
-      } else {
-        newState = 'pinned';
-      }
-
-      buttons.forEach(button => allsites.setButton(button, newState));
-
-      allsites.pinnedQueue.favoriteSiteIds = allsites.getPinnedSiteIds();
-
-      allsites.updatePinned();
-
-      allsites.setAllOrNoneStarStates();
-    });
-  });
-
-  const list = document.getElementById('organize-favorites-list');
-
-  const update = () => {
-
-    const pinnedIds = allsites.getPinnedSiteIds();
-    const orderedIds = Array.from(list.querySelectorAll(".organize-favorite-item"))
-      .map(el => el.dataset.siteId).filter(id => pinnedIds.includes(id));
-    allsites.pinnedQueue.favoriteSiteIds = [...new Set([...orderedIds, ...pinnedIds])];
-
-    allsites.updatePinned(true);
-  };
-
-  const sortable = Sortable.create(list, { 
-    dataIdAttr: "data-sortable-id",
-    onUpdate: e => update(),
-  });
-
-  list.querySelectorAll(".organize-favorite-item").forEach(li => {
-
-    li.addEventListener("keyup", e => {
-
-      if (["e", "d"].includes(e.key.toLowerCase())) {
-        const order = sortable.toArray();
-        const sortableId = li.dataset.sortableId;
-        const index = order.indexOf(sortableId);
-
-        if (e.key.toLowerCase() === "e") {
-          if (li.previousSibling) {
-            order.splice(index, 1);
-            order.splice(index - 1, 0, sortableId);
-          }
-        } else if (e.key.toLowerCase() === "d") {
-          if (li.nextSibling) {
-            order.splice(index, 1);
-            order.splice(index + 1, 0, sortableId);
-          }
-        }
-
-        sortable.sort(order, true);
-        list.querySelector(`.organize-favorite-item[data-sortable-id='${sortableId}']`).focus();
-        update();
-      }
-    });
-  });
-
-  const numPinned = list.querySelectorAll("li").length;
-
-  // Setup the search field
-  const searchInput = sidebar.querySelector("#search-all-sites");
-  searchInput?.addEventListener("keyup", event => {
-
-    if (event.keyCode == 27) {
-      allsites.resetSearch();
-    }
-
-    if (searchInput.value.length > 0) {
-      const queryString = searchInput.value.toLowerCase();
-
-      sidebar.querySelectorAll(".fav-sites-card, .fav-sites-term, .fav-sites-entry")
-        .forEach(el => el.style.display = "none");
-
-      const matchedSites = Array.from(sidebar.querySelectorAll(".fav-sites-entry")).filter(el => {
-        return el.querySelector(".fav-title a span.fullTitle").textContent.toLowerCase().indexOf(queryString) >= 0;
-      });
-
-      matchedSites.forEach(el => {
-
-        el.style.display = "block";
-        const card = el.closest(".fav-sites-card");
-        card.style.display = "flex";
-      });
-
-      document.getElementById("all-sites-no-search-results").style.display = matchedSites.length === 0 ? "initial" : "none";
-    } else {
-      allsites.resetSearch();
-    }
-  });
+  sidebar?.addEventListener("site-pin-changed", allsites.handleCardPinChanged);
+  allsites.setupOrganize();
+  allsites.setupSearch();
 };
 
 document.addEventListener("DOMContentLoaded", () => {
 
   document.body.addEventListener("site-pin-changed", e => {
 
-    if (e.detail.source === "all-sites") return;
-
-    const newState = e.detail.pinned ? "pinned" : "unpinned";
-    const button = document.querySelector(`#selectSite button.site-favorite-btn[data-site-id='${e.detail.siteId}']`);
-    if (button) {
-      // The "other sites" term panes are loaded lazily; their pin buttons only exist once the
-      // drawer has been opened. The organize-favorites list below is rendered eagerly, so it is
-      // always updated.
-      allsites.updateButton(button, newState);
-      allsites.setAllOrNoneStarStates();
-    }
+    if (e.detail.source === "all-sites" || e.detail.source === "sites-launcher") return;
 
     if (!e.detail.pinned) {
-      document.querySelector(`#organize-favorites-list li.organize-favorite-item[data-site-id='${e.detail.siteId}']`)?.remove();
+      allsites.removeOrganizeItem(e.detail.siteId);
     } else {
-      const html = `
-        <div>
-          <div class="pinned-drag-handle">
-            <i class="si si-drag-handle"></i>
-          </div>
-          <div class="ms-2">${e.detail.siteTitle}</div>
-        </div>
-      `;
-
-      const li = document.createElement("li");
-      li.classList.add("organize-favorite-item");
-      li.tabIndex = "0";
-      li.dataset.siteId = e.detail.siteId;
-      li.dataset.sortableId = e.detail.siteId;
-      li.innerHTML = html;
-
-      document.getElementById("organize-favorites-list").append(li);
-      document.getElementById("no-pinned-to-show").classList.add("d-none");
-      document.getElementById("pinned-to-show").classList.remove("d-none");
+      allsites.addOrganizeItem(e.detail.siteId, e.detail.siteTitle);
     }
   });
 
@@ -300,49 +413,81 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let drawerLoaded = false;
 
-    // The term-grouped list of every accessible site is expensive to build, and the drawer is
-    // hidden until opened, so we fetch its content on demand the first time it is shown.
-    sidebar.addEventListener("show.bs.offcanvas", async () => {
+    sidebar.addEventListener("show.bs.modal", async () => {
 
-      if (drawerLoaded) return;
+      // Mobile: sites launcher can open from the bar while the nav offcanvas is open.
+      const navSidebar = document.getElementById("portal-nav-sidebar");
+      if (navSidebar && globalThis.bootstrap?.Offcanvas) {
+        bootstrap.Offcanvas.getInstance(navSidebar)?.hide();
+      }
+
+      if (drawerLoaded) {
+        document.getElementById("search-all-sites")?.focus();
+        return;
+      }
 
       const content = document.getElementById("moresites-content");
       const loading = document.getElementById("moresites-loading");
       const errorBanner = document.getElementById("moresites-error");
-      const siteId = sidebar.dataset.currentSiteId || "";
+      const userId = globalThis.portal?.user?.id;
 
-      // Show the spinner (and clear any previous error) until the drawer content has fully loaded.
-      // This also resets the UI when the drawer is reopened after a failed attempt.
       loading?.style.removeProperty("display");
       errorBanner?.style.setProperty("display", "none");
+      content?.setAttribute("aria-busy", "true");
+
+      if (!userId) {
+        console.error("No portal user id available for sites launcher");
+        loading?.style.setProperty("display", "none");
+        errorBanner?.style.setProperty("display", "block");
+        return;
+      }
 
       try {
-        const response = await fetch(`/portal/sites-drawer/${encodeURIComponent(siteId)}`, { credentials: "include" });
+        const [sitesResponse, favoritesResponse] = await Promise.all([
+          fetch(`/api/users/${encodeURIComponent(userId)}/sites`, { credentials: "include" }),
+          fetch("/portal/favorites/list", { credentials: "include" }),
+        ]);
 
-        if (!response.ok) {
-          throw new Error(`Network error while loading the sites drawer from ${response.url}`);
+        if (!sitesResponse.ok) {
+          throw new Error(`Network error while loading sites from ${sitesResponse.url}`);
         }
 
-        // Replacing the content removes the spinner once the drawer is completely loaded.
-        content.innerHTML = await response.text();
+        const payload = await sitesResponse.json();
+        allsites.sites = Array.isArray(payload.sites) ? payload.sites : [];
+        allsites.terms = Array.isArray(payload.terms) ? payload.terms : [];
+
+        let favoriteSiteIds = [];
+        if (favoritesResponse.ok) {
+          const favorites = await favoritesResponse.json();
+          favoriteSiteIds = Array.isArray(favorites.favoriteSiteIds) ? favorites.favoriteSiteIds : [];
+        }
+        if (!favoriteSiteIds.length) {
+          favoriteSiteIds = allsites.sites
+            .filter(site => site.pinned && !allsites.isWorkspaceSite(site))
+            .map(site => site.siteId);
+        }
+        allsites.pinnedQueue.favoriteSiteIds = favoriteSiteIds.filter(id => !String(id).startsWith("~"));
+
+        allsites.renderSiteCards(allsites.sites);
+        allsites.rebuildOrganizeFromSites(allsites.sites);
         drawerLoaded = true;
         allsites.setup();
+        document.getElementById("search-all-sites")?.focus();
       } catch (error) {
-        // Leave drawerLoaded false so reopening the drawer retries the fetch.
         console.error(error);
         loading?.style.setProperty("display", "none");
         errorBanner?.style.setProperty("display", "block");
+        content?.setAttribute("aria-busy", "false");
       }
     });
   }
 
-  const organizeTab = document.getElementById('allsites-organize-favourites-tab');
+  const organizeTab = document.getElementById("allsites-organize-favourites-tab");
   const refreshNotification = document.getElementById("allsites-refresh-notification");
 
   if (organizeTab && refreshNotification) {
     organizeTab.addEventListener("click", () => {
       if (refreshNotification.offsetParent !== null) {
-        // Element is visible
         location.reload();
       }
     });

@@ -1,0 +1,49 @@
+.sakai-main-toolbar {
+  flex-shrink: 0;
+  min-height: var(--sakai-main-toolbar-height);
+  padding: var(--sakai-space-2) var(--sakai-space-1) var(--sakai-space-3);
+}
+
+.sakai-main-toolbar__breadcrumbs {
+  .portal-header-breadcrumb {
+    display: flex !important;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.25rem 0.5rem;
+    margin: 0;
+  }
+
+  .portal-header-breadcrumb-separator,
+  .portal-header-breadcrumb-item > a {
+    color: var(--breadcrumbs-color);
+    font-size: var(--sakai-font-size-sm);
+    font-weight: 500;
+    text-decoration: none;
+
+    &:hover {
+      color: var(--breadcrumbs-hover-color);
+      text-decoration: underline;
+    }
+  }
+
+  .portal-header-breadcrumb-separator {
+    font-size: 0.65em;
+    color: var(--sakai-text-color-dimmed);
+  }
+}
+
+.sakai-main-toolbar__icons {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.sakai-main-toolbar__icons .sakai-btn-icon,
+.sakai-main-toolbar__icons .icon-button {
+  color: var(--sakai-text-color-1);
+}
+
+.portal-notifications-indicator {
+  background: var(--sakai-primary-color-1);
+  color: var(--sakai-text-color-inverted);
+}

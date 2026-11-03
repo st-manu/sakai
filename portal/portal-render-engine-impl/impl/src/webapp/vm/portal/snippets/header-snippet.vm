@@ -1,0 +1,41 @@
+<header class="portal-header sakai-portal-header sakai-portal-header--mobile" role="banner">
+
+  <div class="sakai-portal-header__start">
+    <div id="logoWrapper" class="portal-header-logo sakai-portal-header__logo">
+      #if (${userIsLoggedIn})
+      <button class="sakai-btn-icon btn icon-button portal-header-hamburger-button"
+          type="button"
+          data-bs-toggle="offcanvas"
+          data-bs-target="#portal-nav-sidebar"
+          aria-controls="portal-nav-sidebar"
+          title="${rloader.sit_navigation}"
+          aria-label="${rloader.sit_navigation}">
+        <span class="bi bi-list" aria-hidden="true"></span>
+      </button>
+      #end
+      <a class="btn sakai-btn-logo sakai-portal-header__home" href="/portal" title="$rloader.portal_home">
+        <span class="visually-hidden">$rloader.portal_home</span>
+      </a>
+    </div>
+    #parse("/vm/portal/includeGatewayNav.vm")
+  </div>
+
+  #if (!${userIsLoggedIn})
+    #if (${loginTopLogin})
+      #parse("/vm/portal/includeLoginNav.vm")
+    #else
+      #parse("/vm/portal/snippets/loginImage-snippet.vm")
+    #end
+  #else
+    <button class="sakai-btn-icon btn icon-button sak-sysInd-account sakai-portal-header__account"
+        type="button"
+        data-bs-toggle="modal"
+        data-bs-target="#sakai-account-panel"
+        aria-controls="sakai-account-panel"
+        title="${rloader.mainnav_btn_account}">
+      <img class="sakai-accountProfileImage"
+          src="${profileImageUrl}"
+          alt="${rloader.sit_profile_image_alt}">
+    </button>
+  #end
+</header>

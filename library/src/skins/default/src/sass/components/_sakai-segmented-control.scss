@@ -1,0 +1,45 @@
+/* Segmented control (tabs) — Text / File upload style */
+
+.sakai-segmented-control,
+.sakai-tool-nav {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: var(--sakai-space-1);
+  padding: var(--sakai-space-1);
+  background-color: var(--sakai-background-color-2);
+  border-radius: var(--sakai-radius-lg);
+  list-style: none;
+  margin: 0 0 var(--sakai-space-4);
+}
+
+.sakai-segmented-control__item,
+.sakai-tool-nav__item {
+  margin: 0;
+}
+
+.sakai-segmented-control__btn,
+.sakai-tool-nav__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sakai-space-2);
+  padding: var(--sakai-space-2) var(--sakai-space-4);
+  border: none;
+  border-radius: var(--sakai-radius-md);
+  background: transparent;
+  color: var(--sakai-text-color-1);
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+
+  &:hover {
+    background-color: var(--sakai-background-color-3);
+    color: var(--sakai-text-color-2);
+  }
+
+  &.is-active,
+  &[aria-selected="true"],
+  &.active {
+    background-color: var(--sakai-primary-color-1);
+    color: var(--sakai-text-color-inverted);
+  }
+}

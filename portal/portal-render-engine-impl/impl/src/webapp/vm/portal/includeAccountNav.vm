@@ -1,0 +1,86 @@
+<ul id="sakai-system-indicators" class="sakai-main-toolbar__icons">
+  #if ($pageColumn0Tools && !$pageColumn0Tools.isEmpty())
+      #set ($helpLink = $pageColumn0Tools.get(0).toolHelpActionUrl)
+  #elseif ($pageColumn1Tools && !$pageColumn1Tools.isEmpty())
+      #set ($helpLink = $pageColumn1Tools.get(0).toolHelpActionUrl)
+  #end
+  #if ($helpLink)
+    <li>
+      <a class="sak-sysInd-help desktop-help-icon"
+          title="${rloader.mainnav_help_tooltip}"
+          href="${helpLink}"
+          target="_blank">
+        <button class="sakai-btn-icon btn icon-button" type="button"
+	    aria-label="${rloader.mainnav_help_tooltip}">
+          <span class="bi bi-question-circle" aria-hidden="true"></span>
+        </button>
+      </a>
+    </li>
+  #end
+  #if ( $toolDirectUrlEnabled)
+    <li>
+      <button class="sakai-btn-icon btn icon-button"
+          data-bs-toggle="offcanvas"
+          data-bs-target="#sakai-directlink-panel"
+          aria-controls="sakai-directlink-panel"
+          aria-label="${rloader.tool_direct_button_link}"
+          title="${rloader.tool_direct_button_link}">
+        <span class="bi bi-share-fill" aria-hidden="true"></span>
+      </button>
+    </li>
+  #end
+  #if (${usePortalSearch})
+    <li>
+      <button class="sakai-btn-icon btn icon-button portal-search-button"
+          data-bs-toggle="offcanvas"
+          data-bs-target="#sakai-search-panel"
+          aria-controls="sakai-search-panel"
+          aria-label="$rloader.sit_search_for_content"
+          title="$rloader.sit_search_for_content">
+        <span class="bi bi-search" aria-hidden="true"></span>
+      </button>
+    </li>
+  #end
+
+  #if ($quickLinks)
+    <li>
+      <button class="sakai-btn-icon btn icon-button"
+          data-bs-toggle="offcanvas"
+          data-bs-target="#sakai-quickLinksPanel"
+          aria-controls="sakai-quickLinksPanel"
+          aria-label="$rloader.sit_quick_links"
+          aria-expanded="false"
+          title="$rloader.sit_quick_links">
+        <span class="bi bi-link-45deg" aria-hidden="true"></span>
+      </button>
+    </li>
+  #end
+
+  <li>
+    <button class="sakai-btn-icon btn icon-button"
+        data-bs-toggle="offcanvas"
+        data-bs-target="#sakai-calendar-panel"
+        aria-controls="sakai-calendar-panel"
+        aria-label="$rloader.sit_calendar"
+        title="$rloader.sit_calendar">
+      <span class="si si-calendar" aria-hidden="true"></span>
+    </button>
+  </li>
+
+
+  #if (${useBullhornAlerts})
+    <li>
+      <button class="portal-notifications-button sakai-btn-icon btn icon-button"
+          data-bs-toggle="offcanvas"
+          data-bs-target="#sakai-notifications-panel"
+          aria-controls="sakai-notifications-panel"
+          aria-label="$rloader.sit_notifications"
+          title="$rloader.sit_notifications">
+        <span class="portal-notifications-icon bi bi-bell" aria-hidden="true"></span>
+        <span class="portal-notifications-indicator sakai-is-hidden">
+          <span class="visually-hidden">$rloader.sit_new_notifications_label</span>
+        </span>
+      </button>
+    </li>
+  #end
+</ul>

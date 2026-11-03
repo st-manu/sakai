@@ -1,0 +1,17 @@
+.sakai-actions,
+.act {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sakai-space-2);
+  margin: var(--sakai-space-4) 0;
+
+  > input,
+  > button,
+  > a,
+  > a[href],
+  > .sakai-btn,
+  > .active {
+    margin: 0;
+  }
+}

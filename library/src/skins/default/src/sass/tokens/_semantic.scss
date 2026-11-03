@@ -1,0 +1,63 @@
+/* L1 — Semantic system tokens
+ *
+ * Derived from brand. New UI should consume these, not hex or tool-specific vars.
+ */
+
+:root {
+    // Primary branding color.
+    --sakai-primary-color-1: var(--sakai-brand);
+    --sakai-primary-color-2: var(--sakai-brand--darker-2);
+    --sakai-primary-color-3: var(--sakai-brand--darker-3);
+
+    --sakai-active-color-1: var(--sakai-brand--lighter-6);
+    --sakai-active-color-2: var(--sakai-brand--lighter-5);
+    --sakai-active-color-3: var(--sakai-brand--lighter-4);
+
+    --sakai-passive-color-1: var(--sakai-color-gray--lighter-6);
+    --sakai-passive-color-2: var(--sakai-color-gray--lighter-5);
+    --sakai-passive-color-3: var(--sakai-color-gray--lighter-4);
+
+    --sakai-background-color-1: var(--sakai-color-white);
+    --sakai-background-color-2: var(--sakai-color-gray--lighter-7);
+    --sakai-background-color-3: var(--sakai-color-gray--lighter-6);
+    --sakai-background-color-4: var(--sakai-color-gray--lighter-5);
+    --sakai-background-color-5: var(--sakai-color-gray--lighter-4);
+    --sakai-background-color-6: var(--sakai-color-gray--lighter-3);
+    --sakai-background-color-7: var(--sakai-color-gray--lighter-2);
+    --sakai-background-color-8: var(--sakai-color-gray--lighter-1);
+    --sakai-background-color-9: var(--sakai-color-gray);
+
+    --sakai-secondary-color-1: var(--sakai-color-blue--darker-2);
+    --sakai-tertiary-color-1: var(--sakai-color-orange--darker-4);
+
+    --sakai-border-color: var(--sakai-color-gray--lighter-6);
+    --sakai-border-color-modal: var(--sakai-color-gray--darker-4);
+
+    --sakai-text-color-1: var(--sakai-color-gray--darker-5);
+    --sakai-text-color-2: var(--sakai-color-gray--darker-6);
+    --sakai-text-color-3: var(--sakai-brand--darker-3);
+    --sakai-text-color-dimmed: var(--sakai-color-gray--darker-4);
+    --sakai-text-color-disabled: var(--sakai-color-gray--darker-2);
+    --sakai-text-color-inverted: var(--sakai-background-color-1);
+
+    --elevation-0dp: none;
+    --elevation-1dp: 0 2px 1px -1px rgba(0,0,0,.2), 0 1px 1px 0 rgba(0,0,0,.14), 0 1px 3px 0 rgba(0,0,0,.12);
+    --elevation-2dp: 0 3px 1px -2px rgba(0,0,0,.2), 0 2px 2px 0 rgba(0,0,0,.14), 0 1px 5px 0 rgba(0,0,0,.12);
+    --elevation-3dp: 0 3px 3px -2px rgba(0,0,0,.2), 0 3px 4px 0 rgba(0,0,0,.14), 0 1px 8px 0 rgba(0,0,0,.12);
+    --elevation-4dp: 0 2px 4px -1px rgba(0,0,0,.2), 0 4px 5px 0 rgba(0,0,0,.14), 0 1px 10px 0 rgba(0,0,0,.12);
+    --elevation-5dp: 0 3px 5px -1px rgba(0,0,0,.2), 0 5px 8px 0 rgba(0,0,0,.14), 0 1px 14px 0 rgba(0,0,0,.12);
+    --elevation-6dp: 0 3px 5px -1px rgba(0,0,0,.2), 0 6px 10px 0 rgba(0,0,0,.14), 0 1px 18px 0 rgba(0,0,0,.12);
+    --elevation-7dp: 0 4px 5px -2px rgba(0,0,0,.2), 0 7px 10px 1px rgba(0,0,0,.14), 0 2px 16px 1px rgba(0,0,0,.12);
+    --elevation-8dp: 0 5px 5px -3px rgba(0,0,0,.2), 0 8px 10px 1px rgba(0,0,0,.14), 0 3px 14px 2px rgba(0,0,0,.12);
+
+    --link-color: var(--sakai-primary-color-1);
+    --link-active-color: var(--sakai-primary-color-3);
+    --link-hover-color: var(--sakai-primary-color-2);
+    --link-visited-color: var(--sakai-color-purple);
+    --link-background-color: transparent;
+    --link-active-background-color: transparent;
+    --link-hover-background-color: transparent;
+
+    --focus-outline-color: var(--sakai-color-blue--lighter-3);
+    --instruction-color: var(--sakai-text-color-disabled);
+}

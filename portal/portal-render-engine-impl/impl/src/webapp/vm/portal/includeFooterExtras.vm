@@ -1,0 +1,52 @@
+#if (${loggedIn})
+
+    <div id="sakai-portal-fabs" class="sakai-portal-fabs">
+            #if (${sitePages.pageNavShowPresenceLoggedIn})
+
+                <h2 class="visually-hidden">${rloader.sit_presencehead}</h2>
+                <div id="footerAppPresence" class="sakai-portal-fab-wrap Mrphs-footerApp__presence">
+                    <button type="button"
+                            id="presenceToggle"
+                            class="sakai-portal-fab sakai-portal-fab--presence Mrphs-footerApp--toggle Mrphs-footerApp--toggle-users"
+                            aria-controls="presenceArea"
+                            aria-expanded="false"
+                            title="${rloader.sit_presencetitle}">
+                        <span class="bi bi-people sakai-portal-fab__icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">${rloader.sit_presencetitle}</span>
+                        <span id="presenceCount" class="sakai-portal-fab__badge Mrphs-footerApp--count Mrphs-footerApp--count-presence empty" aria-live="polite"></span>
+                    </button>
+                </div>
+
+            #end ## END of IF (${sitePages.pageNavShowPresenceLoggedIn})
+
+    </div>
+
+#end ## End to IF (${loggedIn})
+
+#if ( ${loggedIn} && ${sitePages.pageNavShowPresenceLoggedIn} )
+
+    <div id="presenceArea" class="sakai-presence-panel trayPopup Mrphs-presence__area is-hidden" hidden role="dialog" aria-labelledby="presenceTitle">
+        <div id="presenceWrapper" class="sakai-presence-panel__wrapper Mrphs-presence__area--wrapper">
+            <div id="presenceTitle" class="sakai-presence-panel__title Mrphs-presence__area--title">
+                <span class="sakai-presence-panel__title-text">${rloader.sit_presencetitle}</span>
+                <button type="button" id="presenceClose" class="sakai-presence-panel__close trayPopupClose Mrphs-presence__area--title--close" aria-label="${rloader.sit_closepage}">
+                    <span class="bi bi-x-lg" aria-hidden="true"></span>
+                </button>
+            </div>
+            <div id="presenceIframe" class="sakai-presence-panel__body Mrphs-presence__area--iframe-div"></div>
+            <script>
+                var sakaiPresenceTimeDelay = ${sitePages.sakaiPresenceTimeDelay};
+                var sakaiPresenceFragment = "${sitePages.pageNavPresenceUrl}?output_fragment=yes&auto=true";
+                var sakaiLastPresenceTimeOut = null;
+                var delayedUpdatePresence = function() {
+                    if (typeof updatePresence === 'function') {
+                        updatePresence();
+                    } else {
+                        sakaiLastPresenceTimeOut = setTimeout(delayedUpdatePresence, sakaiPresenceTimeDelay);
+                    }
+                };
+            </script>
+        </div>
+    </div>
+
+#end ## END of IF ( ${loggedIn} && ${sitePages.pageNavShowPresenceLoggedIn }

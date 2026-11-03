@@ -45,8 +45,7 @@
     // Here, we reduce the opacity of the default logo to make 
     // it fit in better with dark theme.
     // Suggested: decimal .7 and .9
-    --logo: url(./images/sakaiLogo.png);
-    --logo-opacity: .7;
+    --logo: url(./images/brandLogoDark.svg);
 
     .logo-light {
       display: none;
@@ -54,6 +53,10 @@
     .logo-dark {
         display: block;
     }
+
+    // L0 page canvas / card (align with light brand tokens)
+    --sakai-page-background: var(--sakai-background-color-2);
+    --sakai-card-background: var(--sakai-background-color-1);
 
     // Primary branding color. 
     // Suggested: Your institution's main branding color.
@@ -258,11 +261,12 @@
     --sakai-modal-header-color: var(--sakai-text-color-1);
     --sakai-modal-close-btn-bg: var(--sakai-text-color-1);
 
-    --sakai-offcanvas-header-bg: var(--sakai-background-color-3);
+    --sakai-offcanvas-header-bg: var(--sakai-background-color-1);
     --sakai-offcanvas-header-color: var(--sakai-text-color-1);
-    --sakai-offcanvas-close-btn-bg: var(--sakai-background-color-1);
+    --sakai-offcanvas-close-btn-bg: transparent;
 
-    --sakai-selected-page-bg-color: var(--sakai-brand);
+    --sakai-selected-page-bg-color: var(--sakai-background-color-3);
+    --sakai-selected-page-color: var(--sakai-text-color-1);
 
     //--sakai-scrollbar-background-color: var(--sakai-border-color);
     --sakai-scrollbar-thumb-color: var(--sakai-brand--lighter-7);
@@ -367,10 +371,6 @@
       --bs-pagination-color: var(--link-color);
       --bs-pagination-hover-color: var(--sakai-text-color-1);
       --bs-pagination-hover-bg: var(--sakai-active-color-2);
-    }
-
-    .poweredby__image {
-        filter: invert(1) hue-rotate(180deg);
     }
 
     /*

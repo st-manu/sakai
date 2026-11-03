@@ -1,0 +1,14 @@
+##
+## the Page part of the standard view, with page navigation
+##
+<!-- START VM includePageWithNav.vm -->
+#* TODO: decide - Trinity chopping block
+    <div id="pageBody" class="d-flex">
+*#    
+        #parse("/vm/portal/includeSiteNav.vm")
+#*
+        #parse("/vm/portal/includeSiteHierarchy.vm")
+*#
+        #parse("/vm/portal/includePage.vm")
+    
+<!-- END VM includePageWithNav.vm -->

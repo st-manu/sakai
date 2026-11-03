@@ -1,18 +1,20 @@
-import { css, html, nothing } from "lit";
+import { html, nothing } from "lit";
 import { styleMap } from "lit/directives/style-map.js";
-import { SakaiShadowElement } from "@sakai-ui/sakai-element";
+import { SakaiElement } from "@sakai-ui/sakai-element";
 import { pushSetupComplete, registerPushCallback } from "@sakai-ui/sakai-push-utils";
 import { markNotificationsViewed } from "@sakai-ui/sakai-notifications";
 import "@sakai-ui/sakai-course-card/course-card-settings.js";
 
-export class SakaiCourseCard extends SakaiShadowElement {
+export class SakaiCourseCard extends SakaiElement {
 
   static properties = {
     courseData: { type: Object },
     siteId: { attribute: "site-id", type: String },
     density: { type: String },
+    showPin: { attribute: "show-pin", type: Boolean },
+    pinned: { type: Boolean },
     _styles: { state: true },
-    _textStyles: { state: true },
+    _accentStyles: { state: true },
   };
 
   constructor() {
@@ -20,11 +22,20 @@ export class SakaiCourseCard extends SakaiShadowElement {
     super();
 
     this.loadTranslations("coursecard");
+    this._onNotificationsCleared = () => {
+      if (!this.courseData?.tools) {
+        return;
+      }
+      this.courseData.tools.forEach(t => { t.hasAlerts = false; });
+      this.requestUpdate();
+    };
   }
 
   connectedCallback() {
 
     super.connectedCallback();
+
+    document.body.addEventListener("notifications-cleared", this._onNotificationsCleared);
 
     if (!this.courseData) {
       if (!this.siteId) {
@@ -57,20 +68,38 @@ export class SakaiCourseCard extends SakaiShadowElement {
 
     super.disconnectedCallback();
 
+    document.body.removeEventListener("notifications-cleared", this._onNotificationsCleared);
+
     if (this._lastBackgroundImageUrl) {
       URL.revokeObjectURL(this._lastBackgroundImageUrl);
     }
   }
 
-  _init() {
+  _hasDecoratedBackground() {
 
-    this._styles = { color: this.courseData.courseCardForegroundColor };
+    return Boolean(this.courseData?.image || this.courseData?.courseCardBackgroundColor);
+  }
+
+  _applySurfaceStyles() {
+
+    this._styles = {};
+    this._accentStyles = {};
+
     if (this.courseData.image) {
       this._styles.backgroundImage = `linear-gradient(var(--sakai-course-card-gradient-start), var(--sakai-course-card-gradient-end)), url(${this.courseData.image})`;
-    } else {
+    } else if (this.courseData.courseCardBackgroundColor) {
       this._styles.backgroundColor = this.courseData.courseCardBackgroundColor;
     }
-    this._textStyles = { color: this.courseData.courseCardForegroundColor };
+
+    if (this._hasDecoratedBackground() && this.courseData.courseCardForegroundColor) {
+      this._styles.color = this.courseData.courseCardForegroundColor;
+      this._accentStyles = { color: this.courseData.courseCardForegroundColor };
+    }
+  }
+
+  _init() {
+
+    this._applySurfaceStyles();
 
     pushSetupComplete.then(() => {
 
@@ -88,12 +117,6 @@ export class SakaiCourseCard extends SakaiShadowElement {
       });
     })
     .catch(error => console.error(error));
-
-    document.body.addEventListener("notifications-cleared", () => {
-
-      this.courseData.tools.forEach(t => t.hasAlerts = false);
-      this.requestUpdate();
-    });
   }
 
   _toolClicked(e) {
@@ -103,35 +126,49 @@ export class SakaiCourseCard extends SakaiShadowElement {
   _backgroundColorChanged(e) {
 
     delete this._styles.backgroundImage;
-    this._styles.backgroundColor = e.detail.color;
+    this.courseData = { ...this.courseData, courseCardBackgroundColor: e.detail.color, image: undefined };
+    this._applySurfaceStyles();
     this.requestUpdate();
   }
 
   _foregroundColorChanged(e) {
 
-    this._styles.color = e.detail.color;
-    this._textStyles = { color: e.detail.color };
+    this.courseData = { ...this.courseData, courseCardForegroundColor: e.detail.color };
+    this._applySurfaceStyles();
     this.requestUpdate();
   }
 
   _imageSelected(e) {
 
-    this._styles.backgroundImage = `linear-gradient(var(--sakai-course-card-gradient-start), var(--sakai-course-card-gradient-end)), url(${e.detail.url})`;
+    this.courseData = { ...this.courseData, image: e.detail.url };
+    this._applySurfaceStyles();
     this.requestUpdate();
   }
 
   _openSettingsModal() {
 
-    const el = this.shadowRoot.querySelector("course-card-settings");
-    el.showModal();
+    this.renderRoot.querySelector("course-card-settings")?.showModal();
   }
 
   _save() {
-    document.querySelector(`course-card-settings[course-id='${this.courseData.siteId}']`)._save();
+    this.renderRoot.querySelector(`course-card-settings[course-id='${this.courseData.siteId}']`)?._save();
   }
 
   shouldUpdate() {
     return this._i18n && this.courseData;
+  }
+
+  willUpdate() {
+
+    const compact = this.density === "compact";
+    if (compact) {
+      this.setAttribute("density", "compact");
+    } else {
+      this.removeAttribute("density");
+    }
+
+    const hasAlerts = Boolean(this.courseData && this._alertTools().length);
+    this.classList.toggle("sakai-course-card--has-alerts", hasAlerts);
   }
 
   _effectiveDensity() {
@@ -140,7 +177,29 @@ export class SakaiCourseCard extends SakaiShadowElement {
   }
 
   _alertTools() {
-    return this.courseData.tools.filter(tool => tool.hasAlerts);
+    return (this.courseData?.tools || []).filter(tool => tool.hasAlerts);
+  }
+
+  _togglePin(e) {
+
+    e.preventDefault();
+    e.stopPropagation();
+
+    this.pinned = !this.pinned;
+    if (this.courseData) {
+      this.courseData = { ...this.courseData, pinned: this.pinned };
+    }
+
+    this.dispatchEvent(new CustomEvent("site-pin-changed", {
+      detail: {
+        siteId: this.courseData.siteId,
+        siteTitle: this.courseData.title,
+        pinned: this.pinned,
+        source: "sites-launcher",
+      },
+      bubbles: true,
+      composed: true,
+    }));
   }
 
   _renderSettingsModal() {
@@ -162,196 +221,81 @@ export class SakaiCourseCard extends SakaiShadowElement {
 
     const density = this._effectiveDensity();
     const description = this.courseData.shortDescription?.trim();
+    const alertTools = this._alertTools();
+    const decorated = this._hasDecoratedBackground();
+    const hasActions = this.showPin || this.courseData.canEdit;
+    const surfaceClasses = [
+      "sakai-course-card__surface",
+      `sakai-course-card__surface--${density}`,
+      decorated ? "sakai-course-card__surface--decorated" : "sakai-course-card__surface--plain",
+    ].join(" ");
+    const titleClasses = [
+      "sakai-course-card__title",
+      decorated ? "" : "sakai-course-card__title--link",
+    ].filter(Boolean).join(" ");
 
     return html`
       ${this._renderSettingsModal()}
-      <div class="info-block ${density}${this._alertTools().length === 0 ? " rounded-bottom" : ""}" style=${styleMap(this._styles)}>
-        ${this.courseData.canEdit ? html`
-          <button type="button"
-              class="btn btn-icon settings-button"
-              title="${this._i18n.settings_tooltip}"
-              @click=${this._openSettingsModal}>
-            <i class="bi bi-three-dots-vertical fs-6" style=${styleMap(this._textStyles)}></i>
-          </button>
-        ` : nothing}
-        <div class="info-content ${this.courseData.canEdit ? "has-settings" : ""}">
-          <a class="info-title ${!this.courseData.image ? "no-background" : ""}"
-              href="${this.courseData.url}"
-              title="${this._i18n.visit} ${this.courseData.title}"
-              style=${styleMap(this._textStyles)}>
-            ${this.courseData.title}
-          </a>
-          ${description ? html`
-            <a class="info-description-link"
-                href="${this.courseData.url}"
-                title="${this._i18n.visit} ${this.courseData.title}">
-              <div class="code-block description-block" title="${description}" style=${styleMap(this._textStyles)}>
-                ${description}
-              </div>
-            </a>
+      <div class="sakai-course-card__shell">
+        <div class="${surfaceClasses}" style=${styleMap(this._styles)}>
+          ${hasActions ? html`
+            <div class="sakai-course-card__actions">
+              ${this.showPin ? html`
+                <button type="button"
+                    class="sakai-btn-icon sakai-course-card__pin ${this.pinned ? "sakai-course-card__pin--on" : ""}"
+                    data-pinned="${this.pinned ? "true" : "false"}"
+                    title="${(this.pinned ? this._i18n.unpin_tooltip : this._i18n.pin_tooltip)} ${this.courseData.title}"
+                    aria-pressed="${this.pinned ? "true" : "false"}"
+                    aria-label="${(this.pinned ? this._i18n.unpin_tooltip : this._i18n.pin_tooltip)} ${this.courseData.title}"
+                    @click=${this._togglePin}>
+                  <i class="si si-pin sakai-pin-icon__outline" style=${styleMap(this._accentStyles)} aria-hidden="true"></i>
+                  <i class="si si-pin-fill sakai-pin-icon__fill" style=${styleMap(this._accentStyles)} aria-hidden="true"></i>
+                </button>
+              ` : nothing}
+              ${this.courseData.canEdit ? html`
+                <button type="button"
+                    class="sakai-btn-icon sakai-course-card__settings"
+                    title="${this._i18n.settings_tooltip}"
+                    @click=${this._openSettingsModal}>
+                  <i class="bi bi-three-dots-vertical" style=${styleMap(this._accentStyles)} aria-hidden="true"></i>
+                </button>
+              ` : nothing}
+            </div>
           ` : nothing}
+          <div class="sakai-course-card__content ${hasActions ? "sakai-course-card__content--has-actions" : ""}">
+            <a class="${titleClasses}"
+                href="${this.courseData.url}"
+                title="${this._i18n.visit} ${this.courseData.title}"
+                style=${styleMap(this._accentStyles)}>
+              ${this.courseData.title}
+            </a>
+            ${description ? html`
+              <a class="sakai-course-card__description-link ${decorated ? "" : "sakai-course-card__description-link--plain"}"
+                  href="${this.courseData.url}"
+                  title="${this._i18n.visit} ${this.courseData.title}">
+                <div class="sakai-course-card__description" title="${description}" style=${styleMap(this._accentStyles)}>
+                  ${description}
+                </div>
+              </a>
+            ` : nothing}
+          </div>
         </div>
-      </div>
 
-      ${this._alertTools().length ? html`
-      <div class="tool-alerts-block">
-        ${this._alertTools().map(tool => html`
-          <div class="mx-2">
-            <a href="${tool.url}" @click=${this._toolClicked} data-tool-id="${tool.id}" title="${tool.title}" style="position: relative;">
-              <i class="si ${tool.iconClass}"></i>
+        ${alertTools.length ? html`
+        <div class="sakai-course-card__alerts">
+          ${alertTools.map(tool => html`
+            <a class="sakai-course-card__alert"
+                href="${tool.url}"
+                @click=${this._toolClicked}
+                data-tool-id="${tool.id}"
+                title="${tool.title}">
+              <i class="si ${tool.iconClass}" aria-hidden="true"></i>
               <span class="portal-notifications-indicator"><span class="visually-hidden">${tool.title}</span></span>
             </a>
-          </div>
-        `)}
+          `)}
+        </div>
+        ` : nothing}
       </div>
-      ` : nothing}
     `;
   }
-
-  static styles = [
-    SakaiShadowElement.styles,
-    css`
-      :host {
-        display: block;
-        width: 100%;
-      }
-
-      a {
-        text-decoration: none;
-      }
-
-      .info-block {
-        position: relative;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        box-sizing: border-box;
-        height: 110px;
-        background-repeat: no-repeat;
-        background-color: var(--sakai-background-color-2);
-        background-size: cover;
-        background-position: center;
-        color: var(--sakai-text-color-inverse, white);
-        font-weight: bold;
-        padding: 0.75rem 1rem;
-        border-top-left-radius: var(--bs-border-radius);
-        border-top-right-radius: var(--bs-border-radius);
-        border: solid 1px var(--sakai-border-color);
-
-        a {
-          color: var(--sakai-text-color-inverse, white);
-          background: transparent;
-          &:hover {
-            color: var(--sakai-text-color-inverse, white);
-          }
-
-          &.no-background {
-            color: var(--link-color);
-            &:hover {
-              color: var(--link-color);
-            }
-          }
-        }
-
-        i {
-          font-size: 20px;
-        }
-
-        &.compact {
-          height: 72px;
-          padding: 0.5rem 0.75rem;
-        }
-
-        &.compact .description-block {
-          -webkit-line-clamp: 1;
-          line-clamp: 1;
-        }
-
-        &.rounded-bottom {
-          border-bottom-left-radius: var(--bs-border-radius);
-          border-bottom-right-radius: var(--bs-border-radius);
-        }
-      }
-
-      .info-content {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        min-width: 0;
-        min-height: 0;
-      }
-
-      .info-content.has-settings {
-        padding-inline-end: 1.75rem;
-      }
-
-      .info-title {
-        min-width: 0;
-        display: -webkit-box;
-        -webkit-box-orient: vertical;
-        -webkit-line-clamp: 2;
-        line-clamp: 2;
-        overflow: hidden;
-        line-height: 1.25;
-        background: transparent;
-      }
-
-      .info-block.compact .info-title {
-        -webkit-line-clamp: 1;
-        line-clamp: 1;
-      }
-
-      .settings-button {
-        position: absolute;
-        top: 0.35rem;
-        inset-inline-end: 0.35rem;
-        z-index: 1;
-        background: transparent;
-        --bs-btn-bg: transparent;
-        --bs-btn-hover-bg: transparent;
-        --bs-btn-active-bg: transparent;
-        --bs-btn-color: inherit;
-      }
-
-      .info-description-link {
-        margin-top: 0.35rem;
-        min-width: 0;
-        background: transparent;
-      }
-
-      .code-block {
-        color: var(--sakai-text-color-inverse);
-        font-size: 12px;
-        font-weight: 400;
-      }
-
-      .description-block {
-        display: -webkit-box;
-        -webkit-box-orient: vertical;
-        -webkit-line-clamp: var(--sakai-course-card-description-lines, 2);
-        line-clamp: var(--sakai-course-card-description-lines, 2);
-        overflow: hidden;
-        text-overflow: ellipsis;
-      }
-
-      .tool-alerts-block {
-        height: 40px;
-        border-color: var(--sakai-border-color);
-        color: var(--sakai-text-color-1);
-        background-color: var(--sakai-background-color-3);
-        display: flex;
-        align-items: center;
-        border-bottom-right-radius: var(--bs-border-radius);
-        border-bottom-left-radius: var(--bs-border-radius);
-        padding: 0.5rem;
-
-        .portal-notifications-indicator {
-          top: 2px;
-          right: 2%;
-          padding: 0.25rem;
-          border-radius: 50%;
-        }
-      }
-    `,
-  ];
 }

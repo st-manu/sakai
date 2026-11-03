@@ -73,25 +73,9 @@ class SitesSidebar {
     */
   }
 
-  onHover() {
-    const iconElement = document.querySelector("#sidebar-collapse-button span");
-    if (iconElement) {
-        const hoverIconClass = "portal-nav-sidebar-icon-hover";
-        const expandedIconClass = "portal-nav-sidebar-icon";
-        iconElement.classList.add(hoverIconClass);
-        iconElement.classList.remove(expandedIconClass);
-    }
-  }
+  onHover() {}
 
-  onHoverOut() {
-    const iconElement = document.querySelector("#sidebar-collapse-button span");
-    if (iconElement) {
-        const hoverIconClass = "portal-nav-sidebar-icon-hover";
-        const expandedIconClass = "portal-nav-sidebar-icon";
-        iconElement.classList.add(expandedIconClass);
-        iconElement.classList.remove(hoverIconClass);
-    }
-  }
+  onHoverOut() {}
 
   setView(mobile) {
 
@@ -119,7 +103,7 @@ class SitesSidebar {
       this._element.classList.add(...desktopClasses);
       this._element.style.visibility = "visible";
     }
-    this._element.classList.remove("d-none");
+    this._element.classList.remove("d-none", "sakai-is-hidden");
   }
 
   /**
@@ -143,10 +127,10 @@ class SitesSidebar {
 
     if (to === "pinned") {
       this._pinnedSiteList.append(clone);
-      this._pinnedSiteList.classList.remove("d-none");
+      this._pinnedSiteList.classList.remove("d-none", "sakai-is-hidden");
     } else {
       this._recentSiteList.append(clone);
-      this._recentSiteList.classList.remove("d-none");
+      this._recentSiteList.classList.remove("d-none", "sakai-is-hidden");
     }
 
     new PinButton(clone.querySelector("button.site-opt-pin"), { i18n: this._i18n?.pinButtons });
@@ -196,7 +180,7 @@ class SitesSidebar {
             if (pinned) {
               this._updatePinned(clone, "recent", "pinned");
 
-              document.getElementById("sites-no-pinned-label").classList.add("d-none");
+              document.getElementById("sites-no-pinned-label").classList.add("d-none", "sakai-is-hidden");
 
               currentItem.remove();
 
@@ -206,8 +190,8 @@ class SitesSidebar {
               currentItem.remove();
 
               if (!this._pinnedSiteList.children.length) {
-                this._pinnedSiteList.classList.add("d-none");
-                document.getElementById("sites-no-pinned-label").classList.remove("d-none");
+                this._pinnedSiteList.classList.add("d-none", "sakai-is-hidden");
+                document.getElementById("sites-no-pinned-label").classList.remove("d-none", "sakai-is-hidden");
               }
             }
 
@@ -215,9 +199,9 @@ class SitesSidebar {
             document.body.dispatchEvent(new CustomEvent("site-pin-changed", { detail: { siteId, pinned, siteTitle }, bubbles: true }));
 
             if (!this._recentSiteList.children.length) {
-              this._recentSiteList.parentElement.classList.add("d-none");
+              this._recentSiteList.parentElement.classList.add("d-none", "sakai-is-hidden");
             } else {
-              this._recentSiteList.parentElement.classList.remove("d-none");
+              this._recentSiteList.parentElement.classList.remove("d-none", "sakai-is-hidden");
             }
           }
         })
@@ -231,7 +215,8 @@ class SitesSidebar {
   }
 
   /**
-   * Control number of expanded sites
+   * Keep at most one non-current site expanded (peek). Current site stays open.
+   * Does not reorder the list or auto-scroll — T&L: stable spatial memory.
    */
   setupSingleExpandedSite() {
     const toolMenu = document.getElementById('toolMenu');
@@ -241,45 +226,14 @@ class SitesSidebar {
       if (!clickedButton) return;
       const siteLi = clickedButton.closest('li.site-list-item');
       if (!siteLi || siteLi.classList.contains('is-current-site')) return;
-      // Find all expanded sites except the current one
-      const expandedSites = toolMenu.querySelectorAll('li.site-list-item .site-list-item-collapse.show');
-      expandedSites.forEach((expandedSite) => {
+
+      toolMenu.querySelectorAll('li.site-list-item .site-list-item-collapse.show').forEach((expandedSite) => {
         const parentLi = expandedSite.closest('li.site-list-item');
         if (parentLi && parentLi !== siteLi && !parentLi.classList.contains('is-current-site')) {
           const collapseButton = parentLi.querySelector('button[data-bs-toggle="collapse"]');
-          if (collapseButton) {
-            collapseButton.click();
-          }
+          collapseButton?.click();
         }
       });
-      // Ensure the newly expanded site remains visible
-      setTimeout(() => {
-        const listItems = Array.from(toolMenu.querySelectorAll('li.site-list-item'));
-        const currentIndex = listItems.indexOf(siteLi.closest('li'));
-        const previousLi = currentIndex > 0 ? listItems[currentIndex - 1] : undefined;
-        if (previousLi) {
-          let elementToScroll;
-          if (previousLi.classList.contains('is-current-site')) {
-            // If the previous <li> has the class .is-current-site, find the last tool title
-            const lastToolLi = previousLi.querySelector('ul.site-page-list > li:last-child .btn-nav');
-            if (lastToolLi) {
-              elementToScroll = lastToolLi;
-            }
-          } else {
-            // Otherwise, scroll to the .sidebar-site-title of the previous <li>
-            elementToScroll = previousLi.querySelector('.sidebar-site-title');
-          }
-          if (elementToScroll) {
-            elementToScroll.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          }
-        }
-        else {
-          const firstSitesSection = toolMenu.querySelector('div.sites-section');
-          if (firstSitesSection) {
-            firstSitesSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          }
-        }
-      }, 250);
     });
   }
 }
@@ -315,17 +269,7 @@ class PinButton {
 
     this.pinned = !this.pinned
     this.title = this.pinned ? this._i18n.titleUnpin : this._i18n.titlePin;
-    this.toggleIcon()
     this.emitPinChange();
-  }
-
-  toggleIcon() {
-
-    const buttonClasses =  this._element.classList;
-    const pinnedIcon = "si-pin";
-    const unPinnedIcon = "si-pin-fill";
-    buttonClasses.toggle(pinnedIcon);
-    buttonClasses.toggle(unPinnedIcon);
   }
 
   // Dispatches event which will cause a fetch to change pinned value

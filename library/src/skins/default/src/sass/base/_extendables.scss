@@ -75,49 +75,54 @@
 	background-color: $bgcolor;
 	color: $color;
 	
-	// display an icon indicating banner type on the left of the text
 	&:before {
-		content: '';
-		@extend .fa;
-		@extend .fa-fw;		// fixed width icons
-		@extend #{$icon};	// icon passed in through mixin's parameter
+		@extend #{$icon};
 		position: absolute;
-		top: calc(50% - 7px); 	// half the height of the icon
+		top: calc(50% - 0.5em);
 		left: $standard-spacing;
-		margin-right: $standard-space;	// space between icon and message text
+		display: inline-block;
+		width: 1.25em;
+		text-align: center;
+		font-family: bootstrap-icons !important;
+		font-style: normal;
+		font-weight: normal !important;
+		font-variant: normal;
+		text-transform: none;
+		line-height: 1;
+		-webkit-font-smoothing: antialiased;
+		-moz-osx-font-smoothing: grayscale;
 		color: $color;
 	}
-	
-	// display a closing X on the right of the banner to indicate that the banner is dismissible
+
 	.dismiss {
 		@if $isInline == false {
 			position: absolute;
-			top: calc(50% - 10px);			// vertically-align the icon with half its height
-			right: $standard-spacing;		// space between icon and right edge of banner
+			top: calc(50% - 10px);
+			right: $standard-spacing;
 		} @else {
-			margin-left: $standard-space;	// space between icon and end of message text
+			margin-left: $standard-space;
 		}
 		text-decoration: none;
-		
+
 		span {
-			font-size: 0;		// hide the accessible text
+			font-size: 0;
 		}
-		
+
 		&:before {
-			content: '';
-			@extend .fa;
-			@extend .fa-fw;	// fixed width icons
-			@extend .fa-close;
+			@extend .bi-x;
+			display: inline-block;
+			font-family: bootstrap-icons !important;
+			font-style: normal;
+			font-weight: normal !important;
+			line-height: 1;
 		}
 	}
-	
-	// any links in the banners should have the same text color contrast and be underlined
+
 	a[href] {
 		color: $color;
 		text-decoration: underline;
 	}
 
-	// remove end spacing from any paragraphs at the end of the banner
 	p:last-child {
 		margin-bottom: 0;
 	}
@@ -127,59 +132,65 @@
 	@if $isInline {
 		display: inline-block;
 		margin: 0;
-		padding: 0 $standard-space 0 calc(#{$standard-spacing} * 2 + 18px); // making room on either side of the icon plus the width of the icon;
+		padding: 0 $standard-space 0 calc(#{$standard-spacing} * 2 + 18px);
 	} @else {
 		display: block;
 		clear: both;
 		margin: $standard-spacing 0;
-		padding: $standard-spacing $standard-spacing $standard-spacing calc(#{$standard-spacing} * 2 + 18px); // making room on either side of the icon plus the width of the icon;
+		padding: $standard-spacing $standard-spacing $standard-spacing calc(#{$standard-spacing} * 2 + 18px);
 	}
 	border-left: calc( #{$standard-spacing} / 2) solid $bordercolor;
 	background-color: $bgcolor;
 	color: $color;
 
-	// display an icon indicating banner type on the left of the text
 	&:before {
-		content: '';
-		@extend .fa;
-		@extend .fa-fw;		// fixed width icons
-		@extend #{$icon};	// icon passed in through mixin's parameter
-		top: calc(50% - 7px); 	// half the height of the icon
+		@extend #{$icon};
+		position: absolute;
+		top: calc(50% - 0.5em);
 		left: $standard-spacing;
-		margin-right: $standard-space;	// space between icon and message text
+		display: inline-block;
+		width: 1.25em;
+		text-align: center;
+		font-family: bootstrap-icons !important;
+		font-style: normal;
+		font-weight: normal !important;
+		font-variant: normal;
+		text-transform: none;
+		line-height: 1;
+		-webkit-font-smoothing: antialiased;
+		-moz-osx-font-smoothing: grayscale;
 		color: $color;
 	}
 
-	// display a closing X on the right of the banner to indicate that the banner is dismissible
 	.dismiss {
 		@if $isInline == false {
 			position: absolute;
-			top: calc(50% - 10px);			// vertically-align the icon with half its height
-			right: $standard-spacing;		// space between icon and right edge of banner
+			top: calc(50% - 10px);
+			right: $standard-spacing;
 		} @else {
-			margin-left: $standard-space;	// space between icon and end of message text
+			margin-left: $standard-space;
 		}
 		text-decoration: none;
 
 		span {
-			font-size: 0;		// hide the accessible text
+			font-size: 0;
 		}
 
 		&:before {
-			content: '';
-			@extend .fa;
-			@extend .fa-fw;	// fixed width icons
-			@extend .fa-close;
+			@extend .bi-x;
+			display: inline-block;
+			font-family: bootstrap-icons !important;
+			font-style: normal;
+			font-weight: normal !important;
+			line-height: 1;
 		}
 	}
 
-	// any links in the banners should have the same text color contrast and be underlined
 	a[href] {
 		color: $color;
 		text-decoration: underline;
 	}
 
-	// remove end spacing from any paragraphs at the end of the banner
 	p:last-child {
 		margin-bottom: 0;
 	}
@@ -554,24 +565,6 @@ button.btn-tab {
 
 a.noPointers, input.noPointers {
 	pointer-events: none;
-}
-
-.act {
-	@include display-flex;
-	@include flex-wrap(wrap);
-	@include align-items(center);
-	margin: $standard-spacing 0;
-	
-	> input,
-	> button,
-	> a,
-	> a[href],
-	> .active {
-		margin-right: $standard-space;		
-		&:last-child {
-			margin-right: 0;
-		}
-	}
 }
 
 /*** Begin button spinner overlay ***/

@@ -1,0 +1,88 @@
+#if (${userIsLoggedIn})
+<div id="sakai-account-panel"
+    class="modal fade sakai-account-launcher"
+    tabindex="-1"
+    aria-labelledby="sakai-account-panel-label"
+    aria-modal="true"
+    role="dialog">
+  <div class="modal-dialog sakai-account-launcher__dialog">
+    <div class="modal-content sakai-account-launcher__panel">
+      <div class="sakai-account-launcher__top">
+        <h2 class="sakai-account-launcher__title" id="sakai-account-panel-label">${rloader.mainnav_btn_account}</h2>
+        <button type="button" class="btn-close sakai-account-launcher__close" data-bs-dismiss="modal" aria-label="${rloader.sit_closepage}"></button>
+      </div>
+
+      <div class="sakai-account-launcher__body sakai-account-panel__body">
+        <div class="sakai-account-panel__identity">
+          <div id="sakai-profile-image-block">
+            #if (${profileImageUrl})
+              <img class="sakai-account-panel__avatar sakai-accountProfileImage" src="${profileImageUrl}" alt="">
+            #end
+          </div>
+          <h3 class="sakai-account-panel__name">${loginUserDispName}</h3>
+          <p class="sakai-account-panel__id">${loginUserDispId}</p>
+        </div>
+
+        <ul class="sakai-account-panel__nav sakai-offcanvas-nav nav">
+          #foreach ( $site in $tabsSites.tabsSites )
+            #if (${site.isMyWorkspace})
+              #if (${prefsToolUrl})
+                <li><a href="${prefsToolUrl}" class="sakai-offcanvas-nav__link">${rloader.sit_preferences}</a></li>
+              #end
+            #end
+          #end
+
+          #if (${tabsSites.tutorial})
+            <li><a id="tutorial-start-button" href="#" onclick="startTutorial({userInitiatedTutorial: true});" class="sakai-offcanvas-nav__link">${rloader.sit_tutorial}</a></li>
+          #end
+
+          <li>
+            <a href="#"
+                data-user-id="${loginUserId}"
+                onclick="portal.displayProfile(event);"
+                class="sakai-offcanvas-nav__link">
+              ${rloader.sit_profile}
+            </a>
+          </li>
+        </ul>
+
+        #if (${themeSwitcher})
+        <div class="sakai-account-panel__theme">
+          <fieldset class="sakai-theme-switcher" role="radiogroup" aria-label="Switch between light and dark themes">
+            <button role="switch"
+              aria-checked="false"
+              id="sakai-dark-theme-switcher"
+              title="#if ($userTheme == "sakaiUserTheme-light")$rloader.sit_theme_switch_to_dark#else$rloader.sit_theme_switch_to_light#end"
+              class="sakai-theme-switch Mrphs-userNav__submenuitem--themeSwitcher switch">
+              <span class="bi bi-sun" aria-hidden="true"></span>
+              <span class="bi bi-moon" aria-hidden="true"></span>
+            </button>
+          </fieldset>
+        </div>
+        #end
+
+        <div class="sakai-account-panel__footer">
+          <a href="${loginLogInOutUrl}" title="${loginMessage}" id="loginLink1" class="sakai-account-panel__logout" data-warning="${logoutWarningMessage}">
+            <span class="bi bi-box-arrow-right" aria-hidden="true"></span>
+            <span class="Mrphs-login-Message">${loginMessage}</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="account-details-modal" tabindex="-1" aria-labelledby="account-details-modal-label" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="account-details-modal-label">${rloader.sit_profile}</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="${rloader.sit_closepage}"></button>
+      </div>
+      <div class="modal-body">
+        <sakai-account></sakai-account>
+      </div>
+    </div>
+  </div>
+</div>
+#end

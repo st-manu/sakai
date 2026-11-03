@@ -1,0 +1,109 @@
+/* Sakai button primitives — Bootstrap .btn under the hood, sakai-* as public API */
+
+.sakai-btn {
+  @extend .btn;
+  border-radius: var(--sakai-btn-radius, var(--sakai-radius-md));
+  font-weight: $button-font-weight;
+  text-transform: $button-text-transform;
+}
+
+.sakai-btn-primary {
+  @extend .btn-primary;
+  @include sakai_primary_button();
+}
+
+.sakai-btn-secondary {
+  @extend .btn-secondary;
+  @include sakai_secondary_button();
+}
+
+.sakai-btn-ghost {
+  @extend .btn-outline-secondary;
+  margin-right: $standard-space;
+  display: inline-block;
+  margin: 0;
+  padding: 7px 16px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  background: transparent;
+  font-family: $font-family;
+  font-size: 1em;
+  font-weight: $button-font-weight;
+  line-height: 18px;
+  color: var(--sakai-text-color-1);
+  text-decoration: none;
+  text-transform: $button-text-transform;
+  cursor: pointer;
+  box-shadow: none;
+
+  &:hover,
+  &:focus {
+    color: var(--sakai-text-color-2);
+    text-decoration: none;
+    background: var(--sakai-background-color-2);
+    border-color: transparent;
+  }
+
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px var(--focus-outline-color);
+  }
+
+  &:active {
+    color: var(--sakai-text-color-2);
+    background: var(--sakai-background-color-3);
+    border-color: transparent;
+  }
+
+  &:disabled {
+    color: var(--sakai-text-color-dimmed);
+    background: var(--sakai-background-color-1);
+    border-color: transparent;
+    cursor: not-allowed;
+  }
+}
+
+.sakai-btn-icon {
+  @extend .btn;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  padding: 0;
+  border-radius: 50%;
+  color: var(--sakai-text-color-1);
+  background-color: transparent;
+  border: 1px solid transparent;
+  text-decoration: none;
+
+  &:hover,
+  &:focus {
+    background-color: var(--sakai-background-color-2);
+    text-decoration: none;
+    color: var(--sakai-text-color-1);
+  }
+
+  &:disabled {
+    color: var(--sakai-text-color-dimmed);
+    background: var(--sakai-background-color-1);
+    border-color: transparent;
+    cursor: not-allowed;
+  }
+}
+
+a[href].sakai-btn-primary {
+  @include sakai_primary_button();
+}
+
+a[href].sakai-btn-secondary {
+  @include sakai_secondary_button();
+}
+
+a[href].sakai-btn-ghost {
+  @extend .sakai-btn-ghost;
+}
+
+a[href].sakai-btn-icon {
+  @extend .sakai-btn-icon;
+}

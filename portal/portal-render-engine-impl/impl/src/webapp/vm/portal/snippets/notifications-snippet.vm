@@ -1,0 +1,25 @@
+#if (${useBullhornAlerts} && ${userIsLoggedIn})
+<aside class="offcanvas offcanvas-end sakai-offcanvas" tabindex="-1" id="sakai-notifications-panel" aria-labelledby="sakai-notifications-panel-label">
+  <div class="offcanvas-header sakai-offcanvas__header">
+    <h2 class="offcanvas-title sakai-offcanvas__title" id="sakai-notifications-panel-label">${rloader.notifications_title}</h2>
+    <button type="button" class="btn-close sakai-offcanvas__close" data-bs-dismiss="offcanvas" aria-label="${rloader.notifications_close_label}"></button>
+  </div>
+  <div class="offcanvas-body sakai-offcanvas__body">
+    <sakai-notifications url="/api/users/me/notifications"
+      #if ("$chromeInfoUrl" != "")
+      chrome-info-url="$chromeInfoUrl"
+      #end
+      #if ("$firefoxInfoUrl" != "")
+      firefox-info-url="$firefoxInfoUrl"
+      #end
+      #if ("$safariInfoUrl" != "")
+      safari-info-url="$safariInfoUrl"
+      #end
+      #if ("$edgeInfoUrl" != "")
+      edge-info-url="$edgeInfoUrl"
+      #end
+    >
+    </sakai-notifications>
+  </div>
+</aside>
+#end

@@ -1,0 +1,77 @@
+.sakai-tool-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--sakai-space-3) var(--sakai-space-4);
+  margin: 0 0 var(--sakai-space-4);
+  padding-bottom: var(--sakai-space-3);
+  border-bottom: 1px solid var(--sakai-border-color);
+}
+
+.sakai-tool-header__title {
+  flex: 1 1 12rem;
+  margin: 0;
+  font-size: 1.375rem;
+  font-weight: $header-font-weight;
+  font-family: $header-font-family;
+  line-height: 1.3;
+  color: var(--sakai-text-color-1);
+  min-width: 0;
+}
+
+.sakai-tool-header__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--sakai-space-2);
+  flex: 0 1 auto;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  min-width: 0;
+  position: relative;
+
+  .sakai-btn,
+  a[href].sakai-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sakai-space-2);
+    white-space: nowrap;
+    margin-right: 0;
+  }
+}
+
+.sakai-tool-header__secondary {
+  display: none;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sakai-space-2);
+}
+
+@container sakai-tool (min-width: 36rem) {
+  .sakai-tool-header__secondary {
+    display: flex;
+  }
+
+  .sakai-tool-header__more {
+    display: none;
+  }
+}
+
+@container sakai-tool (max-width: 35.999rem) {
+  .sakai-tool-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .sakai-tool-header__title {
+    flex: 0 1 auto;
+  }
+
+  .sakai-tool-header__actions {
+    justify-content: flex-start;
+    width: 100%;
+  }
+}

@@ -1,0 +1,103 @@
+.sakai-offcanvas.offcanvas,
+.offcanvas.sakai-offcanvas {
+  --bs-offcanvas-width: min(100vw, var(--sakai-offcanvas-width));
+  background-color: var(--sakai-background-color-1);
+  color: var(--sakai-text-color-1);
+  border: none;
+  box-shadow: -8px 0 32px rgba(0, 0, 0, 0.12);
+}
+
+.sakai-offcanvas__header,
+.sakai-offcanvas .offcanvas-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sakai-space-3);
+  flex-shrink: 0;
+  padding: var(--sakai-space-4) var(--sakai-space-5);
+  background-color: var(--sakai-background-color-1);
+  color: var(--sakai-text-color-1);
+  border-bottom: 1px solid var(--sakai-border-color);
+}
+
+.sakai-offcanvas__title,
+.sakai-offcanvas .offcanvas-title {
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--sakai-text-color-1);
+}
+
+.sakai-offcanvas__close,
+.sakai-offcanvas .offcanvas-header .btn-close {
+  width: 2rem;
+  height: 2rem;
+  margin: 0;
+  padding: 0;
+  background-color: transparent;
+  opacity: 0.55;
+  box-shadow: none;
+
+  &:hover,
+  &:focus {
+    opacity: 1;
+  }
+}
+
+.sakai-offcanvas__body,
+.sakai-offcanvas .offcanvas-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sakai-space-4);
+  padding: var(--sakai-space-5);
+  overflow-y: auto;
+}
+
+.sakai-offcanvas__intro {
+  margin: 0;
+  color: var(--sakai-text-color-dimmed);
+  font-size: var(--sakai-font-size-sm);
+  line-height: 1.4;
+}
+
+.sakai-offcanvas-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.sakai-offcanvas a,
+.sakai-offcanvas-nav__link {
+  color: var(--sakai-text-color-1);
+}
+
+.sakai-offcanvas-nav__link {
+  display: flex;
+  align-items: center;
+  gap: var(--sakai-space-2);
+  padding: 0.7rem var(--sakai-space-3);
+  border-radius: var(--sakai-radius-md);
+  color: var(--sakai-text-color-1);
+  text-decoration: none;
+  font-size: var(--sakai-font-size);
+
+  &:hover,
+  &:focus {
+    background-color: var(--sakai-background-color-2);
+    color: var(--sakai-text-color-1);
+    text-decoration: none;
+  }
+}
+
+@include media-breakpoint-down(md) {
+  .sakai-offcanvas.offcanvas-end,
+  .sakai-offcanvas.offcanvas-start,
+  #portal-nav-sidebar.offcanvas {
+    top: 0;
+    bottom: var(--sakai-mobilebar-height);
+  }
+}

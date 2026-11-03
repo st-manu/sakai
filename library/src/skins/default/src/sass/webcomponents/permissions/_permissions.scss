@@ -1,35 +1,184 @@
-#permissions-container {
+.sakai-permissions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sakai-space-4);
+}
 
-  margin-left: 0 !important;
-  margin-right: 0 !important;
+.sakai-permissions__groups {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sakai-space-2);
+  max-width: 24rem;
+}
 
+.sakai-permissions__table {
+  --sakai-permissions-stripe: var(--sakai-background-color-2);
+  --sakai-permissions-hover: var(--sakai-active-color-2);
+
+  width: 100%;
+  margin-bottom: 0;
   border: 1px solid var(--sakai-border-color);
+  border-radius: var(--sakai-radius-md);
+  border-collapse: separate;
+  border-spacing: 0;
+  overflow: hidden;
 
-  .row-hover {
-    background-color: var(--sakai-active-color-2);
+  > :not(caption) > * > * {
+    --bs-table-bg: transparent;
+    --bs-table-accent-bg: transparent;
+    --bs-table-bg-type: transparent;
+    --bs-table-bg-state: transparent;
+    box-shadow: none;
+    border-bottom-color: var(--sakai-border-color);
   }
 
-  .permission-row {
-
-    &:hover {
-      background-color: var(--sakai-active-color-2);
-    }
-
-    &:nth-child(odd) {
-      background-color: var(--sakai-table-even-color);
-    }
-
-    .permission-cell {
-      border-left: 1px solid var(--sakai-border-color);
-    }
-  }
-
-  #permission-header {
+  thead th {
     background-color: var(--sakai-background-color-2);
+    vertical-align: middle;
+    text-align: center;
+  }
 
-    button {
-      color: var(--sakai-text-color-1);
+  .sakai-permissions__perm-col {
+    text-align: start;
+    min-width: 12rem;
+  }
+
+  .sakai-permissions__role-col {
+    min-width: 6rem;
+
+    &:hover,
+    &:focus-within {
+      background-color: var(--sakai-permissions-hover);
     }
+  }
+
+  tbody th,
+  tbody td {
+    vertical-align: middle;
+    background-color: var(--sakai-background-color-1);
+    transition: background-color 0.12s ease;
+  }
+
+  tbody td {
+    text-align: center;
+  }
+
+  tbody tr:nth-child(even) > * {
+    background-color: var(--sakai-permissions-stripe);
+  }
+
+  tbody tr:hover > *,
+  tbody tr:focus-within > *,
+  .permission-cell.is-role-hover,
+  .permission-cell:hover {
+    background-color: var(--sakai-permissions-hover);
+  }
+
+  tbody tr:hover > .permission-cell:has(input:checked),
+  tbody tr:focus-within > .permission-cell:has(input:checked),
+  .permission-cell.is-role-hover:has(input:checked),
+  .permission-cell:has(input:checked):hover {
+    background-color: var(--sakai-permissions-hover);
   }
 }
 
+.sakai-permissions__toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: inherit;
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-weight: 600;
+  text-align: inherit;
+  cursor: pointer;
+  overflow-wrap: anywhere;
+}
+
+thead .sakai-permissions__toggle {
+  justify-content: center;
+  text-align: center;
+  width: 100%;
+}
+
+tbody .sakai-permissions__toggle {
+  justify-content: flex-start;
+  text-align: start;
+  width: 100%;
+}
+
+@container sakai-tool (max-width: 40rem) {
+  .sakai-permissions__table {
+    border: 0;
+
+    thead {
+      display: none;
+    }
+
+    tbody,
+    tr,
+    th,
+    td {
+      display: block;
+      width: 100%;
+    }
+
+    tbody tr {
+      margin: var(--sakai-space-3) 0 0;
+      padding: var(--sakai-space-3);
+      border: 1px solid var(--sakai-border-color);
+      border-radius: var(--sakai-radius-md);
+      background-color: var(--sakai-background-color-1);
+
+      &:nth-child(even) {
+        background-color: var(--sakai-permissions-stripe);
+      }
+
+      &:hover,
+      &:focus-within {
+        background-color: var(--sakai-permissions-hover);
+      }
+
+      > * {
+        background-color: transparent !important;
+      }
+    }
+
+    tbody td {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--sakai-space-2);
+      padding: var(--sakai-space-2) 0;
+      text-align: start;
+      border: 0;
+
+      &::before {
+        content: attr(data-label);
+        font-size: 0.8125rem;
+        font-weight: 600;
+        color: var(--sakai-text-color-dimmed);
+      }
+    }
+
+    tbody th {
+      padding: 0 0 var(--sakai-space-2);
+      border: 0;
+    }
+
+    .permission-cell {
+      border-radius: var(--sakai-radius-sm);
+      padding-inline: var(--sakai-space-2);
+    }
+
+    .permission-cell:has(input:checked):hover,
+    tr:hover .permission-cell:has(input:checked),
+    tr:focus-within .permission-cell:has(input:checked) {
+      background-color: var(--sakai-permissions-hover) !important;
+    }
+  }
+}

@@ -1,0 +1,74 @@
+/* L2 — Component tokens
+ *
+ * Map semantic tokens to UI primitives (buttons, banners, cards, forms).
+ */
+
+:root {
+    // Default (non-primary) button design:
+    --button-text-color: var(--sakai-text-color-2);
+    --button-background: var(--sakai-passive-color-1);
+    --button-border-color: var(--sakai-passive-color-2);
+    --button-shadow: none;
+    --button-hover-text-color: var(--button-text-color);
+    --button-hover-background: var(--sakai-passive-color-2);
+    --button-hover-border-color: var(--sakai-passive-color-3);
+    --button-hover-shadow: none;
+    --button-active-text-color: var(--button-text-color);
+    --button-active-background: var(--sakai-passive-color-3);
+    --button-active-border-color: var(--button-active-background);
+    --button-active-shadow-color: rgba(0,0,0,0);
+    --button-active-shadow: none;
+    --button-disabled-text-color: var(--sakai-text-color-disabled);
+    --button-disabled-background: var(--sakai-background-color-2);
+    --button-disabled-border-color: var(--sakai-border-color);
+    --button-disabled-shadow: none;
+
+    // Primary action button
+    --button-primary-text-color: var(--sakai-text-color-inverted);
+    --button-primary-background: var(--sakai-primary-color-1);
+    --button-primary-border-color: var(--button-primary-background);
+    --button-primary-shadow: var(--elevation-2dp);
+    --button-primary-hover-text-color: var(--button-primary-text-color);
+    --button-primary-hover-background: var(--sakai-primary-color-2);
+    --button-primary-hover-border-color: var(--button-primary-hover-background);
+    --button-primary-hover-shadow: var(--elevation-4dp);
+    --button-primary-active-text-color: var(--button-primary-text-color);
+    --button-primary-active-background: var(--sakai-primary-color-3);
+    --button-primary-active-border-color: var(--button-primary-active-background);
+    --button-primary-active-shadow: var(--elevation-4dp);
+    --radio-button-background: var(--button-primary-background);
+    --checkbox-background: var(--button-primary-background);
+
+    // sakai-* component aliases
+    --sakai-btn-radius: var(--sakai-radius-md);
+    --sakai-card-radius: var(--sakai-radius-lg);
+    --sakai-card-shadow: var(--elevation-1dp);
+    --sakai-card-border-color: var(--sakai-border-color);
+    --sakai-card-padding: var(--sakai-space-5);
+
+    // Banners
+    --infoBanner-bordercolor: var(--sakai-color-blue--lighter-2);
+    --infoBanner-bgcolor: var(--sakai-color-blue--lighter-7);
+    --infoBanner-color: var(--sakai-color-blue--darker-3);
+    --successBanner-bordercolor: var(--sakai-color-green--lighter-2);
+    --successBanner-bgcolor: var(--sakai-color-green--lighter-7);
+    --successBanner-color: var(--sakai-color-green--darker-3);
+    --warnBanner-bordercolor: var(--sakai-color-gold--lighter-2);
+    --warnBanner-bgcolor: var(--sakai-color-gold--lighter-7);
+    --warnBanner-color: var(--sakai-color-gold--darker-4);
+    --errorBanner-bordercolor: var(--sakai-color-red--lighter-2);
+    --errorBanner-bgcolor: var(--sakai-color-red--lighter-7);
+    --errorBanner-color: var(--sakai-color-red--darker-2);
+
+    --sakai-modal-header-bg: var(--sakai-brand);
+    --sakai-modal-header-color: #fff;
+    --sakai-modal-close-btn-bg: #fff;
+    --sakai-modal-content-bg: var(--sakai-background-color-2);
+    --sakai-offcanvas-header-bg: var(--sakai-brand);
+    --sakai-offcanvas-header-color: #fff;
+    --sakai-offcanvas-close-btn-bg: #000;
+
+    --sakai-popover-background: var(--sakai-background-color-1);
+    --sakai-popover-title-background: var(--sakai-background-color-1);
+    --sakai-highlight-color: var(--errorBanner-color);
+}
