@@ -198,6 +198,16 @@
             </form>
 
         #else ## the Announcements tool itself (site or admin MOTD)
+            ## Show the site column when the list contains announcements from other sites
+            #set ($SiteColumnFlag = 0)
+            #foreach ($item in $showMessagesList2)
+                #set ($ref = $entityManager.newReference($item.Reference))
+                #set ($origChannelRef = $service.channelReference($ref.Context, $ref.Container))
+                #if (!$origChannelRef.equals($channel.Reference))
+                    #set ($SiteColumnFlag = $SiteColumnFlag + 1)
+                #end
+            #end
+
             #if ($displayOptions.isShowAllColumns())
                 #announcementsHeader($tlang.getString("gen.list.title") "doNewannouncement" $menu "")
                 #announcementsAlert($alertMessage)
@@ -226,7 +236,7 @@
                 </div>
 
                 #if ($messageListVector.iterator().hasNext())
-                    #set($annColspan = 3)
+                    #set($annColspan = 4)
                     #if ($SiteColumnFlag > 0 && $EnableItemCheckBoxes) #set($annColspan = $annColspan + 1) #end
                     #if ($allow_delete) #set($annColspan = $annColspan + 1) #end
                     <form name="announcementListForm" action="#toolForm("AnnouncementAction")" method="post">
@@ -357,7 +367,7 @@
 
                 #if ($messageListVector.iterator().hasNext())
                     <div class="sakai-announcements__pager">
-                        <p class="sakai-announcements__pager-label">$tlang.getFormattedMessage("gen.viewing.phrase", $topMsgPos, $btmMsgPos, $allMsgNumber)</p>
+                        <p class="sakai-announcements__pager-label">$tlang.getFormattedMessage("gen.viewing.phrase", $announcementItemRangeArray)</p>
                         <div class="sakai-announcements__pager-controls">
                             #if ($pagesize != 0)
                                 <form name="firstpageForm" class="inlineForm" method="post" action="#toolForm("$action")">

@@ -195,17 +195,19 @@ function resizeFrame(){
                 <p class="sakai-announcements__hint">$tlang.getString("displayto.public")</p>
             #elseif (($!publicDisable && ($show_group == "false")) || $pubviewset)
                 ## no show this selection, but set default to site
-                <input type="radio" name="announceToDisabled" id="site" value="site" checked="checked" disabled="true" onclick="updateEmailDropdownOptions()"/>
-                <input type="hidden" name="announceTo" value="site" checked="checked" onclick="updateEmailDropdownOptions()"/>
-                <p class="sakai-announcements__hint">
-                    #if ($pubviewset)
-                        ## If the channel is public save it as site view, but show that we will display to public.
-                        ## This means if channel is un-made public announcement will revert to site access (correctly).
-                        $tlang.getString("displayto.public")
-                    #else
-                        $tlang.getString("displayto.site")
-                    #end
-                </p>
+                <div class="sakai-announcements__choice">
+                    <input type="radio" name="announceToDisabled" id="site" value="site" checked="checked" disabled="true" onclick="updateEmailDropdownOptions()"/>
+                    <input type="hidden" name="announceTo" value="site" checked="checked" onclick="updateEmailDropdownOptions()"/>
+                    <label for="site">
+                        #if ($pubviewset)
+                            ## If the channel is public save it as site view, but show that we will display to public.
+                            ## This means if channel is un-made public announcement will revert to site access (correctly).
+                            $tlang.getString("displayto.public")
+                        #else
+                            $tlang.getString("displayto.site")
+                        #end
+                    </label>
+                </div>
             #else
                 #if ($allowAddChannelMessage)
                     <div class="sakai-announcements__choice">
