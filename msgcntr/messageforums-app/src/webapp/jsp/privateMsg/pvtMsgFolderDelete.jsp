@@ -23,7 +23,7 @@
         </h:panelGroup>
 
         <div class="sakai-table-wrap">
-            <table class="sakai-table">
+            <table class="sakai-table sakai-table--stack">
                 <thead>
                     <tr>
                         <th scope="col"><h:outputText value="#{msgs.pvt_folder_title}"/></th>

@@ -87,17 +87,9 @@
                     "layout": {"topEnd": null},
                     "order": [[4, "desc"]],
                     "info": false,
-                    "columns": [
-                        {"orderable": false, "searchable": false},
-                        {"orderable": true, "searchable": false},
-                        {"orderable": false, "searchable": false},
-                        {"orderable": true, "searchable": true},
-                        {"orderable": true, "searchable": false},
-                        <h:outputText value="{\"orderable\": true, \"searchable\": false}," rendered="#{ PrivateMessagesTool.selectedTopic.topic.title != 'pvt_received' }" />
-                        {"orderable": true, "searchable": true},
-                        <h:outputText value="{\"orderable\": true, \"searchable\": false}," rendered="#{PrivateMessagesTool.selectedTopic.topic.title != 'pvt_sent' && PrivateMessagesTool.selectedTopic.topic.title != 'pvt_received' && PrivateMessagesTool.selectedTopic.topic.title != 'pvt_drafts' && PrivateMessagesTool.selectedTopic.topic.title != 'pvt_deleted' && PrivateMessagesTool.selectedTopic.topic.title != 'pvt_scheduler' }"/>
-                        {"orderable": true, "searchable": true},
-                        <h:outputText value="{\"orderable\": false, \"searchable\": true}," rendered="#{PrivateMessagesTool.canUseTags}" />
+                    "columnDefs": [
+                        {"targets": [0], "orderable": false, "searchable": false, "className": "sakai-table__select"},
+                        {"targets": [1, 2], "orderable": false, "searchable": false, "className": "no-sort"}
                     ],
                     "language": {
                         "search": <h:outputText value="'#{msgs.datatables_sSearch}'" />,
@@ -133,7 +125,7 @@
 		<%@ include file="msgHeader.jsp"%>
 		<%-- gsilver:this table needs a render atrtibute that will make it not display if there are no messages - and a companion text block classed as "instruction" that will render instead--%>
 	  <h:panelGroup layout="block" styleClass="sakai-table-wrap">
-	  <h:dataTable styleClass="sakai-table sakai-table--hover sakai-messages__list" id="pvtmsgs" captionClass="visually-hidden" width="100%" value="#{PrivateMessagesTool.decoratedPvtMsgs}" var="rcvdItems"
+	  <h:dataTable styleClass="sakai-table sakai-table--hover sakai-table--stack sakai-messages__list" id="pvtmsgs" captionClass="visually-hidden" width="100%" value="#{PrivateMessagesTool.decoratedPvtMsgs}" var="rcvdItems"
 		             rendered="#{PrivateMessagesTool.selectView != 'threaded'}"
 		             summary="#{msgs.pvtMsgListSummary}"
 					 columnClasses="#{PrivateMessagesTool.calculateColumnClass()}">
@@ -150,14 +142,14 @@
 		    </f:facet>
 				<h:selectBooleanCheckbox value="#{rcvdItems.isSelected}" onclick="updateCount(this.checked); toggleBulkOperations(anyChecked(), 'prefs_pvt_form');" />
 		  </h:column>
-		  <h:column>
+		  <h:column headerClass="no-sort">
 		    <f:facet name="header">
 		        <h:outputText value="" styleClass="bi bi-paperclip" escape="false" />
 				<h:outputText value="#{msgs.sort_attachment}" styleClass="visually-hidden" />
 			</f:facet>
 			<h:outputText value="" styleClass="bi bi-paperclip" escape="false" rendered="#{rcvdItems.msg.hasAttachments}" />
 		  </h:column>
-		  <h:column>
+		  <h:column headerClass="no-sort">
 		    <f:facet name="header">
 	        	<h:outputText value="" styleClass="bi bi-reply-fill" escape="false" />
 				<h:outputText value="#{msgs.pvt_msgs_replied}" styleClass="visually-hidden" />
@@ -245,7 +237,7 @@
 		</h:dataTable>
 	  </h:panelGroup>
 	  <h:panelGroup layout="block" styleClass="sakai-table-wrap" rendered="#{PrivateMessagesTool.threadedView}">
-	  <mf:hierPvtMsgDataTable styleClass="sakai-table sakai-table--hover sakai-messages__list" id="threaded_pvtmsgs" width="100%"
+	  <mf:hierPvtMsgDataTable styleClass="sakai-table sakai-table--hover sakai-table--stack sakai-messages__list" id="threaded_pvtmsgs" width="100%"
 	                          value="#{PrivateMessagesTool.decoratedPvtMsgs}"
 		                        var="rcvdItems"
 								 columnClasses="#{PrivateMessagesTool.calculateColumnClass()}">
@@ -261,14 +253,14 @@
 		    </f:facet>
 				<h:selectBooleanCheckbox value="#{rcvdItems.isSelected}" onclick="updateCount(this.checked); toggleBulkOperations(anyChecked(), 'prefs_pvt_form');" />
 		  </h:column>
-		  <h:column>
+		  <h:column headerClass="no-sort">
 				<f:facet name="header">
 					<h:outputText value="" styleClass="bi bi-paperclip" escape="false" />
 					<h:outputText value="#{msgs.msg_has_attach}" styleClass="visually-hidden" />
 				</f:facet>
 				<h:outputText value="" styleClass="bi bi-paperclip" escape="false" rendered="#{rcvdItems.msg.hasAttachments}" />
 			</h:column>
-			<h:column>
+			<h:column headerClass="no-sort">
 				<f:facet name="header">
 					<h:outputText value="" styleClass="bi bi-reply-fill" escape="false" />
 					<h:outputText value="#{msgs.pvt_msgs_replied}" styleClass="visually-hidden" />

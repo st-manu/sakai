@@ -21,7 +21,7 @@
         <h:messages styleClass="sakai-banner sakai-banner--error" id="errorMessages" rendered="#{! empty facesContext.maximumSeverity}"/>
 
         <div class="sakai-table-wrap">
-            <h:dataTable styleClass="sakai-table sakai-table--hover" id="pvtmsgdel" width="100%" value="#{PrivateMessagesTool.selectedDeleteItems}" var="delItems">
+            <h:dataTable styleClass="sakai-table sakai-table--hover sakai-table--stack" id="pvtmsgdel" width="100%" value="#{PrivateMessagesTool.selectedDeleteItems}" var="delItems">
                 <h:column>
                     <f:facet name="header">
                         <h:outputText value="#{msgs.pvt_subject}"/>

@@ -1,5 +1,7 @@
-const initPollsOverflowMenus = () => {
-  const tableMenus = () => Array.from(document.querySelectorAll(".sakai-table details.sakai-overflow-menu"));
+const initOverflowMenus = () => {
+  const overflowMenus = () => Array.from(document.querySelectorAll(
+    ".sakai-table details.sakai-overflow-menu, .sakai-tool-header__actions details.sakai-overflow-menu",
+  ));
 
   const reset = (menu) => {
     const panel = menu.querySelector(":scope > .sakai-overflow-menu__panel");
@@ -39,14 +41,14 @@ const initPollsOverflowMenus = () => {
   };
 
   const repositionOpenMenus = () => {
-    tableMenus().forEach((menu) => {
+    overflowMenus().forEach((menu) => {
       if (menu.open) {
         position(menu);
       }
     });
   };
 
-  tableMenus().forEach((menu) => {
+  overflowMenus().forEach((menu) => {
     menu.addEventListener("toggle", () => {
       if (menu.open) {
         position(menu);
@@ -57,7 +59,7 @@ const initPollsOverflowMenus = () => {
   });
 
   document.addEventListener("click", (event) => {
-    tableMenus().forEach((menu) => {
+    overflowMenus().forEach((menu) => {
       if (menu.open && !menu.contains(event.target)) {
         menu.open = false;
       }
@@ -69,7 +71,7 @@ const initPollsOverflowMenus = () => {
 };
 
 if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", initPollsOverflowMenus, { once: true });
+  document.addEventListener("DOMContentLoaded", initOverflowMenus, { once: true });
 } else {
-  initPollsOverflowMenus();
+  initOverflowMenus();
 }

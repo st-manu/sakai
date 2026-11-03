@@ -1192,17 +1192,17 @@ public void processChangeSelectView(ValueChangeEvent eve)
   }
 
   public String calculateColumnClass() {
-	String columnClasses = "sakai-table__select sakai-no-print,attach,reply,specialLink,date,created,addressee,priority";
+	String columnClasses = "sakai-table__select sakai-no-print,attach,reply,specialLink sakai-table__primary,date,created,addressee,priority";
 	if (selectedTopic != null && selectedTopic.getTopic() != null) {
 		final String topicTitle = selectedTopic.getTopic().getTitle();
 		if (PVTMSG_MODE_RECEIVED.equals(topicTitle)) {
-			columnClasses = "sakai-table__select sakai-no-print,attach,reply,specialLink,date,created,priority";
+			columnClasses = "sakai-table__select sakai-no-print,attach,reply,specialLink sakai-table__primary,date,created,priority";
 		} else if (PVTMSG_MODE_SENT.equals(topicTitle)) {
-			columnClasses = "sakai-table__select sakai-no-print,attach,reply,specialLink,date,addressee,priority";
+			columnClasses = "sakai-table__select sakai-no-print,attach,reply,specialLink sakai-table__primary,date,addressee,priority";
 		} else if (PVTMSG_MODE_DRAFT.equals(topicTitle) || PVTMSG_MODE_DELETE.equals(topicTitle)) {
-			columnClasses = "sakai-table__select sakai-no-print,attach,reply,specialLink,date,created,priority";
+			columnClasses = "sakai-table__select sakai-no-print,attach,reply,specialLink sakai-table__primary,date,created,priority";
 		} else if (PVTMSG_MODE_SCHEDULER.equals(topicTitle)) {
-			columnClasses = "sakai-table__select sakai-no-print,attach,reply,specialLink,date,dateScheduler,created,priority";
+			columnClasses = "sakai-table__select sakai-no-print,attach,reply,specialLink sakai-table__primary,date,dateScheduler,created,priority";
 		}
 	}
 	return columnClasses;

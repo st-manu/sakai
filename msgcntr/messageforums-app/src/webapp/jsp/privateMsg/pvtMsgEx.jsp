@@ -54,7 +54,7 @@
 			<%@ include file="msgHeader.jsp"%>
 
 	  <h:panelGroup layout="block" styleClass="sakai-table-wrap">
-	  <h:dataTable styleClass="sakai-table sakai-table--hover sakai-messages__list" cellpadding="0" captionClass="visually-hidden" cellspacing="0"  id="pvtmsgs" width="100%" value="#{PrivateMessagesTool.searchPvtMsgs}" var="rcvdItems"
+	  <h:dataTable styleClass="sakai-table sakai-table--hover sakai-table--stack sakai-messages__list" cellpadding="0" captionClass="visually-hidden" cellspacing="0"  id="pvtmsgs" width="100%" value="#{PrivateMessagesTool.searchPvtMsgs}" var="rcvdItems"
 		rendered="#{PrivateMessagesTool.selectView != 'threaded'}" columnClasses="#{PrivateMessagesTool.calculateColumnClass()}">
 		  <f:facet name="caption">
 		    <h:outputText value="#{msgs.pvtMsgListSummary}" styleClass="visually-hidden"/>
@@ -68,14 +68,14 @@
 		    </f:facet>
 				<h:selectBooleanCheckbox value="#{rcvdItems.isSelected}" onclick="updateCount(this.checked); toggleBulkOperations(anyChecked(), 'prefs_pvt_form');" />
 		  </h:column>
-		  <h:column>
+		  <h:column headerClass="no-sort">
 		    <f:facet name="header">
 		        <h:outputText value="" styleClass="bi bi-paperclip" escape="false" />
 				<h:outputText value="#{msgs.sort_attachment}" styleClass="visually-hidden" />
 			</f:facet>
 			<h:outputText value="" styleClass="bi bi-paperclip" escape="false" rendered="#{rcvdItems.msg.hasAttachments}" />
 		  </h:column>
-		  <h:column>
+		  <h:column headerClass="no-sort">
 		    <f:facet name="header">
 		        <h:outputText value="" styleClass="bi bi-reply-fill" escape="false" />
 				<h:outputText value="#{msgs.pvt_msgs_replied}" styleClass="visually-hidden" />
@@ -164,7 +164,7 @@
 	  </h:panelGroup>
 
 	  <h:panelGroup layout="block" styleClass="sakai-table-wrap" rendered="#{PrivateMessagesTool.threadedView}">
-	  <mf:hierPvtMsgDataTable  styleClass="sakai-table sakai-table--hover sakai-messages__list" cellpadding="0" cellspacing="0"  id="threaded_pvtmsgs" width="100%"
+	  <mf:hierPvtMsgDataTable  styleClass="sakai-table sakai-table--hover sakai-table--stack sakai-messages__list" cellpadding="0" cellspacing="0"  id="threaded_pvtmsgs" width="100%"
 		value="#{PrivateMessagesTool.searchPvtMsgs}"
 		var="rcvdItems"
 		rendered="#{PrivateMessagesTool.threadedView}"
@@ -182,14 +182,14 @@
 		    </f:facet>
 				<h:selectBooleanCheckbox value="#{rcvdItems.isSelected}" onclick="updateCount(this.checked); toggleBulkOperations(anyChecked(), 'prefs_pvt_form');" />
 		  </h:column>
-		  <h:column>
+		  <h:column headerClass="no-sort">
 				<f:facet name="header">
 					<h:outputText value="" styleClass="bi bi-paperclip" escape="false" />
 					<h:outputText value="#{msgs.msg_has_attach}" styleClass="visually-hidden" />
 				</f:facet>
 				<h:outputText value="" styleClass="bi bi-paperclip" escape="false" rendered="#{rcvdItems.msg.hasAttachments}" />
 			</h:column>
-			<h:column>
+			<h:column headerClass="no-sort">
 				<f:facet name="header">
 					<h:outputText value="" styleClass="bi bi-reply-fill" escape="false" />
 					<h:outputText value="#{msgs.pvt_msgs_replied}" styleClass="visually-hidden" />

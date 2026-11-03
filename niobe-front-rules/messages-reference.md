@@ -55,7 +55,7 @@ view keeps the folder name as the view heading and exposes **All folders** in th
 |---------|-----------------|
 | Header | `.sakai-tool-header`, `__title`, `__actions`, `__secondary`, `__more`; folder views use `__actions--collapsed` so the overflow is always visible |
 | Buttons | `.sakai-btn` / `-primary` / `-secondary` / `-ghost` / `-icon`; also on `<input type=submit>` |
-| Table | `.sakai-table sakai-table--hover`, `.sakai-table-wrap`, `__primary`, `__nowrap`, `__select`, `__actions` |
+| Table | `.sakai-table sakai-table--hover sakai-table--stack`, `.sakai-table-wrap`, `__primary`, `__nowrap`, `__select`, `__actions`; the shared body script fills `data-label` from the header for JSF tables |
 | Select all | `.sakai-table__select` header cell with the checkbox and a `visually-hidden` label, matching Announcements and Polls |
 | Tags | `.sakai-messages__subject-tags` inside the `__primary` subject cell; Label stays in its own column |
 | Bulk actions | `.sakai-actions` after the table with `.ToggleBulk` submit buttons; `bulkops.js` toggles their `disabled` state |
@@ -109,9 +109,13 @@ view keeps the folder name as the view heading and exposes **All folders** in th
   (`pvt_received`, `pvt_sent`, …) have bundle keys; custom folders do not and render a
   `[missing key]` title. The link text already carries the folder name.
 * **DataTables column indexes follow conditional columns.** The scheduled date column is only
-  rendered in the Scheduled folder; the `columns` array in `pvtMsg.jsp` must use the same condition.
-  `PrivateMessagesTool.calculateColumnClass()` must also match the rendered column count, or the
-  `specialLink`/`date`/`addressee` classes shift to the wrong cells.
+  rendered in the Scheduled folder; the flat table's `columns` array in `pvtMsg.jsp` must use the
+  same condition. `PrivateMessagesTool.calculateColumnClass()` must also match the rendered column
+  count, or the `specialLink`/`date`/`addressee` classes shift to the wrong cells.
+* **The threaded table uses `columnDefs`, not a conditional `columns` array.** The hierarchy
+  component changes the rendered column count per folder; a `columns` array that does not match it
+  appends empty cells and triggers `Requested unknown parameter '7'`. Keep the fixed select /
+  attach / reply indexes non-sortable and let DataTables detect the remaining columns.
 * **The search results page (`pvtMsgEx.jsp`) has two table wrappers.** Keep both `h:panelGroup`
   closing tags when adding the `sakai-table-wrap`; an unbalanced wrapper breaks JSP compilation.
 * **The reply-all view keeps the `pvtMsgForward` form id.** Its JS, BCC field and schedule ids
@@ -125,6 +129,13 @@ view keeps the folder name as the view heading and exposes **All folders** in th
   were removed together with their `max-width`; do not re-add them around new views.
 * The anonymous warning uses `.sakai-banner sakai-banner--warn`; `.information` and
   `alertMessage` were legacy classes with no styles left.
+* **JSF tables do not render `data-label`.** Add `.sakai-table--stack` to the table and let the
+  shared body script copy the visible `thead` text into each `td`; the subject column is marked
+  `sakai-table__primary` from its `headerClass`, so it renders as the row title without a label.
+  Empty status cells are hidden by the same script.
+* **The header `…` menu is viewport-clamped.** On narrow containers the actions are left-aligned,
+  so a `right: 0` panel would open off-screen. The shared overflow script positions both table and
+  header menus; the CSS also falls back to `left: 0` on narrow containers.
 * **Move uses one `h:selectOneMenu`.** The old per-folder `h:selectOneRadio` rendered a nested
   table per row and could not follow the shared form spacing; the single select keeps the current
   folder disabled and submits on change.

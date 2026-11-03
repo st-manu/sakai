@@ -52,6 +52,14 @@
   gap: var(--sakai-space-2);
 }
 
+.sakai-tool-header__actions .sakai-overflow-menu[open] > .sakai-overflow-menu__panel.is-positioned {
+  position: fixed;
+  top: var(--sakai-overflow-panel-top, 0);
+  left: var(--sakai-overflow-panel-left, 0);
+  right: auto;
+  z-index: 1000;
+}
+
 @container sakai-tool (min-width: 48rem) {
   .sakai-tool-header__secondary {
     display: flex;
@@ -88,5 +96,10 @@
   .sakai-tool-header__actions {
     justify-content: flex-start;
     width: 100%;
+  }
+
+  .sakai-tool-header__actions .sakai-overflow-menu__panel {
+    left: 0;
+    right: auto;
   }
 }

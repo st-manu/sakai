@@ -139,6 +139,15 @@ When a PR edits a tool’s top nav (or checklist item 7 below):
 6. Check the legacy `legend` reset: a `<legend class="sakai-form-label">` must render like a
    `<label>`, and a section title must not inherit `inline-block`/padding.
 
+## Tables and overflow checklist
+
+1. Data tables use `.sakai-table--stack` and `data-label`; the primary cell carries
+   `.sakai-table__primary` and renders as the row title without a label.
+2. Server-rendered/JSF tables only need `--stack`: the shared body script copies the visible
+   `thead` text into `data-label` and hides empty status cells.
+3. Header and row `…` menus use the shared overflow script; it clamps them inside the viewport.
+   Do not position them manually or duplicate the logic per tool.
+
 ## After portal (also future)
 
 - Repo-wide Font Awesome webfont / Lit FA purge

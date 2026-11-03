@@ -36,7 +36,7 @@
 
 			<h:panelGroup layout="block" styleClass="sakai-table-wrap" rendered="#{PrivateMessagesTool.pvtAreaEnabled}">
 				<h:dataTable value="#{PrivateMessagesTool.decoratedForum.topics}" var="topic"
-					styleClass="sakai-table sakai-table--hover sakai-messages__folders" captionClass="visually-hidden"
+					styleClass="sakai-table sakai-table--hover sakai-table--stack sakai-messages__folders" captionClass="visually-hidden"
 					columnClasses="sakai-table__primary,sakai-table__nowrap,sakai-table__nowrap,sakai-table__actions">
 					<f:facet name="caption">
 						<h:outputText value="#{msgs.pvt_folders}" styleClass="visually-hidden"/>
