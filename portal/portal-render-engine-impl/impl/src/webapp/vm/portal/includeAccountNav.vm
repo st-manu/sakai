@@ -6,7 +6,7 @@
   #end
   #if ($helpLink)
     <li>
-      <a class="sak-sysInd-help desktop-help-icon sakai-btn-icon btn icon-button"
+      <a class="sak-sysInd-help desktop-help-icon sakai-btn-icon"
           title="${rloader.mainnav_help_tooltip}"
           href="${helpLink}"
           target="_blank"
@@ -18,7 +18,7 @@
   #end
   #if ( $toolDirectUrlEnabled)
     <li>
-      <button class="sakai-btn-icon btn icon-button"
+      <button type="button" class="sakai-btn-icon"
           data-bs-toggle="offcanvas"
           data-bs-target="#sakai-directlink-panel"
           aria-controls="sakai-directlink-panel"
@@ -30,7 +30,7 @@
   #end
   #if (${usePortalSearch})
     <li>
-      <button class="sakai-btn-icon btn icon-button portal-search-button"
+      <button type="button" class="sakai-btn-icon portal-search-button"
           data-bs-toggle="offcanvas"
           data-bs-target="#sakai-search-panel"
           aria-controls="sakai-search-panel"
@@ -43,7 +43,7 @@
 
   #if ($quickLinks)
     <li>
-      <button class="sakai-btn-icon btn icon-button"
+      <button type="button" class="sakai-btn-icon"
           data-bs-toggle="offcanvas"
           data-bs-target="#sakai-quickLinksPanel"
           aria-controls="sakai-quickLinksPanel"
@@ -56,20 +56,20 @@
   #end
 
   <li>
-    <button class="sakai-btn-icon btn icon-button"
+    <button type="button" class="sakai-btn-icon"
         data-bs-toggle="offcanvas"
         data-bs-target="#sakai-calendar-panel"
         aria-controls="sakai-calendar-panel"
         aria-label="$rloader.sit_calendar"
         title="$rloader.sit_calendar">
-      <span class="si si-calendar" aria-hidden="true"></span>
+      <span class="bi bi-calendar3" aria-hidden="true"></span>
     </button>
   </li>
 
 
   #if (${useBullhornAlerts})
     <li>
-      <button class="portal-notifications-button sakai-btn-icon btn icon-button"
+      <button type="button" class="portal-notifications-button sakai-btn-icon"
           data-bs-toggle="offcanvas"
           data-bs-target="#sakai-notifications-panel"
           aria-controls="sakai-notifications-panel"

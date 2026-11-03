@@ -1,4 +1,4 @@
-const allsites = { pinnedQueue: { favoriteSiteIds: [] }, sites: [], terms: [], sortable: undefined };
+const allsites = { pinnedQueue: { favoriteSiteIds: [] }, sites: [], terms: [], recentSiteIds: [], sortable: undefined };
 
 allsites.isWorkspaceSite = site => typeof site?.siteId === "string" && site.siteId.startsWith("~");
 
@@ -245,7 +245,7 @@ allsites.handleCardPinChanged = function (e) {
     allsites.removeOrganizeItem(e.detail.siteId);
   }
 
-  allsites.refreshPinnedBadges();
+  allsites.refreshBadges();
 };
 
 allsites.pinLabels = function () {
@@ -257,26 +257,27 @@ allsites.pinLabels = function () {
   };
 };
 
-allsites.createPinnedBadge = function (site) {
+allsites.createSiteBadge = function (site) {
 
   const labels = allsites.pinLabels();
+  const pinned = !!site.pinned;
   const badge = document.createElement("div");
-  badge.className = "sakai-sites-launcher__pinned-badge";
+  badge.className = "sakai-sites-launcher__badge";
   badge.dataset.siteId = site.siteId;
 
   const link = document.createElement("a");
-  link.className = "sakai-sites-launcher__pinned-badge-link";
+  link.className = "sakai-sites-launcher__badge-link";
   link.href = site.url || `/portal/site/${encodeURIComponent(site.siteId)}`;
   link.textContent = site.title || site.siteId;
   link.title = site.title || site.siteId;
 
   const pin = document.createElement("button");
   pin.type = "button";
-  pin.className = "sakai-sites-launcher__pinned-badge-pin site-opt-pin";
+  pin.className = "sakai-sites-launcher__badge-pin site-opt-pin";
   pin.dataset.pinSite = site.siteId;
-  pin.dataset.pinned = "true";
+  pin.dataset.pinned = String(pinned);
   pin.dataset.siteTitle = site.title || "";
-  pin.setAttribute("aria-label", labels.unpin);
+  pin.setAttribute("aria-label", pinned ? labels.unpin : labels.pin);
   pin.innerHTML = '<i class="si si-pin sakai-pin-icon__outline" aria-hidden="true"></i>'
     + '<i class="si si-pin-fill sakai-pin-icon__fill" aria-hidden="true"></i>';
   pin.addEventListener("click", (event) => {
@@ -296,32 +297,55 @@ allsites.togglePinnedBadge = function (siteId) {
     return;
   }
 
-  site.pinned = false;
-  allsites.pinnedQueue.favoriteSiteIds = (allsites.pinnedQueue.favoriteSiteIds || []).filter(id => id !== siteId);
+  const pinned = !site.pinned;
+  site.pinned = pinned;
+
+  const remaining = (allsites.pinnedQueue.favoriteSiteIds || []).filter(id => id !== siteId);
+  allsites.pinnedQueue.favoriteSiteIds = pinned ? [...remaining, siteId] : remaining;
   allsites.scheduleUpdatePinned();
-  allsites.removeOrganizeItem(siteId);
+
+  if (pinned) {
+    allsites.addOrganizeItem(site.siteId, site.title);
+  } else {
+    allsites.removeOrganizeItem(siteId);
+  }
 
   const searchInput = document.getElementById("search-all-sites");
   allsites.renderSiteCards(allsites.sites, searchInput?.value || "");
 
   document.body.dispatchEvent(new CustomEvent("site-pin-changed", {
-    detail: { siteId, pinned: false, siteTitle: site.title, source: "sites-launcher" },
+    detail: { siteId, pinned, siteTitle: site.title, source: "sites-launcher" },
     bubbles: true,
   }));
 };
 
-allsites.refreshPinnedBadges = function () {
+allsites.refreshBadges = function () {
 
   const content = document.getElementById("moresites-content");
   if (!content) {
     return;
   }
 
-  content.querySelector(".sakai-sites-launcher__pinned-badges")?.remove();
-  const strip = allsites.buildPinnedBadgesStrip();
-  if (strip) {
-    content.prepend(strip);
+  content.querySelectorAll(".sakai-sites-launcher__badges").forEach(el => el.remove());
+
+  const recent = allsites.buildRecentBadgesStrip();
+  if (recent) {
+    content.prepend(recent);
   }
+
+  const pinned = allsites.buildPinnedBadgesStrip();
+  if (pinned) {
+    content.prepend(pinned);
+  }
+};
+
+allsites.buildBadgeStrip = function (sites, group) {
+
+  const strip = document.createElement("div");
+  strip.className = "sakai-sites-launcher__badges";
+  strip.dataset.badgeGroup = group;
+  sites.forEach(site => strip.append(allsites.createSiteBadge(site)));
+  return strip;
 };
 
 allsites.buildPinnedBadgesStrip = function () {
@@ -345,10 +369,23 @@ allsites.buildPinnedBadgesStrip = function () {
   });
   byId.forEach(site => ordered.push(site));
 
-  const strip = document.createElement("div");
-  strip.className = "sakai-sites-launcher__pinned-badges";
-  ordered.forEach(site => strip.append(allsites.createPinnedBadge(site)));
-  return strip;
+  return allsites.buildBadgeStrip(ordered, "pinned");
+};
+
+allsites.buildRecentBadgesStrip = function () {
+
+  const currentSiteId = document.getElementById("select-site-sidebar")?.dataset.currentSiteId;
+  const byId = new Map((allsites.sites || []).map(site => [site.siteId, site]));
+  const recent = (allsites.recentSiteIds || [])
+    .filter(id => id !== currentSiteId)
+    .map(id => byId.get(id))
+    .filter(site => site && !site.pinned && !allsites.isWorkspaceSite(site));
+
+  if (!recent.length) {
+    return null;
+  }
+
+  return allsites.buildBadgeStrip(recent, "recent");
 };
 
 allsites.renderSiteCards = function (sites, query = "") {
@@ -371,9 +408,14 @@ allsites.renderSiteCards = function (sites, query = "") {
   content.className = "sakai-sites-launcher__sections";
   content.setAttribute("aria-busy", "false");
 
-  const badges = allsites.buildPinnedBadgesStrip();
-  if (badges) {
-    content.append(badges);
+  const pinnedBadges = allsites.buildPinnedBadgesStrip();
+  if (pinnedBadges) {
+    content.append(pinnedBadges);
+  }
+
+  const recentBadges = allsites.buildRecentBadgesStrip();
+  if (recentBadges) {
+    content.append(recentBadges);
   }
 
   if (!filtered.length) {
@@ -571,6 +613,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const payload = await sitesResponse.json();
         allsites.sites = Array.isArray(payload.sites) ? payload.sites : [];
         allsites.terms = Array.isArray(payload.terms) ? payload.terms : [];
+        allsites.recentSiteIds = Array.isArray(payload.recentSiteIds) ? payload.recentSiteIds : [];
 
         let favoriteSiteIds = [];
         if (favoritesResponse.ok) {

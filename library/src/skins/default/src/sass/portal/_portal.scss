@@ -180,26 +180,6 @@
   }
 }
 
-#sakai-system-indicators {
-
-  button {
-    color: var(--sakai-text-color-1);
-
-    span.bi {
-      font-size: 1.25rem;
-    }
-  }
-
-  .sak-sysInd-account {
-    border-radius: 50%;
-  }
-
-  .sakai-accountProfileImage {
-    width: var(--sakai-avatar-size);
-    min-width: var(--sakai-avatar-size);
-  }
-}
-
 .sakai-accountProfileImage {
   aspect-ratio: 1 / 1;
   object-fit: cover;
@@ -209,37 +189,8 @@
   outline: none;
 }
 
-#sakai-account-panel {
-  #sakai-profile-image-block > button {
-    border: 1px transparent;
-    #sakai-profile-image-change {
-        display: none;
-    }
-    &:hover, &:focus {
-      #sakai-profile-image-change {
-          display: block;
-      }
-    }
-    &:focus {
-      outline: 1px solid;
-    }
-  }
-}
-
 .breadcrumb-item + .breadcrumb-item::before {
   color: var(--sakai-text-color-dimmed);
-}
-
-.search-result-link {
-
-  &:focus, &:hover {
-    text-decoration: none;
-
-    .card {
-      background-color: var(--button-primary-active-background);
-      color: var(--button-primary-active-text-color);
-    }
-  }
 }
 
 #xlogin-logo {

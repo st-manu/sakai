@@ -40,45 +40,6 @@
     </li>
 #end
 
-#macro( recentSiteItem $site )
-
-    #set ($sidebarSiteTitle = $ftext.escapeHtml(${site.title}))
-    #set ($displayTitle = $sidebarSiteTitle)
-    #if ( ( ${tabDisplayLabel} == 2 ) && ( ${site.shortDescription} ) )
-        #set ($displayTitle = $ftext.escapeHtml(${site.shortDescription}))
-    #end
-    #if ($site.isPinned)
-        #set ($pinTitle = $rloader.sitenav_btn_unpin)
-    #else
-        #set ($pinTitle = $rloader.sitenav_btn_pin)
-    #end
-
-    <li class="sakai-sidebar-site sakai-sidebar-site--recent" data-site="${site.id}">
-        <div class="sakai-sidebar-site__head">
-            <a href="$site.url" class="sakai-sidebar-site__title">${displayTitle}</a>
-            #if ($loggedIn && !${site.isHome})
-                #if (!$site.isHidden)
-                    <button type="button"
-                        class="sakai-sidebar-site__pin site-opt-pin btn btn-transparent"
-                        data-pin-site="${site.id}"
-                        data-pinned="$!{site.isPinned}"
-                        data-site-title="${sidebarSiteTitle}"
-                        aria-label="${pinTitle}"
-                        aria-pressed="$!{site.isPinned}">
-                      <i class="si si-pin sakai-pin-icon__outline" aria-hidden="true"></i>
-                      <i class="si si-pin-fill sakai-pin-icon__fill" aria-hidden="true"></i>
-                    </button>
-                #else
-                    <span class="sakai-sidebar-site__hidden" title="$rloader.sitenav_btn_hide">
-                        <span class="bi si si-eye-slash-fill" aria-hidden="true"></span>
-                        <span class="visually-hidden">$rloader.sitenav_btn_hide</span>
-                    </span>
-                #end
-            #end
-        </div>
-    </li>
-#end
-
 #set ($currentSidebarSite = false)
 #if (${userIsLoggedIn})
     #if ($sidebarSites.currentSite)
@@ -219,50 +180,7 @@
         #end
     </nav>
 
-    #if (${userIsLoggedIn})
-    <nav class="sakai-sidebar__recent#if ($sidebarSites.recentSites.empty) sakai-is-hidden#end" aria-labelledby="recent-sites-heading">
-        <h3 class="sakai-sidebar__heading" id="recent-sites-heading">$!{rloader.sitenav_title_recent}</h3>
-        <ul id="recent-site-list" class="sakai-sidebar__list" role="list">
-            #foreach ($site in $sidebarSites.recentSites)
-                #recentSiteItem ($site)
-            #end
-        </ul>
-    </nav>
-    #end
-
     <div class="sakai-sidebar__footer">
-      #if (${userIsLoggedIn} && !$sidebarSites.recentSites.empty)
-      <div class="sakai-sidebar-page sakai-sidebar-page--group sakai-sidebar-page--recent-rail" role="none">
-          <button type="button"
-                  class="sakai-sidebar-page__toggle sakai-sidebar__recent-rail-toggle collapsed"
-                  aria-expanded="false"
-                  aria-controls="sidebar-recent-flyout"
-                  title="$!{rloader.sitenav_title_recent}"
-                  aria-label="$!{rloader.sitenav_title_recent}">
-              <span class="bi bi-clock-history sakai-sidebar-page__icon" aria-hidden="true"></span>
-          </button>
-          <ul id="sidebar-recent-flyout"
-              class="sakai-sidebar-page__group sakai-sidebar-page-list"
-              role="group"
-              aria-label="$!{rloader.sitenav_title_recent}">
-              #foreach ($site in $sidebarSites.recentSites)
-                  #set ($recentRailTitle = $ftext.escapeHtml(${site.title}))
-                  #if ( ( ${tabDisplayLabel} == 2 ) && ( ${site.shortDescription} ) )
-                      #set ($recentRailTitle = $ftext.escapeHtml(${site.shortDescription}))
-                  #end
-                  <li class="nav-item sakai-sidebar-page" role="none">
-                      <a class="sakai-sidebar-page__link sakai-sidebar-page__link--text"
-                         href="$site.url"
-                         title="${recentRailTitle}">
-                          <span class="sakai-sidebar-page__body">
-                              <span class="sakai-sidebar-page__label">${recentRailTitle}</span>
-                          </span>
-                      </a>
-                  </li>
-              #end
-          </ul>
-      </div>
-      #end
       #if (${userIsLoggedIn})
       <button id="sakai-view-all-sites"
               type="button"

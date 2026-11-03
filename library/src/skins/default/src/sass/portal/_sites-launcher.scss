@@ -260,14 +260,14 @@
   display: none;
 }
 
-.sakai-sites-launcher__pinned-badges {
+.sakai-sites-launcher__badges {
   display: flex;
   flex-wrap: wrap;
   gap: var(--sakai-space-2);
-  margin: 0 0 var(--sakai-space-4);
+  margin: 0;
 }
 
-.sakai-sites-launcher__pinned-badge {
+.sakai-sites-launcher__badge {
   display: inline-flex;
   align-items: center;
   gap: var(--sakai-space-1);
@@ -280,7 +280,7 @@
   color: var(--sakai-text-color-1);
 }
 
-.sakai-sites-launcher__pinned-badge-link {
+.sakai-sites-launcher__badge-link {
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -296,7 +296,7 @@
   }
 }
 
-.sakai-sites-launcher__pinned-badge-pin {
+.sakai-sites-launcher__badge-pin {
   display: inline-flex;
   align-items: center;
   justify-content: center;

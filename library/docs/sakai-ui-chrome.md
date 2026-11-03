@@ -8,7 +8,7 @@ Stable CSS classes for the portal shell. Tools should target these when migrated
 | Body | `.sakai-portal-body` (+ `.Mrphs-portalBody`) | Portal body |
 | Shell grid | `.sakai-portal-wrapper` / `.portal-container` | CSS grid: sidebar + main (PASystem above) |
 | Header (mobile) | `.sakai-portal-header--mobile` | Slim top bar on small screens only |
-| Sidebar | `#portal-nav-sidebar` / `.sakai-sidebar` | Full-height: brand, user, **current-site tools** (`#toolMenu`), **recent sites** (flat + pin; no pinned list), footer |
+| Sidebar | `#portal-nav-sidebar` / `.sakai-sidebar` | Full-height: brand, user, **current-site tools** (`#toolMenu`), footer |
 | Breadcrumb | `.portal-header-breadcrumb` | All Sites › site › tool (same markup in toolbar + mobile chrome) |
 | Main toolbar | `.sakai-main-toolbar` | Breadcrumbs + utilities (desktop) |
 | Main canvas | `.sakai-main-column` / `.sakai-portal-main` | Grey page background around the card |
@@ -24,8 +24,8 @@ Stable CSS classes for the portal shell. Tools should target these when migrated
 | Current tool / Lessons page | `.selected-page` + `aria-current="page"` on `.sakai-sidebar-page__link` | Server-rendered for the active tool; Lessons subnav JS may move it to the active subpage without clearing when no Lessons match |
 | Print hide | `.sakai-no-print` | Opt-out for chrome / chrome-adjacent UI. Defined in skin `print.scss` (`media="print"`). Aliases: `.noprint`, `.hidden-print` |
 | Tool alerts | `.portal-notifications-indicator` on `.sakai-sidebar-page__icon-wrap` | Novelty dot from `/api/sites/{id}` via `portal.sidebar.alerts.js` |
-| All sites | `#select-site-sidebar` / `.sakai-sites-launcher` | Floating search-first panel. Pinned badges strip + site cards. Organize: always “Organize Pinned” (`.sakai-reorder-*`) |
-| Account menu | `#sakai-account-panel` / `.sakai-account-launcher` | Floating modal panel (same shell as sites launcher). Triggers: header avatar / sidebar user |
+| All sites | `#select-site-sidebar` / `.sakai-sites-launcher` | Floating search-first panel. Pinned badges strip, recent badges strip, then site cards. Organize: always “Organize Pinned” (`.sakai-reorder-*`) |
+| Account menu | `#sakai-account-panel` / `.sakai-account-launcher` | Floating modal panel (same shell as sites launcher). Compact top-right card on mobile; only the sites launcher goes full-screen. Triggers: header avatar / sidebar user |
 | Impersonation | `.swapped-view` / `body.Mrphs-become-user-enabled` | `--sakai-page-background` brand tint (mobile-visible) + top `box-shadow` strip; page-header bar unchanged |
 | Pins | `.si-pin` / `.si-pin-fill` via `$customIcons` | Dual icons + `[data-pinned]` CSS show/hide — no hardcoded Bootstrap glyph codes |
 
@@ -78,7 +78,7 @@ Use **Bootstrap Icons** (`bi-*`) or the tool map (`si si-sakai-*` in [`base/_ico
 - Keyboard: tree items are focusable (`tabindex="0"`); ArrowUp/Down/Home/End move focus; ArrowRight/Left (RTL-aware) expand/collapse groups.
 - Collapsed rail: Lessons/Subsites keep their tool icon (tooltip = name); click opens a right-side flyout with the tree. Other tools keep icon + tooltip; click navigates.
 - Status (hidden / locked / prerequisites): `.sakai-sidebar-page__chip` under the label — icon + text, not trailing icon-only.
-- Pins: dual `.si-pin` / `.si-pin-fill` via `[data-pinned]` on **Recent** only; pinning removes the row from Recent (favorites still sync All Sites badges).
+- Pins: dual `.si-pin` / `.si-pin-fill` via `[data-pinned]` on the sites-launcher badges only; pinning moves a recent badge into the pinned strip.
 - Site icon: `.sakai-sidebar__site-icon` wraps optional `pageNavIconUrl` (legacy class `img_site_toolmenu` kept as alias).
 - Sites launcher: plain action links (no `menubar`); tabpanels labelled by the tab **button** ids.
 - Account: action items are buttons; theme control is a single `role="switch"` with a stable `aria-label`.

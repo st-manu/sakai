@@ -4,7 +4,6 @@ class SitesSidebar {
 
     this._i18n = config?.i18n;
     this._element = element;
-    this._recentSiteList = document.getElementById("recent-site-list");
 
     element.querySelectorAll(".site-opt-pin").forEach(buttonEl => new PinButton(buttonEl, { i18n: this._i18n?.pinButtons }));
 
@@ -53,8 +52,7 @@ class SitesSidebar {
 
       const toggle = e.target.closest(
         ".sakai-sidebar-page--lessons > .sakai-sidebar-page__toggle, "
-        + ".sakai-sidebar-page--subsites > .sakai-sidebar-page__toggle, "
-        + ".sakai-sidebar-page--recent-rail > .sakai-sidebar-page__toggle"
+        + ".sakai-sidebar-page--subsites > .sakai-sidebar-page__toggle"
       );
       if (!toggle || !this._element.contains(toggle)) return;
 

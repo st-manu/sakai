@@ -94,9 +94,10 @@
 
 .sakai-role-switch__role-link {
   display: block;
+  padding: var(--sakai-space-2) var(--sakai-space-3);
   color: var(--sakai-text-color-1);
   text-decoration: none;
-  border-radius: var(--sakai-radius-sm);
+  border-radius: var(--sakai-radius-md);
 
   &:hover,
   &:focus-visible {
@@ -115,6 +116,10 @@
 .sakai-main-toolbar__icons .sakai-btn-icon,
 .sakai-main-toolbar__icons .icon-button {
   color: var(--sakai-text-color-1);
+
+  .bi {
+    font-size: 1.25rem;
+  }
 }
 
 .portal-notifications-button .portal-notifications-indicator {

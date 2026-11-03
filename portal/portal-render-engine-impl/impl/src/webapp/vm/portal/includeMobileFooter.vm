@@ -4,7 +4,7 @@
   <ul class="sakai-mobilebar__list">
     #if (!${loginTopLogin})
     <li>
-      <a class="sakai-btn-icon btn icon-button"
+      <a class="sakai-btn-icon"
           href="/portal"
           title="$rloader.portal_home"
           aria-label="$rloader.portal_home">
@@ -20,7 +20,7 @@
     #end
     #if ($helpLink)
     <li>
-      <a class="sakai-btn-icon btn icon-button"
+      <a class="sakai-btn-icon"
           href="${helpLink}"
           target="_blank"
           rel="noopener noreferrer"
@@ -33,7 +33,7 @@
 
     #if ($toolDirectUrlEnabled)
     <li>
-      <button class="sakai-btn-icon btn icon-button"
+      <button class="sakai-btn-icon"
           type="button"
           data-bs-toggle="offcanvas"
           data-bs-target="#sakai-directlink-panel"
@@ -47,7 +47,7 @@
 
     #if (${usePortalSearch} && !${loginTopLogin})
     <li>
-      <button class="sakai-btn-icon btn icon-button portal-search-button"
+      <button class="sakai-btn-icon portal-search-button"
           type="button"
           data-bs-toggle="offcanvas"
           data-bs-target="#sakai-search-panel"
@@ -61,7 +61,7 @@
 
     #if ($quickLinks)
     <li>
-      <button class="sakai-btn-icon btn icon-button"
+      <button class="sakai-btn-icon"
           type="button"
           data-bs-toggle="offcanvas"
           data-bs-target="#sakai-quickLinksPanel"
@@ -76,21 +76,21 @@
 
     #if (!${loginTopLogin})
     <li>
-      <button class="sakai-btn-icon btn icon-button"
+      <button class="sakai-btn-icon"
           type="button"
           data-bs-toggle="offcanvas"
           data-bs-target="#sakai-calendar-panel"
           aria-controls="sakai-calendar-panel"
           aria-label="$rloader.sit_calendar"
           title="$rloader.sit_calendar">
-        <span class="si si-calendar" aria-hidden="true"></span>
+        <span class="bi bi-calendar3" aria-hidden="true"></span>
       </button>
     </li>
     #end
 
     #if (${useBullhornAlerts} && !${loginTopLogin})
     <li>
-      <button class="portal-notifications-button sakai-btn-icon btn icon-button"
+      <button class="portal-notifications-button sakai-btn-icon"
           type="button"
           data-bs-toggle="offcanvas"
           data-bs-target="#sakai-notifications-panel"

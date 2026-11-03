@@ -1,0 +1,108 @@
+sakai-search {
+  display: block;
+  min-width: 0;
+}
+
+.sakai-search {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sakai-space-3);
+  min-width: 0;
+}
+
+.sakai-search__form {
+  display: flex;
+  align-items: stretch;
+  gap: var(--sakai-space-2);
+}
+
+.sakai-search__input {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.sakai-search__submit {
+  flex: 0 0 auto;
+}
+
+.sakai-search__empty {
+  margin: 0;
+  color: var(--sakai-text-color-dimmed);
+  font-size: var(--sakai-font-size-sm);
+}
+
+.sakai-search__results-header {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.sakai-search__results {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sakai-space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.sakai-search__result-link {
+  display: block;
+  padding: var(--sakai-space-3);
+  border: 1px solid var(--sakai-border-color);
+  border-radius: var(--sakai-radius-md);
+  background: var(--sakai-background-color-1);
+  color: var(--sakai-text-color-1);
+  text-decoration: none;
+
+  &:hover {
+    background: var(--sakai-background-color-2);
+    color: var(--sakai-text-color-1);
+    text-decoration: none;
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--focus-outline-color);
+    outline-offset: 2px;
+    text-decoration: none;
+  }
+}
+
+.sakai-search__result-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sakai-space-1) var(--sakai-space-2);
+  margin-bottom: var(--sakai-space-2);
+  font-size: var(--sakai-font-size-sm);
+  color: var(--sakai-text-color-dimmed);
+}
+
+.sakai-search__result-icon {
+  font-size: 1.15rem;
+}
+
+.sakai-search__result-tool {
+  font-weight: 600;
+  color: var(--sakai-text-color-2);
+}
+
+.sakai-search__result-title-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sakai-space-1) var(--sakai-space-2);
+  margin-bottom: var(--sakai-space-1);
+}
+
+.sakai-search__result-label {
+  font-size: var(--sakai-font-size-sm);
+  color: var(--sakai-text-color-dimmed);
+}
+
+.sakai-search__result-title {
+  font-weight: 600;
+}
+
+.sakai-search__result-text {
+  font-size: var(--sakai-font-size-sm);
+  color: var(--sakai-text-color-2);
+}

@@ -12,9 +12,9 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--sakai-space-3);
+  gap: var(--sakai-space-2);
   flex-shrink: 0;
-  padding: var(--sakai-space-4) var(--sakai-space-5);
+  padding: var(--sakai-space-3) var(--sakai-space-4);
   background-color: var(--sakai-background-color-1);
   color: var(--sakai-text-color-1);
   border-bottom: 1px solid var(--sakai-border-color);
@@ -31,8 +31,9 @@
 
 .sakai-offcanvas__close,
 .sakai-offcanvas .offcanvas-header .btn-close {
-  width: 2rem;
-  height: 2rem;
+  flex: 0 0 auto;
+  width: 2.5rem;
+  height: 2.5rem;
   margin: 0;
   padding: 0;
   background-color: transparent;
@@ -49,9 +50,14 @@
 .sakai-offcanvas .offcanvas-body {
   display: flex;
   flex-direction: column;
-  gap: var(--sakai-space-4);
-  padding: var(--sakai-space-5);
+  gap: var(--sakai-space-3);
+  min-width: 0;
+  padding: var(--sakai-space-4);
   overflow-y: auto;
+
+  > * {
+    min-width: 0;
+  }
 }
 
 .sakai-offcanvas__intro {
@@ -97,6 +103,66 @@
     background-color: var(--sakai-background-color-2);
     color: var(--sakai-text-color-1);
     text-decoration: none;
+  }
+}
+
+
+.sakai-quick-link__icon {
+  flex: 0 0 auto;
+  width: 1.5rem;
+  height: 1.5rem;
+  background-image: var(--sakai-quick-link-icon);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  font-size: 1.25rem;
+  line-height: 1;
+}
+
+.sakai-direct-link__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sakai-space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.sakai-direct-link__item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sakai-space-2);
+}
+
+.sakai-direct-link__title {
+  margin: 0;
+  font-size: var(--sakai-font-size);
+  font-weight: 600;
+  color: var(--sakai-text-color-1);
+}
+
+.sakai-direct-link__short {
+  display: flex;
+  align-items: center;
+  gap: var(--sakai-space-2);
+  font-size: var(--sakai-font-size-sm);
+  color: var(--sakai-text-color-2);
+}
+
+.sakai-direct-link__textarea {
+  min-height: 4.5rem;
+  font-size: var(--sakai-font-size-sm);
+  resize: vertical;
+}
+
+.sakai-direct-link__empty {
+  margin: 0;
+  color: var(--sakai-text-color-dimmed);
+}
+
+@include media-breakpoint-down(sm) {
+  .sakai-offcanvas.offcanvas {
+    --bs-offcanvas-width: 100vw;
   }
 }
 

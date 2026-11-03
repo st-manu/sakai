@@ -1,5 +1,5 @@
 .sakai-account-launcher.modal {
-  --bs-modal-width: min(22rem, calc(100vw - 2rem));
+  --bs-modal-width: min(20rem, calc(100vw - 2rem));
   width: 100%;
 }
 
@@ -44,15 +44,15 @@
 .sakai-account-launcher__top {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   gap: var(--sakai-space-2);
   flex-shrink: 0;
-  padding: var(--sakai-space-3) var(--sakai-space-4);
+  padding: var(--sakai-space-2) var(--sakai-space-3);
   border-bottom: 1px solid var(--sakai-border-color);
 }
 
 .sakai-account-launcher__title {
   margin: 0;
+  margin-inline-end: auto;
   font-size: var(--sakai-font-size);
   font-weight: 600;
   color: var(--sakai-text-color-1);
@@ -67,32 +67,27 @@
   flex: 1 1 auto;
   min-height: 0;
   overflow-y: auto;
-  padding: var(--sakai-space-4);
+  padding: var(--sakai-space-3);
 }
 
 .sakai-account-panel__nav {
   list-style: none;
   margin: 0;
   padding: 0;
+
+  .sakai-offcanvas-nav__link {
+    padding-block: var(--sakai-space-2);
+  }
 }
 
 @include media-breakpoint-down(md) {
   .sakai-account-launcher__dialog {
-    width: 100%;
-    max-width: none;
-    height: 100%;
-    margin: 0;
+    max-width: calc(100vw - (2 * var(--sakai-space-3)));
+    margin: calc(var(--sakai-mobile-header-height) + var(--sakai-space-2)) var(--sakai-space-3) var(--sakai-space-3) auto;
   }
 
   .sakai-account-launcher__panel {
-    max-height: none;
-    height: 100%;
-    border-radius: 0;
-    border: none;
-  }
-
-  .sakai-account-launcher.show .sakai-account-launcher__panel {
-    animation: none;
+    max-height: calc(100dvh - var(--sakai-mobile-header-height) - var(--sakai-space-2) - var(--sakai-space-3));
   }
 }
 
@@ -100,70 +95,91 @@
   display: flex;
   flex-direction: column;
   min-height: 0;
-  gap: var(--sakai-space-3);
+  gap: var(--sakai-space-2);
 }
 
 .sakai-account-panel__identity {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: var(--sakai-space-2);
-  padding: var(--sakai-space-2) 0 var(--sakai-space-4);
+  gap: var(--sakai-space-3);
+  padding-bottom: var(--sakai-space-3);
   border-bottom: 1px solid var(--sakai-border-color);
-  text-align: center;
+  text-align: start;
+}
+
+.sakai-account-panel__avatar-wrap {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
 }
 
 .sakai-account-panel__avatar {
-  width: var(--sakai-avatar-size-lg);
-  height: var(--sakai-avatar-size-lg);
+  width: 2.5rem;
+  height: 2.5rem;
   border-radius: 50%;
   object-fit: cover;
 }
 
+.sakai-account-panel__avatar--placeholder {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--sakai-background-color-2);
+  color: var(--sakai-text-color-dimmed);
+  font-size: 1.5rem;
+}
+
+.sakai-account-panel__identity-text {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
 .sakai-account-panel__name {
   margin: 0;
-  font-size: var(--sakai-font-size-lg);
+  overflow: hidden;
+  font-size: var(--sakai-font-size);
   font-weight: 600;
+  line-height: 1.25;
   color: var(--sakai-text-color-1);
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .sakai-account-panel__id {
   margin: 0;
+  overflow: hidden;
   font-size: var(--sakai-font-size-sm);
   font-weight: 400;
+  line-height: 1.25;
   color: var(--sakai-text-color-dimmed);
-}
-
-.sakai-account-panel__theme {
-  display: flex;
-  justify-content: center;
-  padding-top: var(--sakai-space-2);
-  border-top: 1px solid var(--sakai-border-color);
-  margin-top: var(--sakai-space-2);
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .sakai-account-panel__footer {
   margin-top: auto;
-  padding-top: var(--sakai-space-4);
+  padding-top: var(--sakai-space-2);
   border-top: 1px solid var(--sakai-border-color);
 }
 
 .sakai-account-panel__logout {
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  justify-content: center;
   gap: var(--sakai-space-2);
   width: 100%;
-  min-height: 2.75rem;
-  padding: var(--sakai-space-2) var(--sakai-space-4);
-  border: 1px solid var(--sakai-border-color);
+  padding: var(--sakai-space-2) var(--sakai-space-3);
+  border: 0;
   border-radius: var(--sakai-radius-md);
-  background: var(--sakai-background-color-1);
+  background: transparent;
   color: var(--sakai-text-color-1);
-  font-weight: 600;
+  font-weight: 500;
   text-decoration: none;
 
-  &:hover {
+  &:hover,
+  &:focus-visible {
     background: var(--sakai-background-color-2);
     color: var(--sakai-text-color-1);
     text-decoration: none;

@@ -232,48 +232,44 @@
 
             #set($j = 0)
 
-            <div class="offcanvas offcanvas-end sakai-offcanvas sakai-no-print Mrphs-directUrl__dropDown" tabindex="-1" id="sakai-directlink-panel" aria-labelledby="sakai-directlink-label">
+            <aside class="offcanvas offcanvas-end sakai-offcanvas sakai-no-print" tabindex="-1" id="sakai-directlink-panel" aria-labelledby="sakai-directlink-label">
 
                 <div class="offcanvas-header sakai-offcanvas__header">
                     <h2 class="offcanvas-title sakai-offcanvas__title" id="sakai-directlink-label">
                         ${rloader.tool_direct_button_link}
                     </h2>
-                    <button type="button" class="btn-close sakai-offcanvas__close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                    <button type="button" class="btn-close sakai-offcanvas__close" data-bs-dismiss="offcanvas" aria-label="${rloader.sit_closepage}"></button>
                 </div>
 
                 <div class="offcanvas-body sakai-offcanvas__body">
                     #if ( !$allTools.isEmpty() )
-                        <ul class="list-group list-group-flush">
+                        <ul class="sakai-direct-link__list">
                             #foreach ( $tool in $allTools )
                                 #if ( $tool.directToolUrl && ${tool.showDirectToolUrl} )
 
                                     #set($j = $j + 1)
 
-                                    <li class="list-group-item sakai-direct-url-item">
-                                        <div class="sakai-direct-url-item__title">
-                                            <strong>${tool.toolTitle}</strong>
-                                        </div>
-
-                                        <div id="${tool.toolPlacementIDJS}_directurl" role="dialog" aria-labelledby="${tool.toolPlacementIDJS}_directurl__title" class="Mrphs-directUrl Mrphs-directUrl__dropDown">
-                                            #if($toolShortUrlEnabled)
-                                                <div class="sakai-direct-url-item__short">
-                                                    <input type="checkbox" id="directToolUrl-${j}" class="Mrphs-directUrl__checkbox" onclick="toggleShortUrlOutput('${tool.directToolUrl}', this, '${tool.toolPlacementIDJS}_urlholder');">
-                                                    <label for="directToolUrl-${j}" class="form-check-label">
-                                                        ${rloader.short_url}
-                                                    </label>
-                                                </div>
-                                            #end
-                                            <textarea name="${tool.toolPlacementIDJS}_urlholder" id="${tool.toolPlacementIDJS}_urlholder" class="Mrphs-directUrl__textarea ${tool.toolPlacementIDJS}_urlholder form-control sakai-direct-url-item__textarea">${tool.directToolUrl}</textarea>
-                                        </div>
+                                    <li class="sakai-direct-link__item">
+                                        <h3 class="sakai-direct-link__title">${tool.toolTitle}</h3>
+                                        #if($toolShortUrlEnabled)
+                                            <label class="sakai-direct-link__short" for="directToolUrl-${j}">
+                                                <input type="checkbox" id="directToolUrl-${j}"
+                                                    data-direct-link-toggle
+                                                    data-direct-url="${tool.directToolUrl}"
+                                                    data-target="${tool.toolPlacementIDJS}_urlholder">
+                                                <span>${rloader.short_url}</span>
+                                            </label>
+                                        #end
+                                        <textarea readonly id="${tool.toolPlacementIDJS}_urlholder" class="sakai-form-control sakai-direct-link__textarea">${tool.directToolUrl}</textarea>
                                     </li>
                                 #end
                             #end
                         </ul>
                     #else
-                        <p class="text-secondary">${rloader.tool_direct_link_not_available}</p>
+                        <p class="sakai-direct-link__empty">${rloader.tool_direct_link_not_available}</p>
                     #end
                 </div>
-            </div>
+            </aside>
         #end
     </main>
 

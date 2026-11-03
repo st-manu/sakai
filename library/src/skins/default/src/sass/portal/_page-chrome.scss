@@ -262,28 +262,3 @@
   display: flex;
   flex-wrap: wrap;
 }
-
-.sakai-direct-url-item {
-  background: transparent;
-  border-color: var(--sakai-border-color);
-  padding-inline: 0;
-  margin-bottom: var(--sakai-space-3);
-}
-
-.sakai-direct-url-item__title {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: var(--sakai-space-2);
-}
-
-.sakai-direct-url-item__short {
-  display: flex;
-  gap: var(--sakai-space-2);
-  margin-bottom: var(--sakai-space-2);
-}
-
-.sakai-direct-url-item__textarea {
-  min-height: 70px;
-  font-size: var(--sakai-font-size);
-  border-color: var(--sakai-border-color);
-}
