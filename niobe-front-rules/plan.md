@@ -26,6 +26,16 @@ Although Sakai continues to use **Bootstrap 5.3** under the hood for complex com
 
 Instead, all layout must be expressed using Sakai's own classes (`.sakai-*`) defined in the centralized SCSS files, utilizing the variables and mixins of the Niobe system.
 
+### 2.1.1. Professional CSS (no `!important`, no inline visuals)
+
+Niobe-owned SCSS and templates must stay maintainable for institutional skins:
+
+* Do **not** use `!important` in new or touched Sakai rules. Raise specificity or narrow selectors instead.
+* Do **not** put visual presentation in HTML `style="…"` attributes, and do not assign visual properties (`color`, `display`, `height`, `margin`, …) from JavaScript.
+* Dynamic geometry (e.g. a rail flyout’s viewport coordinates) may set **CSS custom properties** on a host element; all other presentation remains in SCSS.
+
+Canonical copies: `.cursor/rules/frontend.mdc`, `AGENTS.md`, `library/docs/sakai-ui-chrome.md`.
+
 ### 2.2. Responsive Design Based on Containers (Container Queries)
 
 The portal uses traditional *Media Queries* because it controls the entire viewport. However, **tools must use Container Queries** (`@container sakai-tool (...)`).
@@ -38,6 +48,10 @@ Font Awesome is abandoned in favor of **Bootstrap Icons**.
 
 * Direct use: `bi bi-*` classes.
 * Semantic use: `si si-sakai-*` (mapped in `base/_icons.scss`).
+
+### 2.4. Accessibility baseline
+
+Renovated portal and tools must be usable with keyboard and screen readers: real buttons vs links, clear accessible names, honest ARIA state (`aria-expanded` / `aria-current` / `aria-pressed`), status as text not icon-only, no fake `menu`/`menubar` without a keyboard model, and visible focus. Canonical rules: `.cursor/rules/frontend.mdc`, `AGENTS.md`, `library/docs/sakai-ui-chrome.md`.
 
 ## 3. Design Ecosystem: Tokens (`sakai-ui-tokens`)
 

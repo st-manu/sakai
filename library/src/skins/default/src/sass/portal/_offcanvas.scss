@@ -79,14 +79,21 @@
   display: flex;
   align-items: center;
   gap: var(--sakai-space-2);
+  width: 100%;
+  margin: 0;
   padding: 0.7rem var(--sakai-space-3);
+  border: 0;
   border-radius: var(--sakai-radius-md);
+  background: transparent;
   color: var(--sakai-text-color-1);
+  text-align: start;
   text-decoration: none;
   font-size: var(--sakai-font-size);
+  cursor: pointer;
 
   &:hover,
-  &:focus {
+  &:focus,
+  &:focus-visible {
     background-color: var(--sakai-background-color-2);
     color: var(--sakai-text-color-1);
     text-decoration: none;

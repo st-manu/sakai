@@ -1,26 +1,46 @@
 #if ($viewAsStudentLink)
   #if ($roleSwitchState)
-    <div id="roleSwitch" class="sakai-page-header__view-as">
-      <a href="$switchRoleUrl" id="roleSwitchAnchor" class="sakai-page-header__view-as-exit Mrphs-roleSwitch__anchor Mrphs-roleSwitch__exit">
+    <div id="roleSwitch" class="sakai-role-switch">
+      <span class="sakai-role-switch__advice">$rloader.getFormattedMessage("rs_roleSwapAdvice", $roleUrlValue)</span>
+      <a href="$switchRoleUrl" id="roleSwitchAnchor" class="sakai-role-switch__exit Mrphs-roleSwitch__anchor Mrphs-roleSwitch__exit">
         <span>$rloader.getFormattedMessage("rs_exitRoleSwapWithRole", $roleUrlValue)</span>
       </a>
     </div>
   #else
-    <div id="roleSwitch" class="sakai-page-header__view-as">
-      <div id="roleSwitchDropDown" class="sakai-page-header__view-as-control">
-        #if ($roleswapdropdown)
-          <label class="visually-hidden" for="roleSwitchSelect">${rloader.rs_menuExplanation}</label>
-          <select id="roleSwitchSelect" class="sakai-page-header__view-as-select Mrphs-roleSwitch__dropdown" aria-label="${rloader.rs_menuExplanation}">
-            <option value="" selected="selected">${rloader.rs_viewSiteAs}</option>
-            #foreach ( $role in $siteRoles )
-              <option value="$switchRoleUrl$role$panelString">$role</option>
-            #end
-          </select>
-        #else
-          <a href="$switchRoleUrl" id="roleSwitchAnchor" class="sakai-page-header__view-as-link Mrphs-roleSwitch__link">
-            <span>$rloader.getFormattedMessage("rs_enterRoleSwapWithRole", $roleUrlValue)</span>
-          </a>
-        #end
+    <div id="roleSwitch" class="sakai-role-switch">
+      <button type="button"
+          id="roleSwitchOpen"
+          class="sakai-role-switch__open"
+          data-bs-toggle="modal"
+          data-bs-target="#sakai-role-switch-panel"
+          aria-controls="sakai-role-switch-panel"
+          aria-haspopup="dialog">
+        ${rloader.rs_viewSiteAsOtherRole}
+      </button>
+    </div>
+    <div id="sakai-role-switch-panel"
+        class="modal fade sakai-account-launcher"
+        tabindex="-1"
+        aria-labelledby="sakai-role-switch-panel-label"
+        aria-modal="true"
+        role="dialog"
+        aria-hidden="true">
+      <div class="modal-dialog sakai-account-launcher__dialog">
+        <div class="modal-content sakai-account-launcher__panel">
+          <div class="sakai-account-launcher__top">
+            <h2 class="sakai-account-launcher__title" id="sakai-role-switch-panel-label">${rloader.rs_viewSiteAsOtherRole}</h2>
+            <button type="button" class="btn-close sakai-account-launcher__close" data-bs-dismiss="modal" aria-label="${rloader.sit_closepage}"></button>
+          </div>
+          <div class="sakai-account-launcher__body">
+            <ul class="sakai-role-switch__list">
+              #foreach ( $role in $siteRoles )
+              <li>
+                <a href="$switchRoleUrl$role$panelString" class="sakai-role-switch__role-link">$role</a>
+              </li>
+              #end
+            </ul>
+          </div>
+        </div>
       </div>
     </div>
   #end

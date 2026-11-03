@@ -6,50 +6,52 @@
 @import "modules/tool/menu";
 @import "modules/tool/navigation/breadCrumbs";
 
+// Portal / tool chrome: mark non-content UI with .sakai-no-print in markup.
+// Legacy aliases kept until tools migrate off .noprint / .hidden-print.
+.sakai-no-print,
+.noprint,
+.hidden-print {
+	display: none !important;
+}
+
 a[href]:after {
 	content: none !important;
 }
 
-#toolMenuWrap, 
-#mastLogin, 
+// Structural portal chrome (safety net if a shell node lacks .sakai-no-print)
 #skipNav,
-#linkNav,
-#selectSiteModal,
+#portal-nav-sidebar,
+.sakai-sidebar,
+.sakai-portal-header--mobile,
+.portal-header.sakai-portal-header,
+.sakai-main-toolbar,
+.sakai-mobilebar,
+.portal-mobilebar,
+.sakai-portal-fabs,
+.portal-footer,
+#footer,
+#select-site-sidebar,
+#sakai-account-panel,
+#sakai-quickLinksPanel,
+#sakai-directlink-panel,
+#sakai-notifications-panel,
+#presenceArea,
+aside.offcanvas,
+.modal-dialog,
+.pasystem-banner-alerts,
+#siteStatus,
 #tutorial,
 #profileImageUpload,
-#siteStatus,
 #publishSiteConfirmModal,
-.pasystem-banner-alerts,
-header,
-footer,
-#Mrphs-footerApp,
+#roleSwitch,
 .jump-to-top,
 nav.sakai-pageNav,
 .actionToolBar,
-.modal-dialog,
 sakai-picture-changer,
-#select-site-sidebar,
-#portal-nav-sidebar,
-#sakai-quickLinksPanel,
-#sakai-directlink-panel,
-aside.offcanvas,
-.portal-mobilebar,
-.noprint,
-#footer,
-.#{$namespace}siteHierarchy,
-.#{$namespace}container--extras,
-.#{$namespace}footer--details__build-info,
-.#{$namespace}footer--details__server-time,
-.#{$namespace}sitesNav__menuitem--myworkspace,
-.#{$namespace}headerLogo,
-.#{$namespace}toolTitleNav__button_container,
-.#{$namespace}toolTitleNav__button_container *,
-##{$namespace}footerApp__chat,
-#roleSwitch,
+.portal-header-breadcrumb,
 .Mrphs-sakai-lessonbuildertool .itemcopylink,
 .Mrphs-sakai-lessonbuildertool .navIntraTool .bottomButtons,
-.current-role,
-.portal-header-breadcrumb {
+.current-role {
 	display: none !important;
 }
 
@@ -180,7 +182,6 @@ div.portletBody {
 }
 
 .#{$namespace}sakai-signup {
-  // Hide non-printable elements
   img,
   .addAttendee,
   .addWaiter,
@@ -193,35 +194,25 @@ div.portletBody {
     display: none !important;
   }
 
-  // Format signup table for print
   table.signupTable {
     border: solid;
     border-width: thin;
   }
 
-  // Hide expand/collapse controls
   label#meeting\:imageOpen_publishedSiteGroup,
   label#meeting\:imageClose_publishedSiteGroup {
     display: none !important;
   }
 
-  // Show published site groups
   #meeting\:publishedSiteGroups {
     display: inline-block !important;
   }
 
-  // Show attendees lists for time slots
   span[id^="meeting:timeslots:"][id$=":editAttendeesList"] {
     display: block !important;
   }
 
-  // Hide email all participants link
   a[title="Email all participants"] {
     display: none;
-  }
-
-  // Hidden print class support
-  .hidden-print {
-    display: none !important;
   }
 }

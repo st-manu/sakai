@@ -1,4 +1,4 @@
-<nav id="skipNav" class="Mrphs-skipNav" aria-label="${rloader.sit_skipnavigation}">
+<nav id="skipNav" class="Mrphs-skipNav sakai-no-print" aria-label="${rloader.sit_skipnavigation}">
     <ul class="Mrphs-skipNav__menu">
 
         #if ($siteNavHasAccessibilityURL)
@@ -21,7 +21,7 @@
                     data-bs-toggle="modal"
                     data-bs-target="#select-site-sidebar"
                     aria-controls="select-site-sidebar"
-                    class="Mrphs-skipNav__link js-toggle-sites-nav"
+                    class="Mrphs-skipNav__link"
                     title="${rloader.sit_jumpworksite}" accesskey="w">
                 <i class="si si-grid-3x3-fill all-sites-icon" aria-hidden="true"></i> ${rloader.sit_worksites}
                 <span class="accesibility_key">[w]</span>
@@ -29,25 +29,25 @@
         </li>
         #end ## END of IF ($userIsLoggedIn)
         <li class="Mrphs-skipNav__menuitem Mrphs-skipNav__menuitem--tools">
-            <a id="totool" href="#totoolmenu" class="Mrphs-skipNav__link js-toggle-sites-nav" title="${rloader.sit_jumptools}" accesskey="l">
+            <a id="totool" href="#totoolmenu" class="Mrphs-skipNav__link" title="${rloader.sit_jumptools}" accesskey="l">
                 <i class="si si-sakai-sites" aria-hidden="true"></i>
                 ${rloader.sit_menutools}
                 <span class="accesibility_key">[l]</span>
             </a>
 			#foreach( $page in $sitePages.pageNavTools )
 				#if (${page.current})
-					<a href="${page.pageResetUrl}" title="$rloader.sit_reset" class="xs-visible Mrphs-skipNav--toolName">
+					<a href="${page.pageResetUrl}" title="$rloader.sit_reset" class="Mrphs-skipNav__link">
 						<span class="Mrphs-breadcrumb--icon ${page.menuClass} $!{page.menuClassOverride}"></span>
 						<span>${page.pageTitle}</span>
 					</a>
 
                     #if(${sitePages.canManageOverview} && ${page.pageProps.is_home_page})
-                        <a href="${sitePages.manageOverviewUrl}" title="$rloader.sit_manover" class="manage-overview-link-mobile">
+                        <a href="${sitePages.manageOverviewUrl}" title="$rloader.sit_manover" class="Mrphs-skipNav__link">
                             <span class="si si-edit"></span>$rloader.sit_manover
                         </a>
                     #end
                     #if(${sitePages.canManageOverviewHome} && ${page.pageProps.is_home_page})
-                        <a href="${sitePages.manageOverviewUrlInHome}" title="$rloader.sit_manover" class="manage-overview-link-mobile">
+                        <a href="${sitePages.manageOverviewUrlInHome}" title="$rloader.sit_manover" class="Mrphs-skipNav__link">
                             <span class="bi bi-pencil"></span>$rloader.sit_manover
                         </a>
                     #end
@@ -58,10 +58,9 @@
 </nav>
 <script>
     window.addEventListener("load", function() {
-
         document.getElementById("totool").addEventListener("click", function() {
-
-            document.querySelector(".nav-item").focus();
+            const firstTool = document.querySelector("#current-site-pages .sakai-sidebar-page__link");
+            firstTool?.focus();
         });
     });
 </script>

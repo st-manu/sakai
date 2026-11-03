@@ -86,9 +86,6 @@ portal.enableDarkTheme = () => {
   portal.addCssClassToMarkup(portal.darkThemeClass);
   portal.syncBootstrapColorMode(portal.darkThemeClass);
   portal.updateIframeTheme();
-  if (portal.darkThemeSwitcher) {
-    portal.darkThemeSwitcher.title = portal.i18n.theme_switch_to_light;
-  }
 };
 
 portal.enableLightTheme = () => {
@@ -99,9 +96,6 @@ portal.enableLightTheme = () => {
   portal.addCssClassToMarkup(portal.lightThemeClass);
   portal.syncBootstrapColorMode(portal.lightThemeClass);
   portal.updateIframeTheme();
-  if (portal.darkThemeSwitcher) {
-    portal.darkThemeSwitcher.title = portal.i18n.theme_switch_to_dark;
-  }
 };
 
 

@@ -6,15 +6,23 @@
 
 .sakai-main-toolbar__breadcrumbs {
   .portal-header-breadcrumb {
-    display: flex !important;
+    display: flex;
     flex-wrap: wrap;
     align-items: center;
     gap: 0.25rem 0.5rem;
     margin: 0;
   }
 
+  .portal-header-breadcrumb-item {
+    max-width: none;
+    overflow: visible;
+    text-overflow: unset;
+    white-space: normal;
+  }
+
   .portal-header-breadcrumb-separator,
-  .portal-header-breadcrumb-item > a {
+  .portal-header-breadcrumb-item > a,
+  .portal-header-breadcrumb__all-sites {
     color: var(--breadcrumbs-color);
     font-size: var(--sakai-font-size-sm);
     font-weight: 500;
@@ -26,9 +34,75 @@
     }
   }
 
+  .portal-header-site-title--current > a {
+    font-weight: 700;
+  }
+
+  .portal-header-site-role {
+    font-weight: 500;
+  }
+
+  .portal-header-breadcrumb-item > a:focus-visible,
+  .portal-header-breadcrumb__all-sites:focus-visible {
+    outline: 2px solid var(--focus-outline-color, var(--sakai-primary-color-1));
+    outline-offset: 2px;
+    border-radius: var(--sakai-radius-sm);
+  }
+
   .portal-header-breadcrumb-separator {
     font-size: 0.65em;
     color: var(--sakai-text-color-dimmed);
+  }
+}
+
+.sakai-role-switch {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sakai-space-2);
+  font-size: var(--sakai-font-size-sm);
+}
+
+.sakai-role-switch__open,
+.sakai-role-switch__exit {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--sakai-text-color-1);
+  font-size: inherit;
+  text-decoration: underline;
+  cursor: pointer;
+
+  &:hover,
+  &:focus-visible {
+    color: var(--breadcrumbs-hover-color);
+  }
+}
+
+.sakai-role-switch__advice {
+  color: var(--sakai-text-color-dimmed);
+}
+
+.sakai-role-switch__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sakai-space-1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.sakai-role-switch__role-link {
+  display: block;
+  color: var(--sakai-text-color-1);
+  text-decoration: none;
+  border-radius: var(--sakai-radius-sm);
+
+  &:hover,
+  &:focus-visible {
+    background-color: var(--sakai-background-color-2);
+    color: var(--sakai-text-color-1);
+    text-decoration: none;
   }
 }
 
@@ -43,7 +117,10 @@
   color: var(--sakai-text-color-1);
 }
 
-.portal-notifications-indicator {
+.portal-notifications-button .portal-notifications-indicator {
+  position: absolute;
+  top: 10px;
+  right: 20%;
   background: var(--sakai-primary-color-1);
   color: var(--sakai-text-color-inverted);
 }

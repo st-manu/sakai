@@ -141,17 +141,11 @@
 }
 
 .sakai-account-panel__theme {
+  display: flex;
+  justify-content: center;
   padding-top: var(--sakai-space-2);
   border-top: 1px solid var(--sakai-border-color);
   margin-top: var(--sakai-space-2);
-}
-
-.sakai-theme-switcher {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: var(--sakai-space-2);
-  margin-top: var(--sakai-space-1);
 }
 
 .sakai-account-panel__footer {

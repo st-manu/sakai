@@ -233,11 +233,122 @@ allsites.handleCardPinChanged = function (e) {
   allsites.syncPinnedFromCards();
   allsites.scheduleUpdatePinned();
 
+  const site = allsites.sites.find(s => s.siteId === e.detail.siteId);
+  if (site) {
+    site.pinned = !!e.detail.pinned;
+  }
+
   if (e.detail.pinned) {
     allsites.addOrganizeItem(e.detail.siteId, e.detail.siteTitle);
   } else {
     allsites.removeOrganizeItem(e.detail.siteId);
   }
+
+  allsites.refreshPinnedBadges();
+};
+
+allsites.pinLabels = function () {
+
+  const el = document.getElementById("sites-launcher-i18n");
+  return {
+    pin: el?.dataset.pin || "Pin site",
+    unpin: el?.dataset.unpin || "Unpin site",
+  };
+};
+
+allsites.createPinnedBadge = function (site) {
+
+  const labels = allsites.pinLabels();
+  const badge = document.createElement("div");
+  badge.className = "sakai-sites-launcher__pinned-badge";
+  badge.dataset.siteId = site.siteId;
+
+  const link = document.createElement("a");
+  link.className = "sakai-sites-launcher__pinned-badge-link";
+  link.href = site.url || `/portal/site/${encodeURIComponent(site.siteId)}`;
+  link.textContent = site.title || site.siteId;
+  link.title = site.title || site.siteId;
+
+  const pin = document.createElement("button");
+  pin.type = "button";
+  pin.className = "sakai-sites-launcher__pinned-badge-pin site-opt-pin";
+  pin.dataset.pinSite = site.siteId;
+  pin.dataset.pinned = "true";
+  pin.dataset.siteTitle = site.title || "";
+  pin.title = labels.unpin;
+  pin.setAttribute("aria-label", labels.unpin);
+  pin.innerHTML = '<i class="si si-pin sakai-pin-icon__outline" aria-hidden="true"></i>'
+    + '<i class="si si-pin-fill sakai-pin-icon__fill" aria-hidden="true"></i>';
+  pin.addEventListener("click", (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    allsites.togglePinnedBadge(site.siteId);
+  });
+
+  badge.append(link, pin);
+  return badge;
+};
+
+allsites.togglePinnedBadge = function (siteId) {
+
+  const site = allsites.sites.find(s => s.siteId === siteId);
+  if (!site || allsites.isWorkspaceSite(site)) {
+    return;
+  }
+
+  site.pinned = false;
+  allsites.pinnedQueue.favoriteSiteIds = (allsites.pinnedQueue.favoriteSiteIds || []).filter(id => id !== siteId);
+  allsites.scheduleUpdatePinned();
+  allsites.removeOrganizeItem(siteId);
+
+  const searchInput = document.getElementById("search-all-sites");
+  allsites.renderSiteCards(allsites.sites, searchInput?.value || "");
+
+  document.body.dispatchEvent(new CustomEvent("site-pin-changed", {
+    detail: { siteId, pinned: false, siteTitle: site.title, source: "sites-launcher" },
+    bubbles: true,
+  }));
+};
+
+allsites.refreshPinnedBadges = function () {
+
+  const content = document.getElementById("moresites-content");
+  if (!content) {
+    return;
+  }
+
+  content.querySelector(".sakai-sites-launcher__pinned-badges")?.remove();
+  const strip = allsites.buildPinnedBadgesStrip();
+  if (strip) {
+    content.prepend(strip);
+  }
+};
+
+allsites.buildPinnedBadgesStrip = function () {
+
+  const pinned = (allsites.sites || []).filter(site => site.pinned && !allsites.isWorkspaceSite(site));
+  if (!pinned.length) {
+    return null;
+  }
+
+  const order = allsites.pinnedQueue?.favoriteSiteIds?.length
+    ? allsites.pinnedQueue.favoriteSiteIds
+    : pinned.map(site => site.siteId);
+  const byId = new Map(pinned.map(site => [site.siteId, site]));
+  const ordered = [];
+  order.forEach(id => {
+    const site = byId.get(id);
+    if (site) {
+      ordered.push(site);
+      byId.delete(id);
+    }
+  });
+  byId.forEach(site => ordered.push(site));
+
+  const strip = document.createElement("div");
+  strip.className = "sakai-sites-launcher__pinned-badges";
+  ordered.forEach(site => strip.append(allsites.createPinnedBadge(site)));
+  return strip;
 };
 
 allsites.renderSiteCards = function (sites, query = "") {
@@ -259,6 +370,11 @@ allsites.renderSiteCards = function (sites, query = "") {
   content.replaceChildren();
   content.className = "sakai-sites-launcher__sections";
   content.setAttribute("aria-busy", "false");
+
+  const badges = allsites.buildPinnedBadgesStrip();
+  if (badges) {
+    content.append(badges);
+  }
 
   if (!filtered.length) {
     noResults?.classList.remove("is-hidden", "sakai-is-hidden");

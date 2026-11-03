@@ -88,23 +88,28 @@
 }
 
 .sakai-main-toolbar {
-  display: none;
-
-  @include media-breakpoint-up(md) {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: var(--sakai-space-3);
-  }
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--sakai-space-3);
 }
 
 .sakai-main-toolbar__breadcrumbs {
   flex: 1 1 auto;
   min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--sakai-space-1);
 }
 
 .sakai-main-toolbar__utilities {
+  display: none;
   flex-shrink: 0;
+
+  @include media-breakpoint-up(md) {
+    display: block;
+  }
 }
 
 .sakai-main-toolbar__icons {
@@ -117,33 +122,12 @@
   list-style: none;
 }
 
-.sakai-page-chrome__mobile-breadcrumb,
-.sakai-page-content__mobile-breadcrumb {
-  @include media-breakpoint-up(md) {
-    display: none;
-  }
-}
-
-.sakai-page-chrome__mobile-breadcrumb .portal-header-breadcrumb,
-.sakai-page-content__mobile-breadcrumb .portal-header-breadcrumb {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0 var(--sakai-space-1);
-  margin: 0 0 var(--sakai-space-2);
-
-  .portal-header-breadcrumb-item {
-    flex: 0 1 auto;
-    max-width: min(12rem, 65%);
-  }
-
-  .portal-header-breadcrumb-separator {
-    flex: 0 0 auto;
-  }
-}
-
+.portal-mobilebar,
 .sakai-mobilebar {
+  grid-area: mobilebar;
+  position: sticky;
+  bottom: 0;
+  z-index: 1050;
   display: flex;
   align-items: center;
   justify-content: space-around;
@@ -152,6 +136,17 @@
   background-color: var(--sakai-background-color-1);
   border-top: 1px solid var(--sakai-border-color);
   box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.04);
+  color: var(--sakai-text-color-1);
+
+  button,
+  a {
+    color: var(--sakai-text-color-1);
+
+    span.bi,
+    span.si {
+      font-size: 1.35rem;
+    }
+  }
 
   @include media-breakpoint-up(md) {
     display: none;

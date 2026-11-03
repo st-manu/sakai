@@ -7,10 +7,20 @@
     sites: portal.container.querySelector("#portal-nav-sidebar")
   };
 
+  //Setup sidebar
+  const siteSidebar = portal.sidebars.sites && new SitesSidebar(portal.sidebars.sites, {
+    i18n: {
+      pinButtons: {
+        titlePin: "${rloader.sitenav_btn_pin}",
+        titleUnpin: "${rloader.sitenav_btn_unpin}",
+      },
+    },
+  });
+
   //Setup sidebar collapse buttons (desktop only; absent when logged out)
   const sidebarCollapseBtn = document.getElementById("sidebar-collapse-button");
   if (sidebarCollapseBtn && portal.sidebars.sites) {
-    new SidebarCollapseButton(sidebarCollapseBtn, {
+    portal.sidebarCollapseButton = new SidebarCollapseButton(sidebarCollapseBtn, {
       i18n: {
         titleExpanded: "${rloader.mainnav_btn_sidebar_collapse}",
         titleCollapsed: "${rloader.mainnav_btn_sidebar_expand}"
@@ -18,21 +28,9 @@
       toggleClass: "sidebar-collapsed",
       portalContainer: portal.container,
       sitesSidebar: portal.sidebars.sites,
+      sitesSidebarInstance: siteSidebar,
     });
   }
-
-  //Setup sidebar
-  const siteSidebar = portal.sidebars.sites && new SitesSidebar(portal.sidebars.sites, {
-    i18n: {
-      expandTools: "${rloader.sitenav_expand_tools}",
-      collapseTools: "${rloader.sitenav_collapse_tools}",
-      pinButtons: {
-        titlePin: "${rloader.sitenav_btn_pin}",
-        titleUnpin: "${rloader.sitenav_btn_unpin}",
-      },
-    },
-    currentSite: "${currentSiteId}",
-  });
   const setSidebarView = (currentBP, previousBP) => {
     if (!siteSidebar) {
       return;
@@ -69,37 +67,28 @@
     iconClasses: ["bi-info-circle", "bi-info-circle-fill"],
   });
 
-  // Setup lessons subpage navigaion
-
-  let subPages = []; // exclude the current site
   let currentSubPage = null;
 
-  #macro (addSubPageDataList $siteList)
+  #macro (addCurrentSubPage $siteList)
     #if ($siteList)
       #foreach ($site in $siteList)
-        #if ($site && $site.subPages)
-          #if ($site.isCurrent)
+        #if ($site && $site.isCurrent && $site.subPages)
           currentSubPage = new SubPageNavigation(${site.subPages});
-          #else
-          subPages.push(${site.subPages});
-          #end
         #end
       #end
     #end
   #end
 
-  #addSubPageDataList($sidebarSites.pinnedSites);
-  #addSubPageDataList($sidebarSites.recentSites);
-
-  // Remove duplicate pages e.g. page in pinned and recent, then create
-  // a SubPageNavigation instance for each site
-
-  subPages.filter((v, i) => subPages.findIndex(val => val.siteId === v.siteId) === i)
-    .forEach(data => new SubPageNavigation(data));
+  #if ($sidebarSites.homeSite && $sidebarSites.homeSite.isCurrent && $sidebarSites.homeSite.subPages)
+  currentSubPage = new SubPageNavigation(${sidebarSites.homeSite.subPages});
+  #end
+  #addCurrentSubPage($sidebarSites.pinnedSites);
+  #addCurrentSubPage($sidebarSites.recentSites);
 
   if (currentSubPage !== null && sakai && sakai.subnav) {
     currentSubPage.setCurrentPage();
   }
+  portal.sidebarCollapseButton?.syncToolTooltips();
 
   #if (!$loggedIn && $topLogin)
     //--start-logged-out-scripts
@@ -288,9 +277,10 @@ if ( ! (self == top) ) {
   // Listen for notifications-loaded on the body element. This is fired by the sui-notifications
   // component when it has an update to its list of notifications
   const toggleNotificationIndicators = count => {
-    document.body.querySelectorAll(".portal-notifications-indicator").forEach(span => {
+    document.body.querySelectorAll(
+      ".portal-notifications-button .portal-notifications-indicator"
+    ).forEach(span => {
       span.classList.toggle("sakai-is-hidden", !count);
-      span.classList.toggle("d-none", !count);
     });
   };
 

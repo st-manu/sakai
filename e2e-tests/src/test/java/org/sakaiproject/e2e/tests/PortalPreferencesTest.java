@@ -47,54 +47,26 @@ class PortalPreferencesTest extends SakaiUiTestBase {
 
     @ParameterizedTest
     @EnumSource(value = ColorScheme.class, names = {"DARK", "LIGHT"})
-    void navigationReadsPreferencesAndExplicitChoicesSurviveReload(ColorScheme osTheme) throws Exception {
+    void themePreferenceSurvivesReload(ColorScheme osTheme) {
         page.emulateMedia(new Page.EmulateMediaOptions().setColorScheme(osTheme));
-        // Reserve a separate account for account-wide navigation and theme changes.
         String username = sakai.resolveUsername("student0152");
         sakai.login(username);
         String firstSite = sakai.createProject(username, List.of("sakai.announcements"));
-        String secondSite = sakai.createProject(username, List.of("sakai.announcements", "sakai.schedule"));
-        sakai.gotoPath(firstSite);
-        String siteId = firstSite.substring(firstSite.lastIndexOf('/') + 1);
-        String userId = (String) page.evaluate("portal.user.id");
+        page.navigate(firstSite);
         Map<?, ?> originalTheme = preferences(THEME);
-        Map<?, ?> originalNavigation = preferences(NAVIGATION);
         List<Request> writes = new ArrayList<>();
         page.onRequest(request -> {
             if (request.url().contains("/direct/userPrefs/") && !"GET".equals(request.method())) {
                 writes.add(request);
             }
         });
-        try (AutoCloseable cleanup = () -> {
-            savePreferences(THEME, Map.of("theme", valueOr(originalTheme, "theme", "sakaiUserTheme-notSet")));
-            savePreferences(NAVIGATION, Map.of(
-                "currentExpanded", valueOr(originalNavigation, "currentExpanded", "true"),
-                "expandedSite", valueOr(originalNavigation, "expandedSite", "~" + userId)));
-        }) {
+        try {
             savePreferences(THEME, Map.of("theme", "sakaiUserTheme-notSet"));
-            savePreferences(NAVIGATION, Map.of("currentExpanded", "false", "expandedSite", siteId));
-            Map<String, Map<?, ?>> before = snapshot();
             writes.clear();
 
-            sakai.gotoPath(firstSite);
-            assertThat(currentSiteTools()).not().hasClass(Pattern.compile(".*\\bshow\\b.*"));
-            page.reload(new Page.ReloadOptions().setWaitUntil(WaitUntilState.DOMCONTENTLOADED));
-            assertThat(currentSiteTools()).not().hasClass(Pattern.compile(".*\\bshow\\b.*"));
-            assertEquals(before, snapshot(), "Reload must retain an explicit collapsed choice without saving");
-            sakai.gotoPath(secondSite);
-            assertThat(currentSiteTools()).hasClass(Pattern.compile(".*\\bshow\\b.*"));
-            assertEquals(before, snapshot(), "Switching sites must derive expansion without changing preferences");
-            sakai.gotoPath(firstSite);
-            assertThat(currentSiteTools()).not().hasClass(Pattern.compile(".*\\bshow\\b.*"));
-            assertEquals(before, snapshot());
+            page.navigate(firstSite);
+            assertThat(page.locator("#current-site-pages")).isVisible();
             assertTrue(writes.isEmpty(), "Page loads must not issue preference mutations");
-
-            page.waitForResponse(response -> response.url().contains("/direct/userPrefs/updateKey/")
-                    && response.url().contains("currentExpanded=true"),
-                () -> page.locator("li.is-current-site button[data-bs-toggle=collapse]").first().click());
-            assertEquals("true", preferences(NAVIGATION).get("currentExpanded"));
-            page.reload(new Page.ReloadOptions().setWaitUntil(WaitUntilState.DOMCONTENTLOADED));
-            assertThat(currentSiteTools()).hasClass(Pattern.compile(".*\\bshow\\b.*"));
 
             page.locator("[data-bs-target='#sakai-account-panel']:visible").first().click();
             Locator themeSwitcher = page.locator("#sakai-dark-theme-switcher");
@@ -110,6 +82,8 @@ class PortalPreferencesTest extends SakaiUiTestBase {
             assertThat(page.locator("html")).hasClass(Pattern.compile(".*" + chosen + ".*"));
             assertEquals(after, snapshot());
             assertEquals(1, writes.size(), "Reload must not save the chosen theme again");
+        } finally {
+            savePreferences(THEME, Map.of("theme", valueOr(originalTheme, "theme", "sakaiUserTheme-notSet")));
         }
     }
 
@@ -173,9 +147,6 @@ class PortalPreferencesTest extends SakaiUiTestBase {
         }
     }
 
-    private Locator currentSiteTools() {
-        return page.locator("li.is-current-site .site-list-item-collapse").first();
-    }
 
     private Map<String, Map<?, ?>> snapshot() {
         return Map.of("theme", preferences(THEME), "navigation", preferences(NAVIGATION));

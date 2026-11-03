@@ -1,5 +1,5 @@
 #if (!$pagepopup)
-    <footer class="portal-footer">
+    <footer class="portal-footer sakai-no-print">
         <ul class="portal-footer__links">
           #foreach ( $footerLink in $footerLinks )
               <li>

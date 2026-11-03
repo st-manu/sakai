@@ -543,21 +543,23 @@ public class PortalServiceTests extends SakaiTests {
 
         pauseForOneSecondIfWindows();
         portalService.addRecentSite(user1, site4Id);
-        Assert.assertEquals(3, portalService.getRecentSites(user1).size());
+        Assert.assertEquals(4, portalService.getRecentSites(user1).size());
 
         recentSites = portalService.getRecentSites(user1).iterator();
         Assert.assertEquals("site4", recentSites.next());
         Assert.assertEquals("site3", recentSites.next());
         Assert.assertEquals("site2", recentSites.next());
+        Assert.assertEquals("site1", recentSites.next());
 
         pauseForOneSecondIfWindows();
         portalService.addRecentSite(user1, site1Id);
-        Assert.assertEquals(3, portalService.getRecentSites(user1).size());
+        Assert.assertEquals(4, portalService.getRecentSites(user1).size());
 
         recentSites = portalService.getRecentSites(user1).iterator();
         Assert.assertEquals("site1", recentSites.next());
         Assert.assertEquals("site4", recentSites.next());
         Assert.assertEquals("site3", recentSites.next());
+        Assert.assertEquals("site2", recentSites.next());
 
         Event event = mock(Event.class);
         when(event.getContext()).thenReturn(site1Id);

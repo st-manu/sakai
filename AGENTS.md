@@ -61,11 +61,13 @@
 ## UI Framework (Niobe)
 - **Bootstrap**: Bootstrap 5.3 for **components** only (offcanvas, modal, collapse, dropdown, form controls such as `.btn` / `.form-control` when wrapped by Sakai primitives). Do **not** use Bootstrap layout/spacing utility classes in new markup (`d-flex`, `d-md-none`, `align-items-*`, `justify-content-*`, `ms-*`, `me-*`, `p-*`, `gap-*`, `w-100`, `flex-*`, etc.). Express layout in Sakai SCSS under `sakai-*` classes.
 - **No Bootstrap soup**: Prefer Sakai tokens / CSS variables over hard-coded Bootstrap look so institutions keep skin control.
+- **Professional CSS**: Do not use `!important` in Niobe-owned SCSS. Do not put visual styles in HTML `style` or set them from JS. Prefer specificity and `sakai-*` structure. Dynamic coordinates only via CSS custom properties on a host (`setProperty('--sakai-…')`); presentation stays in SCSS. Details: `.cursor/rules/frontend.mdc`, `library/docs/sakai-ui-chrome.md`.
 - **Responsive — portal chrome vs tools**: Viewport media queries (`@include media-breakpoint-*`) are for **portal shell** chrome (sidebar vs mobile bar). Inside a **tool**, use available content width, not the viewport: portal sets `container-type: inline-size` on `.sakai-page-content` / `.sakai-tool-body`; tools use `@container sakai-tool (...)`.
 - **Components**: Prefer Sakai `sakai-*` classes as the public API (`sakai-tool-header`, `sakai-table`, `sakai-actions`, `sakai-btn`, `sakai-overflow-menu`, …); Bootstrap underneath where it helps. Do not duplicate shared primitives in tool-local CSS.
 - **Icons**: Use Bootstrap Icons (`bi` / tool map `si`); do not add Font Awesome in new work
 - **Design tokens**: Prefer L0–L2 CSS variables in `library/src/skins/default/src/sass/tokens/` (see `library/docs/sakai-ui-tokens.md`)
 - **Portal chrome**: Use the contract in `library/docs/sakai-ui-chrome.md`
+- **Print**: Hide non-content UI with `.sakai-no-print` (aliases `.noprint` / `.hidden-print`). Skin rules live in `library/src/skins/default/src/sass/print.scss`.
 - **Renovation playbook**: Plan, tool roadmap, and reference migrations live in `niobe-front-rules/` (temporary; delete when renovation is done). Cursor frontend detail: `.cursor/rules/frontend.mdc`
 
 - **Modern JavaScript**: Target evergreen browsers; assume ES2022+ features and browser APIs like `fetch` keepalive are present.
@@ -85,7 +87,7 @@
 - **Effective Locale**: Respect Sakai's effective locale for the current context, which may come from a site locale when configured, otherwise the user's preferences.
 - **Formatting**: UI messages, numbers, dates, and times must use the same Sakai-resolved locale; dates and times must display in the site or user's preferred timezone from account preferences.
 - **Java Time API**: Prefer `java.time` types such as `Instant`, `LocalDate`, and `ZonedDateTime` over legacy `java.util.Date`/`Calendar` for new or touched Java code. Use legacy conversions only at framework or display boundaries that require them.
-- **Accessibility**: Follow accessibility best practices
+- **Accessibility**: Follow WCAG-oriented practices for renovated UI — real `<button>` vs `<a>`, clear accessible names (not `title` alone), `aria-expanded` / `aria-current` / `aria-pressed` without contradictory label flips, status as text not icon-only, honest roles (no fake `menubar`/`menu` without keyboard model), visible `:focus-visible`, visually-hidden labels in the collapsed sidebar rail instead of `display:none` on the only name, and full keyboard operation of portal chrome (Tab + arrow keys in tool trees). Details: `.cursor/rules/frontend.mdc`, `library/docs/sakai-ui-chrome.md`
 - **Changes**: Make minimal changes, only modifying lines needed for the fix/feature
 - **Single Issue**: One issue per pull request when possible
 - **Tests**: Include tests where sensible/possible

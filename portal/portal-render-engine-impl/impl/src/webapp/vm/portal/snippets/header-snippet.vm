@@ -1,4 +1,4 @@
-<header class="portal-header sakai-portal-header sakai-portal-header--mobile" role="banner">
+<header class="portal-header sakai-portal-header sakai-portal-header--mobile sakai-no-print" role="banner">
 
   <div class="sakai-portal-header__start">
     <div id="logoWrapper" class="portal-header-logo sakai-portal-header__logo">

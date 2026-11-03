@@ -1,6 +1,7 @@
 (function () {
   const toolMenu = document.getElementById("toolMenu");
-  if (!toolMenu || !portal?.user?.id) {
+  const pagesList = document.getElementById("current-site-pages");
+  if (!toolMenu || !pagesList || !portal?.user?.id) {
     return;
   }
 
@@ -22,15 +23,13 @@
   };
 
   const applyAlerts = (siteId, tools) => {
-    const siteLi = [...toolMenu.querySelectorAll("li.site-list-item")]
-      .find((li) => li.dataset.site === siteId);
-    if (!siteLi) {
+    if (pagesList.dataset.siteId !== siteId) {
       return;
     }
     const alertTools = new Set(
       (tools || []).filter((tool) => tool.hasAlerts).map((tool) => tool.id)
     );
-    siteLi.querySelectorAll("a.sakai-sidebar-page__link[data-tool-id]").forEach((link) => {
+    pagesList.querySelectorAll("a.sakai-sidebar-page__link[data-tool-id]").forEach((link) => {
       const toolId = link.getAttribute("data-tool-id");
       const hasAlert = toolId && alertTools.has(toolId);
       link.classList.toggle("has-alerts", hasAlert);
@@ -41,7 +40,7 @@
       indicator.hidden = !hasAlert;
       indicator.classList.toggle("is-visible", hasAlert);
     });
-    siteLi.classList.toggle("has-tool-alerts", alertTools.size > 0);
+    pagesList.classList.toggle("has-tool-alerts", alertTools.size > 0);
   };
 
   const loadSiteAlerts = (siteId) => {
@@ -68,32 +67,14 @@
       .catch((error) => console.warn(error));
   };
 
-  const sitesToLoad = new Set();
-  if (portal?.siteId) {
-    sitesToLoad.add(portal.siteId);
+  const siteId = pagesList.dataset.siteId || portal?.siteId;
+  if (siteId) {
+    loadSiteAlerts(siteId);
   }
-  toolMenu.querySelectorAll("li.site-list-item.is-current-site, li.site-list-item .site-list-item-collapse.show")
-    .forEach((el) => {
-      const li = el.classList?.contains("site-list-item") ? el : el.closest("li.site-list-item");
-      const siteId = li?.dataset?.site;
-      if (siteId) {
-        sitesToLoad.add(siteId);
-      }
-    });
-
-  sitesToLoad.forEach((siteId) => loadSiteAlerts(siteId));
-
-  toolMenu.addEventListener("shown.bs.collapse", (event) => {
-    const siteLi = event.target.closest("li.site-list-item");
-    const siteId = siteLi?.dataset?.site;
-    if (siteId) {
-      loadSiteAlerts(siteId);
-    }
-  });
 
   document.body.addEventListener("notifications-cleared", () => {
     cache.clear();
-    toolMenu.querySelectorAll("a.sakai-sidebar-page__link.has-alerts").forEach((link) => {
+    pagesList.querySelectorAll("a.sakai-sidebar-page__link.has-alerts").forEach((link) => {
       link.classList.remove("has-alerts");
       const indicator = link.querySelector(".portal-notifications-indicator");
       if (indicator) {
@@ -101,8 +82,6 @@
         indicator.classList.remove("is-visible");
       }
     });
-    toolMenu.querySelectorAll("li.site-list-item.has-tool-alerts").forEach((li) => {
-      li.classList.remove("has-tool-alerts");
-    });
+    pagesList.classList.remove("has-tool-alerts");
   });
 })();

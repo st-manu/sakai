@@ -27,30 +27,6 @@
 <div class="portal-main-container sakai-portal-main sakai-main-column">
     #parse("/vm/portal/snippets/main-toolbar-snippet.vm")
 
-    <div class="sakai-page-chrome">
-        <div class="sakai-page-header__bar">
-            #if ((${currentRole} && $roleSwitchState == false) || ($viewAsStudentLink && $roleSwitchState))
-            <div class="sakai-page-header__meta">
-                #if ($viewAsStudentLink && $roleSwitchState)
-                <span class="sakai-page-header__view-as-advice">
-                    <span class="bi bi-person" aria-hidden="true"></span>
-                    <span>$rloader.getFormattedMessage("rs_roleSwapAdvice", $roleUrlValue)</span>
-                </span>
-                #elseif (${currentRole} && $roleSwitchState == false)
-                <span class="current-role sakai-page-header__role">
-                    <span class="bi bi-person" aria-hidden="true"></span>
-                    <span class="portal-user-role">${rloader.sit_role} ${currentRole}</span>
-                </span>
-                #end
-            </div>
-            #end
-            #parse("/vm/portal/snippets/roleSwitch-snippet.vm")
-        </div>
-        <div class="sakai-page-chrome__mobile-breadcrumb">
-            #parse("/vm/portal/includePortalHeaderBreadcrumb.vm")
-        </div>
-    </div>
-
     <main id="$pageWrapperClass" class="portal-main-content sakai-page-content #if( $numberTools > 1 || $homePage)Mrphs-multipleTools #end" role="main" tabindex="-1">
         <h1 class="skip visually-hidden" tabindex="-1" id="tocontent">${rloader.sit_contentshead}</h1>
 
@@ -256,7 +232,7 @@
 
             #set($j = 0)
 
-            <div class="offcanvas offcanvas-end sakai-offcanvas Mrphs-directUrl__dropDown" tabindex="-1" id="sakai-directlink-panel" aria-labelledby="sakai-directlink-label">
+            <div class="offcanvas offcanvas-end sakai-offcanvas sakai-no-print Mrphs-directUrl__dropDown" tabindex="-1" id="sakai-directlink-panel" aria-labelledby="sakai-directlink-label">
 
                 <div class="offcanvas-header sakai-offcanvas__header">
                     <h2 class="offcanvas-title sakai-offcanvas__title" id="sakai-directlink-label">

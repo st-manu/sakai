@@ -41,6 +41,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
 portal.displayProfile = e => {
 
-  document.querySelector("sakai-account").setAttribute("user-id", e.target.dataset.userId);
+  e.preventDefault();
+  const trigger = e.currentTarget;
+  document.querySelector("sakai-account").setAttribute("user-id", trigger.dataset.userId);
   bootstrap.Modal.getOrCreateInstance(document.getElementById("account-details-modal")).show();
 };

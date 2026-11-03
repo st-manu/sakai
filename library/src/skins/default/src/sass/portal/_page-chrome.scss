@@ -8,7 +8,7 @@
   min-height: 0;
   overflow: auto;
   background-color: var(--sakai-page-background);
-  padding: var(--sakai-space-2);
+  padding: var(--sakai-space-3);
   padding-bottom: max(var(--sakai-space-2), var(--sakai-portal-fabs-clearance, 7rem));
   scroll-padding-bottom: var(--sakai-portal-fabs-clearance, 7rem);
   gap: 0;
@@ -58,87 +58,6 @@
   min-height: auto;
   height: auto;
   align-self: stretch;
-}
-
-.sakai-page-chrome {
-  padding: 0 var(--sakai-space-1) var(--sakai-space-3);
-}
-
-.sakai-page-header__bar {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: flex-start;
-  gap: var(--sakai-space-2) var(--sakai-space-4);
-  margin-bottom: var(--sakai-space-2);
-
-  &:not(:has(.sakai-page-header__role, .sakai-page-header__view-as)) {
-    display: none;
-  }
-}
-
-.sakai-page-header__meta {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--sakai-space-2);
-
-  &:not(:has(*)) {
-    display: none;
-  }
-}
-
-.sakai-page-header__role {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--sakai-space-2);
-  font-size: var(--sakai-font-size-sm);
-  color: var(--sakai-text-color-dimmed);
-
-  .bi {
-    font-size: 1em;
-  }
-}
-
-.sakai-page-header__view-as {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--sakai-space-2);
-}
-
-.sakai-page-header__view-as-select {
-  min-height: 2.25rem;
-  padding: var(--sakai-space-1) var(--sakai-space-3);
-  border: 1px solid var(--sakai-border-color);
-  border-radius: var(--sakai-radius-md);
-  background: var(--sakai-background-color-1);
-  color: var(--sakai-text-color-1);
-  font-size: var(--sakai-font-size-sm);
-}
-
-.sakai-page-header__view-as-link,
-.sakai-page-header__view-as-exit {
-  font-size: var(--sakai-font-size-sm);
-  color: var(--sakai-text-color-1);
-  text-decoration: none;
-
-  &:hover {
-    text-decoration: underline;
-  }
-}
-
-.sakai-page-header__view-as-advice {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--sakai-space-2);
-  font-size: var(--sakai-font-size-sm);
-  color: var(--sakai-text-color-dimmed);
-
-  .bi {
-    font-size: 1em;
-    flex-shrink: 0;
-  }
 }
 
 .sakai-page-header.Mrphs-toolTitleNav {
@@ -214,7 +133,6 @@
   width: 100%;
   padding: var(--sakai-space-4) var(--sakai-space-2) var(--sakai-space-3);
   margin-top: var(--sakai-space-3);
-  border-top: 1px solid var(--sakai-border-color);
   font-size: var(--sakai-font-size-sm);
   line-height: 1.45;
   color: var(--sakai-text-color-dimmed);

@@ -82,9 +82,6 @@ html[dir="rtl"]{
 	}
 
 	@media #{$phone}{
-		body.toolsNav--displayed #toolMenuWrap>h1.skip:after {
-		    left: 75%;
-		}
 		.#{$namespace}userNav__popup.js-toggle-user-nav{
 			position: absolute;
 			left: 0.7em;

@@ -1,5 +1,5 @@
 #if (${useBullhornAlerts} && ${userIsLoggedIn})
-<aside class="offcanvas offcanvas-end sakai-offcanvas" tabindex="-1" id="sakai-notifications-panel" aria-labelledby="sakai-notifications-panel-label">
+<aside class="offcanvas offcanvas-end sakai-offcanvas sakai-no-print" tabindex="-1" id="sakai-notifications-panel" aria-labelledby="sakai-notifications-panel-label">
   <div class="offcanvas-header sakai-offcanvas__header">
     <h2 class="offcanvas-title sakai-offcanvas__title" id="sakai-notifications-panel-label">${rloader.notifications_title}</h2>
     <button type="button" class="btn-close sakai-offcanvas__close" data-bs-dismiss="offcanvas" aria-label="${rloader.notifications_close_label}"></button>

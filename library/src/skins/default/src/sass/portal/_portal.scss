@@ -1,10 +1,9 @@
 .portal-container {
   display: grid;
   grid-template-columns: 1fr;
-  grid-template-rows: auto auto auto 1fr auto;
+  grid-template-rows: auto auto 1fr auto;
   grid-template-areas:
       "paBanner"
-      "jumpLinks"
       "header"
       "mainContainer"
       "mobilebar";
@@ -112,6 +111,41 @@
   text-overflow: ellipsis;
 }
 
+.portal-header-breadcrumb-item > a:focus-visible,
+.portal-header-breadcrumb__all-sites:focus-visible {
+  outline: 2px solid var(--focus-outline-color, var(--sakai-primary-color-1));
+  outline-offset: 2px;
+  border-radius: var(--sakai-radius-sm);
+}
+
+.portal-header-breadcrumb__all-sites {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sakai-space-1);
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-weight: 600;
+  line-height: inherit;
+  cursor: pointer;
+
+  .bi {
+    font-size: 1em;
+    color: var(--sakai-text-color-dimmed);
+  }
+
+  &:hover {
+    text-decoration: underline;
+
+    .bi {
+      color: inherit;
+    }
+  }
+}
+
 .portal-header-hamburger-button {
   &:hover,
   &:focus {
@@ -119,31 +153,6 @@
     box-shadow: none !important;
   }
 }
-@include media-breakpoint-up(md) {
-  .sidebar-site-title {
-    width: 128px;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    white-space: normal;
-    word-wrap: break-word;
-    word-break: break-word;
-    text-overflow: ellipsis;
-    max-height: 47px;
-  }
-}
-
-@media #{$phone} {
-  .sidebar-site-title {
-    overflow: hidden;
-    white-space: normal;
-    word-wrap: break-word;
-    word-break: break-word;
-  }
-}
-
 @include media-breakpoint-down(md) {
   .portal-header {
     justify-content: space-between !important;
@@ -224,31 +233,6 @@
   }
 }
 
-.portal-mobilebar {
-  grid-area: mobilebar;
-  position: sticky;
-  bottom: 0;
-  z-index: 1050;
-  background-color: var(--sakai-background-color-1) !important;
-  border-top: 1px solid var(--sakai-border-color);
-  color: var(--sakai-text-color-1);
-
-  button,
-  a {
-    color: var(--sakai-text-color-1);
-
-    span.bi,
-    span.si {
-      font-size: 1.35rem;
-    }
-  }
-}
-.portal-jump-links {
-  grid-area: jumpLinks;
-}
-.portal-jump-links a {
-  color: #fff;
-}
 #xlogin-logo {
   height: calc(var(--portal-header-height) * 2);
   display: flex;
@@ -287,21 +271,9 @@
   border-color: transparent !important;
 }
 
-.portal-user-role {
-  color: var(--sakai-text-color-2);
-}
-
 .portal-notifications-button {
   position: relative;
 }
-.portal-notifications-indicator {
-  position: absolute;
-  top: 10px;
-  right: 20%;
-  color: var(--sakai-primary-color-1);
-  background: red;
-}
-
 
 @mixin focus-outline($color) {
   &:focus {
@@ -342,34 +314,11 @@
 }
 
 #portal-nav-sidebar {
-
   grid-area: sidebar;
 
   .si-eye-slash-fill {
-    color: var(--sakai-text-color-1)
+    color: var(--sakai-text-color-1);
   }
-
-  li.site-list-item {
-    border: none !important;
-    background: transparent;
-
-    &.is-current-site {
-      background: transparent;
-      border: none !important;
-
-      &#site-list-gateway-item-gateway {
-        padding: 0 !important;
-      }
-    }
-  }
-
-}
-
-.site-list-item .site-link-block .img_site_toolmenu {
-  max-height: 1.2em;
-  width: auto;
-  vertical-align: middle;
-  margin-right: 0.5rem;
 }
 
 .sakai-sitesAndToolsNav * {
@@ -380,23 +329,6 @@
   @media (max-width: 460px) {
     width: 100%;
   }
-}
-
-.sticky-footer {
-  position: sticky;
-  bottom: 0;
-  background-color: var(--sticky-footer-bg);
-  color: var(--sticky-foooter-color);
-  border-top: solid 1px var(--sakai-border-color);
-
-  &:hover {
-    background-color: var(--sticky-footer-bg);
-    color: var(--sticky-foooter-color-hover);
-  }
-}
-
-.minimised {
-  width: fit-content;
 }
 
 .toast-header {

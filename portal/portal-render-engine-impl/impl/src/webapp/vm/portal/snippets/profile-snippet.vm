@@ -1,6 +1,6 @@
 #if (${userIsLoggedIn})
 <div id="sakai-account-panel"
-    class="modal fade sakai-account-launcher"
+    class="modal fade sakai-account-launcher sakai-no-print"
     tabindex="-1"
     aria-labelledby="sakai-account-panel-label"
     aria-modal="true"
@@ -33,31 +33,41 @@
           #end
 
           #if (${tabsSites.tutorial})
-            <li><a id="tutorial-start-button" href="#" onclick="startTutorial({userInitiatedTutorial: true});" class="sakai-offcanvas-nav__link">${rloader.sit_tutorial}</a></li>
+            <li>
+              <button type="button"
+                  id="tutorial-start-button"
+                  class="sakai-offcanvas-nav__link"
+                  onclick="startTutorial({userInitiatedTutorial: true});">
+                ${rloader.sit_tutorial}
+              </button>
+            </li>
           #end
 
           <li>
-            <a href="#"
+            <button type="button"
                 data-user-id="${loginUserId}"
                 onclick="portal.displayProfile(event);"
                 class="sakai-offcanvas-nav__link">
               ${rloader.sit_profile}
-            </a>
+            </button>
           </li>
         </ul>
 
         #if (${themeSwitcher})
         <div class="sakai-account-panel__theme">
-          <fieldset class="sakai-theme-switcher" role="radiogroup" aria-label="Switch between light and dark themes">
-            <button role="switch"
+          <button type="button"
+              role="switch"
+              #if ($userTheme == "sakaiUserTheme-dark")
+              aria-checked="true"
+              #else
               aria-checked="false"
+              #end
+              aria-label="$rloader.sit_theme_switcher"
               id="sakai-dark-theme-switcher"
-              title="#if ($userTheme == "sakaiUserTheme-light")$rloader.sit_theme_switch_to_dark#else$rloader.sit_theme_switch_to_light#end"
               class="sakai-theme-switch Mrphs-userNav__submenuitem--themeSwitcher switch">
-              <span class="bi bi-sun" aria-hidden="true"></span>
-              <span class="bi bi-moon" aria-hidden="true"></span>
-            </button>
-          </fieldset>
+            <span class="bi bi-sun" aria-hidden="true"></span>
+            <span class="bi bi-moon" aria-hidden="true"></span>
+          </button>
         </div>
         #end
 

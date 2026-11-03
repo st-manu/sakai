@@ -16,6 +16,7 @@ class SidebarCollapseButton {
     this._toggleClass = config?.toggleClass;
     this._portalContainer = config?.portalContainer;
     this._sitesSidebar = config?.sitesSidebar;
+    this._sitesSidebarInstance = config?.sitesSidebarInstance;
     this._element = element;
     this._element.addEventListener("click", this.toggle.bind(this));
     this._syncUi(this.collapsed);
@@ -24,25 +25,40 @@ class SidebarCollapseButton {
   _syncUi(collapsed) {
     this._element.title = collapsed ? this._i18n.titleCollapsed : this._i18n.titleExpanded;
     this._element.setAttribute("aria-label", this._element.title);
+    this._element.setAttribute("aria-expanded", collapsed ? "false" : "true");
 
     const label = this._element.querySelector(".sakai-sidebar__collapse-label");
     if (label) {
       label.textContent = collapsed ? this._i18n.titleCollapsed : this._i18n.titleExpanded;
     }
 
-    this._syncToolTooltips(collapsed);
+    if (!collapsed) {
+      this._sitesSidebarInstance?.closeRailFlyout?.();
+    }
+
+    this.syncToolTooltips(collapsed);
   }
 
-  _syncToolTooltips(collapsed) {
+  syncToolTooltips(collapsed = this.collapsed) {
     if (typeof bootstrap === "undefined" || !bootstrap.Tooltip) {
       return;
     }
-    const links = this._sitesSidebar?.querySelectorAll(".is-current-site .sakai-sidebar-page__link[title], .sakai-sidebar-site--current .sakai-sidebar-page__link[title]");
-    links?.forEach((link) => {
-      const existing = bootstrap.Tooltip.getInstance(link);
-      if (collapsed) {
+    const items = this._sitesSidebar?.querySelectorAll(
+      "#current-site-pages > .sakai-sidebar-page > a.sakai-sidebar-page__link, "
+      + "#current-site-pages > .sakai-sidebar-page > button.sakai-sidebar-page__toggle"
+    );
+    items?.forEach((item) => {
+      if (!item.dataset.sakaiTooltip) {
+        const fromTitle = item.getAttribute("title");
+        const fromLabel = item.querySelector(".sakai-sidebar-page__label")?.textContent?.trim();
+        item.dataset.sakaiTooltip = fromTitle || fromLabel || "";
+      }
+      const tipText = item.dataset.sakaiTooltip;
+      const existing = bootstrap.Tooltip.getInstance(item);
+      if (collapsed && tipText) {
+        item.setAttribute("title", tipText);
         if (!existing) {
-          new bootstrap.Tooltip(link, {
+          new bootstrap.Tooltip(item, {
             container: "body",
             placement: "right",
             trigger: "hover focus",
@@ -51,6 +67,7 @@ class SidebarCollapseButton {
         }
       } else {
         existing?.dispose();
+        item.removeAttribute("title");
       }
     });
   }

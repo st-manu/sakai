@@ -17,10 +17,21 @@ Sakai frontends use many UI frameworks (JSF 2.3, Wicket, Velocity, Thymeleaf, RS
 ## UI Framework
 - **Bootstrap**: Bootstrap 5.3 for **components** only (offcanvas, modal, collapse, dropdown, form controls when wrapped by Sakai primitives). **Do not** use Bootstrap layout/spacing utilities in new markup (`d-flex`, `d-md-none`, `align-items-*`, `justify-content-*`, `ms-*`, `me-*`, `p-*`, `gap-*`, `w-100`, `flex-*`, etc.). Express layout in Sakai SCSS under `sakai-*` classes.
 - **No Bootstrap soup**: Prefer Sakai CSS variables / tokens over hard-coded Bootstrap look. Institutions own the skin.
+- **Professional CSS**: Own Niobe/Sakai SCSS must win with specificity and structure — do **not** use `!important` in new or touched rules. Do **not** put visual styles (`color`, `display`, `height`, `margin`, `padding`, …) in HTML `style="…"` or set them from JS. Dynamic layout coordinates may use CSS custom properties on a host (`el.style.setProperty('--sakai-…', value)`); keep all presentation in SCSS.
 - **Responsive — portal vs tools**: Viewport `@include media-breakpoint-*` is for **portal shell** chrome (sidebar vs mobile bar). Inside a **tool**, use available content width: portal sets `container-type: inline-size` on `.sakai-page-content` / `.sakai-tool-body`; tools use `@container sakai-tool (...)`.
 - **Components**: Public API is `sakai-*` (e.g. `sakai-tool-header`, `sakai-table`, `sakai-actions`, `sakai-btn`, `sakai-overflow-menu`). Bootstrap may sit underneath; do not invent tool-local copies of shared behavior.
 - **Icons**: Bootstrap Icons (`bi` / tool map `si`); do not add Font Awesome in new work.
 - **Platform unison**: Shared behavior (tables, actions, banners, permissions matrix, overflow menus) lives in shared SCSS/components — not tool-scoped duplicates.
+- **Print**: Hide non-content chrome with `.sakai-no-print` (aliases `.noprint` / `.hidden-print`). Rules in `library/src/skins/default/src/sass/print.scss`. Details: `library/docs/sakai-ui-chrome.md`.
+
+## Accessibility
+- **Real controls**: Use `<button type="button">` for actions; `<a href="…">` only for navigation. Do not use `href="#"` / `onclick` as a button substitute.
+- **Accessible names**: Every interactive control needs a clear name (visible text, `aria-label`, or labelled-by). Do not rely on `title` alone. In the collapsed sidebar rail, keep labels with a visually-hidden pattern — do not `display:none` the only name.
+- **State**: Use `aria-expanded`, `aria-current="page"`, `aria-pressed` / `aria-checked` for disclosure, selection, and toggles. Do not flip the accessible name in a way that contradicts those states (prefer a stable name + state attribute).
+- **Status is text**: Hidden / locked / prerequisite cues must include visible (or visually clear) text — not icon-only trailing glyphs.
+- **Roles**: Prefer honest semantics (`nav`, `tree` / `treeitem` / `group`, `tablist` / `tab` / `tabpanel`). Do not fake `menu` / `menubar` without implementing the full keyboard model.
+- **Focus**: Provide a visible `:focus-visible` ring on sidebar and chrome controls; do not leave closed offcanvas / dialogs in the tab order.
+- **Keyboard**: Portal chrome and tool trees must be operable without a pointer. Sidebar tool trees support Tab focus plus ArrowUp/Down/Home/End and ArrowLeft/Right to collapse/expand groups. Modals/offcanvas follow Bootstrap focus management.
 
 ## JavaScript Development
 - **Modern JavaScript**: Target evergreen browsers; assume ES2022+ (`fetch` keepalive, etc.).

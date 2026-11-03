@@ -1,6 +1,7 @@
-<div class="sakai-main-toolbar">
+<div class="sakai-main-toolbar sakai-no-print">
   <div class="sakai-main-toolbar__breadcrumbs">
     #parse("/vm/portal/includePortalHeaderBreadcrumb.vm")
+    #parse("/vm/portal/snippets/roleSwitch-snippet.vm")
   </div>
   <div class="sakai-main-toolbar__utilities">
     #if (${userIsLoggedIn})

@@ -1,12 +1,5 @@
 @mixin sakai-impersonation-chrome($accent, $page-bg) {
   --sakai-page-background: #{$page-bg};
-  border: none;
-  box-shadow: inset 0 0.25rem 0 0 #{$accent};
-
-  .sakai-main-toolbar,
-  .sakai-portal-header--mobile {
-    box-shadow: inset 0 0.25rem 0 0 #{$accent};
-  }
 }
 
 @if $swapped-view-enabled {

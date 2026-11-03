@@ -1,6 +1,6 @@
 ## Bottom bar: home + desktop toolbar utilities.
 ## Menu / account / all-sites live in the mobile header and sidebar footer.
-<nav class="portal-mobilebar sakai-mobilebar" aria-label="$rloader.sit_navigation">
+<nav class="portal-mobilebar sakai-mobilebar sakai-no-print" aria-label="$rloader.sit_navigation">
   <ul class="sakai-mobilebar__list">
     #if (!${loginTopLogin})
     <li>
