@@ -55,6 +55,27 @@ export class SakaiSiteStatsWidgetTab extends SakaiShadowElement {
       .form-control {
         width: 100%;
       }
+
+      .filter select,
+      .filter input {
+        width: 100%;
+        padding: 0.25rem 0.5rem;
+        border: 1px solid var(--sakai-border-color);
+        border-radius: var(--sakai-radius-md);
+        background-color: var(--sakai-background-color-1);
+        color: var(--sakai-text-color-1);
+        font: inherit;
+        font-size: var(--sakai-font-size-sm);
+      }
+
+      .filter select {
+        padding-inline-end: 2.25rem;
+        appearance: none;
+        background-image: var(--bs-form-select-bg-img);
+        background-position: right 0.75rem center;
+        background-repeat: no-repeat;
+        background-size: 16px 12px;
+      }
     `,
   ];
 

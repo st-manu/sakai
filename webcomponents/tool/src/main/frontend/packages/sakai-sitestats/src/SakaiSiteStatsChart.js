@@ -52,8 +52,16 @@ export class SakaiSiteStatsChart extends SakaiShadowElement {
         block-size: min(22rem, 55vh);
         min-block-size: 16rem;
         border: 1px solid var(--sakai-border-color, #d8dde6);
+        border-radius: var(--sakai-radius-md, 0.375rem);
         background: var(--sakai-background-color-1, #fff);
         padding: 0.75rem;
+      }
+
+      @container sakai-tool (max-width: 40rem) {
+        .chart-frame {
+          block-size: 16rem;
+          min-block-size: 12rem;
+        }
       }
 
       .chart-frame.depth {
@@ -94,6 +102,7 @@ export class SakaiSiteStatsChart extends SakaiShadowElement {
 
       .empty {
         border: 1px solid var(--sakai-border-color, #d8dde6);
+        border-radius: var(--sakai-radius-md, 0.375rem);
         padding: 1rem;
         background: var(--sakai-background-color-2, #f8f9fb);
       }

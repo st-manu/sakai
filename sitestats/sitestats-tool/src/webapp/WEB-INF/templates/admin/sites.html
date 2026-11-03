@@ -2,42 +2,40 @@
 <html xmlns:th="http://www.thymeleaf.org" th:lang="${locale}">
 <head th:replace="~{fragments/common :: head(#{menu_sitelist})}"></head>
 <body>
-<main class="portletBody container-fluid">
-  <div th:replace="~{fragments/common :: menu('admin')}"></div>
-  <h1 class="h3 mt-3" th:text="#{menu_sitelist}">Sites</h1>
-  <p class="text-body-secondary" th:if="${lastJobRun != null}">
+<main class="portletBody sakai-tool-body sakai-sitestats-admin">
+  <div th:replace="~{fragments/common :: toolHeader(#{menu_sitelist}, 'admin')}"></div>
+  <div th:replace="~{fragments/common :: messages}"></div>
+  <p class="sitestats-intro" th:if="${lastJobRun != null}">
     <span th:text="#{last_job_run_date}">Last updated on:</span>
     <time th:datetime="${lastJobRun.timestamp}" th:text="${lastJobRun.displayTimestamp}"></time>
   </p>
   <search>
-    <form method="get" class="row g-3 align-items-end mb-4" th:action="@{/admin}">
-      <div class="col-12 col-md-4">
-        <label class="form-label" for="site-search" th:text="#{instructions_sitelist}">
+    <form method="get" class="sitestats-filter-form" th:action="@{/admin}">
+      <div class="sitestats-form-field">
+        <label class="sakai-form-label" for="site-search" th:text="#{instructions_sitelist}">
           Search sites by title to access site-specific statistics
         </label>
-        <input id="site-search" class="form-control" type="search" name="search" th:value="${search}"/>
+        <input id="site-search" class="sakai-form-control" type="search" name="search" th:value="${search}"/>
       </div>
-      <div class="col-12 col-md-4">
-        <label class="form-label" for="site-type" th:text="#{site_type}">Site type</label>
-        <select id="site-type" class="form-select" name="type">
+      <div class="sitestats-form-field">
+        <label class="sakai-form-label" for="site-type" th:text="#{site_type}">Site type</label>
+        <select id="site-type" class="sakai-form-control" name="type">
           <option value="all" th:selected="${type == null or type == 'all'}" th:text="#{all}">All</option>
           <option th:each="siteType : ${siteTypes}" th:value="${siteType}"
                   th:text="${siteType}" th:selected="${siteType == type}"></option>
         </select>
       </div>
-      <div class="col-12 col-md-4">
-        <button class="btn btn-primary" type="submit" th:text="#{search}">
-          Search sites
-        </button>
+      <div class="sitestats-form-field sitestats-filter-form__actions">
+        <button class="sakai-btn sakai-btn-primary" type="submit" th:text="#{search}">Search sites</button>
       </div>
     </form>
   </search>
-  <div class="sak-banner-info" role="status"
+  <div class="sakai-banner sakai-banner--info" role="status"
        th:if="${#lists.isEmpty(sites)}" th:text="#{sitestats_no_sites}">
     No sites matched the current filters.
   </div>
-  <div class="table-responsive" th:if="${!#lists.isEmpty(sites)}">
-    <table class="table table-striped align-middle">
+  <div class="sakai-table-wrap" th:if="${!#lists.isEmpty(sites)}">
+    <table class="sakai-table sakai-table--hover sakai-table--stack">
       <caption class="visually-hidden" th:text="#{sitestats_sites_caption}">Sites with statistics</caption>
       <thead>
         <tr>
@@ -48,16 +46,16 @@
       </thead>
       <tbody>
         <tr th:each="site : ${sites}">
-          <td>
+          <td class="sakai-table__primary" th:attr="data-label=#{th_title}">
             <a th:href="@{/home(siteId=${site.id})}" th:text="${site.title}"></a>
           </td>
-          <td th:text="${site.type}"></td>
-          <td th:text="${site.published} ? #{site_published} : #{site_unpublished}"></td>
+          <td th:attr="data-label=#{th_type}" th:text="${site.type}"></td>
+          <td th:attr="data-label=#{th_status}" th:text="${site.published} ? #{site_published} : #{site_unpublished}"></td>
         </tr>
       </tbody>
     </table>
   </div>
-  <nav th:attr="aria-label=#{sitestats_site_pages}">
+  <nav class="sitestats-pagination" th:attr="aria-label=#{sitestats_site_pages}">
     <ul class="pagination">
       <li class="page-item" th:classappend="${page <= 1} ? ' disabled'">
         <a class="page-link" th:if="${page > 1}"

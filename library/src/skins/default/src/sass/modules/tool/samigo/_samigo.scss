@@ -80,7 +80,6 @@
 
 	.listNav {
 		.inlineForm {
-			@extend .panel;
 			@extend .panel-default;
 			.pager-instruction {
 				@extend .panel-heading;

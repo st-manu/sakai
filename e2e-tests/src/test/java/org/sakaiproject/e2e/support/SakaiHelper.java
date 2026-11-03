@@ -134,8 +134,9 @@ public class SakaiHelper {
         }
 
         Locator allSitesButton = page.locator(
-            "button.sakai-sidebar__all-sites, button.responsive-allsites-button, "
-                + "[data-bs-target='#select-site-sidebar']:visible"
+            "button.portal-header-breadcrumb__all-sites:visible, "
+                + "button.sakai-sidebar__all-sites:visible, "
+                + "button.responsive-allsites-button:visible"
         ).first();
         if (allSitesButton.count() > 0 && allSitesButton.isVisible()) {
             allSitesButton.click(new Locator.ClickOptions().setForce(true));

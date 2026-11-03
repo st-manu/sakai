@@ -54,7 +54,7 @@ export class SakaiSiteStatsWidgetMetrics extends SakaiShadowElement {
         ? this.tr("failed_to_load_statistics", [ this._errorStatus ])
         : this._i18n.failed_to_load_statistics_unknown;
 
-      return html`<div class="sak-banner-error" role="alert">${message}</div>`;
+      return html`<div class="sitestats-error" role="alert">${message}</div>`;
     }
 
     if (!this._metrics?.length) {
@@ -100,7 +100,7 @@ export class SakaiSiteStatsWidgetMetrics extends SakaiShadowElement {
                   @keydown=${event => this._helpKeydown(event)}></button>
         ` : nothing}
         <dt id=${help ? labelId : nothing}>${metric.label}</dt>
-        <dd class="mb-0">
+        <dd>
           <span class="sitestats-metric-primary">${primary ?? ""}</span>
           ${snapshot.percentage != null ? html`
             <span class="sitestats-metric-percentage">${this._formatPercentage(snapshot.percentage)}</span>

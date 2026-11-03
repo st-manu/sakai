@@ -60,10 +60,10 @@ if (reportEditor) {
       const users = (await response.json()).filter(user => !selectedIds.has(user.id));
       userSearchResults.replaceChildren(...users.map(user => {
         const item = document.createElement("li");
-        item.className = "list-group-item p-1";
+        item.className = "sitestats-user-results__item";
         const button = document.createElement("button");
         button.type = "button";
-        button.className = "btn btn-link text-start w-100";
+        button.className = "sakai-btn sakai-btn-ghost sitestats-user-results__btn";
         button.textContent = messageWithName(userSearch.dataset.add, user.label);
         button.addEventListener("click", () => {
           selectedUsers.add(new Option(user.label, user.id, true, true));

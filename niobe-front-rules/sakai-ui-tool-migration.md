@@ -4,7 +4,7 @@
 
 Portal chrome contract (slots, title ownership): [`library/docs/sakai-ui-chrome.md`](../library/docs/sakai-ui-chrome.md).
 
-**Reference implementations:** [`polls-reference.md`](polls-reference.md) (Thymeleaf, A/B/C + primitives checklist) and [`announcements-reference.md`](announcements-reference.md) (Velocity, server menu → `sakai-*` actions).
+**Reference implementations:** [`polls-reference.md`](polls-reference.md) (Thymeleaf, A/B/C + primitives checklist), [`announcements-reference.md`](announcements-reference.md) (Velocity, server menu → `sakai-*` actions) and [`sitestats-reference.md`](sitestats-reference.md) (Thymeleaf with several A views, shared Lit widgets + dashboard).
 
 ## Principle
 
@@ -22,11 +22,12 @@ Revalidate after portal feedback:
 
 1. ~~**Polls**~~ — **done** (Thymeleaf reference; see [`polls-reference.md`](polls-reference.md))
 2. ~~**Announcements**~~ — **done** (Velocity reference; see [`announcements-reference.md`](announcements-reference.md))
-3. Dashboard / Home (already Lit)
-4. Conversations
-5. **Assignments** (high student-facing impact; worst `navIntraTool` mix — next Velocity tool)
-6. Gradebook, Resources, Lessons
-7. Remaining tools (JSF / Wicket / Velocity) when touched for other work
+3. ~~**Statistics**~~ — **done** (multi-view Thymeleaf + shared widgets; see [`sitestats-reference.md`](sitestats-reference.md))
+4. Dashboard / Home (already Lit)
+5. Conversations
+6. **Assignments** (high student-facing impact; worst `navIntraTool` mix — next Velocity tool)
+7. Gradebook, Resources, Lessons
+8. Remaining tools (JSF / Wicket / Velocity) when touched for other work
 
 ## Title and page chrome (per tool)
 
