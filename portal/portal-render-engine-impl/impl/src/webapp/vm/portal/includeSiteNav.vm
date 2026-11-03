@@ -108,6 +108,13 @@
     </a>
     #end
 
+    #if (!$userIsLoggedIn && $tabsSites.tabsSites.size() > 1)
+    <div class="sakai-sidebar__gateways sakai-no-print">
+      <h2 class="visually-hidden">${rloader.sit_worksiteshead}</h2>
+      #parse("/vm/portal/includeGatewayNav.vm")
+    </div>
+    #end
+
     <nav id="toolMenu" aria-label="${rloader.sit_toolshead}" class="Mrphs-toolsNav__menu sakai-sitesAndToolsNav sakai-sidebar__nav">
         <h2 class="visually-hidden" id="totoolmenu">${rloader.sit_toolshead}</h2>
         #if ($currentSidebarSite)

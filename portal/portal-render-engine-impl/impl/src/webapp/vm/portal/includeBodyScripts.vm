@@ -92,15 +92,6 @@
 
   #if (!$loggedIn && $topLogin)
     //--start-logged-out-scripts
-    // Setup header login password field
-    new PasswordField(portal.head.querySelector(".password-field"), {
-      icons: {
-        hidden: "bi-eye-slash-fill",
-        shown:"bi-eye-fill",
-        capsLock: "bi-capslock-fill"
-      }
-    });
-
     // Setup mobile login
     new MobileLogin(portal.head.querySelector(".sakai-login__mobile-trigger"), {
       passwordField: {

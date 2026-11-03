@@ -1,41 +1,204 @@
-.sakai-login {
-  display: none;
+.sakai-login__link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.5rem;
+  padding: var(--sakai-space-1) var(--sakai-space-3);
+}
+
+.sakai-login-links {
+  display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: var(--sakai-space-2);
-  margin-inline: var(--sakai-space-4) var(--sakai-space-2);
+  margin-inline: var(--sakai-space-2);
 
-  @include media-breakpoint-up(md) {
-    display: flex;
+  .sakai-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sakai-space-2);
   }
 }
 
-.sakai-login__field {
-  margin-block: var(--sakai-space-1);
-}
-
-.sakai-login__password {
-  width: auto;
-  margin-block: var(--sakai-space-1);
-}
-
-.sakai-login__submit {
-  padding: var(--sakai-space-3);
-  margin-block: var(--sakai-space-1);
-}
-
-.sakai-login__mobile-trigger {
-  margin: var(--sakai-space-1) var(--sakai-space-4) var(--sakai-space-1) var(--sakai-space-2);
+button.sakai-login__mobile-trigger {
+  margin-inline: 0 var(--sakai-space-1);
 
   @include media-breakpoint-up(md) {
     display: none;
   }
 }
 
-.sakai-login {
-  .form-control,
-  .input-group-text,
-  .btn {
-    border-color: var(--top-header-text-color);
-    color: var(--top-header-text-color);
+/* Standalone login page (xlogin) */
+
+.sakai-login-page {
+  min-height: 100vh;
+  min-height: 100dvh;
+  margin: 0;
+  background: var(--sakai-background-color-1);
+  color: var(--sakai-text-color-1);
+}
+
+.sakai-login-page__main {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(22rem, 0.9fr);
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+.sakai-login-page__visual {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--sakai-space-6);
+  overflow: hidden;
+  background-color: var(--sakai-brand);
+  background-image:
+    radial-gradient(45% 45% at 18% 20%, color-mix(in srgb, var(--sakai-color-blue--lighter-3) 70%, transparent) 0%, transparent 62%),
+    radial-gradient(42% 42% at 82% 24%, color-mix(in srgb, var(--sakai-color-teal) 55%, transparent) 0%, transparent 60%),
+    radial-gradient(55% 55% at 68% 90%, color-mix(in srgb, var(--sakai-color-purple) 42%, transparent) 0%, transparent 66%),
+    radial-gradient(50% 50% at 26% 92%, color-mix(in srgb, var(--sakai-color-gold) 22%, transparent) 0%, transparent 64%),
+    linear-gradient(135deg, var(--sakai-brand), var(--sakai-primary-color-1));
+  background-size: 180% 180%;
+  animation: sakai-login-mesh 26s ease-in-out infinite alternate;
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.07) 1px, transparent 1px);
+    background-size: 3rem 3rem;
+    mask-image: radial-gradient(circle at center, black 0%, transparent 78%);
+    pointer-events: none;
+  }
+}
+
+@keyframes sakai-login-mesh {
+  from {
+    background-position: 0% 0%;
+  }
+  to {
+    background-position: 100% 100%;
+  }
+}
+
+.sakai-login-page__logo {
+  position: relative;
+  z-index: 1;
+  width: auto;
+  max-width: 24rem;
+  max-height: 5rem;
+  filter: drop-shadow(0 4px 18px rgba(0, 0, 0, 0.28));
+}
+
+.sakai-login-page__panel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--sakai-space-6);
+  background: var(--sakai-background-color-1);
+}
+
+.sakai-login-page__form-shell {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sakai-space-5);
+  width: min(24rem, 100%);
+}
+
+.sakai-login-page__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sakai-space-2);
+}
+
+.sakai-login-page__title {
+  margin: 0;
+  font-size: var(--sakai-font-size-xl);
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--sakai-text-color-1);
+}
+
+.sakai-login-page__form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sakai-space-4);
+
+  .sakai-form-group {
+    margin-bottom: 0;
+  }
+}
+
+.sakai-login-page__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sakai-space-2);
+}
+
+.sakai-login-page__submit {
+  flex: 1 1 auto;
+}
+
+.sakai-login-page__link {
+  align-self: flex-end;
+  font-size: var(--sakai-font-size-sm);
+}
+
+.sakai-login-page__external {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sakai-space-2);
+}
+
+.sakai-login-page__external--with-form {
+  padding-top: var(--sakai-space-4);
+  border-top: 1px solid var(--sakai-border-color);
+}
+
+.sakai-login-page__hint {
+  margin: 0;
+  color: var(--sakai-text-color-dimmed);
+  font-size: var(--sakai-font-size-sm);
+}
+
+.sakai-login-page__external-link {
+  align-self: flex-start;
+}
+
+.modal-content.sakai-login-page__modal {
+  padding: var(--sakai-space-5);
+  background: var(--sakai-background-color-1);
+}
+
+@include media-breakpoint-down(md) {
+  .sakai-login-page__main {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+    align-content: start;
+  }
+
+  .sakai-login-page__visual {
+    min-height: 18vh;
+    padding: var(--sakai-space-4);
+    background-size: 220% 220%;
+  }
+
+  .sakai-login-page__logo {
+    max-width: 14rem;
+    max-height: 3rem;
+  }
+
+  .sakai-login-page__panel {
+    align-items: flex-start;
+    padding: var(--sakai-space-5) var(--sakai-space-4);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sakai-login-page__visual {
+    animation: none;
   }
 }

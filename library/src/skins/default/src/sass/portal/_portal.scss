@@ -203,10 +203,6 @@
     height: var(--portal-header-height);
   }
 }
-#sakai-login-dialog .alert {
-  margin-right: 1rem;
-  margin-left: 1rem;
-}
 @include media-breakpoint-up(md) {
   .portal-header {
     .portal-header-logo {
@@ -260,11 +256,6 @@
       background-color: var(--sakai-modal-close-btn-bg);
     }
   }
-}
-
-#sakai-login-dialog .modal-header {
-  background: var(--sakai-modal-content-bg);
-  color: var(--sakai-text-color-1);
 }
 
 div.wicket-modal div.w_caption,

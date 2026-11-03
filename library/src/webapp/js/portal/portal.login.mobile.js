@@ -14,7 +14,10 @@ class MobileLogin {
       this.createModalElement();
       await this.loadLoginDialog();
       this.adjustLoginDialog();
-      this.passwordField = new PasswordField(this._modalEl.querySelector(".password-field"), this._passConfig);
+      const passwordField = this._modalEl.querySelector(".password-field");
+      if (passwordField) {
+        this.passwordField = new PasswordField(passwordField, this._passConfig);
+      }
       this._modal = new bootstrap.Modal(this._modalEl);
       this._loaded = true;
     }
@@ -24,7 +27,7 @@ class MobileLogin {
   createModalElement() {
 
     this._modalEl = document.createElement("div");
-    this._modalEl.classList.add("modal", "mobile-login");
+    this._modalEl.classList.add("modal");
     this._modalEl.setAttribute("id", "mobileLoginModal");
     this._modalEl.setAttribute("tabindex", -1);
     document.body.appendChild(this._modalEl);
@@ -34,28 +37,30 @@ class MobileLogin {
   async loadLoginDialog() {
 
     const xloginQuery = await fetch('/portal/xlogin');
-    if (xloginQuery.ok) {
-      const xloginHtml = await xloginQuery.text();
-      const parser = new DOMParser();
-      const xloginDocument = parser.parseFromString(xloginHtml, 'text/html');
-      const xloginDialog = xloginDocument.querySelector(".modal-dialog");
-      this._modalEl.appendChild(xloginDialog);
-    }
+    if (!xloginQuery.ok) return;
+
+    const xloginHtml = await xloginQuery.text();
+    const parser = new DOMParser();
+    const xloginDocument = parser.parseFromString(xloginHtml, 'text/html');
+    const formShell = xloginDocument.querySelector(".sakai-login-page__form-shell");
+    if (!formShell) return;
+
+    const dialog = document.createElement("div");
+    dialog.className = "modal-dialog modal-dialog-centered";
+    const content = document.createElement("div");
+    content.className = "modal-content sakai-login-page__modal";
+    content.appendChild(formShell);
+    dialog.appendChild(content);
+    this._modalEl.appendChild(dialog);
   }
 
   //Makes adjustments, to make the dialog viable to be displayed in a modal
   adjustLoginDialog() {
 
-    //Remove d-none class from close button -> make it visible
-    const closeModalButton = this._modalEl?.querySelector(".btn-close");
-    closeModalButton?.classList.remove("d-none");
+    // Show the close button, which is hidden on the standalone page
+    this._modalEl?.querySelector(".btn-close")?.classList.remove("d-none");
 
-    //Add d-none class to the logo-container -> hide the logo
-    const logoContainer = this._modalEl?.querySelector("#xlogin-logo");
-    logoContainer?.classList.add("d-none");
-
-    //Add d-none class to the logo-container -> hide the logo
-    const cancelButton = this._modalEl?.querySelector("input[name='cancel']");
-    cancelButton?.classList.add("d-none");
+    // The cancel button only makes sense on the full page
+    this._modalEl?.querySelector("input[name='cancel']")?.classList.add("d-none");
   }
 }

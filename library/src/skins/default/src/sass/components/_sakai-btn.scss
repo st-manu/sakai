@@ -24,7 +24,7 @@
   margin: 0;
   padding: 7px 16px;
   border: 1px solid transparent;
-  border-radius: 4px;
+  border-radius: var(--sakai-radius-md);
   background: transparent;
   font-family: $font-family;
   font-size: 1em;

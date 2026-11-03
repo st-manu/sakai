@@ -17,12 +17,10 @@
         <span class="visually-hidden">$rloader.portal_home</span>
       </a>
     </div>
-    #parse("/vm/portal/includeGatewayNav.vm")
   </div>
 
   #if (!${userIsLoggedIn})
     #if (${loginTopLogin})
-      #set ($loginNavContext = "mobile")
       #parse("/vm/portal/includeLoginNav.vm")
     #else
       #parse("/vm/portal/snippets/loginImage-snippet.vm")

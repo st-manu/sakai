@@ -1,39 +1,4 @@
-#if (!$loginNavContext)
-    #set ($loginNavContext = "portal")
-#end
-<form id="loginForm-${loginNavContext}"
-    class="sakai-login sakai-login--${loginNavContext}"
-    method="post"
-    action="${loginPortalPath}/xlogin"
-    enctype="application/x-www-form-urlencoded">
-    <div class="sakai-login__field form-floating">
-        <input name="eid"
-            type="text"
-            class="form-control focus-light sakai-login__input"
-            id="eid-${loginNavContext}"
-            placeholder="${rloader.login_username}"
-            autocomplete="username">
-        <label for="eid-${loginNavContext}">${rloader.login_username}</label>
-    </div>
-    <div class="sakai-login__password password-field input-group">
-        <div class="form-floating">
-            <input name="pw"
-                type="password"
-                class="form-control focus-light sakai-login__input"
-                id="pw-${loginNavContext}"
-                placeholder="${rloader.login_password}"
-                autocomplete="current-password">
-            <label for="pw-${loginNavContext}">${rloader.login_password}</label>
-        </div>
-
-        <input type="checkbox" class="btn-check" id="showPwTop-${loginNavContext}" autocomplete="off">
-        <label class="input-group-text" for="showPwTop-${loginNavContext}">
-            <span class="bi bi-eye-slash-fill" aria-hidden="true"></span>
-            <span class="visually-hidden">${rloader.login_show_pw}</span>
-        </label>
-    </div>
-    <button type="submit" class="btn btn-outline sakai-login__submit">${rloader.login}</button>
-</form>
-<button id="mobileLoginBtn-${loginNavContext}" type="button" class="btn btn-primary sakai-login__mobile-trigger">
+## Mobile login trigger. The login form is the xlogin page, loaded into a modal.
+<button id="mobileLoginBtn" type="button" class="sakai-btn sakai-btn-primary sakai-login__mobile-trigger">
     ${rloader.login}
 </button>

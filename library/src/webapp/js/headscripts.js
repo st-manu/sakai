@@ -833,7 +833,9 @@ if (!window.themeClassInit) {
 			script.src = '/library/js/portal/portal.theme.switcher.js';
 			script.onload = async () => {
 				try {
-					portal.addCssClassToMarkup(await portal.getCurrentSetTheme());
+					const themeClass = await portal.getCurrentSetTheme();
+					portal.addCssClassToMarkup(themeClass);
+					portal.syncBootstrapColorMode(themeClass);
 				} catch (error) {
 					console.error('Theme error:', error);
 				}

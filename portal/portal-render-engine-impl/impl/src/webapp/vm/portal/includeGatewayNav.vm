@@ -1,16 +1,13 @@
-#if (!${userIsLoggedIn})
-<nav id="linkNav" class="sakai-gateway-nav" aria-label="${rloader.sit_worksiteshead}" data-max-tools-int="$maxToolsInt" data-max-tools-anchor="${rloader.sit_alltools}">
-    <div class="sakai-gateway-nav__container">
-        <ul class="sakai-gateway-nav__menu" id="topnav">
-            #foreach ( $site in $tabsSites.tabsSites )
-                ## Only show other sites if they're the current site, a favorite of the current user, or if there *is* no current user and we're showing Gateway sites.
-                <li class="sakai-gateway-nav__item #if (${site.isCurrentSite}) is-selected #end">
-                    <a class="sakai-gateway-nav__link" href="${site.siteUrl}" title="${site.fullTitle}">
-                        <span>#if ( ( ${tabDisplayLabel} == 2 ) && ( ${site.shortDescription} ) )${site.shortDescription}#else${site.siteTitleTrunc}#end</span>
-                    </a>
-                </li>
-            #end
-        </ul>
-    </div>
+#if (!${userIsLoggedIn} && $tabsSites.tabsSites.size() > 1)
+<nav class="sakai-gateway-nav" aria-label="${rloader.sit_worksiteshead}">
+    <ul class="sakai-gateway-nav__menu">
+        #foreach ( $site in $tabsSites.tabsSites )
+            <li class="sakai-gateway-nav__item #if (${site.isCurrentSite}) is-selected #end">
+                <a class="sakai-gateway-nav__link" href="${site.siteUrl}" title="${site.fullTitle}">
+                    <span>#if ( ( ${tabDisplayLabel} == 2 ) && ( ${site.shortDescription} ) )${site.shortDescription}#else${site.siteTitleTrunc}#end</span>
+                </a>
+            </li>
+        #end
+    </ul>
 </nav>
 #end
