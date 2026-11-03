@@ -13,6 +13,30 @@
   }
 }
 
+.sakai-form-control--sm {
+  padding: var(--sakai-space-1) var(--sakai-space-2);
+  font-size: var(--sakai-font-size-sm);
+}
+
+.sakai-form-control[type="file"] {
+  padding: var(--sakai-space-1) var(--sakai-space-2);
+
+  &::file-selector-button {
+    margin: 0 var(--sakai-space-3) 0 0;
+    padding: var(--sakai-space-1) var(--sakai-space-3);
+    border: 0;
+    border-radius: var(--sakai-radius-sm);
+    background-color: var(--sakai-background-color-2);
+    color: var(--sakai-text-color-1);
+    font: inherit;
+    cursor: pointer;
+
+    &:hover {
+      background-color: var(--sakai-background-color-3);
+    }
+  }
+}
+
 .sakai-form-label {
   display: block;
   margin-bottom: var(--sakai-space-2);

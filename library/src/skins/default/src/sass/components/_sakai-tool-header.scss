@@ -10,14 +10,15 @@
 }
 
 .sakai-tool-header__title {
-  flex: 1 1 12rem;
+  flex: 1 1 16rem;
   margin: 0;
   font-size: 1.375rem;
   font-weight: $header-font-weight;
   font-family: $header-font-family;
   line-height: 1.3;
   color: var(--sakai-text-color-1);
-  min-width: 0;
+  min-width: 12rem;
+  overflow-wrap: anywhere;
 }
 
 .sakai-tool-header__actions {
@@ -26,7 +27,8 @@
   align-items: center;
   justify-content: flex-end;
   gap: var(--sakai-space-2);
-  flex: 0 1 auto;
+  flex: 0 0 auto;
+  max-width: 100%;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -50,7 +52,7 @@
   gap: var(--sakai-space-2);
 }
 
-@container sakai-tool (min-width: 36rem) {
+@container sakai-tool (min-width: 48rem) {
   .sakai-tool-header__secondary {
     display: flex;
   }
@@ -68,6 +70,7 @@
 
   .sakai-tool-header__title {
     flex: 0 1 auto;
+    min-width: 0;
   }
 
   .sakai-tool-header__actions {

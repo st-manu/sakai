@@ -44,13 +44,13 @@ Defined under [`sass/components/`](../src/skins/default/src/sass/components/):
 - `.sakai-actions` (alias `.act`) — form/tool footer button row; uses `gap`, not per-child margins
 - `.sakai-card`, `.sakai-page-content`
 - `.sakai-page-header` (+ `__title`, `__meta`, `__actions`, `__breadcrumb`)
-- `.sakai-tool-header` (+ `__title`, `__actions`, `__secondary`, `__more`) — wide: `__secondary` inline; narrow: `__more` (`…`). Do not unwrap a closed `<details>` with `display:contents`/`flex`.
-- `.sakai-overflow-menu` (+ `__toggle`, `__panel`) — `…` for narrow header utilities and per-row secondary actions
+- `.sakai-tool-header` (+ `__title`, `__actions`, `__secondary`, `__more`) — at ≥48rem container: secondary actions inline; narrower: `__more` (`…`). Title wraps without collapsing and actions move to their own line when needed. Do not unwrap a closed `<details>` with `display:contents`/`flex`.
+- `.sakai-overflow-menu` (+ `__toggle`, `__panel`) — `…` for narrow header utilities and per-row secondary actions; inside `.sakai-table` the panel is lifted to a fixed layer by the global body bundle so it escapes the table's scroll container
 - `.sakai-row-actions` (+ `__link`) — quiet per-row action + overflow menu
 - `.sakai-segmented-control`, `.sakai-tool-nav`
 - `.sakai-banner` (+ `--info` / `--success` / `--warn` / `--error`) — same as old `sak-banner-*`: put content directly in the element; icon comes from CSS by type
 - `.sakai-form-control`, `.sakai-form-label`, `.sakai-form-group`
-- `.sakai-table` (+ `--striped` / `--hover` / `--sm` / `--stack`), `.sakai-table-wrap`, `__select`, `__sort` — `--stack` turns rows into cards under `@container sakai-tool` (row owns hover/focus/checked; cells do not paint)
+- `.sakai-table` (+ `--striped` / `--hover` / `--sm` / `--stack`), `.sakai-table-wrap`, `__select`, `__sort`, `__actions`, `__primary`, `__nowrap` — cells are transparent so tables inherit the content card surface in light and dark; mark the important content column with `__primary` (absorbs extra width and keeps a 16rem floor on desktop); use `__nowrap` for single-line values such as timestamps; on mobile the wrap owns one outer border + radius and `--stack` rows are separated by a single border, with `data-label` cells laid out as a label/value grid; sortable `<th>` carries `aria-sort` and a `.sakai-table__print-label` for print
 - `sakai-permissions` — shared permissions matrix (`.sakai-permissions` / `__table`); uses `.sakai-table` + `.sakai-actions`, not Bootstrap layout utilities
 
 New portal markup must not use Bootstrap layout/spacing utilities (`d-flex`, `d-md-none`, `align-items-*`, `ms-*`, `p-*`, `gap-*`, …). Keep Bootstrap for components (`btn`, `modal`, `offcanvas`, `collapse`, …) behind `sakai-*` where needed.

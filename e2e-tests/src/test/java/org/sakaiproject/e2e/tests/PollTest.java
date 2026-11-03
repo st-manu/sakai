@@ -71,7 +71,7 @@ class PollTest extends SakaiUiTestBase {
         page.navigate(sakaiUrl);
         sakai.toolClick("Poll");
 
-        page.locator(".navIntraTool").getByRole(AriaRole.LINK,
+        page.locator(".sakai-tool-header__actions").getByRole(AriaRole.LINK,
             new Locator.GetByRoleOptions().setName("Add").setExact(true)).click();
 
         page.locator("form:visible input[type=\"text\"]").first().fill(POLL_TITLE);
@@ -93,7 +93,7 @@ class PollTest extends SakaiUiTestBase {
         page.locator("textarea").fill("Yes");
         page.locator("button:has-text(\"Save\"), input[type=\"submit\"][value*=\"Save\"]").first().click(new Locator.ClickOptions().setForce(true));
 
-        assertThat(page.locator(".sak-banner-success")).isVisible();
+        assertThat(page.locator(".sakai-banner--success")).isVisible();
 
         Locator addOptionButton = addOptionControl();
         if (!isVisible(addOptionButton, 5_000)) {
@@ -110,10 +110,10 @@ class PollTest extends SakaiUiTestBase {
         page.locator("textarea").fill("No");
         page.locator("button:has-text(\"Save\"), input[type=\"submit\"][value*=\"Save\"]").first().click(new Locator.ClickOptions().setForce(true));
 
-        assertThat(page.locator(".sak-banner-success")).isVisible();
+        assertThat(page.locator(".sakai-banner--success")).isVisible();
         page.locator("button:has-text(\"Save\"), input[type=\"submit\"][value*=\"Save\"]").first().click(new Locator.ClickOptions().setForce(true));
 
-        assertThat(page.locator(".sak-banner-success")).containsText("Poll saved successfully");
+        assertThat(page.locator(".sakai-banner--success")).containsText("Poll saved successfully");
         assertThat(page.locator("a[href*='/voteQuestion']")).hasText(POLL_TITLE);
         pollWithTwoOptionsCreated = true;
     }
@@ -126,7 +126,7 @@ class PollTest extends SakaiUiTestBase {
         page.navigate(sakaiUrl);
         sakai.toolClick("Poll");
 
-        page.locator(".navIntraTool").getByRole(AriaRole.LINK,
+        page.locator(".sakai-tool-header__actions").getByRole(AriaRole.LINK,
             new Locator.GetByRoleOptions().setName("Add").setExact(true)).click();
 
         page.locator("form:visible input[type=\"text\"]").first().fill(LIMITS_POLL_TITLE);
@@ -168,7 +168,7 @@ class PollTest extends SakaiUiTestBase {
 
         page.locator("textarea").fill("Option one");
         page.locator("button:has-text(\"Save\"), input[type=\"submit\"][value*=\"Save\"]").first().click(new Locator.ClickOptions().setForce(true));
-        assertThat(page.locator(".sak-banner-success")).isVisible();
+        assertThat(page.locator(".sakai-banner--success")).isVisible();
 
         Locator addOptionButton = addOptionControl();
         if (!isVisible(addOptionButton, 5_000)) {
@@ -184,7 +184,7 @@ class PollTest extends SakaiUiTestBase {
 
         page.locator("textarea").fill("Option two");
         page.locator("button:has-text(\"Save\"), input[type=\"submit\"][value*=\"Save\"]").first().click(new Locator.ClickOptions().setForce(true));
-        assertThat(page.locator(".sak-banner-success")).isVisible();
+        assertThat(page.locator(".sakai-banner--success")).isVisible();
 
         // min/max of 6 exceeds the 2 available options
         page.locator("button:has-text(\"Save\"), input[type=\"submit\"][value*=\"Save\"]").first().click(new Locator.ClickOptions().setForce(true));
@@ -200,7 +200,7 @@ class PollTest extends SakaiUiTestBase {
         page.navigate(sakaiUrl);
         sakai.toolClick("Poll");
 
-        page.locator(".navIntraTool").getByRole(AriaRole.LINK,
+        page.locator(".sakai-tool-header__actions").getByRole(AriaRole.LINK,
             new Locator.GetByRoleOptions().setName("Add").setExact(true)).click();
 
         page.locator("form:visible input[type=\"text\"]").first().fill(DEFAULT_DATES_POLL_TITLE);
@@ -233,7 +233,7 @@ class PollTest extends SakaiUiTestBase {
         page.navigate(sakaiUrl);
         sakai.toolClick("Poll");
 
-        page.locator(".navIntraTool").getByRole(AriaRole.LINK,
+        page.locator(".sakai-tool-header__actions").getByRole(AriaRole.LINK,
             new Locator.GetByRoleOptions().setName("Bulk Creation").setExact(true)).click();
 
         assertThat(page.locator("#poll-uploaded-text")).isVisible();
@@ -259,7 +259,7 @@ class PollTest extends SakaiUiTestBase {
         page.locator("form:visible input[type=\"submit\"], form:visible button[type=\"submit\"]").first()
             .click(new Locator.ClickOptions().setForce(true));
 
-        assertThat(page.locator(".sak-banner-success")).containsText("Polls imported successfully");
+        assertThat(page.locator(".sakai-banner--success")).containsText("Polls imported successfully");
         assertThat(page.locator("body")).containsText(BULK_POLL_TITLE_ONE);
         assertThat(page.locator("body")).containsText(BULK_POLL_TITLE_TWO);
     }
@@ -272,7 +272,7 @@ class PollTest extends SakaiUiTestBase {
         page.navigate(sakaiUrl);
         sakai.toolClick("Poll");
 
-        Locator pollRow = page.locator("tr").filter(new Locator.FilterOptions().setHasText(POLL_TITLE)).first();
+        Locator pollRow = page.locator("#sortableTable tbody tr").filter(new Locator.FilterOptions().setHasText(POLL_TITLE)).first();
         assertThat(pollRow).isVisible();
 
         pollRow.getByRole(AriaRole.LINK, new Locator.GetByRoleOptions().setName(POLL_TITLE))
@@ -284,9 +284,9 @@ class PollTest extends SakaiUiTestBase {
             .click(new Locator.ClickOptions().setForce(true));
 
         page.waitForURL(Pattern.compile(".*/voteThanks\\?voteRef=.*"));
-        assertThat(page.locator(".portletBody .fw-bold")).containsText(Pattern.compile(".+"));
+        assertThat(page.locator(".sakai-polls-question")).containsText(Pattern.compile(".+"));
 
-        page.locator("input[type=\"button\"][onclick*=\"/votePolls\"], button[onclick*=\"/votePolls\"], .act input[type=\"button\"], .act button").first()
+        page.locator(".sakai-actions a[href*=\"/votePolls\"], input[type=\"button\"][onclick*=\"/votePolls\"], button[onclick*=\"/votePolls\"], .act input[type=\"button\"], .act button").first()
             .click(new Locator.ClickOptions().setForce(true));
 
         assertThat(pollRow).isVisible();
@@ -309,7 +309,7 @@ class PollTest extends SakaiUiTestBase {
                 + " return Boolean(chart || window.pollResultsChartData); }"
         );
         assertTrue(chartInitialized);
-        Locator resultsTable = page.locator(".table-responsive table").first();
+        Locator resultsTable = page.locator(".sakai-table-wrap table, .sakai-table").first();
         assertThat(resultsTable).containsText("Yes");
         assertThat(resultsTable).containsText(Pattern.compile("100\\s*%"));
 
@@ -332,7 +332,7 @@ class PollTest extends SakaiUiTestBase {
         page.navigate(sakaiUrl);
         sakai.toolClick("Poll");
 
-        page.locator(".navIntraTool").getByRole(AriaRole.LINK,
+        page.locator(".sakai-tool-header__actions").getByRole(AriaRole.LINK,
             new Locator.GetByRoleOptions().setName("Bulk Creation").setExact(true)).click();
 
         LocalDateTime now = LocalDateTime.now();
@@ -349,7 +349,7 @@ class PollTest extends SakaiUiTestBase {
         page.locator("form:visible input[type=\"submit\"], form:visible button[type=\"submit\"]").first()
             .click(new Locator.ClickOptions().setForce(true));
 
-        assertThat(page.locator("[role=\"alert\"].sak-banner-error")).containsText("Row 3");
+        assertThat(page.locator("[role=\"alert\"].sakai-banner--error")).containsText("Row 3");
     }
 
     @Test
@@ -360,17 +360,18 @@ class PollTest extends SakaiUiTestBase {
         page.navigate(sakaiUrl);
         sakai.toolClick("Poll");
 
-        page.getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("Bulk Creation")).click();
+        page.locator(".sakai-tool-header__actions").getByRole(AriaRole.LINK,
+            new Locator.GetByRoleOptions().setName("Bulk Creation").setExact(true)).click();
         Download sample = page.waitForDownload(() -> page.locator("a[href*='/pollImport/sample']").click());
         page.locator("#poll-upload-file").setInputFiles(sample.path());
         page.locator("form:visible input[type=\"submit\"], form:visible button[type=\"submit\"]").first().click();
 
-        assertThat(page.locator(".sak-banner-success")).containsText("Polls imported successfully");
+        assertThat(page.locator(".sakai-banner--success")).containsText("Polls imported successfully");
         assertThat(page.locator("body")).containsText("What is your favorite color?");
     }
 
     private Locator addOptionControl() {
-        return page.locator("input[type=\"button\"][value=\"Add option\"], input[type=\"button\"][value=\"Add Option\"], input[type=\"button\"][value*=\"Add option\"], input[type=\"button\"][value*=\"Add Option\"], button:has-text(\"Add option\"), button:has-text(\"Add Option\"), a:has-text(\"Add option\"), a:has-text(\"Add Option\")").first();
+        return page.locator("button:has-text(\"Add option\"), button:has-text(\"Add Option\"), input[type=\"button\"][value*=\"Add option\"], input[type=\"button\"][value*=\"Add Option\"], a:has-text(\"Add option\"), a:has-text(\"Add Option\")").first();
     }
 
     private boolean isVisible(Locator locator, double timeoutMs) {

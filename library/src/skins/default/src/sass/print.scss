@@ -14,6 +14,27 @@
 	display: none !important;
 }
 
+// Sortable table headers hide their interactive control in print and show the
+// plain column label instead.
+.sakai-table__print-label {
+	display: inline;
+}
+
+// Poll results keep a visible bar when the card is printed.
+.sakai-polls-result-meter {
+	height: 0.5rem;
+	border: 1px solid currentColor;
+	border-radius: 2px;
+}
+
+.sakai-polls-result-meter__fill {
+	display: block;
+	height: 100%;
+	background-color: currentColor;
+	print-color-adjust: exact;
+	-webkit-print-color-adjust: exact;
+}
+
 a[href]:after {
 	content: none !important;
 }

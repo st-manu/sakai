@@ -6,7 +6,8 @@
   align-items: stretch;
   min-width: 0;
   min-height: 0;
-  overflow: auto;
+  overflow-x: clip;
+  overflow-y: auto;
   background-color: var(--sakai-page-background);
   padding: var(--sakai-space-3);
   padding-bottom: max(var(--sakai-space-2), var(--sakai-portal-fabs-clearance, 7rem));

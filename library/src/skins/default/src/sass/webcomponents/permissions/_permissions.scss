@@ -2,6 +2,15 @@
   display: flex;
   flex-direction: column;
   gap: var(--sakai-space-4);
+
+  .sakai-table-wrap {
+    margin-bottom: 0;
+  }
+
+  .sakai-actions {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
 }
 
 .sakai-permissions__groups {
@@ -12,35 +21,20 @@
 }
 
 .sakai-permissions__table {
-  --sakai-permissions-stripe: var(--sakai-background-color-2);
-  --sakai-permissions-hover: var(--sakai-active-color-2);
+  --sakai-permissions-hover: var(--sakai-background-color-2);
 
   width: 100%;
   margin-bottom: 0;
-  border: 1px solid var(--sakai-border-color);
-  border-radius: var(--sakai-radius-md);
-  border-collapse: separate;
-  border-spacing: 0;
-  overflow: hidden;
-
-  > :not(caption) > * > * {
-    --bs-table-bg: transparent;
-    --bs-table-accent-bg: transparent;
-    --bs-table-bg-type: transparent;
-    --bs-table-bg-state: transparent;
-    box-shadow: none;
-    border-bottom-color: var(--sakai-border-color);
-  }
 
   thead th {
-    background-color: var(--sakai-background-color-2);
     vertical-align: middle;
     text-align: center;
   }
 
   .sakai-permissions__perm-col {
-    text-align: start;
+    width: 100%;
     min-width: 12rem;
+    text-align: start;
   }
 
   .sakai-permissions__role-col {
@@ -55,7 +49,7 @@
   tbody th,
   tbody td {
     vertical-align: middle;
-    background-color: var(--sakai-background-color-1);
+    background-color: transparent;
     transition: background-color 0.12s ease;
   }
 
@@ -63,21 +57,10 @@
     text-align: center;
   }
 
-  tbody tr:nth-child(even) > * {
-    background-color: var(--sakai-permissions-stripe);
-  }
-
   tbody tr:hover > *,
   tbody tr:focus-within > *,
   .permission-cell.is-role-hover,
   .permission-cell:hover {
-    background-color: var(--sakai-permissions-hover);
-  }
-
-  tbody tr:hover > .permission-cell:has(input:checked),
-  tbody tr:focus-within > .permission-cell:has(input:checked),
-  .permission-cell.is-role-hover:has(input:checked),
-  .permission-cell:has(input:checked):hover {
     background-color: var(--sakai-permissions-hover);
   }
 }
@@ -95,6 +78,7 @@
   font: inherit;
   font-weight: 600;
   text-align: inherit;
+  text-transform: inherit;
   cursor: pointer;
   overflow-wrap: anywhere;
 }
@@ -113,8 +97,6 @@ tbody .sakai-permissions__toggle {
 
 @container sakai-tool (max-width: 40rem) {
   .sakai-permissions__table {
-    border: 0;
-
     thead {
       display: none;
     }
@@ -128,14 +110,22 @@ tbody .sakai-permissions__toggle {
     }
 
     tbody tr {
-      margin: var(--sakai-space-3) 0 0;
+      margin: 0;
       padding: var(--sakai-space-3);
-      border: 1px solid var(--sakai-border-color);
-      border-radius: var(--sakai-radius-md);
-      background-color: var(--sakai-background-color-1);
+      border: 0;
+      border-bottom: 1px solid var(--sakai-border-color);
+      border-radius: 0;
+      background-color: transparent;
 
-      &:nth-child(even) {
-        background-color: var(--sakai-permissions-stripe);
+      &:first-child {
+        border-top-left-radius: calc(var(--sakai-radius-md) - 1px);
+        border-top-right-radius: calc(var(--sakai-radius-md) - 1px);
+      }
+
+      &:last-child {
+        border-bottom: 0;
+        border-bottom-left-radius: calc(var(--sakai-radius-md) - 1px);
+        border-bottom-right-radius: calc(var(--sakai-radius-md) - 1px);
       }
 
       &:hover,
@@ -144,24 +134,7 @@ tbody .sakai-permissions__toggle {
       }
 
       > * {
-        background-color: transparent !important;
-      }
-    }
-
-    tbody td {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: var(--sakai-space-2);
-      padding: var(--sakai-space-2) 0;
-      text-align: start;
-      border: 0;
-
-      &::before {
-        content: attr(data-label);
-        font-size: 0.8125rem;
-        font-weight: 600;
-        color: var(--sakai-text-color-dimmed);
+        background-color: transparent;
       }
     }
 
@@ -170,15 +143,34 @@ tbody .sakai-permissions__toggle {
       border: 0;
     }
 
-    .permission-cell {
-      border-radius: var(--sakai-radius-sm);
-      padding-inline: var(--sakai-space-2);
+    tbody td[data-label] {
+      display: grid;
+      grid-template-columns: 6.5rem minmax(0, 1fr);
+      align-items: center;
+      gap: var(--sakai-space-2);
+      padding: var(--sakai-space-1) 0;
+      border: 0;
+      text-align: start;
+
+      &::before {
+        content: attr(data-label);
+        grid-column: 1;
+        font-size: var(--sakai-font-size-xs);
+        font-weight: 600;
+        letter-spacing: 0.04em;
+        color: var(--sakai-text-color-dimmed);
+        text-transform: uppercase;
+      }
+
+      > input {
+        grid-column: 2;
+        justify-self: end;
+        margin: 0;
+      }
     }
 
-    .permission-cell:has(input:checked):hover,
-    tr:hover .permission-cell:has(input:checked),
-    tr:focus-within .permission-cell:has(input:checked) {
-      background-color: var(--sakai-permissions-hover) !important;
+    .permission-cell {
+      padding-inline: 0;
     }
   }
 }

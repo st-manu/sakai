@@ -34,16 +34,18 @@ Chrome contract: [`library/docs/sakai-ui-chrome.md`](../library/docs/sakai-ui-ch
 | Header | `.sakai-tool-header`, `__title`, `__actions` |
 | Buttons | `.sakai-btn` / `-primary` / `-secondary` / `-ghost` (also on `<a href>` — see `_sakai-btn.scss`) |
 | Form footer | `.sakai-actions` (legacy `.act` aliased) — flex + `gap`; do not rely on child `margin-right` |
-| Permissions | Shared `<sakai-permissions>` → `.sakai-permissions` / `__table` (not tool-local); row owns stripe/hover |
+| Permissions | Shared `<sakai-permissions>` → `.sakai-permissions` / `__table` (not tool-local); same `.sakai-table` header, separators and hover as list tables |
 | Banners | **`.sakai-banner.sakai-banner--success` / `--error` / `--warn` / `--info`** (content only; icon via CSS) |
 | Forms | `.sakai-form-group`, `.sakai-form-label`, `.sakai-form-control` |
-| Tables | `.sakai-table` (+ `--striped` / `--hover` / `--sm` / `--stack`), `__select`, `__sort`, `.sakai-table-wrap`; list sort via `polls-list-sort.js` (`data-order`) |
+| Tables | `.sakai-table` (+ `--hover` / `--sm` / `--stack`), `.sakai-table-wrap`, `__select`, `__sort`, `__actions`, `__primary`, `__nowrap`; Polls uses non-striped tables (separators + hover); mark the important column with `__primary` so it absorbs extra width and keeps a 16rem desktop floor; mobile tables share one rounded outer shell, single row separators and a `data-label` label/value grid; sortable headers carry `aria-sort` on the `<th>` with a `.sakai-table__print-label` so the control-free header still prints |
 | Options (Polls) | `.sakai-polls-option-list` scrollable stack for many options |
-| Header | Wide: Add + `.sakai-tool-header__secondary`. Narrow: Add + `.sakai-tool-header__more` |
-| Row actions | `.sakai-row-actions__link` + `…` (`.sakai-overflow-menu`) — not a strip of secondary buttons |
+| Header | ≥48rem container: Add + `.sakai-tool-header__secondary`. Narrower: Add + `.sakai-tool-header__more` |
+| Row actions | Trailing `.sakai-table__actions` cell with a single `…` (`.sakai-overflow-menu`) containing Edit, exports and Delete — reveals on row hover/focus for fine pointers, always visible on touch; not stacked under the row title |
 | Tool-only layout | `.sakai-polls-*` for Polls-specific composition only; shared chrome stays in `components/` |
 
 Responsive content uses `@container sakai-tool` in Polls SCSS, not viewport breakpoints.
+
+Table row menus are lifted to a fixed layer by the shared `sakai-overflow-menu.js` in the global body bundle (custom properties `--sakai-overflow-panel-top` / `--sakai-overflow-panel-left`), so opening one keeps the table wrap's horizontal scroll and never lets the table spill out of the card.
 
 **Gotcha:** Legacy skin styles `a[href].btn-primary` as a real button, but not secondary/ghost. Always include `a[href].sakai-btn-*` rules in the button primitive or anchors look like the old navIntraTool links.
 
@@ -52,7 +54,7 @@ Responsive content uses `@container sakai-tool` in Polls SCSS, not viewport brea
 1. List every current `navIntraTool` (or equivalent) entry → tag **A / B / C**.
 2. Emit `.sakai-tool-header` + view H1; put B/C in `__actions` (overflow for many C / narrow).
 3. If multiple A views: `.sakai-tool-nav` / `.sakai-segmented-control` (Polls did not need this).
-4. **Row actions:** discreet text/link for the frequent action + `…` for everything else (never a strip of full-size buttons in each row).
+4. **Row actions:** a single `…` overflow menu in a trailing `.sakai-table__actions` cell (Edit plus secondary/destructive actions). Never a strip of full-size buttons or stacked links under the title.
 5. Convert edited markup: buttons, banners (`sak-banner-*` → `sakai-banner sakai-banner--*`), forms, tables → `sakai-*`.
 6. Drop Bootstrap layout/spacing utilities from edited templates; layout in tool SCSS.
 7. Icons: Bootstrap Icons only.
@@ -63,5 +65,6 @@ Responsive content uses `@container sakai-tool` in Polls SCSS, not viewport brea
 
 - Fragment: `polls/tool/src/main/webapp/WEB-INF/templates/fragments/common.html`
 - Templates: `polls/tool/src/main/webapp/WEB-INF/templates/polls/*.html`
+- Row menu positioning: `webcomponents/tool/src/main/frontend/bundle-entry-points/sakai-overflow-menu.js` (global body bundle)
 - Skin: `library/.../components/_sakai-tool-header.scss`, `_sakai-table.scss`, `modules/tool/polls/_polls.scss`
 - E2E: `e2e-tests/.../PollTest.java`
