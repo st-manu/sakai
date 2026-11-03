@@ -27,16 +27,6 @@ html[dir="rtl"]{
 		} 
 	}
 
-	.#{$namespace}footerApp__presence, .#{$namespace}footerApp__portalChat {
-	    left: 20px;
-	    right: auto;
-	}
-
-	.#{$namespace}portalChat {
-	    left: 21px;
-	    right: auto;
-	}
-
 	.#{$namespace}toolTitleNav .#{$namespace}toolTitleNav__title ~ .#{$namespace}toolTitleNav__button_container>.#{$namespace}directUrl__dropDown.active {
 	    margin: 10px 0 0 0px;
 	}

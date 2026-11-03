@@ -1,17 +1,8 @@
 <f:view>
+    <c:set var="chatMenuCurrent" value="rooms" />
 	<sakai:view title="#{msgs.room_list_title}">
-      <h:outputText value="#{Portal.latestJQuery}" escape="false"/>
       <script src="/sakai-chat-tool/js/chat.js" type="module"></script>
-      <script>
-        $(document).ready( function () {
-          // Assign the current class to the tab in the template
-          var menuLink = $('#listRoomsForm\\:chatManageLink, #listRoomsForm\\:chatChangeRoomLink');
-          menuLink.addClass('current');
-          // Remove the link of the current option
-          menuLink.html(menuLink.find('a').text());
-        });
-      </script>
-
+      <div class="sakai-chat">
 		<h:form styleClass="list-rooms" id="listRoomsForm">
             <%@ include file="chatMenu.jsp" %>
 			<sakai:view_title value="#{msgs.room_list_title}"/>  	
@@ -80,5 +71,6 @@
 			</sakai:button_bar>
 
 		</h:form>
+      </div>
 	</sakai:view>
 </f:view>

@@ -4,7 +4,7 @@
 <c:set var="lastMessageOwnerId" value="0" />
 <c:set var="lastMessageMillis" value="0" />
 <ul id="topForm:chatList" class="chatList">
-    <li id="chatListItem" class="d-none">
+    <li id="chatListItem" class="sakai-is-hidden">
         <c:out value="
             <sakai-user-photo user-id=\"USER_ID_PLACEHOLDER\" profile-popup=\"on\"></sakai-user-photo>
             <span class=\"chatNameDate\">
@@ -14,14 +14,14 @@
             <span class=\"chatMessage\">
                 <span class=\"chatMessageDate\"></span>
                 <span class=\"chatText\"></span>
-                <a href=\"#\" class=\"chatRemove d-none\" id=\"topForm:chatList:${serial}:deleteMessage\" title=\"${msgs['list.del']}\">
-                    <span class=\"sr-only\">${msgs['list.del']}</span>
-                    <span class=\"fa fa-trash\" aria-hidden=\"true\"></span>
-                </a>
+                <button type=\"button\" class=\"chatRemove sakai-is-hidden\" id=\"topForm:chatList:${serial}:deleteMessage\" title=\"${msgs['list.del']}\">
+                    <span class=\"visually-hidden\">${msgs['list.del']}</span>
+                    <span class=\"bi bi-trash\" aria-hidden=\"true\"></span>
+                </button>
             </span>
         " escapeXml="false" />
     </li>
-    <li id="divisorNewMessages" class="d-none divisorNewMessages">
+    <li id="divisorNewMessages" class="sakai-is-hidden divisorNewMessages">
         <c:out value="
             <span class=\"newMessages\">
             </span>${msgs['new_messages']}" escapeXml="false" />
@@ -67,7 +67,7 @@
                 <c:out value="<span class='chatMessageDate'>${chatDate}</span>" escapeXml="false" />
                 <c:out value="<span class='chatText'>${message.chatMessage.body}</span>" escapeXml="false" />
                 <c:if test="${message.canRemoveMessage}">
-                    <c:out value="<a href='#' class='chatRemove' data-message-id='${message.chatMessage.id}'><span class='fa fa-trash' aria-hidden='true' /><span class='sr-only'>${msgs['list.del']}</span></a>" escapeXml="false" />
+                    <c:out value="<button type='button' class='chatRemove' data-message-id='${message.chatMessage.id}'><span class='bi bi-trash' aria-hidden='true'></span><span class='visually-hidden'>${msgs['list.del']}</span></button>" escapeXml="false" />
                 </c:if>
             <c:out value="</span>" escapeXml="false" />
         <c:out value="</li>" escapeXml="false" />

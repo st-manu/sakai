@@ -1,7 +1,8 @@
 <f:view>
-    
+    <c:set var="chatMenuCurrent" value="add" />
 
 	<sakai:view>
+      <div class="sakai-chat">
       <script>includeLatestJQuery("editRoom.jsp");</script>
       <script src="/library/js/lang-datepicker/lang-datepicker.js"></script>
 
@@ -24,12 +25,6 @@
                 val: '<h:outputText value="#{ChatTool.currentChannelEdit.endDate}"><f:convertDateTime pattern="yyyy-MM-dd"/></h:outputText>',
                 ashidden: { iso8601: 'chatEndDateISO8601' }
             });
-
-            // Assign the current class to the tab in the template
-            var menuLink = $('#editRoomForm\\:chatAddRoomLink');
-            menuLink.addClass('current');
-            // Remove the link of the current option
-            menuLink.html(menuLink.find('a').text());
           });
         </script>
 
@@ -135,5 +130,6 @@
 					value="#{msgs['gen.cancel']}" />
 			</sakai:button_bar>
 		</h:form>
+      </div>
 	</sakai:view>
 </f:view>

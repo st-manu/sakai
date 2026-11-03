@@ -88,16 +88,11 @@ class Chat {
       const submitButton = document.querySelector("#topForm\\:controlPanel\\:submit");
       const resetButton = document.querySelector("#topForm\\:controlPanel\\:reset");
 
-      // Apply Bootstrap classes to form elements
-      addClass(textarea, "form-control");
-      addClass(submitButton, "btn btn-primary");
-      addClass(resetButton, "btn btn-secondary");
-
       // Add character counter
       const formGroup = textarea.parentNode;
       if (formGroup) {
         const charCounter = document.createElement("small");
-        addClass(charCounter, "form-text text-muted mt-1 char-counter");
+        addClass(charCounter, "sakai-chat__counter char-counter");
         text(charCounter, "0 characters");
         append(formGroup, charCounter);
 
@@ -144,7 +139,6 @@ class Chat {
       });
 
       const chatList = document.querySelector(".chatList");
-      addClass(chatList, "list-group");
       on(chatList, 'click', (event) => {
         if (hasClass(event.target, 'chatRemove') || hasClass(event.target.parentNode, 'chatRemove')) {
           const clickedElement = hasClass(event.target, 'chatRemove') ? event.target : event.target.parentNode;
@@ -155,6 +149,10 @@ class Chat {
           const messageBody = html(messageItem.querySelector(".chatText"));
           this.showRemoveModal(messageId, ownerDisplayName, date, messageBody);
         }
+      });
+
+      document.querySelectorAll("[data-chat-tab]").forEach(tab => {
+        on(tab, 'click', () => this.selectChatTab(tab));
       });
 
       const deleteButton = document.querySelector("#deleteButton");
@@ -173,11 +171,21 @@ class Chat {
       });
 
       const scrollBottomButton = document.querySelector(".scrollBottom");
-      addClass(scrollBottomButton, "btn btn-primary position-absolute bottom-0 end-0 m-3");
       on(scrollBottomButton, 'click', () => {
         this.scrollChat();
         setTimeout(() => this.handleDivisorFadeOut(), 3000);
         this.handleScrollBottomFadeOut();
+      });
+    }
+
+    selectChatTab(selectedTab) {
+      document.querySelectorAll("[data-chat-tab]").forEach(tab => {
+        const selected = tab === selectedTab;
+        attr(tab, "aria-selected", String(selected));
+        const panel = document.getElementById(attr(tab, "data-chat-tab"));
+        if (panel) {
+          panel.classList.toggle("is-inactive", !selected);
+        }
       });
     }
 
@@ -202,16 +210,14 @@ class Chat {
       const submitButton = document.querySelector("#topForm\\:controlPanel\\:submit");
       if (xhr.status === 404) {
         const missingChannel = document.querySelector("#missingChannel");
-        removeClass(missingChannel, "d-none");
-        addClass(missingChannel, "alert alert-danger");
+        removeClass(missingChannel, "sakai-is-hidden");
         val(textarea, "");
         attr(textarea, "disabled", true);
         attr(submitButton, "disabled", true);
         attr(document.querySelector("#topForm\\:controlPanel\\:reset"), "disabled", true);
       } else {
         const errorSubmit = document.querySelector("#errorSubmit");
-        removeClass(errorSubmit, "d-none");
-        addClass(errorSubmit, "alert alert-danger");
+        removeClass(errorSubmit, "sakai-is-hidden");
         removeAttr(submitButton, "disabled");
       }
       textarea.focus();
@@ -225,9 +231,9 @@ class Chat {
         type: "POST",
         contentType: 'application/x-www-form-urlencoded',
         beforeSend: () => {
-          addClass(errorSubmit, "d-none");
+          addClass(errorSubmit, "sakai-is-hidden");
           const spinner = document.createElement("span");
-          addClass(spinner, "spinner-border spinner-border-sm me-2");
+          addClass(spinner, "spinner-border spinner-border-sm sakai-chat__spinner");
           attr(spinner, "role", "status");
           attr(spinner, "aria-hidden", "true");
           attr(submitButton, "disabled");
@@ -348,8 +354,7 @@ class Chat {
           if (divisorElements.length < 2) {
             const divisorNewMessages = document.querySelector("#divisorNewMessages").cloneNode(true);
             removeAttr(divisorNewMessages, "id");
-            removeClass(divisorNewMessages, "d-none");
-            addClass(divisorNewMessages, "list-group-item list-group-item-info");
+            removeClass(divisorNewMessages, "sakai-is-hidden");
             const chatList = document.querySelector("#topForm\\:chatList");
             append(chatList, divisorNewMessages);
           }
@@ -377,8 +382,7 @@ class Chat {
         const existingMessage = document.querySelector(`#topForm\\:chatList li[data-message-id="${messageId}"]`);
         if (!existingMessage) {
           const messageItem = document.querySelector("#chatListItem").cloneNode(true);
-          removeClass(messageItem, "d-none");
-          addClass(messageItem, "list-group-item");
+          removeClass(messageItem, "sakai-is-hidden");
           removeAttr(messageItem, "id");
           attr(messageItem, "data-message-id", messageId);
           attr(messageItem, "data-owner-id", ownerId);
@@ -388,31 +392,26 @@ class Chat {
 
           const chatMessage = messageItem.querySelector(".chatMessage");
           attr(chatMessage, "data-message-id", messageId);
-          addClass(chatMessage, "ms-2");
 
           const chatName = messageItem.querySelector(".chatName");
           attr(chatName, "id", ownerId);
           text(chatName, ownerDisplayName);
-          addClass(chatName, "fw-bold");
 
           const chatDate = messageItem.querySelector(".chatDate");
           text(chatDate, dateStr);
-          addClass(chatDate, "text-muted small ms-2");
 
           const chatText = messageItem.querySelector(".chatText");
           html(chatText, messageBody);
 
           if (removeable) {
             const chatRemove = messageItem.querySelector(".chatRemove");
-            removeClass(chatRemove, "d-none");
-            addClass(chatRemove, "btn btn-sm btn-link text-danger float-end");
+            removeClass(chatRemove, "sakai-is-hidden");
           }
 
           if (lastMessageOwnerId === ownerId && messageMillisDiff < (5*60*1000)) {
-            addClass(messageItem, "nestedMessage border-start-0 border-end-0 py-2");
+            addClass(messageItem, "nestedMessage");
             const chatMessageDate = messageItem.querySelector(".chatMessageDate");
             text(chatMessageDate, dateStr);
-            addClass(chatMessageDate, "text-muted small");
           }
 
           const chatList = document.querySelector("#topForm\\:chatList");
@@ -434,13 +433,11 @@ class Chat {
             for (let j = 0; j < divisorElements.length; j++) {
               const newMessagesElement = divisorElements[j].querySelector(".newMessages");
               text(newMessagesElement, currentUnreadedCount);
-              addClass(newMessagesElement, "badge bg-danger rounded-pill me-2");
             }
 
             const scrollBottomElement = document.querySelector(".scrollBottom");
             fadeIn(scrollBottomElement, 300);
-            removeClass(scrollBottomElement, "d-none");
-            addClass(scrollBottomElement, "btn btn-primary position-absolute bottom-0 end-0 m-3");
+            removeClass(scrollBottomElement, "sakai-is-hidden");
           }
         }
       }
@@ -476,30 +473,18 @@ class Chat {
     updatePresentUsers(users) {
       console.debug("updatePresentUsers called with users:", users);
       const presence = document.getElementById("presence");
-
-      // No need to switch tabs, just update the presence list directly
-      // This avoids the flickering issue while still ensuring the list is updated
-
-      // Check if users array is empty or undefined
-      if (!users || users.length === 0) {
-        console.log("No users to display in presence list");
-        if (presence) {
-          // Clear the presence list and add a message
-          presence.textContent = "";
-          addClass(presence, "list-group");
-          const noUsersElement = document.createElement("li");
-          addClass(noUsersElement, "list-group-item text-center");
-          noUsersElement.textContent = "No users currently online";
-          presence.appendChild(noUsersElement);
-        }
+      if (!presence) {
+        console.log("Presence element not found");
         return;
       }
+      presence.textContent = "";
 
-      if (presence) {
-        presence.textContent = "";
-        addClass(presence, "list-group");
-      } else {
-        console.log("Presence element not found");
+      if (!users || users.length === 0) {
+        console.log("No users to display in presence list");
+        const noUsersElement = document.createElement("li");
+        addClass(noUsersElement, "sakai-chat__presence-empty");
+        text(noUsersElement, "No users currently online");
+        presence.appendChild(noUsersElement);
         return;
       }
 
@@ -513,24 +498,32 @@ class Chat {
         if(ownerId.indexOf(':') > -1) {
           userId = ownerId.substring(ownerId.indexOf(":") + 1);
         }
+
         const userElement = document.createElement("li");
+        attr(userElement, "data-user-id", ownerId);
+        addClass(userElement, "sakai-chat__presence-item");
 
-        userElement.setAttribute("data-user-id", ownerId);
-        addClass(userElement, "list-group-item d-flex align-items-center");
+        const row = document.createElement("div");
+        addClass(row, "sakai-chat__presence-row");
 
-        userElement.innerHTML = `
-          <div class="chat-presence-row d-flex align-items-center w-100">
-            <div class="me-3">
-              <sakai-user-photo user-id="${ownerId}" profile-popup="on"></sakai-user-photo>
-            </div>
-            <div class="flex-grow-1">${user.name}</div>
-            <div class="ms-auto">
-              <span class="badge bg-success rounded-pill">online</span>
-            </div>
-          </div>`;
-        if (presence) {
-          presence.appendChild(userElement);
-        }
+        const photo = document.createElement("sakai-user-photo");
+        attr(photo, "user-id", ownerId);
+        attr(photo, "profile-popup", "on");
+
+        const name = document.createElement("div");
+        addClass(name, "sakai-chat__presence-name");
+        html(name, user.name);
+
+        const badge = document.createElement("span");
+        addClass(badge, "sakai-badge");
+        text(badge, "online");
+
+        append(row, photo);
+        append(row, name);
+        append(row, badge);
+        append(userElement, row);
+        presence.appendChild(userElement);
+
         document.querySelectorAll(`.chatList sakai-user-photo[user-id='${userId}']`).forEach(function(el) {
           el.online = true;
         });
@@ -550,20 +543,6 @@ class Chat {
 
       const deleteButton = removeModal.querySelector("#deleteButton");
       attr(deleteButton, "data-message-id", messageId);
-      addClass(deleteButton, "btn-danger");
-
-      // Enhance modal with Bootstrap classes
-      const modalDialog = removeModal.querySelector(".modal-dialog");
-      addClass(modalDialog, "modal-dialog-centered");
-
-      const modalBody = removeModal.querySelector(".modal-body");
-      addClass(modalBody, "p-4");
-
-      // Create a table with Bootstrap classes
-      const table = modalBody.querySelector("table");
-      if (table) {
-        addClass(table, "table table-bordered");
-      }
 
       const modal = new bootstrap.Modal(removeModal);
       modal.toggle();
