@@ -6,6 +6,7 @@ import { calendarStyles } from "./calendar-styles.js";
 import { SakaiSitePicker } from "@sakai-ui/sakai-site-picker";
 import "@sakai-ui/sakai-site-picker/sakai-site-picker.js";
 import { loadProperties } from "@sakai-ui/sakai-i18n";
+import { getUserLocale } from "@sakai-ui/sakai-portal-utils";
 
 export class SakaiCalendar extends LionCalendar {
 
@@ -209,7 +210,7 @@ export class SakaiCalendar extends LionCalendar {
   _selectedDayLabel() {
 
     const start = this._selectedDayStart || new Date().setHours(0, 0, 0, 0);
-    return new Date(start).toLocaleDateString(undefined, { dateStyle: "medium" });
+    return new Date(start).toLocaleDateString(getUserLocale(), { dateStyle: "medium" });
   }
 
   _daysEventsBlock() {

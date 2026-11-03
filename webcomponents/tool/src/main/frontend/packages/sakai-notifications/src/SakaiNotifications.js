@@ -299,7 +299,7 @@ export class SakaiNotifications extends SakaiElement {
       .catch(error => console.error(error));
   }
 
-  _clearTestNotifications() {
+  clearTestNotifications() {
 
     this.notifications = [ ...this.notifications.filter(n => !n.event.startsWith("test")) ];
     this._filterIntoToolNotifications();
@@ -470,7 +470,7 @@ export class SakaiNotifications extends SakaiElement {
               <div class="sakai-notifications__group-footer">
                 <button type="button"
                     class="sakai-btn sakai-btn-ghost"
-                    @click=${this._clearTestNotifications}>
+                    @click=${this.clearTestNotifications}>
                   ${this._i18n.clear}
                 </button>
               </div>` : nothing}

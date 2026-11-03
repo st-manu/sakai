@@ -2,6 +2,8 @@ import { SakaiElement } from "@sakai-ui/sakai-element";
 import { html, nothing } from "lit";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
 
+const SEARCH_MIN_LENGTH = 3;
+
 export class SakaiSearch extends SakaiElement {
 
   static properties = {
@@ -10,14 +12,14 @@ export class SakaiSearch extends SakaiElement {
     tool: { type: String },
 
     _results: { state: true },
+    _noResults: { state: true },
   };
 
   constructor() {
 
     super();
 
-    this.searchTerms = "";
-    this.searchMinLengthValue = 3;
+    this._searchTerms = "";
 
     this.iconMapping = {
       "announcement": "si si-sakai-announcements",
@@ -54,19 +56,31 @@ export class SakaiSearch extends SakaiElement {
     });
   }
 
-  handleKeydownOnResult(e) {
+  handleKeydownOnResult(e, index) {
 
     if (e.code === "Escape") {
       e.preventDefault();
       this.closeResults();
+      return;
+    }
+
+    const links = [ ...this.renderRoot.querySelectorAll(".sakai-search__result-link") ];
+
+    if (e.code === "ArrowDown") {
+      links[index + 1]?.focus();
+      e.preventDefault();
+    } else if (e.code === "ArrowUp") {
+      links[index - 1]?.focus();
+      e.preventDefault();
     }
   }
 
   closeResults() {
 
     this._results = [];
+    this._noResults = false;
     this.dispatchEvent(new CustomEvent("hiding-search-results"));
-    this.querySelector("input").focus();
+    this.renderRoot.querySelector("input")?.focus();
   }
 
   shouldUpdate() {
@@ -77,11 +91,11 @@ export class SakaiSearch extends SakaiElement {
 
     e.preventDefault();
 
-    const terms = document.getElementById("sakai-search-input")?.value;
+    const terms = this.renderRoot.querySelector("#sakai-search-input")?.value || "";
 
     this.closeResults();
 
-    if (terms.length > this.searchMinLengthValue - 1) {
+    if (terms.length > SEARCH_MIN_LENGTH - 1) {
 
       const url = `/api/search?terms=${encodeURIComponent(terms)}${this.siteId ? `&site=${encodeURIComponent(this.siteId)}` : ""}${this.tool ? `&tool=${encodeURIComponent(this.tool)}` : ""}`;
       fetch(url, {
@@ -101,34 +115,14 @@ export class SakaiSearch extends SakaiElement {
         this.dispatchEvent(new CustomEvent("showing-search-results"));
         this._results = data;
 
-        this.noResults = this._results.length === 0;
+        this._noResults = this._results.length === 0;
         this._results.forEach(r => { if (r.title.length === 0) r.title = r.tool; });
+
         this.updateComplete.then(() => {
-
-          const links = [ ...this.querySelectorAll(".sakai-search__result-link") ];
-
-          if (!this.noResults) {
-            links[0]?.focus();
+          if (!this._noResults) {
+            this.renderRoot.querySelector(".sakai-search__result-link")?.focus();
           }
-
-          links.forEach((link, index) => {
-
-            link.addEventListener("keydown", ke => {
-
-              ke.stopPropagation();
-
-              if (ke.code === "ArrowDown") {
-                links[index + 1]?.focus();
-                ke.preventDefault();
-              } else if (ke.code === "ArrowUp") {
-                links[index - 1]?.focus();
-                ke.preventDefault();
-              }
-            });
-          });
         });
-
-        this.requestUpdate();
       })
       .catch (error => console.error(error));
     }
@@ -143,17 +137,17 @@ export class SakaiSearch extends SakaiElement {
             class="sakai-search__input sakai-form-control"
             autocomplete="off"
             id="sakai-search-input"
-            pattern=".{${this.searchMinLengthValue},}"
-            title="${this._i18n.search_min_length.replace("{}", this.searchMinLengthValue)}"
+            pattern=".{${SEARCH_MIN_LENGTH},}"
+            title="${this._i18n.search_min_length.replace("{}", SEARCH_MIN_LENGTH)}"
             placeholder="${this._i18n.search_placeholder}"
-            value=${this.searchTerms}
+            value=${this._searchTerms}
             aria-label="${this._i18n.search_placeholder}"
           />
           <button class="sakai-search__submit sakai-btn sakai-btn-primary" type="submit" id="sakai-search-button">
             ${this._i18n.search}
           </button>
         </form>
-        ${this.noResults ? html`
+        ${this._noResults ? html`
           <p class="sakai-search__empty">${this._i18n.no_results}</p>
         ` : nothing}
         ${this._results?.length > 0 ? html`
@@ -167,9 +161,9 @@ export class SakaiSearch extends SakaiElement {
             </button>
           </div>
           <ul class="sakai-search__results">
-            ${this._results.map(r => html`
+            ${this._results.map((r, index) => html`
               <li>
-                <a class="sakai-search__result-link" href="${r.url}" @keydown=${this.handleKeydownOnResult}>
+                <a class="sakai-search__result-link" href="${r.url}" @keydown=${e => this.handleKeydownOnResult(e, index)}>
                   <div class="sakai-search__result-meta">
                     <i class="sakai-search__result-icon ${this.iconMapping[r.tool]}" aria-hidden="true"></i>
                     <span class="sakai-search__result-tool">${this.toolNameMapping[r.tool]}</span>

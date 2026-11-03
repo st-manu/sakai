@@ -39,7 +39,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   notificationsPanel?.addEventListener("hidden.bs.offcanvas", e => {
-    e.target.querySelector("sakai-notifications")?._clearTestNotifications();
+    e.target.querySelector("sakai-notifications")?.clearTestNotifications();
   });
 
   document.getElementById("sakai-directlink-panel")?.addEventListener("change", async e => {
