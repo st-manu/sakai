@@ -328,28 +328,6 @@
 		    	text-decoration: none;
 		    }
 		}
-		&--count.present{
-		    min-width: 20px;
-		    height: 20px;
-		    display: inline-block;
-		    border-radius: 10px;
-		    text-align: center;
-		    margin-right: auto;
-		    vertical-align: text-bottom;
-		    border: 1px solid $footerApp__chat__a__color;
-		    margin-left: 5px;
-		    padding: 0;
-		    font-size: 0.8em;
-		    #footerAppPresence & {
-		    	margin-right: 0;
-		    	position: relative;
-		    	top: -1.4em;
-		    	margin-left: 25px;
-		    }
-		  }
-		  &--count.empty{
-		  	display: none;
-		  }
 		  &--icon{
 		 	@extend .fa;
 			&.icon-sakai-close			{	@extend .fa-times}
@@ -369,55 +347,6 @@
 			&.icon-sakai-flagcheckered	{	@extend	.fa-flag-checkered}
 			&.icon-sakai-frown			{	@extend	.fa-frown-o}
 		  }
-	}
-	.#{$namespace}presence {
-		&__area {
-		    background-color: var(--sakai-background-color-1);
-		    border: 1px solid var(--sakai-border-color);
-		    position: fixed;
-		    height: 265px;
-		    width: 175px;
-		    bottom: 30px;
-		    right: 20px;
-		    z-index: 21;
-		    display: block !important;
-			&.is-hidden{
-				display: none !important;
-			}
-
-		    &--wrapper {
-		        width: 100%;
-		        height: 100%;
-		    }
-		    &--title {
-		        font-weight: bold;
-		        padding: 5px;
-		        vertical-align: middle;
-		        color: $footerApp__chat__header__color;
-		        background-color: $footerApp__chat__header__background;
-
-		        &--close {
-		        	float: right;
-		        	color: inherit;
-		        	text-align: right;
-			    }
-		    }
-		    &--iframe, &--iframe-div {
-		        height: 242px;
-		        width: 100%;
-		        overflow: auto;
-
-		       .presenceList{
-		            font-size: .8em;
-		            list-style: none;
-		            margin: 0;
-		            padding-left: .1em;
-		            li{
-		                margin-bottom: .2em;
-		            }
-		        }
-		    }
-		}
 	}
 	.#{$namespace}portalChat{
 		    width: 225px;
