@@ -56,15 +56,15 @@
         #end
     </dl>
 
-    <section class="sakai-announcements__section">
-        <h2 class="sakai-announcements__section-title">$tlang.getString("meta.message")</h2>
+    <section class="sakai-form-section">
+        <h2 class="sakai-form-section__title">$tlang.getString("meta.message")</h2>
         <div class="sakai-announcements__body">$formattedText.escapeHtmlFormattedText($message.body)</div>
     </section>
 
     #set ($size = 0)
     #if (!$message.Header.Attachments.isEmpty())
-        <section class="sakai-announcements__section">
-            <h2 class="sakai-announcements__section-title">$tlang.getString("meta.attach")</h2>
+        <section class="sakai-form-section">
+            <h2 class="sakai-form-section__title">$tlang.getString("meta.attach")</h2>
             <ul class="sakai-announcements__attachments">
                 #set ($props = false)
                 #set ($size = $message.Header.Attachments.size())
@@ -108,7 +108,7 @@
     #else
         <form name="formII" action="#toolForm("$action")" method="post">
             <div class="sakai-actions">
-                <button type="submit" class="sakai-btn sakai-btn-primary" name="eventSubmit_doLinkcancel" accesskey="x">$tlang.getString("meta.retlis")</button>
+                <button type="submit" class="sakai-btn sakai-btn-ghost" name="eventSubmit_doLinkcancel" accesskey="x">$tlang.getString("meta.retlis")</button>
             </div>
             <input type="hidden" name="sakai_csrf_token" value="$sakai_csrf_token" />
         </form>

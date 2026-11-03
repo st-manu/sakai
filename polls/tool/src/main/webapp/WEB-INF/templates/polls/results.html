@@ -12,9 +12,9 @@
     <p class="sakai-polls-question" th:utext="${poll.text}">Poll question</p>
     <p th:text="${pollSizeMessage}">Poll size</p>
 
-    <section class="sakai-polls-section sakai-no-print" aria-labelledby="poll-results-chart-heading">
+    <section class="sakai-form-section sakai-no-print" aria-labelledby="poll-results-chart-heading">
       <div class="sakai-polls-chart-toolbar">
-        <h2 id="poll-results-chart-heading" class="sakai-polls-section__title" th:text="#{results_chart_title}">Chart</h2>
+        <h2 id="poll-results-chart-heading" class="sakai-form-section__title" th:text="#{results_chart_title}">Chart</h2>
         <div class="sakai-polls-chart-toolbar__controls">
           <label for="chart-type-selection" th:text="#{results_chart_type}">Chart Type:</label>
           <select id="chart-type-selection" class="sakai-form-control sakai-form-control--sm">
@@ -73,7 +73,7 @@
     </div>
 
     <div class="sakai-actions sakai-no-print">
-      <a class="sakai-btn sakai-btn-secondary" th:href="@{/votePolls}" th:text="#{results_cancel}">Back</a>
+      <a class="sakai-btn sakai-btn-ghost" th:href="@{/votePolls}" th:text="#{results_cancel}">Back</a>
       <a class="sakai-btn sakai-btn-secondary" th:if="${canEdit}" th:href="@{/polls/export/xlsx/{id}(id=${poll.id})}">
         <span class="bi bi-file-earmark-excel" aria-hidden="true"></span>
         <span th:text="#{poll_export_link}">Export to Excel</span>

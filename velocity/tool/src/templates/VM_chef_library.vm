@@ -670,6 +670,14 @@ ${extra}")
 					#end
 				#end
 		</div>
+			#end
+		#end
+		#if($backAction)
+		<a class="sakai-btn sakai-btn-secondary" href="#"
+			onclick="location = '#toolLink("$action" $backAction)';return false;">$!backLabel</a>
+		#end
+		#if($hasMenuActions)
+			#if($hasUtilities)
 		<details class="sakai-overflow-menu sakai-tool-header__more">
 			<summary class="sakai-btn sakai-btn-ghost sakai-overflow-menu__toggle"#if($moreLabel) aria-label="$moreLabel"#end>
 				<span class="bi bi-three-dots" aria-hidden="true"></span>
@@ -689,10 +697,6 @@ ${extra}")
 			</div>
 		</details>
 			#end
-		#end
-		#if($backAction)
-		<a class="sakai-btn sakai-btn-secondary" href="#"
-			onclick="location = '#toolLink("$action" $backAction)';return false;">$!backLabel</a>
 		#end
 	</div>
 	#end

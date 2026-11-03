@@ -12,7 +12,7 @@
 	#announcementsHeader($tlang.getString("reorder.title") "" "" "doCancel")
 	#announcementsAlert($alertMessage)
 
-	<p class="sakai-announcements__hint">
+	<p class="sakai-form-section__intro">
 		$tlang.getString('reorder.instruction.general')
 		<span id="inputKbdMessage" class="visually-hidden">$tlang.getString('reorder.instruction.general.hidden')</span>
 	</p>
@@ -80,13 +80,13 @@
 					#end
 			</div>
 				<sakai-reorderer id="announcements-reorderer" style="display:block" apply-dom>
-				<ul id="reorder-list" class="list-group sakai-reorder-list">
+				<ul id="reorder-list" class="sakai-reorder-list">
 
 				#set($count = 1)
 				#set($reorderListSize = $showMessagesList.size())
 				#foreach ($ann_item in $showMessagesList)
 					#set($ann_item_props=$ann_item.getProperties())
-					<li class="list-group-item reorder-element sakai-reorder-row" id="listitem.orderable$count" data-reorderable-id="listitem.orderable$count">
+					<li class="reorder-element sakai-reorder-row" id="listitem.orderable$count" data-reorderable-id="listitem.orderable$count">
 						<div class="sakai-reorder-row-main">
 							<div class="sakai-reorder-move-controls">
 								<span class="sakai-btn-icon sakai-reorder-drag-handle drag-handle"
@@ -144,7 +144,7 @@
 				</sakai-reorderer>
 		<div class="sakai-actions">
 			<input type="submit" class="sakai-btn sakai-btn-primary" name="eventSubmit_doReorderUpdate" value="$tlang.getString("gen.update")" accesskey="s" />
-			<input type="submit" class="sakai-btn sakai-btn-secondary" accesskey="x" name="eventSubmit_doCancel" value="$tlang.getString("gen.cancel")" />
+			<input type="submit" class="sakai-btn sakai-btn-ghost" accesskey="x" name="eventSubmit_doCancel" value="$tlang.getString("gen.cancel")" />
 		</div>
 		<input type="hidden" name="sakai_csrf_token" value="$sakai_csrf_token" />
 	</form>

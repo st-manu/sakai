@@ -7,7 +7,7 @@
 	#announcementsHeader($tlang.getString("custom.options") "" "" "doCancel")
 	#announcementsAlert($alertMessage)
 
-	<p class="sakai-announcements__hint">
+	<p class="sakai-form-section__intro">
 		#if ($toolId == "sakai.announcements")
 			$tlang.getString("custom.setoptions")
 		#else
@@ -17,8 +17,8 @@
 
 	<form action="#toolForm("$action")" method="post" name="optionsForm">
 	#if ($toolId == "sakai.announcements")
-		<fieldset class="sakai-announcements__section">
-			<legend class="sakai-announcements__section-title">$tlang.getString("custom.display")</legend>
+		<fieldset class="sakai-form-section">
+			<legend class="sakai-form-section__title">$tlang.getString("custom.display")</legend>
 
 			#set ($selected = $tlang.getString("custom.sortab"))
 			#if ( $displayOptions.isShowAllColumns())
@@ -31,25 +31,25 @@
 				#set ($selected = $tlang.getString("custom.lisvie"))
 			#end
 
-			<div class="sakai-announcements__choice">
+			<div class="sakai-form-choice">
 				<input type="radio" id="sortable" name="VarNameDisplaySelection" value="sortable"
 					#if ($selected == $tlang.getString("custom.sortab"))checked="checked"#end />
 				<label for="sortable">$tlang.getString("custom.sortab")</label>
 			</div>
 
-			<div class="sakai-announcements__choice">
+			<div class="sakai-form-choice">
 				<input type="radio" id="sortableWithBody" name="VarNameDisplaySelection" value="sortableWithBody"
 					#if ($selected == $tlang.getString("custom.sortabbod"))checked="checked"#end />
 				<label for="sortableWithBody">$tlang.getString("custom.sortabbod")</label>
 			</div>
 
-			<div class="sakai-announcements__choice">
+			<div class="sakai-form-choice">
 				<input type="radio" id="showList" name="VarNameDisplaySelection" value="list"
 					#if ($selected == $tlang.getString("custom.lisvie"))checked="checked"#end />
 				<label for="showList">$tlang.getString("custom.lisvie")</label>
 			</div>
 
-			<div class="sakai-form-group" id="charDisplay">
+			<div class="sakai-form-field" id="charDisplay">
 				<label for="changeChars" class="sakai-form-label">$tlang.getString("custom.charbody")</label>
 				#if ($displayOptions.isEnforceNumberOfCharsPerAnnouncement())
 					#if ($displayOptions.NumberOfCharsPerAnnouncement == 50)
@@ -77,25 +77,25 @@
 			</div>
 		</fieldset>
 
-		<fieldset class="sakai-announcements__section">
-			<legend class="sakai-announcements__section-title">$tlang.getString("custom.rss_option.full")</legend>
+		<fieldset class="sakai-form-section">
+			<legend class="sakai-form-section__title">$tlang.getString("custom.rss_option.full")</legend>
 
-			<div class="sakai-form-group">
+			<div class="sakai-form-field">
 				<label for="rssAlias" class="sakai-form-label">$tlang.getString("custom.rss_alias")</label>
 				<input type="text" name="rssAlias" id="rssAlias" maxlength="40" value="$!rssAlias" class="sakai-form-control" />
 			</div>
 
-			<div class="sakai-form-group">
+			<div class="sakai-form-field">
 				<span class="sakai-form-label">$tlang.getString("custom.rss_url")</span>
 				<a target="_blank" href="$!rssUrl" class="url">$rssUrl</a>
 			</div>
 		</fieldset>
 
 	#else
-		<fieldset class="sakai-announcements__section">
-			<legend class="sakai-announcements__section-title">$tlang.getString("custom.display")</legend>
+		<fieldset class="sakai-form-section">
+			<legend class="sakai-form-section__title">$tlang.getString("custom.display")</legend>
 
-			<div class="sakai-announcements__choice">
+			<div class="sakai-form-choice">
 				<input type="checkbox"
 					name="$displayOptions.getVarNameShowAnnouncementBody()"
 					id="${displayOptions.getVarNameShowAnnouncementBody()}Check"
@@ -104,7 +104,7 @@
 				<label for="${displayOptions.getVarNameShowAnnouncementBody()}Check">$tlang.getString("custom.showbody")</label>
 			</div>
 
-			<div class="sakai-form-group" id="charDisplay">
+			<div class="sakai-form-field" id="charDisplay">
 				<label for="changeChars" class="sakai-form-label">$tlang.getString("custom.about")</label>
 				#if ($displayOptions.isEnforceNumberOfCharsPerAnnouncement())
 					#if ($displayOptions.NumberOfCharsPerAnnouncement == 50)
@@ -133,10 +133,10 @@
 		</fieldset>
 	#end
 
-		<fieldset class="sakai-announcements__section">
-			<legend class="sakai-announcements__section-title">$tlang.getString("custom.dplimits")</legend>
+		<fieldset class="sakai-form-section">
+			<legend class="sakai-form-section__title">$tlang.getString("custom.dplimits")</legend>
 
-			<div class="sakai-form-group">
+			<div class="sakai-form-field">
 				<label for="${displayOptions.getVarNameNumberOfDaysInPast()}EntryField" class="sakai-form-label">$tlang.getString("custom.number")</label>
 				<input type="text" id="${displayOptions.getVarNameNumberOfDaysInPast()}EntryField" name="$displayOptions.getVarNameNumberOfDaysInPast()" size="2"
 					class="sakai-form-control sakai-announcements__number-input"
@@ -147,7 +147,7 @@
 					#end />
 			</div>
 
-			<div class="sakai-form-group">
+			<div class="sakai-form-field">
 				<label for="${displayOptions.getVarNameNumberOfAnnouncements()}EntryField" class="sakai-form-label">$tlang.getString("custom.numbann")</label>
 				<input type="text" id="${displayOptions.getVarNameNumberOfAnnouncements()}EntryField" size="2"
 					class="sakai-form-control sakai-announcements__number-input"

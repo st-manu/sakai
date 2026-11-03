@@ -1,0 +1,133 @@
+.sakai-form-section {
+  margin: 0 0 var(--sakai-space-5);
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+
+.sakai-form-grid + .sakai-form-section,
+.sakai-form-field + .sakai-form-section {
+  margin-block-start: var(--sakai-space-5);
+}
+
+.sakai-form-section__title {
+  display: block;
+  width: auto;
+  margin: 0 0 var(--sakai-space-3);
+  padding: 0;
+  border: 0;
+  float: none;
+  font-size: var(--sakai-font-size-sm);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--sakai-text-color-2);
+}
+
+.sakai-form-section__intro {
+  margin: 0 0 var(--sakai-space-3);
+  color: var(--sakai-text-color-2);
+}
+
+.sakai-form-grid {
+  display: grid;
+  gap: var(--sakai-space-3);
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+}
+
+.sakai-form-grid + .sakai-form-grid {
+  margin-block-start: var(--sakai-space-4);
+}
+
+.sakai-form-grid--3 {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+}
+
+.sakai-form-field {
+  display: grid;
+  gap: var(--sakai-space-2);
+  align-content: start;
+  min-width: 0;
+  margin: 0 0 var(--sakai-space-4);
+
+  > .sakai-form-label {
+    margin-bottom: 0;
+  }
+}
+
+.sakai-form-grid > .sakai-form-field,
+.sakai-form-section > .sakai-form-field:last-child {
+  margin-bottom: 0;
+}
+
+.sakai-form-field--span-2 {
+  grid-column: span 2;
+}
+
+@container sakai-tool (max-width: 48rem) {
+  .sakai-form-field--span-2 {
+    grid-column: auto;
+  }
+}
+
+.sakai-form-help {
+  margin: 0;
+  color: var(--sakai-text-color-2);
+  font-size: var(--sakai-font-size-sm);
+}
+
+.sakai-form-subfield {
+  display: grid;
+  gap: var(--sakai-space-2);
+  min-width: 0;
+}
+
+.sakai-form-choice-group {
+  display: grid;
+  gap: var(--sakai-space-2);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+
+  > .sakai-form-choice {
+    margin-bottom: 0;
+  }
+}
+
+.sakai-form-choice-group--scroll {
+  max-block-size: 16rem;
+  overflow-y: auto;
+  padding-inline-end: var(--sakai-space-2);
+}
+
+.sakai-form-choice {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sakai-space-2);
+  margin-bottom: var(--sakai-space-2);
+
+  > input[type="checkbox"],
+  > input[type="radio"] {
+    margin: 0.2em 0 0;
+    border-color: var(--sakai-border-color);
+  }
+
+  > input[type="checkbox"] {
+    border-radius: var(--sakai-radius-sm);
+  }
+
+  > input[type="checkbox"]:checked {
+    border-color: var(--checkbox-background);
+  }
+
+  > input[type="radio"]:checked {
+    border-color: var(--radio-button-background);
+  }
+
+  > label {
+    margin: 0;
+    font-weight: 400;
+    cursor: pointer;
+  }
+}

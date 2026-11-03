@@ -30,7 +30,7 @@
         <pre><code th:text="${importExample}">Question,Description,Opening date,Opening time,Closing date,Closing time,Minimum options,Maximum options,Results visibility,Option 1,Option 2,Option 3
 What is your favorite color?,,site,,2026-05-29,09:00,2026-05-30,17:00,1,1,1,Blue,Green,Red</code></pre>
       </div>
-      <div class="sakai-polls-section">
+      <div class="sakai-form-section">
         <details>
           <summary th:text="#{poll_import_access_title}"><strong>Available groups</strong></summary>
           <div th:if="${groups != null and !groups.isEmpty()}">
@@ -59,18 +59,18 @@ What is your favorite color?,,site,,2026-05-29,09:00,2026-05-30,17:00,1,1,1,Blue
     <form id="bulkcreation-form" th:action="@{/pollImport}" method="post" enctype="multipart/form-data">
       <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
       <div class="sakai-polls-import-grid">
-        <div class="sakai-form-group">
+        <div class="sakai-form-field">
           <label class="sakai-form-label" for="poll-uploaded-text" th:text="#{poll_import_typetext}">Type or paste in the text box</label>
           <textarea class="sakai-form-control" id="poll-uploaded-text" name="pollUploadedText" rows="10" cols="45" th:text="${pollUploadedText}"></textarea>
         </div>
-        <div class="sakai-form-group">
+        <div class="sakai-form-field">
           <label class="sakai-form-label" for="poll-upload-file" th:text="#{poll_import_chooseone}">Or choose a file</label>
           <input class="sakai-form-control" id="poll-upload-file" name="pollUploadFile" type="file" accept=".csv,text/csv" />
         </div>
       </div>
       <div class="sakai-actions">
         <button accesskey="s" id="bulk-creation-submit-button" type="submit" class="sakai-btn sakai-btn-primary" th:text="#{poll_import_submit}">Submit</button>
-        <a accesskey="x" id="bulk-creation-cancel-button" class="sakai-btn sakai-btn-secondary" th:href="@{/votePolls}" th:text="#{poll_import_cancel}">Cancel</a>
+        <a accesskey="x" id="bulk-creation-cancel-button" class="sakai-btn sakai-btn-ghost" th:href="@{/votePolls}" th:text="#{poll_import_cancel}">Cancel</a>
       </div>
     </form>
   </div>

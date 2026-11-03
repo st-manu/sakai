@@ -29,12 +29,12 @@
 
                     #if ($showInternalLogin)
                         <form action="${action}" method="post" class="sakai-login-page__form">
-                            <div class="sakai-form-group">
+                            <div class="sakai-form-field">
                                 <label for="eid" class="sakai-form-label">${rloader.login_username}</label>
                                 <input id="eid" name="eid" value="${eid}" type="text" class="form-control sakai-form-control $!{hasErrorsClass}" autocomplete="username">
                             </div>
 
-                            <div class="sakai-form-group">
+                            <div class="sakai-form-field">
                                 <label for="pw" class="sakai-form-label">${rloader.login_password}</label>
                                 <div class="input-group password-field">
                                     <input id="pw" name="pw" value="${password}" type="password" class="form-control sakai-form-control $!{hasErrorsClass}" autocomplete="current-password">

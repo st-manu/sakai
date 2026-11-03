@@ -44,15 +44,15 @@
 		</div>
 	</dl>
 
-	<section class="sakai-announcements__section">
-		<h2 class="sakai-announcements__section-title">$tlang.getString("meta.message")</h2>
+	<section class="sakai-form-section">
+		<h2 class="sakai-form-section__title">$tlang.getString("meta.message")</h2>
 		<div class="sakai-announcements__body">$formattedText.escapeHtmlFormattedText($body)</div>
 	</section>
 
 	#set ($size = 0)
 	#if (!$attachments.isEmpty())
-		<section class="sakai-announcements__section">
-			<h2 class="sakai-announcements__section-title">$tlang.getString("meta.attach")</h2>
+		<section class="sakai-form-section">
+			<h2 class="sakai-form-section__title">$tlang.getString("meta.attach")</h2>
 			<ul class="sakai-announcements__attachments">
 				#set ($props = false)
 				#set ($size = $attachments.size())

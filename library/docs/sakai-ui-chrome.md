@@ -45,6 +45,10 @@ Every view of a tool renders `.sakai-tool-header` (view H1 + separator). The act
   as `.sakai-btn-secondary`, permissions as `.sakai-btn-ghost`. Utilities show inline next to the
   primary action only when there are **at most three**; more than three collapse into `…` at every
   width. Narrow containers collapse them too.
+- **Several A views**: render the **other** views as `.sakai-btn-secondary` in the action cluster;
+  the current view is never rendered. They follow the same ≤3 / narrow overflow rule.
+- **Action order** (every view): primary first, secondary/views next, return/back next, overflow
+  (`…`) **last**. Never place a return/back after the overflow.
 - **Detail and flow views** (add, edit, bulk, permissions, options, reorder, merge, preview):
   a single `Return to List` action. Do not repeat the global create/utility cluster there: an
   “Add” next to “Permissions” reads as “add permissions”.
@@ -61,7 +65,7 @@ tool's permissions page keeps the same heading and separator.
 Defined under [`sass/components/`](../src/skins/default/src/sass/components/):
 
 - `.sakai-btn`, `.sakai-btn-primary`, `.sakai-btn-secondary`, `.sakai-btn-ghost`, `.sakai-btn-icon`
-- `.sakai-actions` (alias `.act`) — form/tool footer button row; uses `gap`, not per-child margins
+- `.sakai-actions` (alias `.act`) — form/tool footer button row; uses `gap`, not per-child margins. Order and weight: primary save/confirm first, alternative actions as `.sakai-btn-secondary`, cancel/back/return as `.sakai-btn-ghost`
 - `.sakai-card`, `.sakai-page-content`
 - `.sakai-page-header` (+ `__title`, `__meta`, `__actions`, `__breadcrumb`)
 - `.sakai-tool-header` (+ `__title`, `__actions`, `__secondary`, `__more`, `__actions--collapsed`) — at ≥48rem container: up to three secondary actions inline, more than three always in `__more` (`…`); narrower: `__more` (`…`). Title wraps without collapsing and actions move to their own line when needed. Do not unwrap a closed `<details>` with `display:contents`/`flex`.
@@ -70,6 +74,7 @@ Defined under [`sass/components/`](../src/skins/default/src/sass/components/):
 - `.sakai-segmented-control`, `.sakai-tool-nav`
 - `.sakai-banner` (+ `--info` / `--success` / `--warn` / `--error`) — same as old `sak-banner-*`: put content directly in the element; icon comes from CSS by type
 - `.sakai-form-control`, `.sakai-form-label`, `.sakai-form-group`
+- `.sakai-form-section` (+ `__title`, `__intro`, `__heading`), `.sakai-form-grid` (+ `--3`), `.sakai-form-field` (+ `--span-2`), `.sakai-form-divider`, `.sakai-form-help`, `.sakai-form-choice` — shared form composition: flat sections (no tool cards), responsive grids, label/control/help stacks and radio/checkbox rows
 - `.sakai-table-toolbar` (+ `__filters`, `__scope`) — search / view filter / pager strip for list views. The three blocks are emitted by the shared `#searchFilterPanel`, `#viewFilterPanel` and `#pagerPanel` Velocity macros (`.sakai-table-searchFilter`, `.sakai-table-viewFilter`, `.sakai-table-pagerContainer`), so every tool that uses them gets the same pattern
 - `.sakai-table` (+ `--striped` / `--hover` / `--sm` / `--stack`), `.sakai-table-wrap`, `__select`, `__sort`, `__actions`, `__primary`, `__nowrap` — cells are transparent so tables inherit the content card surface in light and dark; mark the important content column with `__primary` (absorbs extra width and keeps a 16rem floor on desktop); use `__nowrap` for single-line values such as timestamps; on mobile the wrap owns one outer border + radius and `--stack` rows are separated by a single border, with `data-label` cells laid out as a label/value grid; sortable `<th>` carries `aria-sort` and a `.sakai-table__print-label` for print
 - `sakai-permissions` — shared permissions matrix (`.sakai-permissions` / `__table`); uses `.sakai-table` + `.sakai-actions`, not Bootstrap layout utilities

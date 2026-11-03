@@ -17,22 +17,22 @@
       <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
       <input type="hidden" name="optionId" th:value="${option.id}" />
 
-      <div class="sakai-form-group" th:if="${hasVotes}">
-        <div class="sakai-polls-choice-list">
-          <label class="sakai-polls-choice" th:each="choice : ${handleOptions}" th:for="${'handle-' + choice.value()}">
+      <div class="sakai-form-field" th:if="${hasVotes}">
+        <div class="sakai-form-choice-group">
+          <div class="sakai-form-choice" th:each="choice : ${handleOptions}">
             <input type="radio"
                    name="orphanHandling"
                    th:id="${'handle-' + choice.value()}"
                    th:value="${choice.value()}"
                    th:checked="${choice.value() == 'return-votes'}" />
-            <span th:text="#{${choice.labelKey()}}">Option</span>
-          </label>
+            <label th:for="${'handle-' + choice.value()}" th:text="#{${choice.labelKey()}}">Option</label>
+          </div>
         </div>
       </div>
 
       <div class="sakai-actions">
         <button type="submit" class="sakai-btn sakai-btn-primary" th:text="#{delete_option_confirm}">Delete</button>
-        <a class="sakai-btn sakai-btn-secondary" th:href="@{/voteAdd(pollId=${poll.id})}" th:text="#{new_poll_cancel}">Cancel</a>
+        <a class="sakai-btn sakai-btn-ghost" th:href="@{/voteAdd(pollId=${poll.id})}" th:text="#{new_poll_cancel}">Cancel</a>
       </div>
     </form>
   </div>

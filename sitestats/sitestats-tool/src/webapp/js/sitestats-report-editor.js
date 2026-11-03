@@ -14,7 +14,8 @@ if (reportEditor) {
     }
   };
   const csvValues = value => new Set((value ?? "").split(",").filter(Boolean));
-  const selectedValues = select => new Set(Array.from(select?.selectedOptions ?? [], option => option.value));
+  const totalsInputs = () => Array.from(totalsBy?.querySelectorAll("input[type=checkbox]") ?? []);
+  const selectedTotals = () => new Set(totalsInputs().filter(input => input.checked).map(input => input.value));
   const selectFirstEnabled = select => {
     if (!select || select.selectedOptions.length > 0 && !select.selectedOptions[0].disabled) {
       return;
@@ -38,10 +39,29 @@ if (reportEditor) {
   const userSearchResults = control("who-user-search-results");
   const userSearchStatus = control("who-user-search-status");
   const selectedUsers = control("who-users");
+  const selectedUserInputs = () => Array.from(selectedUsers?.querySelectorAll("input[type=checkbox]") ?? []);
   let userSearchTimer;
   let userSearchRequest;
 
   const messageWithName = (message, name) => message.replace("{0}", name);
+  const addSelectedUser = user => {
+    if (!selectedUsers || selectedUserInputs().some(input => input.value === user.id)) {
+      return;
+    }
+    const choice = document.createElement("div");
+    choice.className = "sakai-form-choice";
+    const checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+    checkbox.name = "whoUserIds";
+    checkbox.value = user.id;
+    checkbox.id = `who-user-${user.id}`;
+    checkbox.checked = true;
+    const label = document.createElement("label");
+    label.htmlFor = checkbox.id;
+    label.textContent = user.label;
+    choice.append(checkbox, label);
+    selectedUsers.append(choice);
+  };
   const searchUsers = async query => {
     userSearchRequest?.abort();
     userSearchRequest = new AbortController();
@@ -56,7 +76,7 @@ if (reportEditor) {
       if (!response.ok) {
         throw new Error(`User search failed with status ${response.status}`);
       }
-      const selectedIds = new Set(Array.from(selectedUsers.options, option => option.value));
+      const selectedIds = new Set(selectedUserInputs().map(input => input.value));
       const users = (await response.json()).filter(user => !selectedIds.has(user.id));
       userSearchResults.replaceChildren(...users.map(user => {
         const item = document.createElement("li");
@@ -66,7 +86,7 @@ if (reportEditor) {
         button.className = "sakai-btn sakai-btn-ghost sitestats-user-results__btn";
         button.textContent = messageWithName(userSearch.dataset.add, user.label);
         button.addEventListener("click", () => {
-          selectedUsers.add(new Option(user.label, user.id, true, true));
+          addSelectedUser(user);
           item.remove();
           userSearchStatus.textContent = messageWithName(userSearch.dataset.added, user.label);
           userSearch.focus();
@@ -99,17 +119,17 @@ if (reportEditor) {
   });
 
   const updateTotals = () => {
-    Array.from(totalsBy?.options ?? []).forEach(option => {
-      const allowedReportTypes = csvValues(option.dataset.allowedFor);
-      option.disabled = !allowedReportTypes.has(what?.value);
-      if (option.disabled) {
-        option.selected = false;
+    totalsInputs().forEach(input => {
+      const allowedReportTypes = csvValues(input.dataset.allowedFor);
+      input.disabled = !allowedReportTypes.has(what?.value);
+      if (input.disabled) {
+        input.checked = false;
       }
     });
   };
 
   const updateChartSources = () => {
-    const totals = selectedValues(totalsBy);
+    const totals = selectedTotals();
     Array.from(sortBy?.options ?? []).forEach(option => {
       option.disabled = option.dataset.requiresSelectedTotal === "true" && !totals.has(option.value);
       if (option.disabled) {
@@ -178,10 +198,10 @@ if (reportEditor) {
     if (chartVisible) {
       const requiredTotal = selectedChartType?.dataset.requiredTotal;
       if (requiredTotal) {
-        const requiredOption = Array.from(totalsBy?.options ?? [])
-          .find(option => option.value === requiredTotal && !option.disabled);
+        const requiredOption = totalsInputs()
+          .find(input => input.value === requiredTotal && !input.disabled);
         if (requiredOption) {
-          requiredOption.selected = true;
+          requiredOption.checked = true;
         }
       }
     }

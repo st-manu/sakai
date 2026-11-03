@@ -1,6 +1,6 @@
-// Compact metrics/highlights for Lit web components also live in
+// Light-DOM widget chrome for the overview/admin summary and the highlights host.
+// Metrics and highlights content are styled inside the Lit shadow DOM in
 // webcomponents/.../sakai-sitestats/src/site-stats-compact-styles.js.
-// Keep these rules in sync when changing the overview card chrome.
 @mixin sitestats-compact-widget-styles {
   .sitestats-widgets {
     display: grid;
@@ -105,90 +105,6 @@
     display: block;
   }
 
-  .sitestats-metrics-status {
-    padding: $standard-space-2x $standard-spacing;
-    background: var(--sakai-background-color-2);
-    border-block: 1px solid var(--sakai-border-color);
-  }
-
-  .sitestats-metrics {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 10rem), 1fr));
-    margin: 0;
-    background: var(--sakai-background-color-2);
-    border-block: 1px solid var(--sakai-border-color);
-    overflow: visible;
-  }
-
-  .sitestats-metric {
-    min-width: 0;
-    padding: $standard-space-2x $standard-spacing;
-    position: relative;
-
-    dt {
-      font-size: 0.875rem;
-      font-weight: 600;
-    }
-
-    &.has-help {
-      cursor: help;
-    }
-  }
-
-  .sitestats-metric-help-trigger {
-    position: absolute;
-    inset: 0;
-    z-index: 1;
-    padding: 0;
-    border: 0;
-    background: transparent;
-    cursor: help;
-
-    &:focus-visible {
-      outline: 2px solid var(--focus-outline-color);
-      outline-offset: -2px;
-    }
-  }
-
-  .sitestats-metric-help {
-    position: absolute;
-    inset-inline: $standard-space;
-    inset-block-start: calc(100% - $standard-space);
-    z-index: 4;
-    padding: $standard-space $standard-space-2x;
-    border: 1px solid var(--sakai-border-color);
-    border-radius: $button-radius;
-    background: var(--sakai-background-color-1);
-    color: var(--sakai-text-color-1);
-    font-size: 0.8125rem;
-    font-weight: 400;
-    line-height: 1.35;
-    max-width: 18rem;
-    box-shadow: var(--elevation-4dp);
-    opacity: 0;
-    pointer-events: none;
-    visibility: hidden;
-  }
-
-  .sitestats-metric.has-help:hover .sitestats-metric-help,
-  .sitestats-metric.has-help:focus-within .sitestats-metric-help,
-  .sitestats-metric.has-help.is-open .sitestats-metric-help {
-    opacity: 1;
-    visibility: visible;
-  }
-
-  .sitestats-metric-primary {
-    line-height: 1.25;
-    font-weight: 800;
-    word-break: break-word;
-  }
-
-  .sitestats-metric-percentage {
-    font-size: 1rem;
-    margin-inline-start: $standard-space;
-    color: var(--sakai-text-color-dimmed);
-  }
-
   .sitestats-highlights {
     display: block;
     width: 100%;
@@ -208,10 +124,6 @@
   }
 }
 
-.#{$namespace}sakai-dashboard {
-  @include sitestats-compact-widget-styles;
-}
-
 .#{$namespace}sakai-sitestats,
 .#{$namespace}sakai-sitestats-admin {
   @include sitestats-compact-widget-styles;
@@ -219,75 +131,6 @@
   .sitestats-intro {
     margin: 0 0 var(--sakai-space-4);
     color: var(--sakai-text-color-2);
-  }
-
-  .sitestats-report-form,
-  .sitestats-preferences {
-    max-width: 60rem;
-  }
-
-  .sitestats-form-section {
-    margin: 0 0 var(--sakai-space-5);
-    padding: var(--sakai-space-4);
-    border: 1px solid var(--sakai-border-color);
-    border-radius: var(--sakai-radius-md);
-    min-width: 0;
-  }
-
-  .sitestats-form-section__title {
-    margin: 0 0 var(--sakai-space-2);
-    padding: 0;
-    font-size: var(--sakai-font-size-md);
-    font-weight: 600;
-    color: var(--sakai-text-color-1);
-  }
-
-  .sitestats-form-section__intro {
-    margin: 0 0 var(--sakai-space-3);
-    color: var(--sakai-text-color-2);
-  }
-
-  .sitestats-form-grid {
-    display: grid;
-    gap: var(--sakai-space-3);
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
-  }
-
-  .sitestats-form-grid--thirds {
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
-  }
-
-  .sitestats-form-field {
-    display: grid;
-    gap: var(--sakai-space-2);
-    align-content: start;
-    min-width: 0;
-
-    > .sakai-form-label {
-      margin-bottom: 0;
-    }
-  }
-
-  .sitestats-form-field--span-2 {
-    grid-column: span 2;
-  }
-
-  @container sakai-tool (max-width: 48rem) {
-    .sitestats-form-field--span-2 {
-      grid-column: auto;
-    }
-  }
-
-  .sitestats-form-divider {
-    margin-block-start: var(--sakai-space-4);
-    padding-block-start: var(--sakai-space-3);
-    border-block-start: 1px solid var(--sakai-border-color);
-  }
-
-  .sitestats-help {
-    margin: 0;
-    color: var(--sakai-text-color-2);
-    font-size: var(--sakai-font-size-sm);
   }
 
   .sitestats-number-input {
@@ -305,6 +148,10 @@
     grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
     align-items: end;
     margin: 0 0 var(--sakai-space-4);
+  }
+
+  .sitestats-filter-form > .sakai-form-field {
+    margin-bottom: 0;
   }
 
   .sitestats-filter-form__actions {

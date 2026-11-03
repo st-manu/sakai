@@ -11,7 +11,7 @@
     <div th:if="${success}" class="sakai-banner sakai-banner--success" role="status" th:text="${success}">Success</div>
     <div th:if="${alert}" class="sakai-banner sakai-banner--error" role="alert" th:text="${alert}">Error</div>
 
-    <p class="sakai-polls-hint">
+    <p class="sakai-form-help">
       <span th:text="#{new_poll_question}">Question</span>:
       <span th:utext="${poll.text}">Poll question</span>
     </p>
@@ -20,7 +20,7 @@
       <input type="hidden" th:field="*{pollId}" />
       <input type="hidden" th:field="*{optionId}" />
 
-      <div class="sakai-form-group">
+      <div class="sakai-form-field">
         <label class="sakai-form-label" for="option-text" th:text="#{new_poll_option}">Option</label>
         <textarea id="option-text"
                   class="sakai-form-control"
@@ -28,7 +28,7 @@
                   rows="4"
                   th:field="*{text}"
                   required></textarea>
-        <div class="invalid-feedback" th:if="${#fields.hasErrors('text')}" th:errors="*{text}">Provide text</div>
+        <div class="sakai-form-error" th:if="${#fields.hasErrors('text')}" th:errors="*{text}">Provide text</div>
       </div>
 
       <div class="sakai-actions">

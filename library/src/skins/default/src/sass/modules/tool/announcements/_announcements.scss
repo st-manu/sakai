@@ -120,44 +120,6 @@
 		}
 	}
 
-	.sakai-announcements__section {
-		margin: 0 0 var(--sakai-space-4);
-		padding: 0;
-		border: 0;
-		min-width: 0;
-	}
-
-	.sakai-announcements__section-title {
-		margin: 0 0 var(--sakai-space-2);
-		font-size: var(--sakai-font-size-md);
-		font-weight: 600;
-		color: var(--sakai-text-color-1);
-	}
-
-	.sakai-announcements__hint {
-		margin: 0 0 var(--sakai-space-4);
-		color: var(--sakai-text-color-2);
-	}
-
-	.sakai-announcements__choice {
-		display: flex;
-		align-items: flex-start;
-		gap: var(--sakai-space-2);
-		margin-bottom: var(--sakai-space-2);
-
-		> input[type="checkbox"],
-		> input[type="radio"] {
-			margin: 0.2em 0 0;
-			accent-color: var(--sakai-primary-color-1);
-		}
-
-		> label {
-			margin: 0;
-			font-weight: 400;
-			cursor: pointer;
-		}
-	}
-
 	.sakai-announcements__dates {
 		display: grid;
 		gap: var(--sakai-space-2);

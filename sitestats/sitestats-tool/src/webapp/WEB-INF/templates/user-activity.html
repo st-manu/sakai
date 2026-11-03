@@ -10,30 +10,30 @@
     <form method="get" class="sitestats-filter-form"
           th:action="@{/useractivity}" th:object="${userActivityForm}">
       <input type="hidden" name="siteId" th:value="${siteId}"/>
-      <div class="sitestats-form-field">
-        <label class="sakai-form-label" for="activity-user" th:text="#{de_userFilter}">User</label>
+      <div class="sakai-form-field">
+        <label class="sakai-form-label required" for="activity-user" th:text="#{de_userFilter}">User</label>
         <select id="activity-user" class="sakai-form-control" th:field="*{userId}" required>
           <option value="" th:text="#{de_select_user}">Select user</option>
           <option th:each="user : ${activity.users}"
                   th:value="${user.id}" th:text="${user.displayName}"></option>
         </select>
       </div>
-      <div class="sitestats-form-field">
+      <div class="sakai-form-field">
         <label class="sakai-form-label" for="activity-tool" th:text="#{de_eventFilter}">Tool</label>
         <select id="activity-tool" class="sakai-form-control" th:field="*{toolId}">
           <option th:each="tool : ${activity.tools}"
                   th:value="${tool.id}" th:text="${tool.label}"></option>
         </select>
       </div>
-      <div class="sitestats-form-field">
-        <label class="sakai-form-label" for="start-date" th:text="#{de_dateRangeFrom}">From</label>
+      <div class="sakai-form-field">
+        <label class="sakai-form-label required" for="start-date" th:text="#{de_dateRangeFrom}">From</label>
         <input id="start-date" class="sakai-form-control" type="date" th:field="*{startDate}" required/>
       </div>
-      <div class="sitestats-form-field">
-        <label class="sakai-form-label" for="end-date" th:text="#{de_dateRangeTo}">To</label>
+      <div class="sakai-form-field">
+        <label class="sakai-form-label required" for="end-date" th:text="#{de_dateRangeTo}">To</label>
         <input id="end-date" class="sakai-form-control" type="date" th:field="*{endDate}" required/>
       </div>
-      <div class="sitestats-form-field sitestats-filter-form__actions">
+      <div class="sakai-form-field sitestats-filter-form__actions">
         <button class="sakai-btn sakai-btn-primary" type="submit" th:text="#{de_search}">Search activity</button>
       </div>
     </form>

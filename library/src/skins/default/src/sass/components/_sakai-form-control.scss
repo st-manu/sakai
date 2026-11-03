@@ -11,6 +11,16 @@
     border-color: var(--sakai-primary-color-1);
     box-shadow: $sakai-box-shadow-emulate-focus var(--focus-outline-color);
   }
+
+  &.is-invalid,
+  &[aria-invalid="true"] {
+    border-color: var(--errorBanner-color);
+
+    &:focus {
+      border-color: var(--errorBanner-color);
+      box-shadow: $sakai-box-shadow-emulate-focus var(--errorBanner-color);
+    }
+  }
 }
 
 .sakai-form-control--sm {
@@ -39,11 +49,24 @@
 
 .sakai-form-label {
   display: block;
-  margin-bottom: var(--sakai-space-2);
+  width: auto;
+  margin: 0 0 var(--sakai-space-2);
+  padding: 0;
+  border: 0;
+  float: none;
+  font-size: var(--sakai-font-size);
   font-weight: 600;
   color: var(--sakai-text-color-2);
 }
 
-.sakai-form-group {
-  margin-bottom: var(--sakai-space-4);
+.sakai-form-label.required::after {
+  content: " *";
+  color: var(--sakai-highlight-color);
+  font-weight: 700;
+}
+
+.sakai-form-error {
+  margin: var(--sakai-space-1) 0 0;
+  color: var(--errorBanner-color);
+  font-size: var(--sakai-font-size-sm);
 }

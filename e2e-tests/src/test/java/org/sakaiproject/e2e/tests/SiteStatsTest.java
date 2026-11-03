@@ -69,7 +69,7 @@ class SiteStatsTest extends SakaiUiTestBase {
             ".sitestats-widget-tab[endpoint*='/widgets/visits/tabs/bydate']");
         assertThat(widgetTab).hasCount(1);
         widgetTab.locator("summary").click();
-        widgetTab.getByLabel("Period:").selectOption("when-all");
+        widgetTab.getByLabel("Period").selectOption("when-all");
 
         Locator reportPanel = widgetTab.locator("sakai-sitestats-report-panel");
         assertThat(reportPanel).isVisible();
@@ -86,7 +86,7 @@ class SiteStatsTest extends SakaiUiTestBase {
         Locator visitsWidget = page.locator(".sitestats-widget")
             .filter(new Locator.FilterOptions().setHas(widgetTab));
         assertTrue(visitsWidget.locator("sakai-sitestats-highlights").count() <= 1);
-        widgetTab.getByLabel("Period:").selectOption("when-custom");
+        widgetTab.getByLabel("Period").selectOption("when-custom");
         assertThat(widgetTab.locator("[data-report-filter='whenFrom']")).isVisible();
         assertThat(widgetTab.locator("[data-report-filter='whenTo']")).isVisible();
         assertFalse(widgetTab.locator("[data-report-filter='whenFrom']").inputValue().isEmpty());
@@ -227,7 +227,7 @@ class SiteStatsTest extends SakaiUiTestBase {
         page.getByRole(AriaRole.LINK,
             new Page.GetByRoleOptions().setName(Pattern.compile("^Add$", Pattern.CASE_INSENSITIVE))).click();
         page.getByLabel("Title").fill(REPORT_TITLE);
-        page.getByLabel("Period:").selectOption("when-custom");
+        page.getByLabel("Period").selectOption("when-custom");
         page.locator("#when-from").fill("");
         page.locator("#when-to").fill("");
 
@@ -250,53 +250,53 @@ class SiteStatsTest extends SakaiUiTestBase {
             new Page.GetByRoleOptions().setName(Pattern.compile("^Add$", Pattern.CASE_INSENSITIVE)));
         addReportLink.click();
 
-        Locator activity = page.getByLabel("Activity:");
+        Locator activity = page.getByLabel("Activity");
         assertThat(activity).isVisible();
         assertThat(activity.locator("option[value='what-resources']")).hasCount(0);
         assertThat(page.locator("#event-options")).isHidden();
         activity.selectOption("what-events");
         assertThat(page.locator("#event-options")).isVisible();
         assertThat(page.locator("#tool-selection")).isVisible();
-        page.getByLabel("Selection:").selectOption(new SelectOption().setLabel("Select by event"));
+        page.getByLabel("Selection").selectOption(new SelectOption().setLabel("Select by event"));
         assertThat(page.locator("#tool-selection")).isHidden();
         assertThat(page.locator("#event-selection-list")).isVisible();
 
         assertThat(page.locator("#custom-dates")).isHidden();
-        page.getByLabel("Period:").selectOption("when-custom");
+        page.getByLabel("Period").selectOption("when-custom");
         assertThat(page.locator("#custom-dates")).isVisible();
         assertThat(page.locator("#who-role-options")).isHidden();
-        page.getByLabel("Users:").selectOption("who-role");
+        page.getByLabel("Users").selectOption("who-role");
         assertThat(page.locator("#who-role-options")).isVisible();
-        page.getByLabel("Users:").selectOption("who-custom");
+        page.getByLabel("Users").selectOption("who-custom");
         Locator userSearch = page.getByLabel("Search site users");
         assertThat(userSearch).isVisible();
         userSearch.fill("instructor1");
         Locator userResult = page.locator("#who-user-search-results button").first();
         assertThat(userResult).isVisible();
         userResult.click();
-        assertThat(page.locator("#who-users option:checked")).hasCount(1);
+        assertThat(page.locator("#who-users input:checked")).hasCount(1);
 
         page.getByLabel("Specify sorting field").check();
         assertThat(page.locator("#sorting-options")).isVisible();
-        page.getByLabel("Limit to:").check();
+        page.getByLabel("Limit to").check();
         assertThat(page.locator("#max-results-options")).isVisible();
         Locator maxResults = page.locator("#max-results");
         maxResults.fill("25");
-        page.getByLabel("Limit to:").uncheck();
+        page.getByLabel("Limit to").uncheck();
         assertThat(page.locator("#max-results-options")).isHidden();
-        page.getByLabel("Limit to:").check();
+        page.getByLabel("Limit to").check();
         assertThat(maxResults).hasValue("25");
         page.getByLabel(Pattern.compile("Presentation", Pattern.CASE_INSENSITIVE)).selectOption("how-presentation-both");
         assertThat(page.locator("#chart-options")).isVisible();
-        page.getByLabel("Chart type:").selectOption("timeseries");
+        page.getByLabel("Chart type").selectOption("timeseries");
         assertThat(page.locator("#chart-source-options")).isHidden();
         assertThat(page.locator("#chart-series-options")).isVisible();
 
         activity.selectOption("what-visits");
-        page.getByLabel("Period:").selectOption("when-last7days");
-        page.getByLabel("Users:").selectOption("who-all");
+        page.getByLabel("Period").selectOption("when-last7days");
+        page.getByLabel("Users").selectOption("who-all");
         page.getByLabel("Specify sorting field").uncheck();
-        page.getByLabel("Limit to:").uncheck();
+        page.getByLabel("Limit to").uncheck();
         page.getByLabel("Title").fill(REPORT_TITLE);
         page.getByLabel("Description").fill(REPORT_DESC);
         page.getByLabel(Pattern.compile("Presentation", Pattern.CASE_INSENSITIVE)).selectOption("how-presentation-both");
@@ -320,7 +320,7 @@ class SiteStatsTest extends SakaiUiTestBase {
         assertThat(page.locator("#report-editor")).isVisible();
         assertThat(page.getByLabel("Title")).hasValue(REPORT_TITLE);
         assertThat(page.getByLabel("Description")).hasValue(REPORT_DESC);
-        assertThat(page.getByLabel("Period:")).hasValue("when-last7days");
+        assertThat(page.getByLabel("Period")).hasValue("when-last7days");
         assertThat(page.getByLabel(Pattern.compile("Presentation", Pattern.CASE_INSENSITIVE)))
             .hasValue("how-presentation-both");
         page.reload();
@@ -495,7 +495,7 @@ class SiteStatsTest extends SakaiUiTestBase {
         page.getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("Reports").setExact(true)).click();
         page.getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("Add").setExact(true)).click();
         page.getByLabel("Title").fill(REPORT_TITLE + " Resources");
-        page.getByLabel("Activity:").selectOption("what-resources");
+        page.getByLabel("Activity").selectOption("what-resources");
         assertThat(page.locator("#resource-selection")).isHidden();
         page.locator("#limit-resources").check();
         Locator component = page.locator("sakai-sitestats-resource-search");
@@ -552,14 +552,14 @@ class SiteStatsTest extends SakaiUiTestBase {
         assertThat(page.locator("#resource-ids")).hasCount(0);
         assertThat(component).not().containsText(root);
         assertThat(component.locator("select")).hasCount(0);
-        page.getByLabel("Period:").selectOption("when-custom");
+        page.getByLabel("Period").selectOption("when-custom");
         page.locator("#when-from").fill("");
         page.locator("#when-to").fill("");
         page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Save report").setExact(true)).click();
         assertThat(page.locator("#report-error")).containsText("Custom time period not defined");
         assertResourceFormValue(selectedIds);
         assertThat(component.locator("#selected-resources li")).hasCount(2);
-        page.getByLabel("Period:").selectOption("when-all");
+        page.getByLabel("Period").selectOption("when-all");
         page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Generate report").setExact(true)).click();
         assertThat(page.getByRole(AriaRole.HEADING,
             new Page.GetByRoleOptions().setName(REPORT_TITLE + " Resources").setExact(true))).isVisible();

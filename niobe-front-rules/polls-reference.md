@@ -42,7 +42,7 @@ action on the current page.
 | Form footer | `.sakai-actions` (legacy `.act` aliased) — flex + `gap`; do not rely on child `margin-right` |
 | Permissions | Shared `<sakai-permissions>` → `.sakai-permissions` / `__table` (not tool-local); same `.sakai-table` header, separators and hover as list tables |
 | Banners | **`.sakai-banner.sakai-banner--success` / `--error` / `--warn` / `--info`** (content only; icon via CSS) |
-| Forms | `.sakai-form-group`, `.sakai-form-label`, `.sakai-form-control` |
+| Forms | `.sakai-form-group`, `.sakai-form-label`, `.sakai-form-control`; sections use the shared `.sakai-form-section` + `__title` / `__heading`, grids use `.sakai-form-grid` and hints `.sakai-form-help` |
 | Tables | `.sakai-table` (+ `--hover` / `--sm` / `--stack`), `.sakai-table-wrap`, `__select`, `__sort`, `__actions`, `__primary`, `__nowrap`; Polls uses non-striped tables (separators + hover); mark the important column with `__primary` so it absorbs extra width and keeps a 16rem desktop floor; mobile tables share one rounded outer shell, single row separators and a `data-label` label/value grid; sortable headers carry `aria-sort` on the `<th>` with a `.sakai-table__print-label` so the control-free header still prints |
 | Options (Polls) | `.sakai-polls-option-list` scrollable stack for many options |
 | Header | ≥48rem container: Add + `.sakai-tool-header__secondary`. Narrower: Add + `.sakai-tool-header__more` |

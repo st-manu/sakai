@@ -75,7 +75,7 @@ next to the view filter, where it reads as filter context.
 | Expanded body | second `<tr class="sakai-announcements__body-row">` that reads as part of the item: subject row loses its bottom border, body sits on the card surface with a leading accent |
 | Bulk actions | `.sakai-actions` + `#announcement-*-button` ids kept for `announcements.js` and the e2e tests |
 | Search / filter / pager | `.sakai-table-toolbar` + the shared `#searchFilterPanel`, `#viewFilterPanel` and `#pagerPanel` macros. The macros emit `.sakai-table-searchFilter`, `.sakai-table-viewFilter` and `.sakai-table-pagerContainer` (summary + icon buttons + page-size select), so the strip is identical in every Velocity tool that adopts it |
-| Forms | `.sakai-form-group`, `.sakai-form-label`, `.sakai-form-control`, `fieldset.sakai-announcements__section` + legend title, `.sakai-announcements__choice` for radio/checkbox rows |
+| Forms | `.sakai-form-group`, `.sakai-form-label`, `.sakai-form-control`; sections use the shared `.sakai-form-section` + `__title`, and radio/checkbox rows use `.sakai-form-choice` |
 | Banners | `.sakai-banner sakai-banner--error|--warn|--info` (replaces `sak-banner-*`) |
 | Icons | `bi bi-star-fill`, `bi bi-paperclip`, `bi bi-three-dots`, `bi bi-pencil`, `bi bi-trash`, `bi bi-chevron-*` |
 | Responsive | `@container sakai-tool` in `_announcements.scss` only; note the skin root font-size is 14px, so `40rem` = 560px |

@@ -5,7 +5,7 @@
 
 	<form name="Options" action="#toolForm("$action")" method="post">
 		#announcementsAlert($alertMessage)
-		<p class="sakai-announcements__hint">$tlang.getString("merge.select")</p>
+		<p class="sakai-form-section__intro">$tlang.getString("merge.select")</p>
 
 		<div class="sakai-table-wrap">
 			<table class="sakai-table sakai-table--hover">

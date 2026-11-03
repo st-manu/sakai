@@ -11,18 +11,19 @@
     <span th:text="#{sitestats_report_types_empty}">No report types are available for this site.</span>
   </div>
 
-  <form id="report-editor" class="sitestats-report-form" method="post" th:action="@{/reports/save}" th:object="${reportForm}">
+  <form id="report-editor" method="post" th:action="@{/reports/save}" th:object="${reportForm}">
     <input type="hidden" name="siteId" th:value="${siteId}"/>
     <input type="hidden" th:field="*{id}"/>
     <input type="hidden" name="sakai_csrf_token" th:value="${sakaiCsrfToken}"/>
-    <div id="report-error" class="sakai-banner sakai-banner--error" role="alert" th:if="${error}" th:text="${error}"></div>
+    <div id="report-error" class="sakai-banner sakai-banner--error" role="alert"
+         th:if="${!#strings.isEmpty(error) and errorCode != 'sitestats_report_title_required'}" th:text="${error}"></div>
 
-    <fieldset class="sitestats-form-section">
-      <legend class="sitestats-form-section__title" th:text="#{report_what}">What?</legend>
-      <p class="sitestats-form-section__intro" th:text="#{report_what_instructions}"></p>
-      <div class="sitestats-form-field">
-        <label class="sakai-form-label" for="report-what" th:text="#{report_what_activity}">Activity</label>
-        <select id="report-what" class="sakai-form-control" th:field="*{what}"
+    <fieldset class="sakai-form-section">
+      <legend class="sakai-form-section__title" th:text="#{report_what}">What?</legend>
+      <p class="sakai-form-section__intro" th:text="#{report_what_instructions}"></p>
+      <div class="sakai-form-field">
+        <label class="sakai-form-label required" for="report-what" th:text="#{report_what_activity}">Activity</label>
+        <select id="report-what" class="sakai-form-control" th:field="*{what}" required
                 aria-controls="event-options resource-options">
           <option value="what-visits" th:if="${editorOptions.visitsAvailable}" th:text="#{report_what_visits}"></option>
           <option value="what-events" th:if="${editorOptions.activityAvailable}" th:text="#{report_what_events}"></option>
@@ -32,7 +33,7 @@
       </div>
 
       <div id="event-options">
-        <div class="sitestats-form-field">
+        <div class="sakai-form-field">
           <label class="sakai-form-label" for="event-selection" th:text="#{report_what_selection}">Selection</label>
           <select id="event-selection" class="sakai-form-control" th:field="*{whatEventSelType}"
                   aria-controls="tool-selection event-selection-list">
@@ -40,29 +41,41 @@
             <option value="what-events-byevent" th:text="#{report_what_events_byevent}"></option>
           </select>
         </div>
-        <div id="tool-selection" class="sitestats-form-field">
-          <label class="sakai-form-label" for="tool-ids" th:text="#{report_what_events_bytool}">Tools</label>
-          <select id="tool-ids" class="sakai-form-control" th:field="*{whatToolIds}" multiple size="7"
-                  th:title="#{report_multiple_sel_instruction}">
-            <option value="all" th:text="#{report_what_all}"></option>
-            <option th:each="tool : ${editorOptions.tools}" th:value="${tool.id}" th:text="${tool.label}"></option>
-          </select>
+        <div id="tool-selection" class="sakai-form-field">
+          <fieldset id="tool-ids" class="sakai-form-choice-group">
+            <legend class="sakai-form-label" th:text="#{report_what_events_bytool}">Tools</legend>
+            <div class="sakai-form-choice">
+              <input type="checkbox" name="whatToolIds" id="tool-ids-all" value="all"
+                     th:checked="${reportForm.whatToolIds.contains('all')}"/>
+              <label for="tool-ids-all" th:text="#{report_what_all}">All</label>
+            </div>
+            <div class="sakai-form-choice" th:each="tool : ${editorOptions.tools}">
+              <input type="checkbox" name="whatToolIds" th:id="${'tool-ids-' + tool.id}" th:value="${tool.id}"
+                     th:checked="${reportForm.whatToolIds.contains(tool.id)}"/>
+              <label th:for="${'tool-ids-' + tool.id}" th:text="${tool.label}"></label>
+            </div>
+          </fieldset>
         </div>
-        <div id="event-selection-list" class="sitestats-form-field">
-          <label class="sakai-form-label" for="event-ids" th:text="#{report_what_events_byevent}">Events</label>
-          <select id="event-ids" class="sakai-form-control" th:field="*{whatEventIds}" multiple size="9"
-                  th:title="#{report_multiple_sel_instruction}">
-            <option th:each="event : ${editorOptions.events}" th:value="${event.id}" th:text="${event.label}"></option>
-          </select>
+        <div id="event-selection-list" class="sakai-form-field">
+          <fieldset id="event-ids" class="sakai-form-choice-group">
+            <legend class="sakai-form-label" th:text="#{report_what_events_byevent}">Events</legend>
+            <div class="sakai-form-choice-group sakai-form-choice-group--scroll">
+              <div class="sakai-form-choice" th:each="event : ${editorOptions.events}">
+                <input type="checkbox" name="whatEventIds" th:id="${'event-ids-' + event.id}" th:value="${event.id}"
+                       th:checked="${reportForm.whatEventIds.contains(event.id)}"/>
+                <label th:for="${'event-ids-' + event.id}" th:text="${event.label}"></label>
+              </div>
+            </div>
+          </fieldset>
         </div>
       </div>
 
-      <div id="resource-options" class="sitestats-form-grid">
-        <div class="sitestats-form-field">
-          <div class="form-check">
-            <input id="limit-resource-action" class="form-check-input" type="checkbox"
+      <div id="resource-options" class="sakai-form-grid">
+        <div class="sakai-form-field">
+          <div class="sakai-form-choice">
+            <input id="limit-resource-action" type="checkbox"
                    th:field="*{whatLimitedAction}" aria-controls="resource-action"/>
-            <label class="form-check-label" for="limit-resource-action" th:text="#{report_what_resource_action}"></label>
+            <label for="limit-resource-action" th:text="#{report_what_resource_action}"></label>
           </div>
           <label class="visually-hidden" for="resource-action"
                  th:text="#{report_what_resource_action}">Resource action</label>
@@ -74,11 +87,11 @@
             <option value="zipdownload" th:text="#{action_zipdownload}"></option>
           </select>
         </div>
-        <div class="sitestats-form-field">
-          <div class="form-check">
-            <input id="limit-resources" class="form-check-input" type="checkbox"
+        <div class="sakai-form-field">
+          <div class="sakai-form-choice">
+            <input id="limit-resources" type="checkbox"
                    th:field="*{whatLimitedResourceIds}" aria-controls="resource-selection"/>
-            <label class="form-check-label" for="limit-resources" th:text="#{report_what_sel_resources}"></label>
+            <label for="limit-resources" th:text="#{report_what_sel_resources}"></label>
           </div>
           <fieldset id="resource-selection" class="sitestats-resource-selection" hidden disabled>
             <sakai-sitestats-resource-search id="resource-search" name="whatResourceIds"
@@ -89,12 +102,12 @@
       </div>
     </fieldset>
 
-    <fieldset class="sitestats-form-section">
-      <legend class="sitestats-form-section__title" th:text="#{report_when}">When?</legend>
-      <p class="sitestats-form-section__intro" th:text="#{report_when_instructions}"></p>
-      <div class="sitestats-form-field">
-        <label class="sakai-form-label" for="report-when" th:text="#{report_when_period}">Period</label>
-        <select id="report-when" class="sakai-form-control" th:field="*{when}" aria-controls="custom-dates">
+    <fieldset class="sakai-form-section">
+      <legend class="sakai-form-section__title" th:text="#{report_when}">When?</legend>
+      <p class="sakai-form-section__intro" th:text="#{report_when_instructions}"></p>
+      <div class="sakai-form-field">
+        <label class="sakai-form-label required" for="report-when" th:text="#{report_when_period}">Period</label>
+        <select id="report-when" class="sakai-form-control" th:field="*{when}" aria-controls="custom-dates" required>
           <option value="when-all" th:text="#{report_when_all}"></option>
           <option value="when-last7days" th:text="#{report_when_last7days}"></option>
           <option value="when-last30days" th:text="#{report_when_last30days}"></option>
@@ -102,24 +115,24 @@
           <option value="when-custom" th:text="#{report_when_custom}"></option>
         </select>
       </div>
-      <div id="custom-dates" class="sitestats-form-grid">
-        <div class="sitestats-form-field">
+      <div id="custom-dates" class="sakai-form-grid">
+        <div class="sakai-form-field">
           <label class="sakai-form-label" for="when-from" th:text="#{report_when_from_date}">From</label>
           <input id="when-from" class="sakai-form-control" type="date" th:field="*{whenFrom}"/>
         </div>
-        <div class="sitestats-form-field">
+        <div class="sakai-form-field">
           <label class="sakai-form-label" for="when-to" th:text="#{report_when_to_date}">To</label>
           <input id="when-to" class="sakai-form-control" type="date" th:field="*{whenTo}"/>
         </div>
       </div>
     </fieldset>
 
-    <fieldset class="sitestats-form-section">
-      <legend class="sitestats-form-section__title" th:text="#{report_who}">Who?</legend>
-      <p class="sitestats-form-section__intro" th:text="#{report_who_instructions}"></p>
-      <div class="sitestats-form-field">
-        <label class="sakai-form-label" for="report-who" th:text="#{report_who_users}">Users</label>
-        <select id="report-who" class="sakai-form-control" th:field="*{who}"
+    <fieldset class="sakai-form-section">
+      <legend class="sakai-form-section__title" th:text="#{report_who}">Who?</legend>
+      <p class="sakai-form-section__intro" th:text="#{report_who_instructions}"></p>
+      <div class="sakai-form-field">
+        <label class="sakai-form-label required" for="report-who" th:text="#{report_who_users}">Users</label>
+        <select id="report-who" class="sakai-form-control" th:field="*{who}" required
                 aria-controls="who-role-options who-group-options who-custom-options">
           <option value="who-all" th:text="#{report_who_all}"></option>
           <option value="who-role" th:text="#{report_who_role}"></option>
@@ -129,21 +142,21 @@
           <option value="who-none" th:text="#{report_who_none}"></option>
         </select>
       </div>
-      <div id="who-role-options" class="sitestats-form-field">
+      <div id="who-role-options" class="sakai-form-field">
         <label class="sakai-form-label" for="who-role" th:text="#{report_who_role_sel}">Role</label>
         <select id="who-role" class="sakai-form-control" th:field="*{whoRoleId}">
           <option value=""></option>
           <option th:each="role : ${editorOptions.roles}" th:value="${role.id}" th:text="${role.label}"></option>
         </select>
       </div>
-      <div id="who-group-options" class="sitestats-form-field">
+      <div id="who-group-options" class="sakai-form-field">
         <label class="sakai-form-label" for="who-group" th:text="#{report_who_group_sel}">Group</label>
         <select id="who-group" class="sakai-form-control" th:field="*{whoGroupId}">
           <option value=""></option>
           <option th:each="group : ${editorOptions.groups}" th:value="${group.id}" th:text="${group.label}"></option>
         </select>
       </div>
-      <div id="who-custom-options" class="sitestats-form-field">
+      <div id="who-custom-options" class="sakai-form-field">
         <label class="sakai-form-label" for="who-user-search"
                th:text="#{sitestats_user_search}">Search site users</label>
         <input id="who-user-search" class="sakai-form-control" type="search" minlength="2"
@@ -156,50 +169,60 @@
                         data-result-many=#{sitestats_user_search_result_many},
                         data-add=#{sitestats_user_add},
                         data-added=#{sitestats_user_added}"/>
-        <p id="who-user-search-help" class="sitestats-help" th:text="#{sitestats_user_search_help}">
+        <p id="who-user-search-help" class="sakai-form-help" th:text="#{sitestats_user_search_help}">
           Enter at least two characters.
         </p>
-        <div id="who-user-search-status" class="sitestats-help" aria-live="polite"></div>
+        <div id="who-user-search-status" class="sakai-form-help" aria-live="polite"></div>
         <ul id="who-user-search-results" class="sitestats-user-results"></ul>
-        <label class="sakai-form-label" for="who-users"
-               th:text="#{sitestats_selected_users}">Selected users</label>
-        <select id="who-users" class="sakai-form-control" th:field="*{whoUserIds}" multiple size="7"
-                th:title="#{report_multiple_sel_instruction}">
-          <option th:each="user : ${editorOptions.users}" th:value="${user.id}" th:text="${user.label}"></option>
-        </select>
+        <div class="sakai-form-subfield">
+          <span class="sakai-form-label" id="who-users-label" th:text="#{sitestats_selected_users}">Selected users</span>
+          <div id="who-users" class="sakai-form-choice-group sakai-form-choice-group--scroll"
+               role="group" aria-labelledby="who-users-label">
+            <div class="sakai-form-choice" th:each="user : ${editorOptions.users}">
+              <input type="checkbox" name="whoUserIds" th:id="${'who-user-' + user.id}" th:value="${user.id}"
+                     th:checked="${reportForm.whoUserIds.contains(user.id)}"/>
+              <label th:for="${'who-user-' + user.id}" th:text="${user.label}"></label>
+            </div>
+          </div>
+        </div>
       </div>
     </fieldset>
 
-    <fieldset class="sitestats-form-section">
-      <legend class="sitestats-form-section__title" th:text="#{report_how}">How?</legend>
-      <p class="sitestats-form-section__intro" th:text="#{report_how_instructions}"></p>
-      <div class="sitestats-form-grid">
-        <div class="sitestats-form-field">
-          <label class="sakai-form-label" for="totals-by" th:text="#{report_howtotalsby}">Totals by</label>
-          <select id="totals-by" class="sakai-form-control" th:field="*{howTotalsBy}" multiple size="7" required>
-            <option th:each="option : ${editorOptions.rules.totalOptions}"
-                    th:value="${option.value}"
-                    th:text="${#messages.msg(option.labelKey)}"
-                    th:attr="data-allowed-for=${option.allowedReportTypes}"></option>
-          </select>
-          <div class="form-check">
-            <input id="limit-results" class="form-check-input" type="checkbox"
+    <fieldset class="sakai-form-section">
+      <legend class="sakai-form-section__title" th:text="#{report_how}">How?</legend>
+      <p class="sakai-form-section__intro" th:text="#{report_how_instructions}"></p>
+      <div class="sakai-form-grid">
+        <div class="sakai-form-field">
+          <fieldset id="totals-by" class="sakai-form-choice-group">
+            <legend class="sakai-form-label required" th:text="#{report_howtotalsby}">Totals by</legend>
+            <div class="sakai-form-choice" th:each="option : ${editorOptions.rules.totalOptions}">
+              <input type="checkbox" name="howTotalsBy"
+                     th:id="${'totals-by-' + option.value}"
+                     th:value="${option.value}"
+                     th:checked="${reportForm.howTotalsBy.contains(option.value)}"
+                     th:attr="data-allowed-for=${option.allowedReportTypes}"/>
+              <label th:for="${'totals-by-' + option.value}"
+                     th:text="${#messages.msg(option.labelKey)}"></label>
+            </div>
+          </fieldset>
+          <div class="sakai-form-choice">
+            <input id="limit-results" type="checkbox"
                    th:field="*{howLimitedMaxResults}" aria-controls="max-results-options"/>
-            <label class="form-check-label" for="limit-results" th:text="#{report_howmaxresults}"></label>
+            <label for="limit-results" th:text="#{report_howmaxresults}"></label>
           </div>
-          <div id="max-results-options">
+          <div id="max-results-options" class="sakai-form-subfield">
             <label class="sakai-form-label" for="max-results"
                    th:text="#{report_howmaxresults_sel}">Number of results</label>
             <input id="max-results" class="sakai-form-control" type="number" min="1" th:field="*{howMaxResults}"/>
           </div>
         </div>
-        <div class="sitestats-form-field">
-          <div class="form-check">
-            <input id="sort-results" class="form-check-input" type="checkbox" th:field="*{howSort}"
+        <div class="sakai-form-field">
+          <div class="sakai-form-choice">
+            <input id="sort-results" type="checkbox" th:field="*{howSort}"
                    aria-controls="sorting-options"/>
-            <label class="form-check-label" for="sort-results" th:text="#{report_howsorting_enable}"></label>
+            <label for="sort-results" th:text="#{report_howsorting_enable}"></label>
           </div>
-          <div id="sorting-options">
+          <div id="sorting-options" class="sakai-form-subfield">
             <label class="sakai-form-label" for="sort-by" th:text="#{report_howsorting}">Sort by</label>
             <select id="sort-by" class="sakai-form-control" th:field="*{howSortBy}">
               <option value="default" th:text="#{default}"
@@ -215,18 +238,17 @@
               <option value="total" th:text="#{report_option_total}"
                       th:attr="data-requires-selected-total=${editorOptions.rules.sortRequiresSelectedTotal('total')}"></option>
             </select>
-            <div class="form-check">
-              <input id="sort-ascending" class="form-check-input" type="checkbox" th:field="*{howSortAscending}"/>
-              <label class="form-check-label" for="sort-ascending" th:text="#{report_howsorting_asc}"></label>
+            <div class="sakai-form-choice">
+              <input id="sort-ascending" type="checkbox" th:field="*{howSortAscending}"/>
+              <label for="sort-ascending" th:text="#{report_howsorting_asc}"></label>
             </div>
           </div>
         </div>
       </div>
 
-      <div class="sitestats-form-divider">
-        <div class="sitestats-form-grid sitestats-form-grid--thirds">
-          <div class="sitestats-form-field">
-            <label class="sakai-form-label" for="presentation"
+      <div class="sakai-form-grid sakai-form-grid--3">
+        <div class="sakai-form-field">
+          <label class="sakai-form-label" for="presentation"
                    th:text="#{report_howpresentation}">Presentation</label>
             <select id="presentation" class="sakai-form-control" th:field="*{howPresentationMode}" aria-controls="chart-options">
               <option value="how-presentation-table" th:text="#{report_howpresentation_table}"></option>
@@ -236,8 +258,8 @@
           </div>
         </div>
 
-        <div id="chart-options" class="sitestats-form-grid sitestats-form-grid--thirds">
-          <div class="sitestats-form-field">
+        <div id="chart-options" class="sakai-form-grid sakai-form-grid--3">
+          <div class="sakai-form-field">
             <label class="sakai-form-label" for="chart-type" th:text="#{report_howcharttype}">Chart type</label>
             <select id="chart-type" class="sakai-form-control" th:field="*{howChartType}"
                     aria-controls="chart-source-options chart-series-options">
@@ -251,9 +273,9 @@
                       th:attr="data-required-total=${editorOptions.rules.requiredTotalForChartType('timeseriesbar')},data-uses-category=${editorOptions.rules.chartTypeUsesCategory('timeseriesbar')},data-uses-series=${editorOptions.rules.chartTypeUsesSeries('timeseriesbar')}"></option>
             </select>
           </div>
-          <div id="chart-source-options" class="sitestats-form-field sitestats-form-field--span-2">
-            <div class="sitestats-form-grid">
-              <div class="sitestats-form-field">
+          <div id="chart-source-options" class="sakai-form-field sakai-form-field--span-2">
+            <div class="sakai-form-grid">
+              <div class="sakai-form-field">
                 <label class="sakai-form-label" for="chart-source"
                        th:text="#{report_howdatasource}">Chart data source</label>
                 <select id="chart-source" class="sakai-form-control" th:field="*{howChartSource}">
@@ -271,7 +293,7 @@
                           th:attr="data-allowed-chart-types=${editorOptions.rules.chartTypesForSource('date')},data-requires-selected-total=${editorOptions.rules.chartSourceRequiresSelectedTotal('date')}"></option>
                 </select>
               </div>
-              <div id="chart-category-options" class="sitestats-form-field">
+              <div id="chart-category-options" class="sakai-form-field">
                 <label class="sakai-form-label" for="chart-category"
                        th:text="#{report_howdatasource_grouped}">Grouped by</label>
                 <select id="chart-category" class="sakai-form-control" th:field="*{howChartCategorySource}">
@@ -293,9 +315,9 @@
               </div>
             </div>
           </div>
-          <div id="chart-series-options" class="sitestats-form-field sitestats-form-field--span-2">
-            <div class="sitestats-form-grid">
-              <div class="sitestats-form-field">
+          <div id="chart-series-options" class="sakai-form-field sakai-form-field--span-2">
+            <div class="sakai-form-grid">
+              <div class="sakai-form-field">
                 <label class="sakai-form-label" for="chart-series"
                        th:text="#{report_howdatasource_series}">Chart series source</label>
                 <select id="chart-series" class="sakai-form-control" th:field="*{howChartSeriesSource}">
@@ -313,7 +335,7 @@
                           th:attr="data-allowed-chart-types=${editorOptions.rules.chartTypesForSeries('resource-action')},data-requires-selected-total=${editorOptions.rules.chartSeriesRequiresSelectedTotal('resource-action')}"></option>
                 </select>
               </div>
-              <div class="sitestats-form-field">
+              <div class="sakai-form-field">
                 <label class="sakai-form-label" for="series-period"
                        th:text="#{sitestats_timeseries_period}">Time-series period</label>
                 <select id="series-period" class="sakai-form-control" th:field="*{howChartSeriesPeriod}">
@@ -326,22 +348,20 @@
             </div>
           </div>
         </div>
-      </div>
     </fieldset>
 
-    <fieldset class="sitestats-form-section">
-      <legend class="sitestats-form-section__title" th:text="#{report_details}">Report</legend>
-      <p class="sitestats-form-section__intro" th:text="#{report_details_instructions}"></p>
-      <div class="sitestats-form-field">
-        <label class="sakai-form-label" for="report-title">
-          <span th:text="#{report_reporttitle}">Title</span>
-          <span aria-hidden="true">*</span>
-        </label>
+    <fieldset class="sakai-form-section">
+      <legend class="sakai-form-section__title" th:text="#{report_details}">Report</legend>
+      <p class="sakai-form-section__intro" th:text="#{report_details_instructions}"></p>
+      <div class="sakai-form-field">
+        <label class="sakai-form-label required" for="report-title" th:text="#{report_reporttitle}">Title</label>
         <input id="report-title" class="sakai-form-control" th:field="*{title}" required maxlength="255"
                th:attr="aria-invalid=${errorCode == 'sitestats_report_title_required'} ? 'true' : null,
-                        aria-describedby=${errorCode == 'sitestats_report_title_required'} ? 'report-error' : null"/>
+                        aria-describedby=${errorCode == 'sitestats_report_title_required'} ? 'report-title-error' : null"/>
+        <div id="report-title-error" class="sakai-form-error"
+             th:if="${errorCode == 'sitestats_report_title_required'}" th:text="${error}"></div>
       </div>
-      <div class="sitestats-form-field">
+      <div class="sakai-form-field">
         <label class="sakai-form-label" for="report-description" th:text="#{report_reportdescription}">Description</label>
         <textarea id="report-description" class="sakai-form-control" th:field="*{description}" rows="4"></textarea>
       </div>

@@ -80,7 +80,7 @@ function resizeFrame(){
                     </button>
                 `,
                 filter: `
-                    <div class="multiselect-filter sakai-announcements__multiselect-filter"><span class="si si-search" aria-hidden="true"></span><input type="search" class="multiselect-search form-control" /></div>
+                    <div class="multiselect-filter sakai-announcements__multiselect-filter"><span class="si si-search" aria-hidden="true"></span><input type="search" class="multiselect-search sakai-form-control" /></div>
                 `,
             },
         });
@@ -105,7 +105,7 @@ function resizeFrame(){
 						</button>
 					`,
 					filter: `
-						<div class="multiselect-filter sakai-announcements__multiselect-filter"><span class="si si-search" aria-hidden="true"></span><input type="search" class="multiselect-search form-control" /></div>
+						<div class="multiselect-filter sakai-announcements__multiselect-filter"><span class="si si-search" aria-hidden="true"></span><input type="search" class="multiselect-search sakai-form-control" /></div>
 					`,
 				},
 			}
@@ -123,7 +123,7 @@ function resizeFrame(){
     #announcementsHeader($reviseTitle "" "" "doCancel")
     #announcementsAlert($alertMessage)
 
-    <p class="sakai-announcements__hint">
+    <p class="sakai-form-section__intro">
         #if ($newAnn == "true")
             $tlang.getString("revise.complete")
         #else
@@ -137,21 +137,19 @@ function resizeFrame(){
         <input type="hidden" name="option" id="option" value="" />
         <input type="hidden" name="fromInterface" value="revise" />
 
-        <div class="sakai-form-group">
-            <label for="subject" class="sakai-form-label">
-                <span class="reqStar" aria-hidden="true">*</span>
+        <div class="sakai-form-field">
+            <label for="subject" class="sakai-form-label required">
                 $tlang.getString("revise.subject")
             </label>
             #if ($new == "true")
-                <input type="text" size="45" name="subject" id="subject" value="$formattedText.escapeHtml($tempSubject)" class="sakai-form-control" />
+                <input type="text" size="45" name="subject" id="subject" value="$formattedText.escapeHtml($tempSubject)" class="sakai-form-control" required />
             #else
-                <input type="text" size="45" name="subject" id="subject" value="$formattedText.escapeHtml($message.Header.subject)" class="sakai-form-control" />
+                <input type="text" size="45" name="subject" id="subject" value="$formattedText.escapeHtml($message.Header.subject)" class="sakai-form-control" required />
             #end
         </div>
 
-        <div class="sakai-form-group">
-            <label for="body" class="sakai-form-label">
-                <span class="reqStar" aria-hidden="true">*</span>
+        <div class="sakai-form-field">
+            <label for="body" class="sakai-form-label required">
                 $tlang.getString("revise.announcement.body")
             </label>
             #set($contextkey = "ckeditor-autosave-context")
@@ -176,26 +174,26 @@ function resizeFrame(){
             #chef_setupformattedtextarea("body")
         </div>
 
-        <fieldset class="sakai-announcements__section">
-            <legend class="sakai-announcements__section-title">$tlang.getString("revise.highlight.title")</legend>
-            <div class="sakai-announcements__choice">
+        <fieldset class="sakai-form-section">
+            <legend class="sakai-form-section__title">$tlang.getString("revise.highlight.title")</legend>
+            <div class="sakai-form-choice">
                 #set($isHighlighted = $message.getProperties().getProperty("highlight"))
                 <input type="checkbox" id="highlight" #if ("$!isHighlighted" == "true")checked="checked"#end name="highlight" value="true">
                 <label for="highlight">$tlang.getString("revise.highlight")</label>
             </div>
         </fieldset>
 
-        <fieldset class="sakai-announcements__section">
-            <legend class="sakai-announcements__section-title">$tlang.getString("displayto.access")</legend>
+        <fieldset class="sakai-form-section">
+            <legend class="sakai-form-section__title">$tlang.getString("displayto.access")</legend>
 
             #if ($!groups && ($!groups.size() > 1)) #set ($show_group = "true") #else #set ($show_group = "false") #end
             #if ($motd)
                 ## no show this selection, but set default to public
                 <input type="hidden" name="announceTo" id="pubview" value="pubview" checked="checked" onclick="updateEmailDropdownOptions()" />
-                <p class="sakai-announcements__hint">$tlang.getString("displayto.public")</p>
+                <p class="sakai-form-section__intro">$tlang.getString("displayto.public")</p>
             #elseif (($!publicDisable && ($show_group == "false")) || $pubviewset)
                 ## no show this selection, but set default to site
-                <div class="sakai-announcements__choice">
+                <div class="sakai-form-choice">
                     <input type="radio" name="announceToDisabled" id="site" value="site" checked="checked" disabled="true" onclick="updateEmailDropdownOptions()"/>
                     <input type="hidden" name="announceTo" value="site" checked="checked" onclick="updateEmailDropdownOptions()"/>
                     <label for="site">
@@ -210,7 +208,7 @@ function resizeFrame(){
                 </div>
             #else
                 #if ($allowAddChannelMessage)
-                    <div class="sakai-announcements__choice">
+                    <div class="sakai-form-choice">
                         <input type="radio" name="announceTo" id="site"
                             value="site" #if(!$!pubview && ($!announceTo == "site" || $!message.AnnouncementHeader.Access == $channelAccess))checked="checked"#end
                             onclick="$('#groupTable').fadeOut('slow');$('#rolesTable').fadeOut('slow');resizeFrame();updateEmailDropdownOptions()"/>
@@ -218,7 +216,7 @@ function resizeFrame(){
                     </div>
 
                     #if (!$!publicDisable)
-                    <div class="sakai-announcements__choice">
+                    <div class="sakai-form-choice">
                         <input type="radio" name="announceTo" id="pubview"
                             value="pubview" #if($!announceTo == "pubview" || $!pubview)checked="checked"#end
                             onclick="$('#groupTable').fadeOut('slow');$('#rolesTable').fadeOut('slow');resizeFrame();updateEmailDropdownOptions()" />
@@ -226,7 +224,7 @@ function resizeFrame(){
                     </div>
                     #end
                 #else
-                    <p class="sakai-announcements__hint">
+                    <p class="sakai-form-section__intro">
                         #if ($!groups.size() > 1)
                             $tlang.getString("groups")
                         #else
@@ -235,7 +233,7 @@ function resizeFrame(){
                     </p>
                 #end
                 #if ($!groups)
-                    <div class="sakai-announcements__choice">
+                    <div class="sakai-form-choice">
                         <input type="radio" name="announceTo" id="groups"
                             value="groups" #if(!$!pubview && ($!announceTo == "groups" || $!message.AnnouncementHeader.Access == $groupAccess))checked="checked"#end
                             onclick="$('#groupTable').fadeIn('slow');$('#rolesTable').fadeOut('slow');resizeFrame(); updateEmailDropdownOptions()" />
@@ -267,7 +265,7 @@ function resizeFrame(){
                     </div>
                 #end
                 #if ($siteRolesIds.size() > 0)
-                    <div class="sakai-announcements__choice">
+                    <div class="sakai-form-choice">
                         #set ($displayRoles = (!$!pubview && $!announceTo == "roles") || $announceToRoles)
                         <input type="radio" name="announceTo" id="roles"
                             value="roles" #if($displayRoles) checked="checked" #end
@@ -298,20 +296,20 @@ function resizeFrame(){
             #end
         </fieldset>
 
-        <fieldset class="sakai-announcements__section">
-            <legend class="sakai-announcements__section-title">$tlang.getString("avail.title")</legend>
+        <fieldset class="sakai-form-section">
+            <legend class="sakai-form-section__title">$tlang.getString("avail.title")</legend>
 
-            <div class="sakai-announcements__choice">
+            <div class="sakai-form-choice">
                 <input type="radio" class="showHide" name="hidden" id="hidden_false" value="false" #if(!$hidden)checked="checked"#end/>
                 <label for="hidden_false">$tlang.getString("avail.show.withtips")</label>
             </div>
 
-            <div class="sakai-announcements__choice">
+            <div class="sakai-form-choice">
                 <input type="radio" class="showHide" name="hidden" id="hidden_true" value="true" #if($hidden)checked="checked"#end/>
                 <label for="hidden_true">$tlang.getString("avail.hide.withtips")</label>
             </div>
 
-            <div class="sakai-announcements__choice">
+            <div class="sakai-form-choice">
                 <input type="radio" name="hidden" id="hidden_specify" value="specify" #if($specify)checked="checked"#end/>
                 <label for="hidden_specify">$tlang.getString("avail.specify.withtips")</label>
             </div>
@@ -323,11 +321,11 @@ function resizeFrame(){
             #set($release_minute = $releaseDate.breakdownLocal().min)
 
             <div class="sakai-announcements__dates showHideDates">
-                <div class="sakai-announcements__choice">
+                <div class="sakai-form-choice">
                     <input type="checkbox" class="beginEnd" name="use_start_date" id="use_start_date" value="true" #if($useReleaseDate == true)checked="checked"#end/>
                     <label for="use_start_date">$tlang.getString("avail.release")</label>
                 </div>
-                <div class="sakai-form-group">
+                <div class="sakai-form-field">
                     <label for="opendate" class="sakai-form-label">$tlang.getString("widget_date")</label>
                     <input type="text" id="opendate" class="sakai-form-control sakai-announcements__date-input">
                 </div>
@@ -340,11 +338,11 @@ function resizeFrame(){
             #set($retract_minute = $retractDate.breakdownLocal().min)
 
             <div class="sakai-announcements__dates showHideDates">
-                <div class="sakai-announcements__choice">
+                <div class="sakai-form-choice">
                     <input type="checkbox" class="beginEnd" name="use_end_date" id="use_end_date" value="true" #if($useRetractDate == true)checked="checked"#end/>
                     <label for="use_end_date">$tlang.getString("avail.retract")</label>
                 </div>
-                <div class="sakai-form-group">
+                <div class="sakai-form-field">
                     <label for="closedate" class="sakai-form-label">$tlang.getString("widget_date")</label>
                     <input type="text" id="closedate" class="sakai-form-control sakai-announcements__date-input">
                 </div>
@@ -384,8 +382,8 @@ function resizeFrame(){
             });
         </script>
 
-        <section class="sakai-announcements__section">
-            <h2 class="sakai-announcements__section-title">$tlang.getString("revise.attachments")</h2>
+        <section class="sakai-form-section">
+            <h2 class="sakai-form-section__title">$tlang.getString("revise.attachments")</h2>
             #set ($size = 0)
             #if (!$attachments.isEmpty())
                 #set ($props = false)
@@ -412,7 +410,7 @@ function resizeFrame(){
                     #end
                 </ul>
             #else
-                <p class="sakai-announcements__hint">$tlang.getString("revise.noattach")</p>
+                <p class="sakai-form-section__intro">$tlang.getString("revise.noattach")</p>
             #end
             <div class="sakai-actions">
                 <button type="button" class="sakai-btn sakai-btn-secondary" name="attach"
@@ -427,12 +425,12 @@ function resizeFrame(){
         </section>
 
         #if ($notification)
-            <section class="sakai-announcements__section">
+            <section class="sakai-form-section">
                 #if (!$site.isPublished())
                     <div id="email-notify-warning" class="sakai-banner sakai-banner--error" role="alert">$tlang.getString("revise.notify_alert")</div>
                 #end
 
-                <div class="sakai-form-group">
+                <div class="sakai-form-field">
                     <label for="notify" class="sakai-form-label">$tlang.getString("revise.notify")</label>
                     <select name="notify" id="notify" class="sakai-form-control">
                         #if ($noti)
@@ -450,8 +448,8 @@ function resizeFrame(){
         #end
 
         #if ($notiHistory)
-            <section class="sakai-announcements__section">
-                <p class="sakai-announcements__hint">
+            <section class="sakai-form-section">
+                <p class="sakai-form-section__intro">
                     <a href="#" id="notiHistoryToggle">$tlang.getString("revise.notify.ver_link")</a>
                 </p>
                 <div class="sakai-table-wrap">

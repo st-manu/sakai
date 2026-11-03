@@ -11,13 +11,13 @@
   </p>
   <search>
     <form method="get" class="sitestats-filter-form" th:action="@{/admin}">
-      <div class="sitestats-form-field">
+      <div class="sakai-form-field">
         <label class="sakai-form-label" for="site-search" th:text="#{instructions_sitelist}">
           Search sites by title to access site-specific statistics
         </label>
         <input id="site-search" class="sakai-form-control" type="search" name="search" th:value="${search}"/>
       </div>
-      <div class="sitestats-form-field">
+      <div class="sakai-form-field">
         <label class="sakai-form-label" for="site-type" th:text="#{site_type}">Site type</label>
         <select id="site-type" class="sakai-form-control" name="type">
           <option value="all" th:selected="${type == null or type == 'all'}" th:text="#{all}">All</option>
@@ -25,7 +25,7 @@
                   th:text="${siteType}" th:selected="${siteType == type}"></option>
         </select>
       </div>
-      <div class="sitestats-form-field sitestats-filter-form__actions">
+      <div class="sakai-form-field sitestats-filter-form__actions">
         <button class="sakai-btn sakai-btn-primary" type="submit" th:text="#{search}">Search sites</button>
       </div>
     </form>

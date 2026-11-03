@@ -5,40 +5,40 @@
 <main class="portletBody sakai-tool-body sakai-sitestats">
   <div th:replace="~{fragments/common :: toolHeader(#{menu_prefs}, 'preferences')}"></div>
   <div th:replace="~{fragments/common :: messages}"></div>
-  <form method="post" class="sitestats-preferences" th:action="@{/preferences}" th:object="${preferencesForm}">
+  <form method="post" th:action="@{/preferences}" th:object="${preferencesForm}">
     <input type="hidden" name="siteId" th:value="${siteId}"/>
     <input type="hidden" name="sakai_csrf_token" th:value="${sakaiCsrfToken}"/>
-    <fieldset class="sitestats-form-section">
-      <legend class="sitestats-form-section__title" th:text="#{instructions_prefs_general}">General options</legend>
-      <div class="form-check">
-        <input id="site-tools-only" class="form-check-input" type="checkbox"
+    <fieldset class="sakai-form-section">
+      <legend class="sakai-form-section__title" th:text="#{instructions_prefs_general}">General options</legend>
+      <div class="sakai-form-choice">
+        <input id="site-tools-only" type="checkbox"
                th:field="*{listToolEventsOnlyAvailableInSite}"/>
-        <label class="form-check-label" for="site-tools-only"
+        <label for="site-tools-only"
                th:text="#{prefs_listToolEventsOnlyAvailableInSite}"></label>
       </div>
-      <div class="form-check">
-        <input id="student-own-stats" class="form-check-input" type="checkbox"
+      <div class="sakai-form-choice">
+        <input id="student-own-stats" type="checkbox"
                th:field="*{showOwnStatisticsToStudents}"/>
-        <label class="form-check-label" for="student-own-stats"
+        <label for="student-own-stats"
                th:text="#{prefs_showOwnStatisticsToStudents}"></label>
       </div>
-      <div class="sitestats-form-field">
+      <div class="sakai-form-field">
         <label class="sakai-form-label" for="grades-threshold" th:text="#{prefs_grades_threshold}">
           Grade threshold (%)
         </label>
         <input id="grades-threshold" class="sakai-form-control sitestats-number-input" type="number" min="0" max="100" step="any"
                th:field="*{gradesThreshold}" th:placeholder="${#numbers.formatInteger(defaultGradesThreshold,1)}"/>
-        <div class="sitestats-help"
+        <div class="sakai-form-help"
              th:text="#{prefs_grades_threshold_default(${#numbers.formatInteger(defaultGradesThreshold,1)})}"></div>
       </div>
     </fieldset>
-    <fieldset class="sitestats-form-section">
-      <legend class="sitestats-form-section__title" th:text="#{instructions_prefs_sep_chart}">Chart presentation options</legend>
-      <div class="form-check">
-        <input id="item-labels" class="form-check-input" type="checkbox" th:field="*{itemLabelsVisible}"/>
-        <label class="form-check-label" for="item-labels" th:text="#{prefs_itemLabelsVisible}"></label>
+    <fieldset class="sakai-form-section">
+      <legend class="sakai-form-section__title" th:text="#{instructions_prefs_sep_chart}">Chart presentation options</legend>
+      <div class="sakai-form-choice">
+        <input id="item-labels" type="checkbox" th:field="*{itemLabelsVisible}"/>
+        <label for="item-labels" th:text="#{prefs_itemLabelsVisible}"></label>
       </div>
-      <div class="sitestats-form-field">
+      <div class="sakai-form-field">
         <label class="sakai-form-label" for="chart-transparency" th:text="#{prefs_chartTransparency}">
           Transparency
         </label>
@@ -48,21 +48,21 @@
         </select>
       </div>
     </fieldset>
-    <fieldset class="sitestats-form-section sitestats-activity-definition">
-      <legend class="sitestats-form-section__title" th:text="#{instructions_prefs_activity_tools}">Tools/events included as activity</legend>
-      <div class="form-check">
-        <input id="all-tools" class="form-check-input" type="checkbox" th:field="*{useAllTools}"
+    <fieldset class="sakai-form-section sitestats-activity-definition">
+      <legend class="sakai-form-section__title" th:text="#{instructions_prefs_activity_tools}">Tools/events included as activity</legend>
+      <div class="sakai-form-choice">
+        <input id="all-tools" type="checkbox" th:field="*{useAllTools}"
                aria-controls="activity-event-options"/>
-        <label class="form-check-label" for="all-tools" th:text="#{prefs_useAllTools}"></label>
+        <label for="all-tools" th:text="#{prefs_useAllTools}"></label>
       </div>
       <div id="activity-event-options" class="masonry-columns"
            th:if="${!#lists.isEmpty(tools)}">
         <section class="masonry-item" th:each="tool : ${tools}">
           <h2 class="sitestats-activity-tool-title" th:text="${tool.label}"></h2>
-          <div class="form-check" th:each="event : ${tool.events}">
-            <input class="form-check-input" type="checkbox" th:field="*{selectedEventIds}"
+          <div class="sakai-form-choice" th:each="event : ${tool.events}">
+            <input type="checkbox" th:field="*{selectedEventIds}"
                    th:value="${event.id}" th:id="${'event-' + event.id}"/>
-            <label class="form-check-label" th:for="${'event-' + event.id}"
+            <label th:for="${'event-' + event.id}"
                    th:text="${event.label}"></label>
           </div>
         </section>
