@@ -27,7 +27,7 @@
 
     <div id="header-site-title" class="portal-header-breadcrumb-item portal-header-site-title portal-header-site-title--current">
         <a href="$!{siteUrl}" title="$!{siteTitle}">
-            $siteTitle#if (${currentRole} && !$roleSwitchState) <span class="portal-header-site-role">(${rloader.sit_role} ${currentRole})</span>#end
+            $siteTitle#if (${currentRole} && !$roleSwitchState) <span class="sakai-badge sakai-badge--subtle portal-header-site-role">${currentRole}</span>#end
         </a>
     </div>
 

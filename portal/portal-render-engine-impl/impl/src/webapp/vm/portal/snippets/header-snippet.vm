@@ -22,6 +22,7 @@
 
   #if (!${userIsLoggedIn})
     #if (${loginTopLogin})
+      #set ($loginNavContext = "mobile")
       #parse("/vm/portal/includeLoginNav.vm")
     #else
       #parse("/vm/portal/snippets/loginImage-snippet.vm")
@@ -32,6 +33,8 @@
         data-bs-toggle="modal"
         data-bs-target="#sakai-account-panel"
         aria-controls="sakai-account-panel"
+        aria-haspopup="dialog"
+        aria-label="${rloader.mainnav_btn_account}"
         title="${rloader.mainnav_btn_account}">
       <img class="sakai-accountProfileImage"
           src="${profileImageUrl}"

@@ -236,7 +236,7 @@
 // sakai.motd's carousel (see chef_synoptic_message-List.vm). Scoped to this tool's own
 // body class so it only affects the MOTD widget's own page, not the rest of the portal.
 .#{$namespace}sakai-motd {
-	// The skin's .portletBody has a fixed margin-bottom: 3rem !important (modules/tool/_base.scss)
+	// The skin's .portletBody has a fixed margin-bottom: 3rem (modules/tool/_base.scss)
 	// that collapses through <body> into <html>, inflating document.documentElement.scrollHeight by
 	// that same amount (measured live: 42px) regardless of actual content - wasted space under every
 	// slide. .Mrphs-sakai-motd alone isn't enough to scope this: it's on <body> for every sakai.motd

@@ -1,0 +1,41 @@
+.sakai-login {
+  display: none;
+  align-items: center;
+  gap: var(--sakai-space-2);
+  margin-inline: var(--sakai-space-4) var(--sakai-space-2);
+
+  @include media-breakpoint-up(md) {
+    display: flex;
+  }
+}
+
+.sakai-login__field {
+  margin-block: var(--sakai-space-1);
+}
+
+.sakai-login__password {
+  width: auto;
+  margin-block: var(--sakai-space-1);
+}
+
+.sakai-login__submit {
+  padding: var(--sakai-space-3);
+  margin-block: var(--sakai-space-1);
+}
+
+.sakai-login__mobile-trigger {
+  margin: var(--sakai-space-1) var(--sakai-space-4) var(--sakai-space-1) var(--sakai-space-2);
+
+  @include media-breakpoint-up(md) {
+    display: none;
+  }
+}
+
+.sakai-login {
+  .form-control,
+  .input-group-text,
+  .btn {
+    border-color: var(--top-header-text-color);
+    color: var(--top-header-text-color);
+  }
+}

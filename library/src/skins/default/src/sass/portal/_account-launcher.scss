@@ -3,17 +3,16 @@
   width: 100%;
 }
 
-.sakai-account-launcher.modal.show {
-  display: flex !important;
-  align-items: flex-start;
-  justify-content: center;
-  padding: clamp(0.75rem, 5vh, 4rem) 1rem 1rem;
-}
-
 .sakai-account-launcher__dialog {
-  margin: 0;
+  margin: clamp(0.75rem, 5vh, 4rem) auto 1rem;
   width: var(--bs-modal-width);
   max-width: 100%;
+}
+
+@include media-breakpoint-up(md) {
+  body:has(.sakai-account-launcher.show) .modal-backdrop.show {
+    opacity: 0.15;
+  }
 }
 
 .sakai-account-launcher__panel {
@@ -21,9 +20,9 @@
   flex-direction: column;
   max-height: min(36rem, calc(100vh - 3rem));
   border: 1px solid var(--sakai-border-color);
-  border-radius: var(--sakai-radius-xl, 1rem);
+  border-radius: var(--sakai-radius-xl);
   background: var(--sakai-background-color-1);
-  box-shadow: var(--elevation-8dp, 0 12px 40px rgba(0, 0, 0, 0.18));
+  box-shadow: var(--elevation-8dp);
   overflow: hidden;
 }
 
@@ -78,16 +77,11 @@
 }
 
 @include media-breakpoint-down(md) {
-  .sakai-account-launcher.modal.show {
-    padding: 0;
-    align-items: stretch;
-  }
-
   .sakai-account-launcher__dialog {
     width: 100%;
+    max-width: none;
     height: 100%;
     margin: 0;
-    max-width: none;
   }
 
   .sakai-account-launcher__panel {
@@ -120,15 +114,15 @@
 }
 
 .sakai-account-panel__avatar {
-  width: 4.5rem;
-  height: 4.5rem;
+  width: var(--sakai-avatar-size-lg);
+  height: var(--sakai-avatar-size-lg);
   border-radius: 50%;
   object-fit: cover;
 }
 
 .sakai-account-panel__name {
   margin: 0;
-  font-size: 1.125rem;
+  font-size: var(--sakai-font-size-lg);
   font-weight: 600;
   color: var(--sakai-text-color-1);
 }

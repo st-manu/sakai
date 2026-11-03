@@ -49,14 +49,13 @@
         </div>
 
         <div class="sakai-sites-launcher__body">
-          <div id="allsites-refresh-notification" class="sak-banner-info" style="display: none">${rloader.sit_refresh_favorites}</div>
+          <div id="allsites-refresh-notification" class="sak-banner-info" hidden>${rloader.sit_refresh_favorites}</div>
           <div class="sakai-is-hidden" id="max-favorite-entries">${tabsSites.maxFavoritesShown}</div>
           <div id="sites-launcher-i18n"
               hidden
               data-projects="${rloader.moresite_projects}"
               data-other="${rloader.moresite_other}"
               data-administration="${rloader.moresite_administration}"
-              data-unknown-term="${rloader.moresite_unknown_term}"
               data-pin="${rloader.sitenav_btn_pin}"
               data-unpin="${rloader.sitenav_btn_unpin}"></div>
 
@@ -97,7 +96,7 @@
                     <span class="spinner-border" aria-hidden="true"></span>
                     <span>${rloader.moresite_loading}</span>
                   </div>
-                  <div id="moresites-error" class="sak-banner-error" style="display: none" role="alert">${rloader.moresite_loading_error}</div>
+                  <div id="moresites-error" class="sak-banner-error" hidden role="alert">${rloader.moresite_loading_error}</div>
                 </div>
               </div>
 

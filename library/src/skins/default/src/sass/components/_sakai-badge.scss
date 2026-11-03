@@ -1,0 +1,22 @@
+.sakai-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.125rem var(--sakai-space-2);
+  border-radius: var(--sakai-radius-sm);
+  background-color: var(--sakai-background-color-3);
+  color: var(--sakai-text-color-1);
+  font-size: var(--sakai-font-size-xs);
+  font-weight: 600;
+  line-height: 1.5;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  vertical-align: baseline;
+}
+
+.sakai-badge--subtle {
+  background-color: var(--sakai-background-color-2);
+  color: var(--sakai-text-color-muted);
+  border: 1px solid var(--sakai-border-color);
+  font-weight: 500;
+  text-transform: uppercase;
+}

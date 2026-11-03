@@ -150,10 +150,10 @@
 
 .sakai-sidebar__avatar {
   flex: 0 0 auto;
-  width: 1.75rem;
-  height: 1.75rem;
-  min-width: 1.75rem;
-  min-height: 1.75rem;
+  width: var(--sakai-avatar-size-sm);
+  height: var(--sakai-avatar-size-sm);
+  min-width: var(--sakai-avatar-size-sm);
+  min-height: var(--sakai-avatar-size-sm);
   max-width: none;
   aspect-ratio: 1;
   object-fit: cover;
@@ -394,7 +394,7 @@
 
 .sakai-sidebar-page {
   margin: 0;
-  border-radius: var(--sakai-radius-sm, 0.25rem);
+  border-radius: var(--sakai-radius-sm);
 
   &:has(> .sakai-sidebar-page__link:is(:hover, :focus-visible)) {
     background-color: var(--sakai-background-color-2);
@@ -446,7 +446,7 @@
   min-height: 1.875rem;
   padding: 0.35rem var(--sakai-space-2);
   border: none;
-  border-radius: var(--sakai-radius-sm, 0.25rem);
+  border-radius: var(--sakai-radius-sm);
   background: transparent;
   color: var(--sakai-text-color-1);
   font-size: var(--sakai-font-size-sm);
@@ -551,7 +551,7 @@
   height: 0.45rem;
   padding: 0;
   border-radius: 50%;
-  background: var(--sakai-color-red, #c23934);
+  background: var(--sakai-color-red);
   color: transparent;
   display: none;
   pointer-events: none;
@@ -592,7 +592,7 @@
   gap: 0.25rem;
   max-width: 100%;
   padding: 0.05rem 0.35rem;
-  border-radius: var(--sakai-radius-sm, 0.25rem);
+  border-radius: var(--sakai-radius-sm);
   background-color: var(--sakai-background-color-2);
   color: var(--sakai-text-color-dimmed);
   font-size: var(--sakai-font-size-xs);
@@ -686,8 +686,8 @@
 @include media-breakpoint-up(md) {
   #portal-nav-sidebar.portal-nav-sidebar-desktop {
     position: relative;
-    visibility: visible !important;
-    transform: none !important;
+    visibility: visible;
+    transform: none;
     box-shadow: none;
   }
 
@@ -718,11 +718,13 @@
     #current-site-pages > .sakai-sidebar-page > .sakai-sidebar-page__link > .sakai-sidebar-page__chevron,
     #current-site-pages > .sakai-sidebar-page > .sakai-sidebar-page__toggle > .sakai-sidebar-page__chevron,
     #current-site-pages > .sakai-sidebar-page > .sakai-sidebar-page__link .bi-eye-slash-fill,
-    #current-site-pages > .sakai-sidebar-page > .sakai-sidebar-page__link .bi-lock-fill,
-    #current-site-pages > .sakai-sidebar-page > .sakai-sidebar-page__link .visually-hidden,
+    #current-site-pages > .sakai-sidebar-page > .sakai-sidebar-page__link .bi-lock-fill {
+      display: none;
+    }
+
     #current-site-pages > .sakai-sidebar-page > .sakai-sidebar-page__link .sakai-sidebar-page__status,
     #current-site-pages > .sakai-sidebar-page > .sakai-sidebar-page__toggle .sakai-sidebar-page__status {
-      display: none;
+      @include visually-hidden;
     }
 
     .sakai-sidebar-page--lessons > .sakai-sidebar-page__toggle,
@@ -853,10 +855,10 @@
     }
 
     .sakai-sidebar__avatar {
-      width: 1.5rem;
-      height: 1.5rem;
-      min-width: 1.5rem;
-      min-height: 1.5rem;
+      width: var(--sakai-avatar-size-xs);
+      height: var(--sakai-avatar-size-xs);
+      min-width: var(--sakai-avatar-size-xs);
+      min-height: var(--sakai-avatar-size-xs);
       max-width: none;
     }
 
@@ -897,6 +899,10 @@
       margin: 0;
       padding: 0;
       border-radius: var(--sakai-radius-md);
+    }
+
+    #current-site-pages > .sakai-sidebar-page.sakai-is-hidden {
+      display: none;
     }
 
     #current-site-pages > .sakai-sidebar-page,
@@ -974,7 +980,7 @@
       color: var(--sakai-text-color-1);
       border: 1px solid var(--sakai-border-color);
       border-radius: var(--sakai-radius-md);
-      box-shadow: var(--elevation-4dp, 0 0.5rem 1.25rem rgba(0, 0, 0, 0.14));
+      box-shadow: var(--elevation-8dp);
 
       .sakai-sidebar-page__chevron {
         display: inline-flex;
@@ -1081,7 +1087,7 @@
   --bs-offcanvas-width: min(100vw, var(--portal-nav-sidebar-width, 16rem));
   background-color: var(--sakai-background-color-1);
   border: none;
-  box-shadow: 8px 0 32px rgba(0, 0, 0, 0.12);
+  box-shadow: var(--elevation-8dp);
   height: auto;
   max-height: none;
 

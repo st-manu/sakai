@@ -1,5 +1,5 @@
 .sakai-is-hidden {
-  display: none !important;
+  display: none;
 }
 
 .sakai-portal-header--mobile {
@@ -35,17 +35,17 @@
   min-width: 2.75rem;
   min-height: 2.75rem;
   padding: 0;
-  color: var(--sakai-text-color-1) !important;
+  color: var(--sakai-text-color-1);
 
   .bi,
   .bi::before {
-    font-size: 1.5rem !important;
+    font-size: 1.5rem;
     line-height: 1;
   }
 
   &:hover,
   &:focus-visible {
-    color: var(--sakai-text-color-1) !important;
+    color: var(--sakai-text-color-1);
     background-color: var(--sakai-background-color-2);
   }
 }
@@ -75,8 +75,8 @@
   padding: 0;
 
   .sakai-accountProfileImage {
-    width: 2rem;
-    height: 2rem;
+    width: var(--sakai-avatar-size);
+    height: var(--sakai-avatar-size);
   }
 }
 

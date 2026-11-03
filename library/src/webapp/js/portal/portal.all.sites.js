@@ -11,7 +11,6 @@ allsites.readLabels = function () {
     projects: el?.dataset.projects || "PROJECTS",
     other: el?.dataset.other || "OTHER",
     administration: el?.dataset.administration || "ADMINISTRATION",
-    unknownTerm: el?.dataset.unknownTerm || "(unknown academic term)",
   };
 };
 
@@ -21,8 +20,10 @@ allsites.groupKeyForSite = function (site, labels) {
     return { key: "administration", label: labels.administration, kind: "administration" };
   }
   if (site.course) {
-    const termLabel = (site.term || "").trim() || labels.unknownTerm;
-    return { key: `term:${termLabel}`, label: termLabel, kind: "term" };
+    const termLabel = (site.term || "").trim();
+    if (termLabel) {
+      return { key: `term:${termLabel}`, label: termLabel, kind: "term" };
+    }
   }
   if (site.project) {
     return { key: "projects", label: labels.projects, kind: "projects" };
@@ -171,7 +172,7 @@ allsites.updatePinned = function (reorder) {
       throw new Error(`Network error while updating pinned sites at url ${url}`);
     } else {
       const notification = document.getElementById("allsites-refresh-notification");
-      if (notification) notification.style.display = "block";
+      if (notification) notification.removeAttribute("hidden");
     }
   })
   .catch(error => console.error(error));
@@ -275,7 +276,6 @@ allsites.createPinnedBadge = function (site) {
   pin.dataset.pinSite = site.siteId;
   pin.dataset.pinned = "true";
   pin.dataset.siteTitle = site.title || "";
-  pin.title = labels.unpin;
   pin.setAttribute("aria-label", labels.unpin);
   pin.innerHTML = '<i class="si si-pin sakai-pin-icon__outline" aria-hidden="true"></i>'
     + '<i class="si si-pin-fill sakai-pin-icon__fill" aria-hidden="true"></i>';
@@ -547,14 +547,14 @@ document.addEventListener("DOMContentLoaded", () => {
       const errorBanner = document.getElementById("moresites-error");
       const userId = globalThis.portal?.user?.id;
 
-      loading?.style.removeProperty("display");
-      errorBanner?.style.setProperty("display", "none");
+      loading?.removeAttribute("hidden");
+      errorBanner?.setAttribute("hidden", "");
       content?.setAttribute("aria-busy", "true");
 
       if (!userId) {
         console.error("No portal user id available for sites launcher");
-        loading?.style.setProperty("display", "none");
-        errorBanner?.style.setProperty("display", "block");
+        loading?.setAttribute("hidden", "");
+        errorBanner?.removeAttribute("hidden");
         return;
       }
 
@@ -591,8 +591,8 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById("search-all-sites")?.focus();
       } catch (error) {
         console.error(error);
-        loading?.style.setProperty("display", "none");
-        errorBanner?.style.setProperty("display", "block");
+        loading?.setAttribute("hidden", "");
+        errorBanner?.removeAttribute("hidden");
         content?.setAttribute("aria-busy", "false");
       }
     });

@@ -31,7 +31,7 @@
   background: var(--sakai-background-color-1);
   border: 1px solid var(--sakai-border-color);
   border-radius: var(--sakai-radius-md);
-  box-shadow: var(--sakai-shadow-medium, 0 4px 16px rgba(0, 0, 0, 0.12));
+  box-shadow: var(--elevation-4dp);
 
   > a:not(.sakai-btn),
   > button:not(.sakai-btn) {

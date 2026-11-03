@@ -303,7 +303,6 @@ class SitesSidebar {
       button.setAttribute("aria-pressed", pinned ? "true" : "false");
       const title = pinned ? this._i18n?.pinButtons?.titleUnpin : this._i18n?.pinButtons?.titlePin;
       if (title) {
-        button.title = title;
         button.setAttribute("aria-label", title);
       }
     });
@@ -363,7 +362,6 @@ class SitesSidebar {
       pinButton.setAttribute("aria-pressed", reverted ? "true" : "false");
       const title = reverted ? this._i18n?.pinButtons?.titleUnpin : this._i18n?.pinButtons?.titlePin;
       if (title) {
-        pinButton.title = title;
         pinButton.setAttribute("aria-label", title);
       }
     }
@@ -375,11 +373,10 @@ class SitesSidebar {
 class PinButton {
 
   get title() {
-    return this._element.title;
+    return this._element.getAttribute("aria-label");
   }
 
   set title(newValue) {
-    this._element.title = newValue;
     this._element.setAttribute("aria-label", newValue);
   }
 

@@ -102,7 +102,7 @@
     });
 
     // Setup mobile login
-    new MobileLogin(portal.head.querySelector("#mobileLoginBtn"), {
+    new MobileLogin(portal.head.querySelector(".sakai-login__mobile-trigger"), {
       passwordField: {
         icons: {
           hidden: "bi-eye-slash-fill",

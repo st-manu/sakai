@@ -147,7 +147,7 @@ class PortalScriptsTest {
                           aria-pressed='false'><i class='si-pin'></i><i class='si-pin-fill'></i></button>
                     </div>
                   </div>
-                <div id='allsites-refresh-notification' style='display:none'>Saved</div>
+                <div id='allsites-refresh-notification' hidden>Saved</div>
                 <ul id='organize-favorites-list'><li class='organize-favorite-item'>A</li></ul>
                 </div>
                 """;

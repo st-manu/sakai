@@ -63,7 +63,6 @@
                         data-pin-site="${site.id}"
                         data-pinned="$!{site.isPinned}"
                         data-site-title="${sidebarSiteTitle}"
-                        title="${pinTitle}"
                         aria-label="${pinTitle}"
                         aria-pressed="$!{site.isPinned}">
                       <i class="si si-pin sakai-pin-icon__outline" aria-hidden="true"></i>
@@ -105,10 +104,10 @@
 #end
 
 <!-- START VM includeSiteNav.vm -->
-<aside id="portal-nav-sidebar" class="sakai-is-hidden portal-nav-sidebar sakai-sidebar sakai-no-print #if (${sidebarCollapsed})sidebar-collapsed#end" tabindex="-1" data-bs-backdrop="true" aria-labelledby="totoolmenu">
+<aside id="portal-nav-sidebar" class="sakai-is-hidden portal-nav-sidebar sakai-sidebar sakai-no-print #if (${sidebarCollapsed})sidebar-collapsed#end" tabindex="-1" data-bs-backdrop="true" aria-labelledby="sakai-sidebar-menu-title">
     <div class="offcanvas-header sakai-sidebar__mobile-header">
-        <h2 class="offcanvas-title">${rloader.sitenav_title}</h2>
-        <button type="button" class="btn-close text-reset sakai-sidebar__close" data-bs-dismiss="offcanvas" aria-label="Close the sites sidebar"></button>
+        <h2 class="offcanvas-title" id="sakai-sidebar-menu-title">${rloader.sitenav_menu}</h2>
+        <button type="button" class="btn-close text-reset sakai-sidebar__close" data-bs-dismiss="offcanvas" aria-label="${rloader.sitenav_close}"></button>
     </div>
 
     <div class="sakai-sidebar__brand">
@@ -294,7 +293,7 @@
 <script>
     window.addEventListener('load', () => {
         setTimeout(function() {
-            if (!["eid", "pw"].includes(document.activeElement?.id)) {
+            if (!document.activeElement?.closest(".sakai-login")) {
                 document.querySelector('.sakai-portal-wrapper')?.focus();
             }
         }, 50);

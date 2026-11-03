@@ -17,15 +17,16 @@
         </li>
         #if (${userIsLoggedIn})
         <li class="Mrphs-skipNav__menuitem Mrphs-skipNav__menuitem--worksite">
-            <a href="#"
+            <button type="button"
+                    class="Mrphs-skipNav__link"
                     data-bs-toggle="modal"
                     data-bs-target="#select-site-sidebar"
                     aria-controls="select-site-sidebar"
-                    class="Mrphs-skipNav__link"
-                    title="${rloader.sit_jumpworksite}" accesskey="w">
+                    title="${rloader.sit_jumpworksite}"
+                    accesskey="w">
                 <i class="si si-grid-3x3-fill all-sites-icon" aria-hidden="true"></i> ${rloader.sit_worksites}
                 <span class="accesibility_key">[w]</span>
-            </a>
+            </button>
         </li>
         #end ## END of IF ($userIsLoggedIn)
         <li class="Mrphs-skipNav__menuitem Mrphs-skipNav__menuitem--tools">

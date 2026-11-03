@@ -61,7 +61,7 @@ sakai-course-card.sakai-course-card--has-alerts .sakai-course-card__shell {
   }
 
   &--decorated {
-    color: var(--sakai-text-color-inverse, var(--sakai-text-color-inverted));
+    color: var(--sakai-text-color-inverted);
 
     a:not(.sakai-course-card__title--link) {
       color: inherit;

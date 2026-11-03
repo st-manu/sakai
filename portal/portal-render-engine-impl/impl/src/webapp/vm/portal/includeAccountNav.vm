@@ -6,14 +6,13 @@
   #end
   #if ($helpLink)
     <li>
-      <a class="sak-sysInd-help desktop-help-icon"
+      <a class="sak-sysInd-help desktop-help-icon sakai-btn-icon btn icon-button"
           title="${rloader.mainnav_help_tooltip}"
           href="${helpLink}"
-          target="_blank">
-        <button class="sakai-btn-icon btn icon-button" type="button"
-	    aria-label="${rloader.mainnav_help_tooltip}">
-          <span class="bi bi-question-circle" aria-hidden="true"></span>
-        </button>
+          target="_blank"
+          rel="noopener"
+          aria-label="${rloader.mainnav_help_tooltip}">
+        <span class="bi bi-question-circle" aria-hidden="true"></span>
       </a>
     </li>
   #end

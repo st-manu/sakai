@@ -39,8 +39,19 @@
     --sakai-text-color-2: var(--sakai-color-gray--darker-6);
     --sakai-text-color-3: var(--sakai-brand--darker-3);
     --sakai-text-color-dimmed: var(--sakai-color-gray--darker-4);
+    --sakai-text-color-muted: var(--sakai-text-color-dimmed);
     --sakai-text-color-disabled: var(--sakai-color-gray--darker-2);
     --sakai-text-color-inverted: var(--sakai-background-color-1);
+
+    // Typography scale, derived from the base skin size.
+    --sakai-font-size-md: var(--sakai-font-size);
+    --sakai-font-size-lg: 1.125rem;
+    --sakai-font-size-xl: 1.5rem;
+
+    --sakai-avatar-size-xs: 1.5rem;
+    --sakai-avatar-size-sm: 1.75rem;
+    --sakai-avatar-size: 2rem;
+    --sakai-avatar-size-lg: 4.5rem;
 
     --elevation-0dp: none;
     --elevation-1dp: 0 2px 1px -1px rgba(0,0,0,.2), 0 1px 1px 0 rgba(0,0,0,.14), 0 1px 3px 0 rgba(0,0,0,.12);

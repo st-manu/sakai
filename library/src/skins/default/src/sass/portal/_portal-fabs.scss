@@ -30,21 +30,23 @@
   }
 }
 
-.sakai-portal-fab-wrap,
-.sakai-portal-fabs .Mrphs-footerApp__presence {
-  position: static !important;
-  float: none !important;
-  inset: auto !important;
-  bottom: auto !important;
-  right: auto !important;
-  left: auto !important;
-  height: auto !important;
-  width: auto !important;
-  padding: 0 !important;
-  margin: 0 !important;
-  background: transparent !important;
-  color: inherit !important;
-  z-index: auto !important;
+.sakai-portal-fabs {
+  .sakai-portal-fab-wrap,
+  .Mrphs-footerApp__presence {
+    position: static;
+    float: none;
+    inset: auto;
+    bottom: auto;
+    right: auto;
+    left: auto;
+    height: auto;
+    width: auto;
+    padding: 0;
+    margin: 0;
+    background: transparent;
+    color: inherit;
+    z-index: auto;
+  }
 }
 
 .sakai-portal-fab,
@@ -61,7 +63,7 @@
   border-radius: 999px;
   background-color: var(--sakai-background-color-1);
   color: var(--sakai-text-color-1);
-  box-shadow: var(--elevation-4dp, 0 2px 8px rgba(0, 0, 0, 0.12));
+  box-shadow: var(--elevation-4dp);
   cursor: pointer;
   line-height: 1;
   font-size: 1.15rem;
@@ -74,7 +76,7 @@
     color: var(--sakai-text-color-1);
     text-decoration: none;
     outline: none;
-    box-shadow: var(--elevation-6dp, 0 4px 12px rgba(0, 0, 0, 0.16));
+    box-shadow: var(--elevation-6dp);
   }
 
   &.is-active,
@@ -89,54 +91,58 @@
   color: inherit;
 
   &::before {
-    font-family: bootstrap-icons !important;
+    font-family: bootstrap-icons;
   }
 }
 
-.sakai-portal-fab__badge,
-.sakai-portal-fabs .Mrphs-footerApp--count {
-  position: absolute !important;
-  top: -0.25rem !important;
-  inset-inline-end: -0.25rem !important;
-  inset-inline-start: auto !important;
-  margin: 0 !important;
-  min-width: 1.25rem;
-  height: 1.25rem;
-  padding: 0 0.35rem !important;
-  border: 2px solid var(--sakai-background-color-1) !important;
-  border-radius: 999px !important;
-  background-color: var(--sakai-primary-color-1, var(--sakai-brand--primary, #0f6cbd));
-  color: var(--sakai-text-color-inverted, #fff) !important;
-  font-size: var(--sakai-font-size-xs) !important;
-  font-weight: 600;
-  line-height: 1.1rem !important;
-  text-align: center;
-  display: none;
+.sakai-portal-fabs {
+  .sakai-portal-fab__badge,
+  .Mrphs-footerApp--count {
+    position: absolute;
+    top: -0.25rem;
+    inset-inline-end: -0.25rem;
+    inset-inline-start: auto;
+    margin: 0;
+    min-width: 1.25rem;
+    height: 1.25rem;
+    padding: 0 0.35rem;
+    border: 2px solid var(--sakai-background-color-1);
+    border-radius: 999px;
+    background-color: var(--sakai-primary-color-1);
+    color: var(--sakai-text-color-inverted);
+    font-size: var(--sakai-font-size-xs);
+    font-weight: 600;
+    line-height: 1.1rem;
+    text-align: center;
+    display: none;
 
-  &.present {
-    display: inline-flex !important;
-    align-items: center;
-    justify-content: center;
-  }
+    &.present {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
 
-  &.empty {
-    display: none !important;
+    &.empty {
+      display: none;
+    }
   }
 }
 
-.jump-to-top {
-  position: static;
-  bottom: auto;
-  right: auto;
-  z-index: auto;
-  display: none !important;
-  font-size: inherit;
-  border: 1px solid var(--sakai-border-color);
-  background: var(--sakai-background-color-1);
-  color: var(--sakai-text-color-1);
+.sakai-portal-fabs {
+  .jump-to-top {
+    position: static;
+    bottom: auto;
+    right: auto;
+    z-index: auto;
+    display: none;
+    font-size: inherit;
+    border: 1px solid var(--sakai-border-color);
+    background: var(--sakai-background-color-1);
+    color: var(--sakai-text-color-1);
 
-  &.show {
-    display: inline-flex !important;
+    &.show {
+      display: inline-flex;
+    }
   }
 }
 
@@ -154,40 +160,40 @@ body:has(.jump-to-top.show) {
 
 .sakai-presence-panel,
 .Mrphs-presence__area {
-  position: fixed !important;
-  inset-inline-end: var(--sakai-portal-fabs-inset) !important;
+  position: fixed;
+  inset-inline-end: var(--sakai-portal-fabs-inset);
   inset-block-end: calc(
     var(--sakai-portal-fabs-inset)
     + (var(--sakai-presence-fab-slots) * var(--sakai-fab-size))
     + ((var(--sakai-presence-fab-slots) - 1) * var(--sakai-portal-fabs-gap))
     + var(--sakai-space-3)
     + var(--sakai-space-2)
-  ) !important;
+  );
   bottom: calc(
     var(--sakai-portal-fabs-inset)
     + (var(--sakai-presence-fab-slots) * var(--sakai-fab-size))
     + ((var(--sakai-presence-fab-slots) - 1) * var(--sakai-portal-fabs-gap))
     + var(--sakai-space-3)
     + var(--sakai-space-2)
-  ) !important;
-  right: var(--sakai-portal-fabs-inset) !important;
-  z-index: 1045 !important;
-  width: min(18rem, calc(100vw - 2 * var(--sakai-portal-fabs-inset))) !important;
-  height: min(20rem, 50vh) !important;
-  margin: 0 !important;
-  padding: 0 !important;
+  );
+  right: var(--sakai-portal-fabs-inset);
+  z-index: 1045;
+  width: min(18rem, calc(100vw - 2 * var(--sakai-portal-fabs-inset)));
+  height: min(20rem, 50vh);
+  margin: 0;
+  padding: 0;
   overflow: hidden;
-  border: 1px solid var(--sakai-border-color) !important;
+  border: 1px solid var(--sakai-border-color);
   border-radius: var(--sakai-radius-md);
-  background-color: var(--sakai-background-color-1) !important;
-  box-shadow: var(--elevation-8dp, 0 8px 24px rgba(0, 0, 0, 0.16));
-  display: flex !important;
+  background-color: var(--sakai-background-color-1);
+  box-shadow: var(--elevation-8dp);
+  display: flex;
   flex-direction: column;
   transition: inset-block-end 0.15s ease, bottom 0.15s ease;
 
   &.is-hidden,
   &[hidden] {
-    display: none !important;
+    display: none;
   }
 
   @include media-breakpoint-down(md) {
@@ -198,7 +204,7 @@ body:has(.jump-to-top.show) {
       + ((var(--sakai-presence-fab-slots) - 1) * var(--sakai-portal-fabs-gap))
       + var(--sakai-space-3)
       + var(--sakai-space-2)
-    ) !important;
+    );
     bottom: calc(
       var(--sakai-mobilebar-height, 3.5rem)
       + var(--sakai-space-3)
@@ -206,7 +212,7 @@ body:has(.jump-to-top.show) {
       + ((var(--sakai-presence-fab-slots) - 1) * var(--sakai-portal-fabs-gap))
       + var(--sakai-space-3)
       + var(--sakai-space-2)
-    ) !important;
+    );
   }
 }
 
@@ -219,36 +225,36 @@ body:has(.jump-to-top.show) {
 
 .sakai-presence-panel__title,
 .Mrphs-presence__area--title {
-  display: flex !important;
+  display: flex;
   align-items: center;
   justify-content: space-between;
   gap: var(--sakai-space-2);
   flex-shrink: 0;
-  margin: 0 !important;
-  padding: var(--sakai-space-2) var(--sakai-space-3) !important;
+  margin: 0;
+  padding: var(--sakai-space-2) var(--sakai-space-3);
   font-size: var(--sakai-font-size-sm);
   font-weight: 600;
-  color: var(--sakai-text-color-1) !important;
-  background-color: var(--sakai-background-color-2) !important;
+  color: var(--sakai-text-color-1);
+  background-color: var(--sakai-background-color-2);
   border-bottom: 1px solid var(--sakai-border-color);
 }
 
 .sakai-presence-panel__close,
 .Mrphs-presence__area--title--close {
-  display: inline-flex !important;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  float: none !important;
+  float: none;
   width: 1.75rem;
   height: 1.75rem;
-  margin: 0 !important;
-  padding: 0 !important;
+  margin: 0;
+  padding: 0;
   border: none;
-  border-radius: var(--sakai-radius-sm, 0.25rem);
+  border-radius: var(--sakai-radius-sm);
   background: transparent;
-  color: var(--sakai-text-color-1) !important;
+  color: var(--sakai-text-color-1);
   cursor: pointer;
-  text-decoration: none !important;
+  text-decoration: none;
 
   &:hover,
   &:focus-visible {
@@ -256,16 +262,16 @@ body:has(.jump-to-top.show) {
   }
 
   &::before {
-    display: none !important;
+    display: none;
   }
 }
 
 .sakai-presence-panel__body,
 .Mrphs-presence__area--iframe-div {
   flex: 1 1 auto;
-  min-height: 0 !important;
-  height: auto !important;
-  width: 100% !important;
+  min-height: 0;
+  height: auto;
+  width: 100%;
   overflow: auto;
   padding: var(--sakai-space-2) var(--sakai-space-3);
   font-size: var(--sakai-font-size-sm);
