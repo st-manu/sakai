@@ -68,6 +68,11 @@
   }
 }
 
+.sakai-table thead th.sakai-table__select,
+.sakai-table tfoot th.sakai-table__select {
+  text-align: center;
+}
+
 .sakai-table__primary {
   width: 100%;
   min-width: 16rem;
@@ -182,6 +187,16 @@
 
   > .sakai-table {
     margin-bottom: 0;
+  }
+
+  .dt-container {
+    > .row {
+      margin-inline: 0;
+    }
+
+    .row > [class*="col-"] {
+      padding-inline: 0;
+    }
   }
 }
 

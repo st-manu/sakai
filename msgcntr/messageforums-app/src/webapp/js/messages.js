@@ -86,10 +86,13 @@ function changeSelect(obj) {
 }
 
 function addTagSelector(obj) {
-  	if (obj) {
-	  	$(obj).select2({formatNoMatches:function(){return'';},placeholder: obj.getAttribute('title')});
-	  	$(obj).on('change',function(){resize();});
-  	}
+	if (obj) {
+		$(obj).select2({width: '100%', formatNoMatches:function(){return'';},placeholder: obj.getAttribute('title')});
+		if (!$(obj).data('tag-selector-bound')) {
+			$(obj).on('change',function(){resize();});
+			$(obj).data('tag-selector-bound', true);
+		}
+	}
 }
 
 $(document).ready(function(){

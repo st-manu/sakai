@@ -116,7 +116,7 @@ Any tool migrated to Niobe **must break down its navigation using the A/B/C taxo
 To standardize the UI and avoid loose utilities, all tool markup must migrate to use Sakai's core primitives defined in `sass/components/`:
 
 * **Buttons:** `.sakai-btn`, `.sakai-btn-primary`, `.sakai-btn-secondary`, `.sakai-btn-ghost`, `.sakai-btn-icon`. *(Note: ensure consistent styles on both* `*<button>*` *and* `*<a>*`*)*.
-* **Forms:** `.sakai-form-group`, `.sakai-form-label`, `.sakai-form-control`. Footer actions use `.sakai-actions` (applies `gap` via flexbox, not individual margins).
+* **Forms:** `.sakai-form-section` (+ `__title` / `__intro`), `.sakai-form-field`, `.sakai-form-label` (+ `.required`), `.sakai-form-control`, `.sakai-form-choice`, `.sakai-form-choice-group` (+ `--scroll`), `.sakai-form-help`, `.sakai-form-error`. Footer actions use `.sakai-actions` (applies `gap` via flexbox, not individual margins); primary save/confirm, secondary alternatives, ghost cancel/back/return, overflow last.
 * **Tables:** `.sakai-table` (supports `--striped`, `--hover`, `--stack` modifiers).
 * **Banners:** `.sakai-banner` with `--info`, `--success`, `--warn`, `--error` modifiers. Same API as old `sak-banner-*` (content only; icon via CSS by type).
 * **Row Menus:** `.sakai-row-actions__link` and overflow menus to avoid cluttering data tables with massive buttons.

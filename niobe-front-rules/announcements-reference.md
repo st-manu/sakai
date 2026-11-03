@@ -75,7 +75,7 @@ next to the view filter, where it reads as filter context.
 | Expanded body | second `<tr class="sakai-announcements__body-row">` that reads as part of the item: subject row loses its bottom border, body sits on the card surface with a leading accent |
 | Bulk actions | `.sakai-actions` + `#announcement-*-button` ids kept for `announcements.js` and the e2e tests |
 | Search / filter / pager | `.sakai-table-toolbar` + the shared `#searchFilterPanel`, `#viewFilterPanel` and `#pagerPanel` macros. The macros emit `.sakai-table-searchFilter`, `.sakai-table-viewFilter` and `.sakai-table-pagerContainer` (summary + icon buttons + page-size select), so the strip is identical in every Velocity tool that adopts it |
-| Forms | `.sakai-form-group`, `.sakai-form-label`, `.sakai-form-control`; sections use the shared `.sakai-form-section` + `__title`, and radio/checkbox rows use `.sakai-form-choice` |
+| Forms | `.sakai-form-section` + `__title`, `.sakai-form-field` (the only field wrapper; `.sakai-form-group` is retired), `.sakai-form-label` (+ `.required`), `.sakai-form-control`, `.sakai-form-choice`, `.sakai-form-choice-group`, `.sakai-form-help`, `.sakai-form-error`; group legends use `.sakai-form-label`, not a section title |
 | Banners | `.sakai-banner sakai-banner--error|--warn|--info` (replaces `sak-banner-*`) |
 | Icons | `bi bi-star-fill`, `bi bi-paperclip`, `bi bi-three-dots`, `bi bi-pencil`, `bi bi-trash`, `bi bi-chevron-*` |
 | Responsive | `@container sakai-tool` in `_announcements.scss` only; note the skin root font-size is 14px, so `40rem` = 560px |
@@ -88,6 +88,11 @@ next to the view filter, where it reads as filter context.
 * The bulk checkbox logic (`announcements.js`) delegates on `document` because the shared search macro swaps `tbody` rows: keep the `.announcement-select-checkbox`, `#announcement-select-all` and `#announcement-reset-button` hooks.
 * Admin MOTD has `$motd` and renders no visibility radios: show the read-only "Public" note instead of an empty Access section.
 * The nested `<label>` around the highlight checkbox was invalid HTML; it is now a single label.
+* Group multi-selects (`selectedGroups`, `selectedRoles`) still render as native `<select multiple>`
+  in the Velocity revise template. When that markup is next touched, move them to
+  `.sakai-form-choice-group` with `--scroll`, matching Statistics and Polls.
+* `Cancel`/`Return to List` are `.sakai-btn-ghost`; `Save`/`Post` is primary and preview is
+  secondary.
 
 ## Key files
 

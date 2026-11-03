@@ -13,3 +13,10 @@
 .sakai-banner--error {
 	@include sakai-banner(var(--errorBanner-bordercolor), var(--errorBanner-bgcolor), var(--errorBanner-color), $errorBanner-icon, false);
 }
+
+ul.sakai-banner,
+ol.sakai-banner,
+ul.sakai-banner > li,
+ol.sakai-banner > li {
+	list-style: none;
+}

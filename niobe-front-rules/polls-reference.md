@@ -42,7 +42,7 @@ action on the current page.
 | Form footer | `.sakai-actions` (legacy `.act` aliased) — flex + `gap`; do not rely on child `margin-right` |
 | Permissions | Shared `<sakai-permissions>` → `.sakai-permissions` / `__table` (not tool-local); same `.sakai-table` header, separators and hover as list tables |
 | Banners | **`.sakai-banner.sakai-banner--success` / `--error` / `--warn` / `--info`** (content only; icon via CSS) |
-| Forms | `.sakai-form-group`, `.sakai-form-label`, `.sakai-form-control`; sections use the shared `.sakai-form-section` + `__title` / `__heading`, grids use `.sakai-form-grid` and hints `.sakai-form-help` |
+| Forms | `.sakai-form-section` + `__title`, `.sakai-form-field` (the only field wrapper; `.sakai-form-group` is retired), `.sakai-form-label` (+ `.required`), `.sakai-form-control`, `.sakai-form-choice`, `.sakai-form-choice-group` (+ `--scroll`), `.sakai-form-help`, `.sakai-form-error`; group legends use `.sakai-form-label`, not a section title |
 | Tables | `.sakai-table` (+ `--hover` / `--sm` / `--stack`), `.sakai-table-wrap`, `__select`, `__sort`, `__actions`, `__primary`, `__nowrap`; Polls uses non-striped tables (separators + hover); mark the important column with `__primary` so it absorbs extra width and keeps a 16rem desktop floor; mobile tables share one rounded outer shell, single row separators and a `data-label` label/value grid; sortable headers carry `aria-sort` on the `<th>` with a `.sakai-table__print-label` so the control-free header still prints |
 | Options (Polls) | `.sakai-polls-option-list` scrollable stack for many options |
 | Header | ≥48rem container: Add + `.sakai-tool-header__secondary`. Narrower: Add + `.sakai-tool-header__more` |
@@ -52,6 +52,11 @@ action on the current page.
 Responsive content uses `@container sakai-tool` in Polls SCSS, not viewport breakpoints.
 
 Table row menus are lifted to a fixed layer by the shared `sakai-overflow-menu.js` in the global body bundle (custom properties `--sakai-overflow-panel-top` / `--sakai-overflow-panel-left`), so opening one keeps the table wrap's horizontal scroll and never lets the table spill out of the card.
+
+**Form conventions:** the public-poll checkbox, result visibility and orphan handling use
+`.sakai-form-choice` inside `.sakai-form-choice-group`; the groups list uses
+`.sakai-form-choice-group--scroll` instead of a native `<select multiple>`. `Cancel`/`Back` are
+`.sakai-btn-ghost`; `Save` is primary and preview/import alternatives are secondary.
 
 **Gotcha:** Legacy skin styles `a[href].btn-primary` as a real button, but not secondary/ghost. Always include `a[href].sakai-btn-*` rules in the button primitive or anchors look like the old navIntraTool links.
 

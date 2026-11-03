@@ -23,11 +23,13 @@ Revalidate after portal feedback:
 1. ~~**Polls**~~ — **done** (Thymeleaf reference; see [`polls-reference.md`](polls-reference.md))
 2. ~~**Announcements**~~ — **done** (Velocity reference; see [`announcements-reference.md`](announcements-reference.md))
 3. ~~**Statistics**~~ — **done** (multi-view Thymeleaf + shared widgets; see [`sitestats-reference.md`](sitestats-reference.md))
-4. Dashboard / Home (already Lit)
-5. Conversations
-6. **Assignments** (high student-facing impact; worst `navIntraTool` mix — next Velocity tool)
-7. Gradebook, Resources, Lessons
-8. Remaining tools (JSF / Wicket / Velocity) when touched for other work
+4. ~~**Messages**~~ — **done** (JSF private messages; see [`messages-reference.md`](messages-reference.md)). The
+   Discussions/forums side of the same app is still on `navIntraTool`.
+5. Dashboard / Home (already Lit)
+6. Conversations
+7. **Assignments** (high student-facing impact; worst `navIntraTool` mix — next Velocity tool)
+8. Gradebook, Resources, Lessons
+9. Remaining tools (JSF / Wicket / Velocity) when touched for other work
 
 ## Title and page chrome (per tool)
 
@@ -119,6 +121,23 @@ When a PR edits a tool’s top nav (or checklist item 7 below):
 7. Container queries for responsive tool layouts (`@container sakai-tool`), not viewport-only
 8. Add/update Playwright coverage for changed flows
 9. Verify light + dark + L0 brand customization
+
+## Forms checklist
+
+1. `.sakai-form-section` + `__title` names a section; `.sakai-form-label` names a field or choice
+   group. Group legends use `.sakai-form-label`, not a section title.
+2. One `.sakai-form-field` per field (`.sakai-form-group` is retired). Checkboxes and radios use
+   `.sakai-form-choice-group` with `.sakai-form-choice` rows; `--scroll` for long lists. Replace
+   native `<select multiple>` with a choice group.
+3. Required labels carry `.sakai-form-label.required`; field errors use `.sakai-form-error`. Do not
+   reintroduce `instruction` / `reqStarInline`.
+4. Close every form with `.sakai-actions`: primary save/confirm, secondary alternatives, ghost
+   cancel/back/return, overflow (`…`) last. The current view is never an action.
+5. No per-form `max-width` or dividers. Consecutive grids separate through
+   `.sakai-form-grid + .sakai-form-grid`; a section after a grid/field through
+   `.sakai-form-grid + .sakai-form-section` / `.sakai-form-field + .sakai-form-section`.
+6. Check the legacy `legend` reset: a `<legend class="sakai-form-label">` must render like a
+   `<label>`, and a section title must not inherit `inline-block`/padding.
 
 ## After portal (also future)
 

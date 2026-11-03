@@ -54,7 +54,7 @@ The admin tool uses the same header/actions fragment with `adminTool=true`.
 | A views | `.sakai-btn` + `sakai-btn-secondary` (current) / `sakai-btn-ghost` |
 | Actions | `.sakai-btn-primary`, `.sakai-btn-secondary`, `.sakai-btn-ghost` |
 | Overflow | `.sakai-overflow-menu` + `__toggle` / `__panel`; exports are direct panel links |
-| Forms | `.sakai-form-section` + `__title` / `__intro`, `.sakai-form-grid` (+ `--3`), `.sakai-form-field` (+ `--span-2`), `.sakai-form-divider`, `.sakai-form-help`, `.sakai-form-label`, `.sakai-form-control`; checkboxes stay `.form-check` |
+| Forms | `.sakai-form-section` + `__title` / `__intro`, `.sakai-form-grid` (+ `--3`), `.sakai-form-field` (+ `--span-2`), `.sakai-form-subfield`, `.sakai-form-help`, `.sakai-form-label` (+ `.required`), `.sakai-form-control`, `.sakai-form-choice`, `.sakai-form-choice-group` (+ `--scroll`), `.sakai-form-error`; group legends use `.sakai-form-label`, not a section title |
 | Tables | `.sakai-table sakai-table--hover sakai-table--stack`, `caption.visually-hidden`, `__primary` / `__nowrap` / `__actions`; rows carry `data-label` for the stacked layout |
 | Row actions | One `…` overflow per report row (Edit / Duplicate / Delete). Copy and delete submit hidden forms through the button `form` attribute so the panel only contains direct links/buttons |
 | Banners | `.sakai-banner sakai-banner--info|--success|--warn|--error` |
@@ -73,6 +73,21 @@ The overview and admin summary use the shared Lit components:
 The dashboard (`sakai-widget-panel`) reuses `sakai-sitestats-widget` with the same metrics and
 highlights in compact mode. Changes to the shared components must be checked on both surfaces.
 The chart/table styles live in the shadow DOM; they use Sakai tokens and `@container sakai-tool`.
+
+## Form conventions
+
+- The report editor and preferences use the available width; do not reintroduce
+  `.sitestats-report-form` / `.sitestats-preferences` `max-width` wrappers.
+- `Totals by`, `Tools`, `Events` and `Selected users` are `.sakai-form-choice-group` checkbox
+  groups. `Events` and `Selected users` use `--scroll`; the user search appends
+  `.sakai-form-choice` rows instead of `<option>`s.
+- Consecutive grids separate through `.sakai-form-grid + .sakai-form-grid`; a section after a
+  grid/field through `.sakai-form-grid + .sakai-form-section` / `.sakai-form-field +
+  .sakai-form-section`. `.sakai-form-divider` is retired.
+- Conditional blocks such as `#sorting-options` and `#max-results-options` are
+  `.sakai-form-subfield`.
+- Cancel/back/return actions are `.sakai-btn-ghost`; Save/Generate is primary, preview and other
+  alternatives secondary.
 
 ## Gotchas
 

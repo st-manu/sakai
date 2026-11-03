@@ -1075,6 +1075,35 @@ public void processChangeSelectView(ValueChangeEvent eve)
     return DISPLAY_MESSAGES_PG;
   }
 
+  public String processPvtMsgHeaderBack()
+  {
+    String target = getExternalParameterByKey("pvtHeaderBack");
+    if (target == null)
+    {
+      return processActionPrivateMessages();
+    }
+
+    switch (target)
+    {
+      case "compose":
+        return processPvtMsgComposeCancel();
+      case "settings":
+        return processPvtMsgCancel();
+      case "folderSettings":
+        return processPvtMsgReturnToMainOrHp();
+      case "folderView":
+        return processPvtMsgReturnToFolderView();
+      case "detail":
+        return processPvtMsgCancelToDetailView();
+      case "list":
+        return processDisplayForum();
+      case "deleteList":
+        return processPvtMsgCancelToListView();
+      default:
+        return processActionPrivateMessages();
+    }
+  }
+
   public String processDisplayMessages()
   {
     log.debug("processDisplayMessages()");
@@ -1111,7 +1140,7 @@ public void processChangeSelectView(ValueChangeEvent eve)
 	    msgNavMode=getSelectedTopicTitle();
 	    
 	    //set prev/next topic details
-	    setPrevNextTopicDetails(msgNavMode);
+	    setSelectedTopicByTitle(msgNavMode);
 	  }
   }
   
@@ -1157,21 +1186,23 @@ public void processChangeSelectView(ValueChangeEvent eve)
     msgNavMode=getSelectedTopicTitle();
     
     //set prev/next topic details
-    setPrevNextTopicDetails(msgNavMode);// "Recibidos"	
+    setSelectedTopicByTitle(msgNavMode);
     
     return DISPLAY_MESSAGES_PG;
   }
 
   public String calculateColumnClass() {
-	String columnClasses = "check,attach,reply,specialLink,date,dateScheduler,created,addressee,priority,taglist hidden-xs";
+	String columnClasses = "sakai-table__select sakai-no-print,attach,reply,specialLink,date,created,addressee,priority";
 	if (selectedTopic != null && selectedTopic.getTopic() != null) {
 		final String topicTitle = selectedTopic.getTopic().getTitle();
 		if (PVTMSG_MODE_RECEIVED.equals(topicTitle)) {
-			columnClasses = "check,attach,reply,specialLink,date,created,priority,taglist hidden-xs";
+			columnClasses = "sakai-table__select sakai-no-print,attach,reply,specialLink,date,created,priority";
 		} else if (PVTMSG_MODE_SENT.equals(topicTitle)) {
-			columnClasses = "check,attach,reply,specialLink,date,dateScheduler,addressee,priority,taglist hidden-xs";
-		} else if (PVTMSG_MODE_DRAFT.equals(topicTitle) || PVTMSG_MODE_DELETE.equals(topicTitle) || PVTMSG_MODE_SCHEDULER.equals(topicTitle)) {
-			columnClasses = "check,attach,reply,specialLink,date,dateScheduler,created,priority,taglist hidden-xs";
+			columnClasses = "sakai-table__select sakai-no-print,attach,reply,specialLink,date,addressee,priority";
+		} else if (PVTMSG_MODE_DRAFT.equals(topicTitle) || PVTMSG_MODE_DELETE.equals(topicTitle)) {
+			columnClasses = "sakai-table__select sakai-no-print,attach,reply,specialLink,date,created,priority";
+		} else if (PVTMSG_MODE_SCHEDULER.equals(topicTitle)) {
+			columnClasses = "sakai-table__select sakai-no-print,attach,reply,specialLink,date,dateScheduler,created,priority";
 		}
 	}
 	return columnClasses;
@@ -1912,7 +1943,7 @@ public void processChangeSelectView(ValueChangeEvent eve)
     else if(selectedTopic != null)
     {
     	msgNavMode=getSelectedTopicTitle();
-    	setPrevNextTopicDetails(msgNavMode);
+    setSelectedTopicByTitle(msgNavMode);
 
     	return DISPLAY_MESSAGES_PG;
     }
@@ -2277,142 +2308,18 @@ public void processChangeSelectView(ValueChangeEvent eve)
    * Add prev and next topic UUID value and booleans for display of links
    * 
    */
-  public void setPrevNextTopicDetails(String msgNavMode)
+  public void setSelectedTopicByTitle(String msgNavMode)
   {
-    for (int i = 0; i < pvtTopics.size(); i++)
+    for (Topic el : pvtTopics)
     {
-      Topic el = pvtTopics.get(i);
-      if(el.getTitle().equals(msgNavMode))
+      if (el.getTitle().equals(msgNavMode))
       {
-        setSelectedTopic(new PrivateTopicDecoratedBean(el)) ;
-        if(i ==0)
-        {
-          getSelectedTopic().setHasPreviousTopic(false);
-          if(i==(pvtTopics.size()-1))
-          {
-            getSelectedTopic().setHasNextTopic(false) ;
-          }
-          else
-          {
-            getSelectedTopic().setHasNextTopic(true) ;
-            Topic nt=pvtTopics.get(i+1);
-            if (nt != null)
-            {
-              //getSelectedTopic().setNextTopicId(nt.getUuid());
-              getSelectedTopic().setNextTopicTitle(nt.getTitle());
-            }
-          }
-        }
-        else if(i==(pvtTopics.size()-1))
-        {
-          getSelectedTopic().setHasPreviousTopic(true);
-          getSelectedTopic().setHasNextTopic(false) ;
-          
-          Topic pt=pvtTopics.get(i-1);
-          if (pt != null)
-          {
-            //getSelectedTopic().setPreviousTopicId(pt.getUuid());
-            getSelectedTopic().setPreviousTopicTitle(pt.getTitle());
-          }          
-        }
-        else
-        {
-          getSelectedTopic().setHasNextTopic(true) ;
-          getSelectedTopic().setHasPreviousTopic(true);
-          
-          Topic nt=pvtTopics.get(i+1);
-          if (nt != null)
-          {
-            //getSelectedTopic().setNextTopicId(nt.getUuid());
-            getSelectedTopic().setNextTopicTitle(nt.getTitle());
-          }
-          Topic pt=pvtTopics.get(i-1);
-          if (pt != null)
-          {
-            //getSelectedTopic().setPreviousTopicId(pt.getUuid());
-            getSelectedTopic().setPreviousTopicTitle(pt.getTitle());
-          }
-        }
-        
+        setSelectedTopic(new PrivateTopicDecoratedBean(el));
+        return;
       }
     }
-    //create a selected topic and set the topic id for next/prev topic
   }
-  /**
-   * processDisplayPreviousFolder()
-   */
-  public String processDisplayPreviousTopic() {
-    multiDeleteSuccess = false;
-    clearSearchResults();
-    String prevTopicTitle = getExternalParameterByKey("previousTopicTitle");
-    if(StringUtils.isNotEmpty(prevTopicTitle))
-    {
-      msgNavMode=prevTopicTitle;
-      
-      decoratedPvtMsgs=new ArrayList() ;
-      
-      String typeUuid = getPrivateMessageTypeFromContext(msgNavMode);        
-      
-      decoratedPvtMsgs= prtMsgManager.getMessagesByType(typeUuid, PrivateMessageManager.SORT_COLUMN_DATE, PrivateMessageManager.SORT_DESC);
-      
-      decoratedPvtMsgs = createDecoratedDisplay(decoratedPvtMsgs);
-      
-      if(selectView!=null && selectView.equalsIgnoreCase(THREADED_VIEW))
-      {
-      	this.rearrageTopicMsgsThreaded(false);
-      }
-
-      //set prev/next Topic
-      setPrevNextTopicDetails(msgNavMode);
-      //set prev/next message
-      setMessageBeanPreNextStatus();
-      
-      if (searchPvtMsgs != null)
-      {
-          return processClearSearch();
-      }
-    }
-    return null;
-  }
-  
-  /**
-   * processDisplayNextFolder()
-   */
-  public String processDisplayNextTopic()
-  {
-    multiDeleteSuccess = false;
-    clearSearchResults();
-    String nextTitle = getExternalParameterByKey("nextTopicTitle");
-    if(StringUtils.isNotEmpty(nextTitle))
-    {
-      msgNavMode=nextTitle;
-      decoratedPvtMsgs=new ArrayList() ;
-      
-      String typeUuid = getPrivateMessageTypeFromContext(msgNavMode);        
-      
-      decoratedPvtMsgs= prtMsgManager.getMessagesByType(typeUuid, PrivateMessageManager.SORT_COLUMN_DATE, PrivateMessageManager.SORT_DESC);
-      
-      decoratedPvtMsgs = createDecoratedDisplay(decoratedPvtMsgs);
-      
-      if(selectView!=null && selectView.equalsIgnoreCase(THREADED_VIEW))
-      {
-      	this.rearrageTopicMsgsThreaded(false);
-      }
-
-      //set prev/next Topic
-      setPrevNextTopicDetails(msgNavMode);
-      //set prev/next message
-      setMessageBeanPreNextStatus();
-      
-      if (searchPvtMsgs != null)
-      {
-          return processClearSearch();
-      }
-    }
-
-    return null;
-  }
-/////////////////////////////////////     DISPLAY NEXT/PREVIOUS TOPIC     //////////////////////////////////
+/////////////////////////////////////     DISPLAY MESSAGE     //////////////////////////////////
   /**
    * @param externalTopicId
    * @return

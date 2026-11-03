@@ -22,6 +22,7 @@ Sakai frontends use many UI frameworks (JSF 2.3, Wicket, Velocity, Thymeleaf, RS
 - **Components**: Public API is `sakai-*` (e.g. `sakai-tool-header`, `sakai-table`, `sakai-actions`, `sakai-btn`, `sakai-overflow-menu`). Bootstrap may sit underneath; do not invent tool-local copies of shared behavior.
 - **Icons**: Bootstrap Icons (`bi` / tool map `si`); do not add Font Awesome in new work.
 - **Platform unison**: Shared behavior (tables, actions, banners, permissions matrix, overflow menus) lives in shared SCSS/components — not tool-scoped duplicates.
+- **Forms**: `.sakai-form-section` + `__title` for sections; `.sakai-form-label` for field/group labels. One `.sakai-form-field` per field (`.sakai-form-group` is retired). Choices use `.sakai-form-choice-group` + `.sakai-form-choice` (`--scroll` for long lists); no native `<select multiple>`. Required labels use `.sakai-form-label.required`; errors use `.sakai-form-error`. No per-form `max-width` or dividers. `.sakai-actions`: primary save/confirm, secondary alternatives, ghost cancel/back/return, overflow last, current view omitted.
 - **Print**: Hide non-content chrome with `.sakai-no-print` (aliases `.noprint` / `.hidden-print`). Rules in `library/src/skins/default/src/sass/print.scss`. Details: `library/docs/sakai-ui-chrome.md`.
 
 ## Accessibility

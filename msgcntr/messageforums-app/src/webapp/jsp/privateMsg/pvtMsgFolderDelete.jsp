@@ -13,40 +13,38 @@
         <script>includeLatestJQuery("msgcntr");</script>
         <script src="/messageforums-tool/js/sak-10625.js"></script>
         <script src="/messageforums-tool/js/messages.js"></script>
-        <script>
-            $(document).ready(function() {
-                var menuLink = $('#messagesMainMenuLink');
-                var menuLinkSpan = menuLink.closest('span');
-                menuLinkSpan.addClass('current');
-                menuLinkSpan.html(menuLink.text());
-            });
-        </script>
-        <%@ include file="/jsp/privateMsg/pvtMenu.jsp" %>
-        <sakai:tool_bar_message value="#{msgs.pvt_delcon}" />
-        <h:outputText styleClass="sak-banner-warn" value="#{msgs.pvt_delete_folder_confirm}" />
 
-        <table class="table table-striped table-bordered table-hover">
-             <thead>
-                 <tr>
-                     <td><h:outputText value="#{msgs.pvt_folder_title}"/></td>
-                     <td><h:outputText value="#{msgs.pvt_num_messages}"/></td>
-                 </tr>
-             </thead>
-             <tbody>
-                 <tr>
-                     <td><h:outputText value="#{PrivateMessagesTool.selectedTopicTitle}" /></td>
-                     <td><h:outputText value=" #{PrivateMessagesTool.totalMsgInFolder} #{msgs.pvt_lowercase_msgs} " /></td>
-                 </tr>
-             </tbody>
-        </table>
-          
-        <sakai:button_bar>
-            <h:commandButton action="#{PrivateMessagesTool.processPvtMsgFldDelete}" value="#{msgs.pvt_delete}" accesskey="s" styleClass="active"/>
-            <h:commandButton action="#{PrivateMessagesTool.processPvtMsgReturnToFolderView}" value="#{msgs.pvt_cancel}" accesskey="x" />
-        </sakai:button_bar>
+        <% request.setAttribute("pvtHeaderTitleKey", "pvt_delcon"); %>
+        <% request.setAttribute("pvtHeaderBack", "folderView"); %>
+        <%@ include file="/jsp/privateMsg/pvtToolHeader.jsp" %>
+
+        <h:panelGroup layout="block" styleClass="sakai-banner sakai-banner--warn">
+            <h:outputText value="#{msgs.pvt_delete_folder_confirm}" />
+        </h:panelGroup>
+
+        <div class="sakai-table-wrap">
+            <table class="sakai-table">
+                <thead>
+                    <tr>
+                        <th scope="col"><h:outputText value="#{msgs.pvt_folder_title}"/></th>
+                        <th scope="col"><h:outputText value="#{msgs.pvt_messages}"/></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><h:outputText value="#{PrivateMessagesTool.selectedTopicTitle}" /></td>
+                        <td><h:outputText value="#{PrivateMessagesTool.totalMsgInFolder}" /></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="sakai-actions">
+            <h:commandButton action="#{PrivateMessagesTool.processPvtMsgFldDelete}" value="#{msgs.pvt_delete}" accesskey="s" styleClass="sakai-btn sakai-btn-primary"/>
+            <h:commandButton action="#{PrivateMessagesTool.processPvtMsgReturnToFolderView}" value="#{msgs.pvt_cancel}" accesskey="x" styleClass="sakai-btn sakai-btn-ghost" />
+        </div>
 
     </h:form>
 
     </sakai:view>
 </f:view>
-

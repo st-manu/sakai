@@ -9,48 +9,29 @@
   <sakai:view title="#{msgs.pvt_msgs_label} #{msgs.pvt_create_folder}">
 <!--jsp/privateMsg/pvtMsgFolderAdd.jsp-->
 		<h:form id="pvtMsgFolderAdd">
-		       		<script>includeLatestJQuery("msgcntr");</script>
-					<script src="/messageforums-tool/js/sak-10625.js"></script>
-					<script src="/messageforums-tool/js/messages.js"></script>
-					<script>
-						$(document).ready(function() {
-							var menuLink = $('#messagesNewFolderMenuLink');
-							var menuLinkSpan = menuLink.closest('span');
-							menuLinkSpan.addClass('current');
-							menuLinkSpan.html(menuLink.text());
-						});
-					</script>
-					<%@ include file="/jsp/privateMsg/pvtMenu.jsp" %>
+			<script>includeLatestJQuery("msgcntr");</script>
+			<script src="/messageforums-tool/js/sak-10625.js"></script>
+			<script src="/messageforums-tool/js/messages.js"></script>
 
-			  <div class="page-header">
-				<sakai:tool_bar_message value="#{msgs.pvt_create_folder}" />
-			  </div>		
-			 
-				<div class="instruction">
-				  <h:outputText value="#{msgs.cdfm_required}"/> <h:outputText value="#{msgs.pvt_star}" styleClass="reqStarInline"/>
-				</div>
-			   
-			   <h:messages styleClass="alertMessage" id="errorMessages" rendered="#{! empty facesContext.maximumSeverity}" />
-			 
- <h:panelGrid styleClass="jsfFormTable" columns="2">
-			  <h:panelGroup styleClass="shorttext form-control-label">
-			      <h:outputLabel for="title" styleClass="w-100 me-4">
-				  <h:outputText value="#{msgs.pvt_star}" styleClass="reqStar"/>
-				  <h:outputText  value="#{msgs.pvt_folder_title}"/>
-				  </h:outputLabel>
-			  </h:panelGroup>
-				<h:panelGroup styleClass="shorttext ">
-				<h:inputText id="title" value="#{PrivateMessagesTool.addFolder}" />
-				</h:panelGroup>
-			  </h:panelGrid>
-			     
-				<sakai:button_bar>
-			  	  <h:commandButton action="#{PrivateMessagesTool.processPvtMsgFldCreate}" value="#{msgs.pvt_add}" accesskey="s"  styleClass="active"/>
-			    <h:commandButton action="#{PrivateMessagesTool.processPvtMsgReturnToMainOrHp}" value="#{msgs.pvt_cancel}" accesskey="x" />
-			  </sakai:button_bar>   
-           
-		 </h:form>
+			<% request.setAttribute("pvtHeaderTitleKey", "pvt_create_folder"); %>
+			<% request.setAttribute("pvtHeaderBack", "folderSettings"); %>
+			<%@ include file="/jsp/privateMsg/pvtToolHeader.jsp" %>
+
+			<h:messages styleClass="sakai-banner sakai-banner--error" id="errorMessages" rendered="#{! empty facesContext.maximumSeverity}" />
+
+			<h:panelGroup layout="block" styleClass="sakai-form-field">
+				<h:outputLabel for="title" styleClass="sakai-form-label required">
+					<h:outputText value="#{msgs.pvt_folder_title}"/>
+				</h:outputLabel>
+				<h:inputText id="title" value="#{PrivateMessagesTool.addFolder}" styleClass="sakai-form-control" />
+			</h:panelGroup>
+
+			<div class="sakai-actions">
+				<h:commandButton action="#{PrivateMessagesTool.processPvtMsgFldCreate}" value="#{msgs.pvt_add}" accesskey="s" styleClass="sakai-btn sakai-btn-primary"/>
+				<h:commandButton action="#{PrivateMessagesTool.processPvtMsgReturnToMainOrHp}" value="#{msgs.pvt_cancel}" accesskey="x" styleClass="sakai-btn sakai-btn-ghost" />
+			</div>
+
+		</h:form>
 
 	</sakai:view>
 </f:view>
-

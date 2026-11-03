@@ -39,6 +39,11 @@
   margin-block-start: var(--sakai-space-4);
 }
 
+.sakai-form-choice + .sakai-form-field,
+.sakai-form-choice-group + .sakai-form-field {
+  margin-block-start: var(--sakai-space-4);
+}
+
 .sakai-form-grid--3 {
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
 }

@@ -35,12 +35,6 @@ public class PrivateTopicDecoratedBean
   private int unreadNoMessages;
   private List messages;
 
-  private boolean hasNextTopic=false;
-  private boolean hasPreviousTopic=false;
-  private String nextTopicId;
-  private String previousTopicId;
-  private String previousTopicTitle;
-  private String nextTopicTitle;
   
   public PrivateTopicDecoratedBean(Topic topic)
   {
@@ -115,102 +109,6 @@ public class PrivateTopicDecoratedBean
  
   
 
-  /**
-   * @return Returns the hasNextTopic.
-   */
-  public boolean getHasNextTopic()
-  {
-    return hasNextTopic;
-  }
-
-  /**
-   * @param hasNextTopic
-   *          The hasNextTopic to set.
-   */
-  public void setHasNextTopic(boolean hasNextTopic)
-  {
-    this.hasNextTopic = hasNextTopic;
-  }
-
-  /**
-   * @return Returns the hasPreviousTopic.
-   */
-  public boolean getHasPreviousTopic()
-  {
-    return hasPreviousTopic;
-  }
-
-  /**
-   * @param hasPreviousTopic
-   *          The hasPreviousTopic to set.
-   */
-  public void setHasPreviousTopic(boolean hasPreviousTopic)
-  {
-    this.hasPreviousTopic = hasPreviousTopic;
-  }
-
-  /**
-   * @return Returns the nextTopicId.
-   */
-  public String getNextTopicId()
-  {
-    return nextTopicId;
-  }
-
-  /**
-   * @param nextTopicId
-   *          The nextTopicId to set.
-   */
-  public void setNextTopicId(String nextTopicId)
-  {
-    this.nextTopicId = nextTopicId;
-  }
-
-  /**
-   * @return Returns the previousTopicId.
-   */
-  public String getPreviousTopicId()
-  {
-    return previousTopicId;
-  }
-
-  /**
-   * @param previousTopicId
-   *          The previousTopicId to set.
-   */
-  public void setPreviousTopicId(String previousTopicId)
-  {
-    this.previousTopicId = previousTopicId;
-  }
-  /**
-   * @return Returns the nextTopicTitle.
-   */
-  public String getNextTopicTitle()
-  {
-    return nextTopicTitle;
-  }
-  /**
-   * @param nextTopicTitle The nextTopicTitle to set.
-   */
-  public void setNextTopicTitle(String nextTopicTitle)
-  {
-    this.nextTopicTitle = nextTopicTitle;
-  }
-  /**
-   * @return Returns the previousTopicTitle.
-   */
-  public String getPreviousTopicTitle()
-  {
-    return previousTopicTitle;
-  }
-  /**
-   * @param previousTopicTitle The previousTopicTitle to set.
-   */
-  public void setPreviousTopicTitle(String previousTopicTitle)
-  {
-    this.previousTopicTitle = previousTopicTitle;
-  }
- 
 	public ArrayList getAttachList()
 	{
 		ArrayList decoAttachList = new ArrayList();

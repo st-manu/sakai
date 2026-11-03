@@ -33,7 +33,7 @@
 			<script src="/messageforums-tool/js/forum.js"></script>
 			<script>
 				$(document).ready(function() {
-					if ($('ul[class="alertMessage"]').length==0) {
+					if ($('ul.sakai-banner--error').length==0) {
 						eval('function c(){' + $('a[title="shortaccess"]').attr('onclick') + '};c();');
 					} else {
 						$('a[title="shortaccess"]').toggle();
@@ -41,7 +41,7 @@
 				});
 			</script>		
 			
- 			<h:messages styleClass="alertMessage" id="errorMessages" rendered="#{! empty facesContext.maximumSeverity}"/> 
+			<h:messages styleClass="sakai-banner sakai-banner--error" id="errorMessages" rendered="#{! empty facesContext.maximumSeverity}"/>
 
 			<h:commandLink action="#{PrivateMessagesTool.processPvtMsgTopicAndDetail}"
 				             immediate="true" title="shortaccess">
@@ -53,7 +53,7 @@
 	}else{
 	//user is an anon user, just show a message saying they can't use this tool:
 %>
-			<h:outputText value="#{msgs.pvt_anon_warning}" styleClass="information"/>
+			<h:outputText value="#{msgs.pvt_anon_warning}" styleClass="sakai-banner sakai-banner--warn"/>
 <%
 	}
 %>

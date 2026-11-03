@@ -107,3 +107,27 @@ a[href].sakai-btn-ghost {
 a[href].sakai-btn-icon {
   @extend .sakai-btn-icon;
 }
+
+input[type="submit"].sakai-btn,
+input[type="button"].sakai-btn,
+input[type="reset"].sakai-btn {
+  @extend .sakai-btn;
+}
+
+input[type="submit"].sakai-btn-primary,
+input[type="button"].sakai-btn-primary,
+input[type="reset"].sakai-btn-primary {
+  @include sakai_primary_button();
+}
+
+input[type="submit"].sakai-btn-secondary,
+input[type="button"].sakai-btn-secondary,
+input[type="reset"].sakai-btn-secondary {
+  @include sakai_secondary_button();
+}
+
+input[type="submit"].sakai-btn-ghost,
+input[type="button"].sakai-btn-ghost,
+input[type="reset"].sakai-btn-ghost {
+  @extend .sakai-btn-ghost;
+}

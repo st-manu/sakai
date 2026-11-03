@@ -65,7 +65,7 @@ tool's permissions page keeps the same heading and separator.
 Defined under [`sass/components/`](../src/skins/default/src/sass/components/):
 
 - `.sakai-btn`, `.sakai-btn-primary`, `.sakai-btn-secondary`, `.sakai-btn-ghost`, `.sakai-btn-icon`
-- `.sakai-actions` (alias `.act`) — form/tool footer button row; uses `gap`, not per-child margins. Order and weight: primary save/confirm first, alternative actions as `.sakai-btn-secondary`, cancel/back/return as `.sakai-btn-ghost`
+- `.sakai-actions` (alias `.act`) — action row for form/tool footers and inline section actions; uses `gap`, not per-child margins. Order and weight: primary save/confirm first, alternative actions as `.sakai-btn-secondary`, cancel/back/return as `.sakai-btn-ghost`, overflow (`…`) last. Never render the current view as an action.
 - `.sakai-card`, `.sakai-page-content`
 - `.sakai-page-header` (+ `__title`, `__meta`, `__actions`, `__breadcrumb`)
 - `.sakai-tool-header` (+ `__title`, `__actions`, `__secondary`, `__more`, `__actions--collapsed`) — at ≥48rem container: up to three secondary actions inline, more than three always in `__more` (`…`); narrower: `__more` (`…`). Title wraps without collapsing and actions move to their own line when needed. Do not unwrap a closed `<details>` with `display:contents`/`flex`.
@@ -73,11 +73,38 @@ Defined under [`sass/components/`](../src/skins/default/src/sass/components/):
 - `.sakai-row-actions` (+ `__link`) — quiet per-row action + overflow menu
 - `.sakai-segmented-control`, `.sakai-tool-nav`
 - `.sakai-banner` (+ `--info` / `--success` / `--warn` / `--error`) — same as old `sak-banner-*`: put content directly in the element; icon comes from CSS by type
-- `.sakai-form-control`, `.sakai-form-label`, `.sakai-form-group`
-- `.sakai-form-section` (+ `__title`, `__intro`, `__heading`), `.sakai-form-grid` (+ `--3`), `.sakai-form-field` (+ `--span-2`), `.sakai-form-divider`, `.sakai-form-help`, `.sakai-form-choice` — shared form composition: flat sections (no tool cards), responsive grids, label/control/help stacks and radio/checkbox rows
+- `.sakai-form-control`, `.sakai-form-label` (+ `.required`), `.sakai-form-error`
+- `.sakai-form-section` (+ `__title`, `__intro`), `.sakai-form-grid` (+ `--3`), `.sakai-form-field` (+ `--span-2`), `.sakai-form-subfield`, `.sakai-form-help`, `.sakai-form-choice`, `.sakai-form-choice-group` (+ `--scroll`) — shared form composition: flat sections (no tool cards), responsive grids, label/control/help stacks and radio/checkbox rows
 - `.sakai-table-toolbar` (+ `__filters`, `__scope`) — search / view filter / pager strip for list views. The three blocks are emitted by the shared `#searchFilterPanel`, `#viewFilterPanel` and `#pagerPanel` Velocity macros (`.sakai-table-searchFilter`, `.sakai-table-viewFilter`, `.sakai-table-pagerContainer`), so every tool that uses them gets the same pattern
-- `.sakai-table` (+ `--striped` / `--hover` / `--sm` / `--stack`), `.sakai-table-wrap`, `__select`, `__sort`, `__actions`, `__primary`, `__nowrap` — cells are transparent so tables inherit the content card surface in light and dark; mark the important content column with `__primary` (absorbs extra width and keeps a 16rem floor on desktop); use `__nowrap` for single-line values such as timestamps; on mobile the wrap owns one outer border + radius and `--stack` rows are separated by a single border, with `data-label` cells laid out as a label/value grid; sortable `<th>` carries `aria-sort` and a `.sakai-table__print-label` for print
+- `.sakai-table` (+ `--striped` / `--hover` / `--sm` / `--stack`), `.sakai-table-wrap`, `__select`, `__sort`, `__actions`, `__primary`, `__nowrap` — cells are transparent so tables inherit the content card surface in light and dark; mark the important content column with `__primary` (absorbs extra width and keeps a 16rem floor on desktop); use `__nowrap` for single-line values such as timestamps; on mobile the wrap owns one outer border + radius and `--stack` rows are separated by a single border, with `data-label` cells laid out as a label/value grid; sortable `<th>` carries `aria-sort` and a `.sakai-table__print-label` for print. **Dense metadata (tags, status, availability) goes inside the `__primary` cell under the main text**, not in a separate column: use a wrapping `.sakai-badge` row so the table keeps its width and the extra column does not push the row actions out of view.
 - `sakai-permissions` — shared permissions matrix (`.sakai-permissions` / `__table`); uses `.sakai-table` + `.sakai-actions`, not Bootstrap layout utilities
+
+### Form conventions
+
+- **Section vs field label**: `.sakai-form-section__title` names a section (`WHAT?`, `Limits`,
+  `Recipients`). `.sakai-form-label` names a field or a choice group (`Totals by`, `Tools`,
+  `Events`, `Selected users`). A group legend uses `.sakai-form-label`, not a section title.
+- **One field wrapper**: `.sakai-form-field` is the only field wrapper (`.sakai-form-group` is
+  retired). It owns the label/control/help stack and the gap between them.
+- **Legacy `legend` reset**: the Morpheus skin still styles `legend` with `display:inline-block`,
+  padding and float. The shared `.sakai-form-label` and `.sakai-form-section__title` reset those
+  properties, so a `<legend class="sakai-form-label">` and a `<label>` render identically.
+- **Required and errors**: mark required labels with `.sakai-form-label.required` (the asterisk is
+  CSS); render field errors with `.sakai-form-error`. Do not reintroduce the old
+  `instruction` / `reqStarInline` required-legend block.
+- **Choice groups**: checkboxes/radios use `.sakai-form-choice-group` with one `.sakai-form-choice`
+  per row. Use `--scroll` when the list can be long (events, users, groups). Do not leave a native
+  `<select multiple>` in a form: replace it with a choice group. Keep a Select2-enhanced single
+  control (Messages recipients) as-is; it is not a visible native multi-select.
+- **Subfields and grids**: nested conditional options use `.sakai-form-subfield`. Consecutive
+  `.sakai-form-grid` blocks get their separation from `.sakai-form-grid + .sakai-form-grid`; a
+  section after a grid or field gets it from `.sakai-form-grid + .sakai-form-section` /
+  `.sakai-form-field + .sakai-form-section`; a field after a standalone choice row gets it from
+  `.sakai-form-choice + .sakai-form-field`. Do not add per-form margins or dividers.
+- **No width caps**: forms use the available tool width; no per-form `max-width`.
+- **Actions**: the same `.sakai-actions` row closes every form. Save/confirm is
+  `.sakai-btn-primary`; preview, save-draft and other alternatives are `.sakai-btn-secondary`;
+  cancel, back and return are `.sakai-btn-ghost`; overflow is last.
 
 New portal markup must not use Bootstrap layout/spacing utilities (`d-flex`, `d-md-none`, `align-items-*`, `ms-*`, `p-*`, `gap-*`, …). Keep Bootstrap for components (`btn`, `modal`, `offcanvas`, `collapse`, …) behind `sakai-*` where needed.
 

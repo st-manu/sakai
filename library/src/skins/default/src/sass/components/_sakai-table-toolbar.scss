@@ -44,6 +44,12 @@
   min-width: 0;
 }
 
+.sakai-table-searchFilterControls {
+  display: flex;
+  align-items: center;
+  gap: var(--sakai-space-2);
+}
+
 .sakai-table-searchFilter-inputWrapper input {
   width: 100%;
 }

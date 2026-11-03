@@ -52,13 +52,9 @@
 		return numberChecked > 0;
 	}
 
-	function toggleBulkOperations(anyChecked, formRef)
+	function toggleBulkOperations(anyChecked)
 	{ 
-		if(anyChecked){
-			$('.ToggleBulk').show();
-			$('.ToggleBulkDisabled').hide();
-		}else{
-			$('.ToggleBulk').hide();
-			$('.ToggleBulkDisabled').show();
-		}
+		document.querySelectorAll('.ToggleBulk').forEach(element => {
+			element.disabled = !anyChecked;
+		});
 	}		

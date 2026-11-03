@@ -39,10 +39,10 @@ class MessagesTest extends SakaiUiTestBase {
         Locator draftFolder = page.getByRole(AriaRole.LINK,
             new Page.GetByRoleOptions().setName("Draft").setExact(true));
         if (!draftFolder.isVisible()) {
-            page.locator("#messagesMainMenuLink a").click();
+            sakai.toolClick("Messages");
         }
         draftFolder.click();
-        page.locator("#messagesComposeMenuLink").click();
+        page.getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("Compose Message").setExact(true)).click();
         String subject = "Tagged draft " + System.currentTimeMillis();
         String tag = "Draft tag " + System.currentTimeMillis();
         page.locator("#compose\\:subject").fill(subject);
