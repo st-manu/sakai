@@ -56,7 +56,7 @@ class AnnouncementTest extends SakaiUiTestBase {
         sakai.toolClick("Announcements");
         ensureViewAll();
 
-        page.locator(".navIntraTool a").filter(new Locator.FilterOptions().setHasText("Add")).first().click(new Locator.ClickOptions().setForce(true));
+        toolAction("Add").click(new Locator.ClickOptions().setForce(true));
         page.locator("#subject").fill(FUTURE_ANNOUNCEMENT_TITLE);
         fillAnnouncementBody("<p>This is a future announcement that should only be visible after the specified date.</p>");
 
@@ -79,7 +79,7 @@ class AnnouncementTest extends SakaiUiTestBase {
         sakai.toolClick("Announcements");
         ensureViewAll();
 
-        page.locator(".navIntraTool a").filter(new Locator.FilterOptions().setHasText("Add")).first().click(new Locator.ClickOptions().setForce(true));
+        toolAction("Add").click(new Locator.ClickOptions().setForce(true));
         page.locator("#subject").fill(PAST_ANNOUNCEMENT_TITLE);
         fillAnnouncementBody("<p>This is a past announcement that should not be visible anymore.</p>");
 
@@ -104,7 +104,7 @@ class AnnouncementTest extends SakaiUiTestBase {
         sakai.toolClick("Announcements");
         ensureViewAll();
 
-        page.locator(".navIntraTool a").filter(new Locator.FilterOptions().setHasText("Add")).first().click(new Locator.ClickOptions().setForce(true));
+        toolAction("Add").click(new Locator.ClickOptions().setForce(true));
         page.locator("#subject").fill(CURRENT_ANNOUNCEMENT_TITLE);
         fillAnnouncementBody("<p>This is a current announcement that should be visible to everyone.</p>");
 
@@ -145,7 +145,7 @@ class AnnouncementTest extends SakaiUiTestBase {
         ensureViewAll();
 
         for (int i = 1; i <= 20; i++) {
-            page.locator(".navIntraTool a").filter(new Locator.FilterOptions().setHasText("Add")).first().click(new Locator.ClickOptions().setForce(true));
+            toolAction("Add").click(new Locator.ClickOptions().setForce(true));
             page.locator("#subject").fill(titlePrefix + String.format("%02d", i));
             fillAnnouncementBody("<p>SAK-52721 reorder regression announcement.</p>");
             submitAnnouncementForm();
@@ -157,9 +157,7 @@ class AnnouncementTest extends SakaiUiTestBase {
         pageSizeSelect.selectOption("10");
         page.waitForLoadState(LoadState.DOMCONTENTLOADED);
 
-        Locator reorderLink = page.locator(".navIntraTool a, .navIntraTool button, .navIntraTool [role=\"button\"]")
-            .filter(new Locator.FilterOptions().setHasText(Pattern.compile("^Reorder$", Pattern.CASE_INSENSITIVE))).first();
-        assertThat(reorderLink).isVisible();
+        Locator reorderLink = toolAction("Reorder");
         reorderLink.click();
         assertThat(page.locator("#announcements-reorderer")).isVisible();
         page.waitForFunction(
@@ -204,9 +202,7 @@ class AnnouncementTest extends SakaiUiTestBase {
         page.locator("input[name=\"eventSubmit_doReorderUpdate\"]").click(new Locator.ClickOptions().setForce(true));
         page.waitForLoadState(LoadState.DOMCONTENTLOADED);
 
-        Locator reorderLinkAgain = page.locator(".navIntraTool a, .navIntraTool button, .navIntraTool [role=\"button\"]")
-            .filter(new Locator.FilterOptions().setHasText(Pattern.compile("^Reorder$", Pattern.CASE_INSENSITIVE))).first();
-        reorderLinkAgain.click();
+        toolAction("Reorder").click();
         assertThat(page.locator("#announcements-reorderer")).isVisible();
         page.waitForFunction(
             "() => document.querySelector('#announcements-reorderer')?.updateComplete",
@@ -229,7 +225,7 @@ class AnnouncementTest extends SakaiUiTestBase {
 
         assertAnnouncementOrder(titlePrefix, 1, 10);
 
-        page.locator("input[name=\"eventSubmit_doList_next\"]").first().click(new Locator.ClickOptions().setForce(true));
+        page.locator("button[name=\"eventSubmit_doList_next\"]").first().click(new Locator.ClickOptions().setForce(true));
         page.waitForLoadState(LoadState.DOMCONTENTLOADED);
         assertAnnouncementOrder(titlePrefix, 11, 20);
     }
@@ -273,7 +269,7 @@ class AnnouncementTest extends SakaiUiTestBase {
         assertThat(page.locator("#announcement-reset-button")).isDisabled();
 
         selectAll.check();
-        page.locator("input[name=\"eventSubmit_doList_next\"]").first().click();
+        page.locator("button[name=\"eventSubmit_doList_next\"]").first().click();
         page.waitForLoadState(LoadState.DOMCONTENTLOADED);
         assertThat(selected).hasCount(0);
         assertThat(selectAll).not().isChecked();
@@ -288,9 +284,9 @@ class AnnouncementTest extends SakaiUiTestBase {
         selectAll.check();
         assertThat(selected).hasCount(1);
         page.locator("#announcement-publish-button").click();
-        assertThat(page.locator(".sak-banner-warn")).isVisible();
-        assertThat(page.locator("table.table-bordered")).containsText(FUTURE_ANNOUNCEMENT_TITLE);
-        assertThat(page.locator("table.table-bordered")).not().containsText(CURRENT_ANNOUNCEMENT_TITLE);
+        assertThat(page.locator(".sakai-banner--warn")).isVisible();
+        assertThat(page.locator(".sakai-table").first()).containsText(FUTURE_ANNOUNCEMENT_TITLE);
+        assertThat(page.locator(".sakai-table").first()).not().containsText(CURRENT_ANNOUNCEMENT_TITLE);
         page.locator("input[name=\"eventSubmit_doCancel\"]").click();
         page.waitForLoadState(LoadState.DOMCONTENTLOADED);
 
@@ -305,12 +301,36 @@ class AnnouncementTest extends SakaiUiTestBase {
         assertThat(selected).hasCount(5);
     }
 
+    @Test
+    @Order(8)
+    void listUsesTheNiobeToolChrome() {
+        sakai.login("instructor1");
+        sakai.gotoPath(sakaiUrl);
+        sakai.toolClick("Announcements");
+        ensureViewAll();
+
+        Locator header = page.locator(".sakai-tool-header").first();
+        assertThat(header).isVisible();
+        assertThat(header.locator("h1")).containsText(Pattern.compile("Announcement", Pattern.CASE_INSENSITIVE));
+        assertThat(page.locator(".navIntraTool")).hasCount(0);
+        assertThat(toolAction("Add")).isVisible();
+
+        Locator row = announcementRows()
+            .filter(new Locator.FilterOptions().setHasText(CURRENT_ANNOUNCEMENT_TITLE)).first();
+        Locator rowMenu = row.locator(".sakai-overflow-menu__toggle").first();
+        assertThat(rowMenu).isVisible();
+        rowMenu.click();
+        assertThat(row.locator(".sakai-overflow-menu__panel").first()).isVisible();
+        assertThat(row.locator(".sakai-overflow-menu__panel a")
+            .filter(new Locator.FilterOptions().setHasText(Pattern.compile("^Edit", Pattern.CASE_INSENSITIVE))).first()).isVisible();
+    }
+
     private void assertAnnouncementReorderChrome() {
         Locator portlet = page.locator(".portletBody.sakai-reorder");
         assertThat(portlet).isVisible();
-        assertThat(portlet.locator(".page-header h1")).isVisible();
-        assertThat(portlet.locator(".instruction")).containsText(Pattern.compile("Drag announcements|move buttons|Update", Pattern.CASE_INSENSITIVE));
-        assertThat(page.locator(".sakai-reorder-undo.noPrint")).isVisible();
+        assertThat(portlet.locator(".sakai-tool-header h1")).isVisible();
+        assertThat(portlet.locator(".sakai-announcements__hint")).containsText(Pattern.compile("Drag announcements|move buttons|Update", Pattern.CASE_INSENSITIVE));
+        assertThat(page.locator(".sakai-reorder-undo.sakai-no-print")).isVisible();
         assertThat(page.locator("#undo-last")).isDisabled();
         assertThat(page.locator("#undo-all")).isDisabled();
         assertThat(page.locator("#reorder-list-sortingToolBar.sakai-reorder-list-header")).isVisible();
@@ -378,6 +398,27 @@ class AnnouncementTest extends SakaiUiTestBase {
         fallback.dispatchEvent("blur");
 
         assertBodyPopulated();
+    }
+
+    /**
+     * Announcements actions moved from the legacy navIntraTool into the tool
+     * header. Utilities collapse into the "..." menu on narrow containers, so
+     * open it when the requested action is not already visible.
+     */
+    private Locator toolAction(String label) {
+        Pattern exact = Pattern.compile("^" + Pattern.quote(label) + "$", Pattern.CASE_INSENSITIVE);
+        Locator action = page.locator(".sakai-tool-header__actions a.sakai-btn")
+            .filter(new Locator.FilterOptions().setHasText(exact)).first();
+        if (action.count() == 0 || !action.isVisible()) {
+            Locator more = page.locator(".sakai-tool-header__more summary").first();
+            if (more.count() > 0 && more.isVisible()) {
+                more.click();
+            }
+            action = page.locator(".sakai-overflow-menu__panel a")
+                .filter(new Locator.FilterOptions().setHasText(exact)).first();
+        }
+        assertThat(action).isVisible();
+        return action;
     }
 
     private Locator announcementRows() {

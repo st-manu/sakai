@@ -632,8 +632,7 @@ ${extra}")
 <script src='$libLink' defer></script>
 <div class="sakai-table-viewFilter">
 	<label for="viewFilter_$panelName">$tlang.getString("view.label")</label>
-	<span class="skip">$tlang.getString("gen.listnavselect")</span>
-	<select id="viewFilter_$panelName" name="$selectName" onchange="VM_VFP.doChangeView('#toolLink("$action", "$actionKey")', this);">
+	<select id="viewFilter_$panelName" name="$selectName" class="sakai-form-control sakai-form-control--sm" onchange="VM_VFP.doChangeView('#toolLink("$action", "$actionKey")', this);">
 		$selectOptions
 	</select>
 </div>
@@ -657,33 +656,42 @@ ${extra}")
 	#set($goLPButton = "false")
 #end
 #if(!$goLPButton) #set($goLPButton = "false") #end
-<div class="sakai-table-pagerLabel">$tlang.getFormattedMessage("gen.viewing.phrase", $topMsgPos, $btmMsgPos, $allMsgNumber)</div>
-<div class="sakai-table-pagerControls">
-	<span class="skip">$tlang.getString("gen.first")</span>
-	<input type="button" name="eventSubmit_doList_first" value="&#124;&lt;" title="$tlang.getString("gen.first")"
-		onclick="VM_PP.doPageNav('#toolLink("$action", "doList_first")', this);" #if ($goFPButton != "true") disabled="disabled" #end />
+<div class="sakai-table-pagerContainer">
+	<div class="sakai-table-pagerLabel">$tlang.getFormattedMessage("gen.viewing.phrase", $topMsgPos, $btmMsgPos, $allMsgNumber)</div>
+	<div class="sakai-table-pagerControls">
+		<button type="button" class="sakai-btn-icon" name="eventSubmit_doList_first" title="$tlang.getString("gen.first")"
+			onclick="VM_PP.doPageNav('#toolLink("$action", "doList_first")', this);" #if ($goFPButton != "true") disabled="disabled" #end>
+			<span class="bi bi-chevron-double-left" aria-hidden="true"></span>
+			<span class="visually-hidden">$tlang.getString("gen.first")</span>
+		</button>
 
-	<span class="skip">$tlang.getFormattedMessage('gen.previous.pagesize', $pagesize)</span>
-	<input type="button" name="eventSubmit_doList_prev" value="&lt;" title="$tlang.getFormattedMessage('gen.previous.pagesize', $pagesize)"
-		onclick="VM_PP.doPageNav('#toolLink("$action", "doList_prev")', this);" #if ($goPPButton != "true") disabled="disabled" #end />
+		<button type="button" class="sakai-btn-icon" name="eventSubmit_doList_prev" title="$tlang.getFormattedMessage('gen.previous.pagesize', $pagesize)"
+			onclick="VM_PP.doPageNav('#toolLink("$action", "doList_prev")', this);" #if ($goPPButton != "true") disabled="disabled" #end>
+			<span class="bi bi-chevron-left" aria-hidden="true"></span>
+			<span class="visually-hidden">$tlang.getFormattedMessage('gen.previous.pagesize', $pagesize)</span>
+		</button>
 
-	<div class="sakai-table-pagerPageSize">
-		<span class="skip">$tlang.getString("gen.listnavselect")</span>
-		<select aria-label="$tlang.getString('gen.select.label')" id="selectPageSize_$panelName" name="selectPageSize_$panelName" #if ($allMsgNumber == 0) disabled="disabled" #end
-			onchange="VM_PP.doChangePageSize('#toolLink("$action", "doChange_pagesize")', this);">
-		#foreach ($i in $!pagesizes)
-			<option value="$i" #if($pagesize == $i) selected="selected" #end>$tlang.getFormattedMessage("gen.show", $i)</option>
-		#end
-		</select>
+		<div class="sakai-table-pagerPageSize">
+			<select aria-label="$tlang.getString('gen.select.label')" id="selectPageSize_$panelName" name="selectPageSize_$panelName" class="sakai-form-control sakai-form-control--sm" #if ($allMsgNumber == 0) disabled="disabled" #end
+				onchange="VM_PP.doChangePageSize('#toolLink("$action", "doChange_pagesize")', this);">
+			#foreach ($i in $!pagesizes)
+				<option value="$i" #if($pagesize == $i) selected="selected" #end>$tlang.getFormattedMessage("gen.show", $i)</option>
+			#end
+			</select>
+		</div>
+
+		<button type="button" class="sakai-btn-icon" name="eventSubmit_doList_next" title="$tlang.getFormattedMessage('gen.next.pagesize', $pagesize)"
+			onclick="VM_PP.doPageNav('#toolLink("$action", "doList_next")', this);" #if ($goNPButton != "true") disabled="disabled" #end>
+			<span class="bi bi-chevron-right" aria-hidden="true"></span>
+			<span class="visually-hidden">$tlang.getFormattedMessage('gen.next.pagesize', $pagesize)</span>
+		</button>
+
+		<button type="button" class="sakai-btn-icon" name="eventSubmit_doList_last" title="$tlang.getString("gen.last")"
+			onclick="VM_PP.doPageNav('#toolLink("$action", "doList_last")', this);" #if ($goLPButton != "true") disabled="disabled" #end>
+			<span class="bi bi-chevron-double-right" aria-hidden="true"></span>
+			<span class="visually-hidden">$tlang.getString("gen.last")</span>
+		</button>
 	</div>
-
-	<span class="skip">$tlang.getFormattedMessage('gen.next.pagesize', $pagesize)</span>
-	<input type="button" name="eventSubmit_doList_next" value="&gt;" title="$tlang.getFormattedMessage('gen.next.pagesize', $pagesize)"
-		onclick="VM_PP.doPageNav('#toolLink("$action", "doList_next")', this);" #if($goNPButton != "true") disabled="disabled" #end />
-
-	<span class="skip">$tlang.getString('gen.last')</span>
-	<input type="button" name="eventSubmit_doList_last" value="&gt;&#124;" title="$tlang.getString('gen.last')"
-		onclick="VM_PP.doPageNav('#toolLink("$action", "doList_last")', this);" #if ($goLPButton != "true") disabled="disabled" #end />
 </div>
 #end ## pagerPanel
 
@@ -696,8 +704,8 @@ ${extra}")
 <div class="sakai-table-searchFilter">
 	<label for="$panelName">$tlang.getString("search.label")</label>
 	<div class="sakai-table-searchFilterControls">
-		<div class="sakai-table-searchFilter-inputWrapper position-relative d-flex align-items-center flex-grow-1">
-			<input type="search" name="$panelName" id="$panelName" value="$formattedText.escapeHtml($!userSearchTerm)" class="sakai-table-searchFilter-searchField w-100" data-search-url="#toolLink("$action" "$searchActionKey")" data-clear-url="#toolLink("$action" "$clearSearchActionKey")" />
+		<div class="sakai-table-searchFilter-inputWrapper">
+			<input type="search" name="$panelName" id="$panelName" value="$formattedText.escapeHtml($!userSearchTerm)" class="sakai-table-searchFilter-searchField sakai-form-control sakai-form-control--sm" data-search-url="#toolLink("$action" "$searchActionKey")" data-clear-url="#toolLink("$action" "$clearSearchActionKey")" />
 		</div>
 	</div>
 </div>

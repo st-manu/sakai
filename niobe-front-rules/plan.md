@@ -132,7 +132,7 @@ To standardize the UI and avoid loose utilities, all tool markup must migrate to
 
 ## 8. Migration Process (tool-by-tool)
 
-The migration will not happen all at once, but progressively. The **Polls** tool is our reference implementation.
+The migration will not happen all at once, but progressively. **Polls** (Thymeleaf) and **Announcements** (Velocity) are our reference implementations.
 
 ### Mandatory checklist to migrate a tool:
 

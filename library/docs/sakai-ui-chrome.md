@@ -50,6 +50,7 @@ Defined under [`sass/components/`](../src/skins/default/src/sass/components/):
 - `.sakai-segmented-control`, `.sakai-tool-nav`
 - `.sakai-banner` (+ `--info` / `--success` / `--warn` / `--error`) — same as old `sak-banner-*`: put content directly in the element; icon comes from CSS by type
 - `.sakai-form-control`, `.sakai-form-label`, `.sakai-form-group`
+- `.sakai-table-toolbar` (+ `__filters`, `__scope`) — search / view filter / pager strip for list views. The three blocks are emitted by the shared `#searchFilterPanel`, `#viewFilterPanel` and `#pagerPanel` Velocity macros (`.sakai-table-searchFilter`, `.sakai-table-viewFilter`, `.sakai-table-pagerContainer`), so every tool that uses them gets the same pattern
 - `.sakai-table` (+ `--striped` / `--hover` / `--sm` / `--stack`), `.sakai-table-wrap`, `__select`, `__sort`, `__actions`, `__primary`, `__nowrap` — cells are transparent so tables inherit the content card surface in light and dark; mark the important content column with `__primary` (absorbs extra width and keeps a 16rem floor on desktop); use `__nowrap` for single-line values such as timestamps; on mobile the wrap owns one outer border + radius and `--stack` rows are separated by a single border, with `data-label` cells laid out as a label/value grid; sortable `<th>` carries `aria-sort` and a `.sakai-table__print-label` for print
 - `sakai-permissions` — shared permissions matrix (`.sakai-permissions` / `__table`); uses `.sakai-table` + `.sakai-actions`, not Bootstrap layout utilities
 

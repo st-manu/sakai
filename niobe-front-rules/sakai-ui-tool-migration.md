@@ -4,7 +4,7 @@
 
 Portal chrome contract (slots, title ownership): [`library/docs/sakai-ui-chrome.md`](../library/docs/sakai-ui-chrome.md).
 
-**Reference implementation:** [`polls-reference.md`](polls-reference.md) (A/B/C + primitives checklist).
+**Reference implementations:** [`polls-reference.md`](polls-reference.md) (Thymeleaf, A/B/C + primitives checklist) and [`announcements-reference.md`](announcements-reference.md) (Velocity, server menu → `sakai-*` actions).
 
 ## Principle
 
@@ -21,11 +21,12 @@ Each tool adopts:
 Revalidate after portal feedback:
 
 1. ~~**Polls**~~ — **done** (Thymeleaf reference; see [`polls-reference.md`](polls-reference.md))
-2. Dashboard / Home (already Lit)
-3. Conversations
-4. **Assignments** (high student-facing impact; worst `navIntraTool` mix — next Velocity reference)
-5. Gradebook, Resources, Lessons
-6. Remaining tools (JSF / Wicket / Velocity) when touched for other work
+2. ~~**Announcements**~~ — **done** (Velocity reference; see [`announcements-reference.md`](announcements-reference.md))
+3. Dashboard / Home (already Lit)
+4. Conversations
+5. **Assignments** (high student-facing impact; worst `navIntraTool` mix — next Velocity tool)
+6. Gradebook, Resources, Lessons
+7. Remaining tools (JSF / Wicket / Velocity) when touched for other work
 
 ## Title and page chrome (per tool)
 
@@ -80,7 +81,7 @@ If a tool only has (A), a single segmented control is enough. If it only has one
 
 | Legacy pattern | Typical tools | Migration |
 |----------------|---------------|-----------|
-| Flat `navIntraTool` mixing list + Add + Options + Permissions | Assignments, Announcements, many Velocity tools | Split A / B / C as above; Polls is the Thymeleaf reference; Assignments is the next Velocity reference |
+| Flat `navIntraTool` mixing list + Add + Options + Permissions | Assignments, many Velocity tools | Split A / B / C as above; Polls (Thymeleaf) and Announcements (Velocity) are the references |
 | `navIntraTool` as page tabs only | Gradebook (`BasePage`), some Samigo headings | Replace with `.sakai-tool-nav` / segmented; little or no (B)/(C) in that row |
 | Icon / button toolbar in `navIntraTool` | Lessons | Prefer explicit toolbar of `.sakai-btn` / `.sakai-btn-icon`; drop `navIntraTool` class when markup is rewritten |
 | JSF `ToolBarRenderer` → `<ul class="navIntraTool actionToolbar">` | JSF tools | Same taxonomy when the renderer or the page is next touched; prefer shared fragment later if several JSF tools migrate together |
