@@ -5,7 +5,7 @@
   <div class="portletBody sakai-tool-body">
     <header class="sakai-tool-header">
       <h1 class="sakai-tool-header__title" th:text="#{poll_vote_title}">Vote</h1>
-      <div th:replace="~{fragments/common :: toolActions('list')}"></div>
+      <div th:replace="~{fragments/common :: toolActions('vote')}"></div>
     </header>
 
     <div th:if="${alert}" class="sakai-banner sakai-banner--warn" role="alert" th:text="${alert}">Alert</div>

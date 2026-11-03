@@ -8,7 +8,7 @@
 </script>
 
 <div class="portletBody sakai-tool-body sakai-announcements">
-    #announcementsHeader($formattedText.escapeHtml($message.Header.subject) $menu true)
+    #announcementsHeader($formattedText.escapeHtml($message.Header.subject) "doNewannouncement" $menu "")
     #announcementsAlert($alertMessage)
 
     <dl class="sakai-announcements__details">

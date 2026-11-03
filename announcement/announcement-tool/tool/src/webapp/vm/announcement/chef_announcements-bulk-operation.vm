@@ -1,7 +1,7 @@
 #parse("/vm/announcement/announcements_macros.vm")
 
 <div class="portletBody sakai-tool-body sakai-announcements">
-	#announcementsHeader($title $menu false)
+	#announcementsHeader($title "" "" "doCancel")
 
 	#announcementsAlert($alertMessage)
 

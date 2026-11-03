@@ -3,85 +3,8 @@
  * enablement stay in MenuBuilder; see niobe-front-rules/announcements-reference.md.
  *#
 
-#macro(announcementsHeader $title $menu $withActions)
-<header class="sakai-tool-header sakai-announcements__header">
-    <h1 class="sakai-tool-header__title">$!title</h1>
-    #if($withActions)
-        #announcementsActions($menu)
-    #end
-</header>
-#end
-
-#macro(announcementsActions $menu)
-    #set($hasPrimary = false)
-    #set($hasUtilities = false)
-    #if($menu && !$menu.isEmpty())
-        #foreach($item in $menu.Items)
-            #if($item.IsEnabled && !$item.IsDivider && !$item.IsCurrent && !$item.IsField)
-                #if($item.Action == "doNewannouncement")
-                    #set($hasPrimary = true)
-                #else
-                    #set($hasUtilities = true)
-                #end
-            #end
-        #end
-    #end
-    #if($hasPrimary || $hasUtilities)
-<div class="sakai-tool-header__actions sakai-no-print" role="toolbar" aria-label="$tlang.getString('gen.actions')">
-        #if($hasPrimary)
-            #foreach($item in $menu.Items)
-                #if($item.IsEnabled && !$item.IsDivider && !$item.IsCurrent && !$item.IsField && $item.Action == "doNewannouncement")
-                    #set($itemUrl = $sakai_ActionURL.reset().setParameter("sakai_action", $item.Action).toString())
-    <a class="sakai-btn sakai-btn-primary" href="#"
-        #if($item.AccessibilityLabel)title="$item.AccessibilityLabel"#end
-        onclick="location = '$itemUrl'#if($item.Form)+buildQueryString('$item.Form')#end;return false;">
-        <span class="bi bi-plus-lg" aria-hidden="true"></span>
-        <span>$item.Title</span>
-    </a>
-                #end
-            #end
-        #end
-        #if($hasUtilities)
-    <div class="sakai-tool-header__secondary">
-            #foreach($item in $menu.Items)
-                #if($item.IsEnabled && !$item.IsDivider && !$item.IsCurrent && !$item.IsField && $item.Action != "doNewannouncement")
-                    #if($item.Url)
-        <a class="sakai-btn sakai-btn-secondary" href="$item.Url" target="_blank"#if($item.AccessibilityLabel) title="$item.AccessibilityLabel"#end>$item.Title</a>
-                    #else
-                    #set($itemUrl = $sakai_ActionURL.reset().setParameter("sakai_action", $item.Action).toString())
-                    #if($item.Action == "doPermissions")
-        <a class="sakai-btn sakai-btn-ghost" href="#"
-                    #else
-        <a class="sakai-btn sakai-btn-secondary" href="#"
-                    #end
-            #if($item.AccessibilityLabel)title="$item.AccessibilityLabel"#end
-            onclick="location = '$itemUrl'#if($item.Form)+buildQueryString('$item.Form')#end;return false;">$item.Title</a>
-                    #end
-                #end
-            #end
-    </div>
-    <details class="sakai-overflow-menu sakai-tool-header__more">
-        <summary class="sakai-btn sakai-btn-ghost sakai-overflow-menu__toggle"
-            aria-label="$tlang.getString('gen.more.actions')">
-            <span class="bi bi-three-dots" aria-hidden="true"></span>
-        </summary>
-        <div class="sakai-overflow-menu__panel" role="menu">
-            #foreach($item in $menu.Items)
-                #if($item.IsEnabled && !$item.IsDivider && !$item.IsCurrent && !$item.IsField && $item.Action != "doNewannouncement")
-                    #if($item.Url)
-            <a role="menuitem" href="$item.Url" target="_blank">$item.Title</a>
-                    #else
-                    #set($itemUrl = $sakai_ActionURL.reset().setParameter("sakai_action", $item.Action).toString())
-            <a role="menuitem" href="#"
-                onclick="location = '$itemUrl'#if($item.Form)+buildQueryString('$item.Form')#end;return false;">$item.Title</a>
-                    #end
-                #end
-            #end
-        </div>
-    </details>
-        #end
-</div>
-    #end
+#macro(announcementsHeader $title $primaryAction $menu $backAction)
+#sakaiToolHeader($title $menu $primaryAction $backAction $tlang.getString("meta.retlis") $tlang.getString("gen.more.actions"))
 #end
 
 #macro(announcementsAlert $alertMessage)

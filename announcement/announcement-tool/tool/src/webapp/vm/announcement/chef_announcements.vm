@@ -19,7 +19,7 @@
     #set ($daysList = [$displayOptions.numberOfDaysInThePast])
 
     #if ($isOnWorkspaceTab.equals("true")) ## My Workspace tab
-        #announcementsHeader($tlang.getString("gen.list.title") $menu true)
+        #announcementsHeader($tlang.getString("gen.list.title") "doNewannouncement" $menu "")
         #announcementsAlert($alertMessage)
 
         <div class="sakai-table-toolBar sakai-announcements__toolbar">
@@ -199,7 +199,7 @@
 
         #else ## the Announcements tool itself (site or admin MOTD)
             #if ($displayOptions.isShowAllColumns())
-                #announcementsHeader($tlang.getString("gen.list.title") $menu true)
+                #announcementsHeader($tlang.getString("gen.list.title") "doNewannouncement" $menu "")
                 #announcementsAlert($alertMessage)
 
                 <div class="sakai-table-toolbar">
@@ -352,7 +352,7 @@
                 #end
 
             #else ## compact "list" display option
-                #announcementsHeader($tlang.getString("gen.list.title") $menu true)
+                #announcementsHeader($tlang.getString("gen.list.title") "doNewannouncement" $menu "")
                 #announcementsAlert($alertMessage)
 
                 #if ($messageListVector.iterator().hasNext())

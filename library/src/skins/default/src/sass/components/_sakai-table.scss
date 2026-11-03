@@ -210,7 +210,7 @@
 
       tr {
         display: flex;
-        flex-wrap: wrap;
+        flex-wrap: balance;
         gap: var(--sakai-space-1) var(--sakai-space-3);
         padding: var(--sakai-space-2) var(--sakai-space-2) var(--sakai-space-3);
         border-bottom: 1px solid var(--sakai-border-color);

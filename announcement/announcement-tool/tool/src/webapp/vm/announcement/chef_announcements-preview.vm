@@ -1,7 +1,7 @@
 #parse("/vm/announcement/announcements_macros.vm")
 
 <div class="portletBody sakai-tool-body sakai-announcements">
-	#announcementsHeader($tlang.getString("pre.preview") $menu false)
+	#announcementsHeader($tlang.getString("pre.preview") "" "" "doCancel")
 	#announcementsAlert($alertMessage)
 
 	<dl class="sakai-announcements__details">

@@ -10,9 +10,14 @@ Chrome contract: [`library/docs/sakai-ui-chrome.md`](../library/docs/sakai-ui-ch
 |------|------|--------|
 | List (home) | **A** | View H1 (`gen.list.title`, i.e. “Announcement list”) — no segmented control (single exclusive view) |
 | Add announcement | **B** | `.sakai-btn-primary` with a `bi-plus-lg` icon |
-| Reorder / Merge / Options | **C** | `.sakai-btn-secondary` cluster, collapses into the `…` overflow |
+| Reorder / Merge / Options | **C** | `.sakai-btn-secondary` cluster; with more than three utilities the whole cluster always moves to the `…` overflow |
 | Permissions | **C** | `.sakai-btn-ghost`, same as Polls |
-| Refresh | — | Dropped: `IsCurrent` menu entries are not rendered (a view reload is not an action) |
+| Refresh | — | Dropped: `IsCurrent` menu entries and the legacy `doCancel` refresh are never rendered as actions |
+
+Secondary views (add/edit, preview, bulk, options, reorder, merge, permissions) do not repeat the
+A/B/C cluster. They keep the header and expose a single **Return to List** action, so an “Add”
+next to “Permissions” cannot be read as “add permissions”. The announcement detail view shows its
+object actions (new/edit/remove) and the footer owns “Return to List”.
 
 ## Reading the server menu instead of duplicating it
 
@@ -20,13 +25,20 @@ Chrome contract: [`library/docs/sakai-ui-chrome.md`](../library/docs/sakai-ui-ch
 
 ```velocity
 #parse("/vm/announcement/announcements_macros.vm")
-#announcementsHeader($title $subtitle $menu true)   ## true = render actions
+#announcementsHeader($title "doNewannouncement" $menu "")   ## home: primary + utilities
+#announcementsHeader($title "" "" "doCancel")               ## flow: return to list
 ```
 
 * `doNewannouncement` → primary button.
 * every other enabled, non-current, non-divider entry → secondary cluster + overflow panel.
 * `$item.Url` entries render as plain links, `$item.Form` entries keep `buildQueryString()`.
 * The URL is built exactly like `#chef_toolbar` does: `$sakai_ActionURL.reset().setParameter("sakai_action", $item.Action).toString()`.
+* The rendering lives in the shared `#sakaiToolHeader($title $menu $primaryAction $backAction $backLabel $moreLabel)`
+  (`velocity/tool/src/templates/VM_chef_library.vm`), so other Velocity tools and the shared
+  `permissions.vm` get the same heading, separator and action styling.
+* `chef_announcements-*.vm` call the thin wrapper
+  `#announcementsHeader($title $primaryAction $menu $backAction)`: menu + primary on the home view,
+  `""` + `"doCancel"` on flow views.
 
 Same macro also renders `#announcementsAlert($alertMessage)` (error banner) and `#announcementsEmptyState($view)`, so wording stays in the tool bundle.
 
@@ -36,7 +48,7 @@ Same macro also renders `#announcementsAlert($alertMessage)` (error banner) and 
 .portletBody.sakai-tool-body.sakai-announcements
   header.sakai-tool-header
     h1.sakai-tool-header__title            ← view name ("Announcement list"), not the tool name
-    .sakai-tool-header__actions            ← A/B/C from $menu
+    .sakai-tool-header__actions            ← A/B/C from $menu (home) or "Return to List" (flows)
   .sakai-table-toolbar
     .sakai-table-toolbar__filters          ← #searchFilterPanel + #viewFilterPanel + __scope
     .sakai-table-pagerContainer            ← #pagerPanel: summary + icon buttons + page size
@@ -54,7 +66,7 @@ next to the view filter, where it reads as filter context.
 
 | Pattern | Classes / notes |
 |---------|-----------------|
-| Header | `.sakai-tool-header`, `__title`, `__actions`, `__secondary`, `__more` |
+| Header | `.sakai-tool-header`, `__title`, `__actions`, `__secondary`, `__more`; `__actions--collapsed` when there are more than three utilities |
 | Buttons on forms | `.sakai-btn sakai-btn-primary` on `<button>` **and** `<input type=submit>` (the skin extends `.btn`) |
 | Table | `.sakai-table sakai-table--hover sakai-table--stack`, `caption.visually-hidden`, `__select`, `__primary`, `__actions`, `__nowrap` |
 | Sortable headers | `aria-sort` on `<th>` + `.sakai-table__sort` (+ `is-sorted-asc/desc`); the shared skin draws the arrow |
@@ -79,7 +91,9 @@ next to the view filter, where it reads as filter context.
 
 ## Key files
 
-- Fragments: `announcement/announcement-tool/tool/src/webapp/vm/announcement/announcements_macros.vm`
+- Shared header macro: `velocity/tool/src/templates/VM_chef_library.vm` (`#sakaiToolHeader`)
+- Shared permissions page: `velocity/tool/src/templates/permissions.vm`
+- Announcements fragments: `announcement/announcement-tool/tool/src/webapp/vm/announcement/announcements_macros.vm`
 - Templates: `vm/announcement/chef_announcements{,-revise,-metadata,-reorder,-preview,-customize,-merge,-bulk-operation}.vm`
 - Skin: `library/.../sass/modules/tool/announcements/_announcements.scss`
 - Strings: `announcement/announcement-api/api/src/bundle/announcement.properties`

@@ -21,28 +21,33 @@
 </th:block>
 
 <div th:fragment="toolActions (current)" class="sakai-tool-header__actions sakai-no-print" role="toolbar" aria-label="Poll actions">
-  <a th:if="${canAdd and current != 'add'}"
-     class="sakai-btn sakai-btn-primary"
-     th:href="@{/voteAdd}">
-    <span class="bi bi-plus-lg" aria-hidden="true"></span>
-    <span th:text="#{action_add_poll}">Add</span>
-  </a>
+  <th:block th:if="${current == 'list'}">
+    <a th:if="${canAdd}"
+       class="sakai-btn sakai-btn-primary"
+       th:href="@{/voteAdd}">
+      <span class="bi bi-plus-lg" aria-hidden="true"></span>
+      <span th:text="#{action_add_poll}">Add</span>
+    </a>
 
-  <div class="sakai-tool-header__secondary"
-       th:if="${(canAdd and current != 'import') or (isSiteOwner and current != 'permissions')}">
-    <th:block th:replace="~{fragments/common :: toolSecondaryActions(${current})}" />
-  </div>
-
-  <details class="sakai-overflow-menu sakai-tool-header__more"
-           th:if="${(canAdd and current != 'import') or (isSiteOwner and current != 'permissions')}">
-    <summary class="sakai-btn sakai-btn-ghost sakai-overflow-menu__toggle"
-             th:attr="aria-label=#{action_more}">
-      <span class="bi bi-three-dots" aria-hidden="true"></span>
-    </summary>
-    <div class="sakai-overflow-menu__panel" role="menu">
-      <th:block th:replace="~{fragments/common :: toolSecondaryActions(${current})}" />
+    <div class="sakai-tool-header__secondary" th:if="${canAdd or isSiteOwner}">
+      <th:block th:replace="~{fragments/common :: toolSecondaryActions('list')}" />
     </div>
-  </details>
+
+    <details class="sakai-overflow-menu sakai-tool-header__more" th:if="${canAdd or isSiteOwner}">
+      <summary class="sakai-btn sakai-btn-ghost sakai-overflow-menu__toggle"
+               th:attr="aria-label=#{action_more}">
+        <span class="bi bi-three-dots" aria-hidden="true"></span>
+      </summary>
+      <div class="sakai-overflow-menu__panel" role="menu">
+        <th:block th:replace="~{fragments/common :: toolSecondaryActions('list')}" />
+      </div>
+    </details>
+  </th:block>
+
+  <a th:unless="${current == 'list'}"
+     class="sakai-btn sakai-btn-secondary"
+     th:href="@{/votePolls}"
+     th:text="#{action_return_to_list}">Return to list</a>
 </div>
 
 </body>

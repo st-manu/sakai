@@ -62,6 +62,7 @@
 
   select {
     min-width: 11rem;
+    max-width: 100%;
   }
 }
 
@@ -103,8 +104,13 @@
     }
   }
 
+  .sakai-table-pagerPageSize {
+    flex: 0 0 auto;
+    max-width: 100%;
+  }
+
   .sakai-table-pagerPageSize select {
-    min-width: 9rem;
+    max-width: 100%;
   }
 }
 

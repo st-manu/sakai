@@ -602,6 +602,103 @@ ${extra}")
 #chef_toolbar()
 #end
 
+#* ------------------------------------------------------------------
+# Niobe tool header: view heading + tool level actions.
+# Actions come from the CHEF menu; the entry matching $primaryAction is the
+# primary button, "doPermissions" is a ghost button and the rest are
+# secondary. "doCancel" (legacy list refresh) is never rendered as an action.
+# Secondary views pass $backAction instead of a menu.
+# ------------------------------------------------------------------
+*#
+#macro (sakaiToolHeader $title $menu $primaryAction $backAction $backLabel $moreLabel)
+<header class="sakai-tool-header">
+	<h1 class="sakai-tool-header__title">$!title</h1>
+	#set($hasMenuActions = false)
+	#if($menu && !$menu.isEmpty())
+		#foreach($item in $menu.Items)
+			#if($item.IsEnabled && !$item.IsDivider && !$item.IsCurrent && !$item.IsField && $item.Action != "doCancel")
+				#set($hasMenuActions = true)
+			#end
+		#end
+	#end
+	#if($hasMenuActions || $backAction)
+	#set($utilityCount = 0)
+	#if($hasMenuActions)
+		#foreach($item in $menu.Items)
+			#if($item.IsEnabled && !$item.IsDivider && !$item.IsCurrent && !$item.IsField && $item.Action != "doCancel" && $item.Action != $primaryAction)
+				#set($utilityCount = $utilityCount + 1)
+			#end
+		#end
+	#end
+	<div class="sakai-tool-header__actions sakai-no-print#if($utilityCount > 3) sakai-tool-header__actions--collapsed#end">
+		#if($hasMenuActions && $primaryAction)
+			#foreach($item in $menu.Items)
+				#if($item.IsEnabled && !$item.IsDivider && !$item.IsCurrent && !$item.IsField && $item.Action == $primaryAction)
+					#set($itemUrl = $sakai_ActionURL.reset().setParameter("sakai_action", $item.Action).toString())
+		<a class="sakai-btn sakai-btn-primary" href="#"
+			#if($item.AccessibilityLabel)title="$item.AccessibilityLabel"#end
+			onclick="location = '$itemUrl'#if($item.Form)+buildQueryString('$item.Form')#end;return false;">
+			<span class="bi bi-plus-lg" aria-hidden="true"></span>
+			<span>$item.Title</span>
+		</a>
+				#end
+			#end
+		#end
+		#if($hasMenuActions)
+			#set($hasUtilities = false)
+			#foreach($item in $menu.Items)
+				#if($item.IsEnabled && !$item.IsDivider && !$item.IsCurrent && !$item.IsField && $item.Action != "doCancel" && $item.Action != $primaryAction)
+					#set($hasUtilities = true)
+				#end
+			#end
+			#if($hasUtilities)
+		<div class="sakai-tool-header__secondary">
+				#foreach($item in $menu.Items)
+					#if($item.IsEnabled && !$item.IsDivider && !$item.IsCurrent && !$item.IsField && $item.Action != "doCancel" && $item.Action != $primaryAction)
+						#if($item.Url)
+			<a class="sakai-btn sakai-btn-secondary" href="$item.Url" target="_blank"#if($item.AccessibilityLabel) title="$item.AccessibilityLabel"#end>$item.Title</a>
+						#else
+						#set($itemUrl = $sakai_ActionURL.reset().setParameter("sakai_action", $item.Action).toString())
+						#if($item.Action == "doPermissions")
+			<a class="sakai-btn sakai-btn-ghost" href="#"
+						#else
+			<a class="sakai-btn sakai-btn-secondary" href="#"
+						#end
+				#if($item.AccessibilityLabel)title="$item.AccessibilityLabel"#end
+				onclick="location = '$itemUrl'#if($item.Form)+buildQueryString('$item.Form')#end;return false;">$item.Title</a>
+						#end
+					#end
+				#end
+		</div>
+		<details class="sakai-overflow-menu sakai-tool-header__more">
+			<summary class="sakai-btn sakai-btn-ghost sakai-overflow-menu__toggle"#if($moreLabel) aria-label="$moreLabel"#end>
+				<span class="bi bi-three-dots" aria-hidden="true"></span>
+			</summary>
+			<div class="sakai-overflow-menu__panel" role="menu">
+				#foreach($item in $menu.Items)
+					#if($item.IsEnabled && !$item.IsDivider && !$item.IsCurrent && !$item.IsField && $item.Action != "doCancel" && $item.Action != $primaryAction)
+						#if($item.Url)
+				<a role="menuitem" href="$item.Url" target="_blank">$item.Title</a>
+						#else
+						#set($itemUrl = $sakai_ActionURL.reset().setParameter("sakai_action", $item.Action).toString())
+				<a role="menuitem" href="#"
+					onclick="location = '$itemUrl'#if($item.Form)+buildQueryString('$item.Form')#end;return false;">$item.Title</a>
+						#end
+					#end
+				#end
+			</div>
+		</details>
+			#end
+		#end
+		#if($backAction)
+		<a class="sakai-btn sakai-btn-secondary" href="#"
+			onclick="location = '#toolLink("$action" $backAction)';return false;">$!backLabel</a>
+		#end
+	</div>
+	#end
+</header>
+#end
+
 #macro (toolLink $toolLinkJunk $toolLinkAction)$sakai_ActionURL.setParameter("sakai_action","$toolLinkAction")#end
 
 #macro (toolForm $toolFormJunk)$sakai_ActionURL.setAction()#end

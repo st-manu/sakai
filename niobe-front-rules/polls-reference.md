@@ -9,9 +9,14 @@ Chrome contract: [`library/docs/sakai-ui-chrome.md`](../library/docs/sakai-ui-ch
 | Item | Kind | Markup |
 |------|------|--------|
 | List (home) | **A** | View H1 only — no segmented control (single exclusive view). Return via portal tool crumb. |
-| Add | **B** | `.sakai-btn-primary` in `.sakai-tool-header__actions` (hidden when current) |
+| Add | **B** | `.sakai-btn-primary` in `.sakai-tool-header__actions` |
 | Bulk Creation | **B** | `.sakai-btn-secondary` |
-| Permissions | **C** | `.sakai-btn-ghost` (no overflow yet — one utility) |
+| Permissions | **C** | `.sakai-btn-ghost` |
+
+The A/B/C cluster belongs to the **home view only**. Every other view (vote, results, import,
+permissions, option forms) keeps `.sakai-tool-header` but replaces the cluster with a single
+`Return to list` action: repeating "Add/Permissions" there makes a global action read as an
+action on the current page.
 
 ## Layout contract
 
@@ -25,7 +30,8 @@ Chrome contract: [`library/docs/sakai-ui-chrome.md`](../library/docs/sakai-ui-ch
 
 - No `.navIntraTool`.
 - No duplicate tool-name title on single-tool pages.
-- Shared actions: `polls/.../fragments/common.html` → `toolActions(current)`.
+- Shared actions: `polls/.../fragments/common.html` → `toolActions(current)`; `current` is the
+  real page (`list`, `vote`, `results`, `import`, `permissions`, `add`), not always `list`.
 
 ## Primitives used
 

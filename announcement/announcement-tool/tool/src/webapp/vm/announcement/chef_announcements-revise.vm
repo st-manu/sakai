@@ -120,7 +120,7 @@ function resizeFrame(){
     #else
         #set($reviseTitle = $tlang.getString("revise.revise"))
     #end
-    #announcementsHeader($reviseTitle $menu false)
+    #announcementsHeader($reviseTitle "" "" "doCancel")
     #announcementsAlert($alertMessage)
 
     <p class="sakai-announcements__hint">

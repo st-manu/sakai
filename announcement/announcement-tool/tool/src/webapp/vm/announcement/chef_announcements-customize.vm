@@ -4,7 +4,7 @@
 	focus_path = [ "$form-notify" ];
 </script>
 <div class="portletBody sakai-tool-body sakai-announcements">
-	#announcementsHeader($tlang.getString("custom.options") $menu false)
+	#announcementsHeader($tlang.getString("custom.options") "" "" "doCancel")
 	#announcementsAlert($alertMessage)
 
 	<p class="sakai-announcements__hint">

@@ -93,8 +93,13 @@ When a PR edits a tool’s top nav (or checklist item 7 below):
 1. List every current `navIntraTool` entry and tag it A, B, or C.
 2. Markup: (A) → `sakai-tool-nav` / `sakai-segmented-control` (omit if only one home view); (B)/(C) → `.sakai-tool-header__actions` buttons.
 3. View heading reflects the active (A) view (or the (B) flow, e.g. “Add assignment”).
-4. Do not keep a parallel portal tool title on single-tool pages.
-5. Playwright: cover switching at least one (A) view and one (B) action if both exist.
+4. Every view keeps `.sakai-tool-header` with its separator and view heading. Actions are tool
+   level: the home view carries A/B/C; detail/flow views (add, edit, bulk, permissions, options,
+   reorder, merge, preview) carry a single `Return to List` action, so a global "Add" is never
+   read as "add <current view>". Utilities show inline only up to three: beyond that they always
+   go to the `…` overflow, whatever the container width.
+5. Do not keep a parallel portal tool title on single-tool pages.
+6. Playwright: cover switching at least one (A) view and one (B) action if both exist.
 
 ### Out of scope for portal-only PRs
 
@@ -120,5 +125,5 @@ When a PR edits a tool’s top nav (or checklist item 7 below):
 - Remaining `Mrphs-*` purge
 - Per-tool L3 token files under `sass/tokens/tools/`
 - Broader Lit adoption of a curated `sakai-tokens.css` instead of copying all document stylesheets
-- Optional shared Velocity/JSF/Wicket fragment for “tool header = views + actions” once two or three tools share the same A/B/C layout
+- Optional shared JSF/Wicket fragment for “tool header = views + actions”; Velocity already has `#sakaiToolHeader()` in `VM_chef_library.vm`
 - Modernise presence list fragment HTML (still AJAX-loaded) when that endpoint is next touched

@@ -9,7 +9,7 @@
 		#end
 	#end
 
-	#announcementsHeader($tlang.getString("reorder.title") $menu false)
+	#announcementsHeader($tlang.getString("reorder.title") "" "" "doCancel")
 	#announcementsAlert($alertMessage)
 
 	<p class="sakai-announcements__hint">

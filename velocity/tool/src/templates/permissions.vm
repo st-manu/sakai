@@ -1,7 +1,3 @@
-<div class="page-header">
-	<h1>
-		$!permissions
-	</h1>
-</div>
+#sakaiToolHeader($!permissions "" "" $!toolBackAction $!toolBackLabel $!toolMoreLabel)
 
 <sakai-permissions tool="$!toolKey" bundle-key="$!bundleKey"></sakai-permissions>

@@ -36,6 +36,26 @@ Stable CSS classes for the portal shell. Tools should target these when migrated
 3. **View heading**: the active tool view. Prefer the tool’s own heading over repeating the tool name.
 4. **Intra-tool nav**: tool-owned; not the page title. Flat `.navIntraTool` is legacy — migrate when the tool is touched (see roadmap).
 
+### Tool header and actions
+
+Every view of a tool renders `.sakai-tool-header` (view H1 + separator). The action cluster is
+**tool level, not view level**:
+
+- **Tool home**: the A/B/C actions from the tool menu — create as `.sakai-btn-primary`, utilities
+  as `.sakai-btn-secondary`, permissions as `.sakai-btn-ghost`. Utilities show inline next to the
+  primary action only when there are **at most three**; more than three collapse into `…` at every
+  width. Narrow containers collapse them too.
+- **Detail and flow views** (add, edit, bulk, permissions, options, reorder, merge, preview):
+  a single `Return to List` action. Do not repeat the global create/utility cluster there: an
+  “Add” next to “Permissions” reads as “add permissions”.
+- An item detail view may expose object actions (edit/delete) instead of the global cluster.
+- The current view's action is never rendered as a link; the tool home is also the breadcrumb
+  tool crumb. Flow buttons (save/cancel/preview) stay in `.sakai-actions` at the end of the form.
+
+Shared implementation: `#sakaiToolHeader()` in `velocity/tool/src/templates/VM_chef_library.vm`
+renders the heading plus menu-driven actions; the shared permissions template uses it, so every
+tool's permissions page keeps the same heading and separator.
+
 ## Primitives (SCSS)
 
 Defined under [`sass/components/`](../src/skins/default/src/sass/components/):
@@ -44,7 +64,7 @@ Defined under [`sass/components/`](../src/skins/default/src/sass/components/):
 - `.sakai-actions` (alias `.act`) — form/tool footer button row; uses `gap`, not per-child margins
 - `.sakai-card`, `.sakai-page-content`
 - `.sakai-page-header` (+ `__title`, `__meta`, `__actions`, `__breadcrumb`)
-- `.sakai-tool-header` (+ `__title`, `__actions`, `__secondary`, `__more`) — at ≥48rem container: secondary actions inline; narrower: `__more` (`…`). Title wraps without collapsing and actions move to their own line when needed. Do not unwrap a closed `<details>` with `display:contents`/`flex`.
+- `.sakai-tool-header` (+ `__title`, `__actions`, `__secondary`, `__more`, `__actions--collapsed`) — at ≥48rem container: up to three secondary actions inline, more than three always in `__more` (`…`); narrower: `__more` (`…`). Title wraps without collapsing and actions move to their own line when needed. Do not unwrap a closed `<details>` with `display:contents`/`flex`.
 - `.sakai-overflow-menu` (+ `__toggle`, `__panel`) — `…` for narrow header utilities and per-row secondary actions; inside `.sakai-table` the panel is lifted to a fixed layer by the global body bundle so it escapes the table's scroll container
 - `.sakai-row-actions` (+ `__link`) — quiet per-row action + overflow menu
 - `.sakai-segmented-control`, `.sakai-tool-nav`

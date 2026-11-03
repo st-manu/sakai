@@ -62,6 +62,18 @@
   }
 }
 
+/* Utilities collapse by count as well as by width: a tool that exposes more
+   than three secondary actions always uses the overflow menu. */
+.sakai-tool-header__actions--collapsed {
+  .sakai-tool-header__secondary {
+    display: none;
+  }
+
+  .sakai-tool-header__more {
+    display: inline-block;
+  }
+}
+
 @container sakai-tool (max-width: 35.999rem) {
   .sakai-tool-header {
     flex-direction: column;

@@ -1,14 +1,14 @@
 #parse("/vm/announcement/announcements_macros.vm")
 
 <div class="portletBody sakai-tool-body sakai-announcements">
-	#announcementsHeader($tlang.getString("merge.show") $menu false)
+	#announcementsHeader($tlang.getString("merge.show") "" "" "doCancel")
 
 	<form name="Options" action="#toolForm("$action")" method="post">
 		#announcementsAlert($alertMessage)
 		<p class="sakai-announcements__hint">$tlang.getString("merge.select")</p>
 
 		<div class="sakai-table-wrap">
-			<table class="sakai-table sakai-table--hover sakai-announcements__merge-list">
+			<table class="sakai-table sakai-table--hover">
 				<caption class="visually-hidden">$tlang.getString("merge.list.summary")</caption>
 				<thead>
 					<tr>
