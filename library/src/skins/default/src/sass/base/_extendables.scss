@@ -64,17 +64,17 @@
 	@if $isInline {
 		display: inline-block;
 		margin: 0;
-		padding: 0 $standard-space 0 calc(#{$standard-spacing} * 2 + 18px); // making room on either side of the icon plus the width of the icon;
+		padding: 0 $standard-space 0 calc(#{$standard-spacing} * 2 + 18px);
 	} @else {
 		display: block;
 		clear: both;
 		margin: $standard-spacing 0;
-		padding: $standard-spacing $standard-spacing $standard-spacing calc(#{$standard-spacing} * 2 + 18px); // making room on either side of the icon plus the width of the icon;
+		padding: $standard-spacing $standard-spacing $standard-spacing calc(#{$standard-spacing} * 2 + 18px);
 	}
 	border-left: calc( #{$standard-spacing} / 2) solid $bordercolor;
 	background-color: $bgcolor;
 	color: $color;
-	
+
 	&:before {
 		@extend #{$icon};
 		position: absolute;
@@ -127,6 +127,7 @@
 		margin-bottom: 0;
 	}
 }
+
 @mixin sakai-banner-meetings($bordercolor, $bgcolor, $color, $icon, $isInline: false) {
 	position: relative;
 	@if $isInline {

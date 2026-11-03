@@ -45,7 +45,7 @@ Defined under [`sass/components/`](../src/skins/default/src/sass/components/):
 - `.sakai-overflow-menu` (+ `__toggle`, `__panel`) — `…` for narrow header utilities and per-row secondary actions
 - `.sakai-row-actions` (+ `__link`) — quiet per-row action + overflow menu
 - `.sakai-segmented-control`, `.sakai-tool-nav`
-- `.sakai-banner` (+ `--info` / `--success` / `--warn` / `--error`)
+- `.sakai-banner` (+ `--info` / `--success` / `--warn` / `--error`) — same as old `sak-banner-*`: put content directly in the element; icon comes from CSS by type
 - `.sakai-form-control`, `.sakai-form-label`, `.sakai-form-group`
 - `.sakai-table` (+ `--striped` / `--hover` / `--sm` / `--stack`), `.sakai-table-wrap`, `__select`, `__sort` — `--stack` turns rows into cards under `@container sakai-tool` (row owns hover/focus/checked; cells do not paint)
 - `sakai-permissions` — shared permissions matrix (`.sakai-permissions` / `__table`); uses `.sakai-table` + `.sakai-actions`, not Bootstrap layout utilities

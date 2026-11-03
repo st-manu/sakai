@@ -35,7 +35,7 @@ Chrome contract: [`library/docs/sakai-ui-chrome.md`](../library/docs/sakai-ui-ch
 | Buttons | `.sakai-btn` / `-primary` / `-secondary` / `-ghost` (also on `<a href>` — see `_sakai-btn.scss`) |
 | Form footer | `.sakai-actions` (legacy `.act` aliased) — flex + `gap`; do not rely on child `margin-right` |
 | Permissions | Shared `<sakai-permissions>` → `.sakai-permissions` / `__table` (not tool-local); row owns stripe/hover |
-| Banners | **`.sak-banner-success` / `-error` / `-warn` / `-info`** (established Sakai banners; keep these in tools) |
+| Banners | **`.sakai-banner.sakai-banner--success` / `--error` / `--warn` / `--info`** (content only; icon via CSS) |
 | Forms | `.sakai-form-group`, `.sakai-form-label`, `.sakai-form-control` |
 | Tables | `.sakai-table` (+ `--striped` / `--hover` / `--sm` / `--stack`), `__select`, `__sort`, `.sakai-table-wrap`; list sort via `polls-list-sort.js` (`data-order`) |
 | Options (Polls) | `.sakai-polls-option-list` scrollable stack for many options |
@@ -53,7 +53,7 @@ Responsive content uses `@container sakai-tool` in Polls SCSS, not viewport brea
 2. Emit `.sakai-tool-header` + view H1; put B/C in `__actions` (overflow for many C / narrow).
 3. If multiple A views: `.sakai-tool-nav` / `.sakai-segmented-control` (Polls did not need this).
 4. **Row actions:** discreet text/link for the frequent action + `…` for everything else (never a strip of full-size buttons in each row).
-5. Convert edited markup: buttons, banners (`sak-banner-*`), forms, tables → `sakai-*`.
+5. Convert edited markup: buttons, banners (`sak-banner-*` → `sakai-banner sakai-banner--*`), forms, tables → `sakai-*`.
 6. Drop Bootstrap layout/spacing utilities from edited templates; layout in tool SCSS.
 7. Icons: Bootstrap Icons only.
 8. Update Playwright selectors.

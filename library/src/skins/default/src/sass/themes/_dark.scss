@@ -236,7 +236,7 @@
     //--sakai-title-bar-text-color: #ffffff;
     --sakai-calendar-button-background-color: var(--sakai-background-color-1);
     --sakai-calendar-button-color: var(--sakai-text-color-1);
-    --sakai-calendar-button-disabled-background-color: var(--button-disabled-background);
+    --sakai-calendar-button-disabled-bg-color: var(--button-disabled-background);
     --sakai-calendar-button-disabled-color: var(--button-disabled-text-color);
     --sakai-calendar-today-bg-color: var(--sakai-color-blue--darker-2);
     --sakai-calendar-today-color: var(--sakai-text-color-inverted);
@@ -244,6 +244,8 @@
     --sakai-calendar-selected-color: var(--sakai-text-color-inverted);
     --sakai-calendar-has-events-bg-color: var(--sakai-color-green--darker-3);
     --sakai-calendar-has-events-fg-color: var(--sakai-text-color-inverted);
+    --sakai-calendar-deadline-bg-color: var(--sakai-color-red--darker-2);
+    --sakai-calendar-deadline-fg-color: var(--sakai-text-color-inverted);
 
     // Jumbotron
     --jumbotron-bg: var(--sakai-color-blue--darker-5);

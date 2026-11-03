@@ -61,7 +61,7 @@ export class SakaiCalendar extends LionCalendar {
   }
 
   _setDaysEvents(time) {
-    this._daysEvents = (this._events || []).filter(e => e.start > time && e.start < (time + 24 * 60 * 60 * 1000));
+    this._daysEvents = (this._events || []).filter(e => e.start >= time && e.start < (time + 24 * 60 * 60 * 1000));
   }
 
   _tileW() {
@@ -156,13 +156,12 @@ export class SakaiCalendar extends LionCalendar {
 
     return html`
       <div class="dashboard-filter-toolbar">
-        <div class="dashboard-filter-toolbar-start"></div>
         <button type="button"
-            class="btn btn-icon btn-sm"
+            class="sakai-btn-icon calendar__filter-close"
             @click=${this._closeFilters}
             title="${this._i18n?.close_filters}"
             aria-label="${this._i18n?.close_filters}">
-          <span class="si si-close fs-6" aria-hidden="true"></span>
+          <span class="si si-close" aria-hidden="true"></span>
         </button>
       </div>
       ${!this.siteId ? html`
@@ -183,7 +182,10 @@ export class SakaiCalendar extends LionCalendar {
   _todayControl() {
 
     return html`
-      <a id="today-button" href="javascript:;" @click=${this._todayClicked}>${this._i18n?.today}</a>
+      <button type="button"
+          id="today-button"
+          class="calendar__today-button"
+          @click=${this._todayClicked}>${this._i18n?.today}</button>
     `;
   }
 
@@ -338,7 +340,7 @@ export class SakaiCalendar extends LionCalendar {
     ].filter(Boolean).join(" ");
     const grid = html`
       <div class="calendar-block">
-        <div class="calendar" role="application">
+        <div class="calendar">
           ${this.__renderData()}
         </div>
       </div>
@@ -478,7 +480,7 @@ export class SakaiCalendar extends LionCalendar {
 
       #container.dashboard.is-wide #days-events {
         border-top: 0;
-        border-left: 1px solid var(--sakai-border-color, #ddd);
+        border-inline-start: 1px solid var(--sakai-border-color);
       }
 
       #container.dashboard .calendar {
@@ -492,36 +494,30 @@ export class SakaiCalendar extends LionCalendar {
         display: flex;
         align-items: center;
         justify-content: center;
-        background: color-mix(in srgb, var(--sakai-background-color-1, #fff) 35%, transparent);
+        background: color-mix(in srgb, var(--sakai-background-color-1) 35%, transparent);
         z-index: 2;
-        padding: 0.75rem;
+        padding: var(--sakai-space-3);
       }
 
       .dashboard-filter-panel {
         width: min(100%, 22rem);
-        background: var(--sakai-background-color-1, #fff);
-        border: 1px solid var(--sakai-border-color, #ddd);
-        border-radius: var(--bs-border-radius, 0.375rem);
-        box-shadow: 0 0.5rem 1.25rem rgba(0, 0, 0, 0.12);
-        padding: 0.75rem;
+        background: var(--sakai-background-color-1);
+        border: 1px solid var(--sakai-border-color);
+        border-radius: var(--sakai-radius-md);
+        box-shadow: var(--elevation-6dp);
+        padding: var(--sakai-space-3);
       }
 
       .dashboard-filter-toolbar {
         display: flex;
         align-items: center;
-        justify-content: space-between;
-        gap: 0.25rem;
-        margin-bottom: 0.75rem;
+        justify-content: flex-end;
+        gap: var(--sakai-space-1);
+        margin-bottom: var(--sakai-space-3);
       }
 
-      .dashboard-filter-toolbar-start {
-        display: flex;
-        align-items: center;
-        gap: 0.25rem;
-      }
-
-      .dashboard-filter-toolbar .btn-icon {
-        --bs-btn-color: var(--sakai-text-color-2);
+      .calendar__filter-close {
+        color: var(--sakai-text-color-2);
       }
 
       #site-filter sakai-site-picker::part(select) {

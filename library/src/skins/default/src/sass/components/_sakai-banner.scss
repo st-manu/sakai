@@ -1,44 +1,15 @@
-.sakai-banner {
-  display: flex;
-  align-items: flex-start;
-  gap: var(--sakai-space-3);
-  padding: var(--sakai-space-3) var(--sakai-space-4);
-  border: 1px solid;
-  border-radius: var(--sakai-radius-md);
-  margin-bottom: var(--sakai-space-4);
-
-  &__icon {
-    flex-shrink: 0;
-    font-size: 1.25rem;
-    line-height: 1;
-  }
-
-  &__body {
-    flex: 1 1 auto;
-    min-width: 0;
-  }
-}
-
 .sakai-banner--info {
-  border-color: var(--infoBanner-bordercolor);
-  background-color: var(--infoBanner-bgcolor);
-  color: var(--infoBanner-color);
+	@include sakai-banner(var(--infoBanner-bordercolor), var(--infoBanner-bgcolor), var(--infoBanner-color), $infoBanner-icon, false);
 }
 
 .sakai-banner--success {
-  border-color: var(--successBanner-bordercolor);
-  background-color: var(--successBanner-bgcolor);
-  color: var(--successBanner-color);
+	@include sakai-banner(var(--successBanner-bordercolor), var(--successBanner-bgcolor), var(--successBanner-color), $successBanner-icon, false);
 }
 
 .sakai-banner--warn {
-  border-color: var(--warnBanner-bordercolor);
-  background-color: var(--warnBanner-bgcolor);
-  color: var(--warnBanner-color);
+	@include sakai-banner(var(--warnBanner-bordercolor), var(--warnBanner-bgcolor), var(--warnBanner-color), $warnBanner-icon, false);
 }
 
 .sakai-banner--error {
-  border-color: var(--errorBanner-bordercolor);
-  background-color: var(--errorBanner-bgcolor);
-  color: var(--errorBanner-color);
+	@include sakai-banner(var(--errorBanner-bordercolor), var(--errorBanner-bgcolor), var(--errorBanner-color), $errorBanner-icon, false);
 }

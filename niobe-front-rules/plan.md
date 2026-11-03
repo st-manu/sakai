@@ -104,7 +104,7 @@ To standardize the UI and avoid loose utilities, all tool markup must migrate to
 * **Buttons:** `.sakai-btn`, `.sakai-btn-primary`, `.sakai-btn-secondary`, `.sakai-btn-ghost`, `.sakai-btn-icon`. *(Note: ensure consistent styles on both* `*<button>*` *and* `*<a>*`*)*.
 * **Forms:** `.sakai-form-group`, `.sakai-form-label`, `.sakai-form-control`. Footer actions use `.sakai-actions` (applies `gap` via flexbox, not individual margins).
 * **Tables:** `.sakai-table` (supports `--striped`, `--hover`, `--stack` modifiers).
-* **Banners:** `.sakai-banner` with `--info`, `--success`, `--warn`, `--error` modifiers. These replace the old `sak-banner-*`.
+* **Banners:** `.sakai-banner` with `--info`, `--success`, `--warn`, `--error` modifiers. Same API as old `sak-banner-*` (content only; icon via CSS by type).
 * **Row Menus:** `.sakai-row-actions__link` and overflow menus to avoid cluttering data tables with massive buttons.
 
 ## 7. JavaScript and Web Components Development Guide

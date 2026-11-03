@@ -45,7 +45,6 @@ export class SakaiCalendarWidget extends SakaiDashboardWidget {
         tile-w="${this._displayW()}"
         tile-h="${this.tileH || 1}"
         site-id=${ifDefined(this.siteId ? this.siteId : undefined)}
-        user-id=${ifDefined(this.userId ? this.userId : undefined)}
         ?filters-open=${this.filtersOpen}
         @filters-closed=${this._closeFilters}
       >

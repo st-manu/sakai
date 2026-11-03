@@ -23,7 +23,7 @@ describe("sakai-calendar tests", () => {
 
     // In user mode, we'd expect to get announcements from multiple sites.
     const el = await fixture(html`
-      <sakai-calendar user-id="${data.userId}"></sakai-calendar>
+      <sakai-calendar></sakai-calendar>
     `);
 
     expect(el.shadowRoot.getElementById("container")).to.exist;

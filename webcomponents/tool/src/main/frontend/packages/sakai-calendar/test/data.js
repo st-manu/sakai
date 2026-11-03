@@ -19,7 +19,7 @@ export const vavavoomSite = "Vavavoom Site";
 
 export const selectedDate = new Date(1677269640000);
 
-export const userCalendarUrl= "/api/users/current/calendar";
+export const userCalendarUrl = "/api/users/current/calendar";
 export const siteCalendarUrl = "/api/sites/xyz/calendar";
 
 export const userCalendarEvents = {
