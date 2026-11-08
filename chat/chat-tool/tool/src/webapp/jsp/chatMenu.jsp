@@ -17,31 +17,35 @@
 <h:panelGroup>
   <ul class='navIntraTool actionToolbar' role='menu'>
     <li role='menuitem'>
-      <h:panelGroup id="chatMainLink">
-        <h:commandLink action="#{ChatTool.processActionBackToRoom}" immediate="true">
+      <h:panelGroup id="chatMainLink" styleClass="#{chatMenuCurrent eq 'main' ? 'current' : ''}">
+        <h:commandLink action="#{ChatTool.processActionBackToRoom}" immediate="true" rendered="#{chatMenuCurrent ne 'main'}">
           <h:outputText value="#{msgs.main}"/>
         </h:commandLink>
+        <h:outputText value="#{msgs.main}" rendered="#{chatMenuCurrent eq 'main'}"/>
       </h:panelGroup>
     </li>
     <li role='menuitem'>
-      <h:panelGroup id="chatAddRoomLink" rendered="#{ChatTool.canCreateChannel}">
-        <h:commandLink action="#{ChatTool.processActionAddRoom}" immediate="true">
+      <h:panelGroup id="chatAddRoomLink" rendered="#{ChatTool.canCreateChannel}" styleClass="#{chatMenuCurrent eq 'add' ? 'current' : ''}">
+        <h:commandLink action="#{ChatTool.processActionAddRoom}" immediate="true" rendered="#{chatMenuCurrent ne 'add'}">
           <h:outputText value="#{msgs.add_room}" />
         </h:commandLink>
+        <h:outputText value="#{msgs.add_room}" rendered="#{chatMenuCurrent eq 'add'}"/>
       </h:panelGroup>
     </li>
     <li role='menuitem'>
-      <h:panelGroup id="chatManageLink" rendered="#{ChatTool.canManageTool}">
-        <h:commandLink action="#{ChatTool.processActionListRooms}" immediate="true">
+      <h:panelGroup id="chatManageLink" rendered="#{ChatTool.canManageTool}" styleClass="#{chatMenuCurrent eq 'rooms' ? 'current' : ''}">
+        <h:commandLink action="#{ChatTool.processActionListRooms}" immediate="true" rendered="#{chatMenuCurrent ne 'rooms'}">
           <h:outputText value="#{msgs.manage_tool}" />
         </h:commandLink>
+        <h:outputText value="#{msgs.manage_tool}" rendered="#{chatMenuCurrent eq 'rooms'}"/>
       </h:panelGroup>
     </li>
     <li role='menuitem'>
-      <h:panelGroup id="chatChangeRoomLink" rendered="#{!ChatTool.canManageTool && ChatTool.siteChannelCount > 1}">
-        <h:commandLink action="#{ChatTool.processActionListRooms}" immediate="true">
+      <h:panelGroup id="chatChangeRoomLink" rendered="#{!ChatTool.canManageTool && ChatTool.siteChannelCount > 1}" styleClass="#{chatMenuCurrent eq 'rooms' ? 'current' : ''}">
+        <h:commandLink action="#{ChatTool.processActionListRooms}" immediate="true" rendered="#{chatMenuCurrent ne 'rooms'}">
           <h:outputText value="#{msgs.change_room}" />
         </h:commandLink>
+        <h:outputText value="#{msgs.change_room}" rendered="#{chatMenuCurrent eq 'rooms'}"/>
       </h:panelGroup>
     </li>
     <li role='menuitem'>
