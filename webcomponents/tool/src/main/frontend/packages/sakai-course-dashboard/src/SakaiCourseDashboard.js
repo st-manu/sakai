@@ -271,12 +271,6 @@ export class SakaiCourseDashboard extends SakaiElement {
 
     return html`
       <div id="course-dashboard-title-and-edit-block">
-        <div id="course-dashboard-title-block">
-          <h2>${this.data.title}</h2>
-          <div id="course-dashboard-programme"
-              @input=${this.programmeUpdated}
-              ?contenteditable=${this.editing && this._siteEditable}>${this.data.programme}</div>
-        </div>
         <div id="course-dashboard-edit-block">
           ${this._widgetsAvailableLabel()}
           ${this._canEdit ? html`

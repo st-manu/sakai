@@ -69,18 +69,6 @@ sakai-editor div {
   min-width: 0;
 }
 
-#course-dashboard-title-block {
-  flex: 1 1 12rem;
-  min-width: 0;
-
-  h2 {
-    margin-top: 0;
-    margin-bottom: 0;
-    overflow-wrap: anywhere;
-    word-break: break-word;
-  }
-}
-
 #course-dashboard-edit-block {
   display: flex;
   flex: 0 0 auto;
