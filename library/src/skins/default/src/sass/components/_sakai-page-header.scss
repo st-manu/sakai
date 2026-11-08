@@ -1,0 +1,32 @@
+.sakai-page-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--sakai-space-3);
+  margin-bottom: var(--sakai-space-5);
+  padding-bottom: var(--sakai-space-4);
+  border-bottom: var(--sakai-border-width) solid var(--sakai-border-subtle);
+}
+
+.sakai-page-header__main {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.sakai-page-header__title {
+  margin: 0;
+  font-size: var(--sakai-text-h1);
+  font-weight: var(--sakai-text-h1-weight);
+  font-family: var(--sakai-font-family-heading);
+  color: var(--sakai-text-primary);
+  line-height: var(--sakai-text-h1-line);
+}
+
+.sakai-page-header__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sakai-space-2);
+  flex-shrink: 0;
+}

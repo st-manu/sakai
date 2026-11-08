@@ -54,9 +54,9 @@ $input-border: var(--sakai-border-color);
 @import "customization-lib"; //it is copied from the user supplied file by maven
 @import "customization-main"; //it is copied from the user supplied file by maven
 
-// Configuration
 @import "bootstrap/scss/functions";
 @import "bootstrap/scss/variables";
+@import "bootstrap/scss/variables-dark";
 @import "bootstrap/scss/maps";
 @import "bootstrap/scss/mixins";
 @import "bootstrap/scss/root";
@@ -113,18 +113,17 @@ $jumbotron-heading-font-size: $h4-font-size;
 @import "webcomponents/account/account";
 @import "webcomponents/permissions/permissions";
 @import "webcomponents/sakai-notifications/sakai-notifications";
+@import "webcomponents/sakai-search/sakai-search";
 @import "webcomponents/user-photo/user-photo";
 
-@import "modules/more-sites/more-sites";
-@import "modules/notifications/notifications";
 @import "modules/picture-changer/picture-changer";
 
-//Tools
-@import "modules/tool/portal/portal";
+@import "components/index";
+
+@import "portal/portal";
 @import "modules/tool/portal/pasystem";
 @import "modules/tool/navigation/base";
 @import "modules/tool/navigation/skipnav";
-@import "modules/toolmenu";
 @import "modules/tool/base";
 @import "modules/tool/elements";
 @import "modules/tool/menu";

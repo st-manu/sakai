@@ -36,7 +36,7 @@ describe("sakai-permissions tests", () => {
     await waitUntil(() => el._i18n);
 
     await expect(el).to.be.accessible();
-    expect(el.querySelector("button:first-child").innerHTML).to.contain(el._i18n["per.lis.restoredef"]);
+    expect(el.querySelector(".sakai-actions .sakai-btn-secondary").innerHTML).to.contain(el._i18n["per.lis.restoredef"]);
 
     const roles = Object.keys(data.perms.on);
 
@@ -54,20 +54,19 @@ describe("sakai-permissions tests", () => {
       });
     });
 
-    el.querySelector("#permissions-container .row:nth-child(2) button").click();
-    expect(el.querySelectorAll("table tr:nth-child(2) input:checked").length).to.equal(0);
+    el.querySelector("#permissions-container tbody tr.permission-row:nth-child(1) button").click();
+    expect(el.querySelectorAll("#permissions-container tbody tr.permission-row:nth-child(1) input:checked").length).to.equal(0);
 
-    el.querySelector("#permissions-container .row:nth-child(2) button").click();
-    expect(el.querySelectorAll("#permissions-container .row:nth-child(2) input:checked").length).to.equal(2);
+    el.querySelector("#permissions-container tbody tr.permission-row:nth-child(1) button").click();
+    expect(el.querySelectorAll("#permissions-container tbody tr.permission-row:nth-child(1) input:checked").length).to.equal(2);
 
-    el.querySelector("#permissions-container button:first-child").click();
+    el.querySelector("#permission-header button").click();
     expect(el.querySelectorAll("#permissions-container input:checked").length).to.equal(0);
 
-    el.querySelector("#permissions-container button:first-child").click();
+    el.querySelector("#permission-header button").click();
     expect(el.querySelectorAll("#permissions-container input:checked").length).to.equal(6);
 
-    // Reset the permissions
-    el.querySelector("button:first-child").click();
+    el.querySelector(".sakai-actions .sakai-btn-secondary").click();
     await el.updateComplete;
 
     await expect(el).to.be.accessible();
@@ -187,7 +186,7 @@ describe("sakai-permissions tests", () => {
 
     consoleErrorStub.restore();
 
-    expect(el.querySelector(".sak-banner-error")).to.exist;
+    expect(el.querySelector(".sakai-banner--error")).to.exist;
   });
 
   it ("disables overridden functions", async () => {
@@ -247,7 +246,7 @@ describe("sakai-permissions tests", () => {
     el.querySelector("input[data-perm='tool.read'][data-role='access']").checked = true;
 
     // Click the save button
-    const saveButton = el.querySelector(".act input[type='button'].active");
+    const saveButton = el.querySelector(".sakai-actions .sakai-btn-primary");
     expect(saveButton).to.exist;
     saveButton.click();
 
@@ -287,11 +286,11 @@ describe("sakai-permissions tests", () => {
     await elementUpdated(el);
 
     el.querySelector("input[data-perm='tool.create'][data-role='maintain']").checked = true;
-    el.querySelector(".act input[type='button'].active").click();
+    el.querySelector(".sakai-actions .sakai-btn-primary").click();
 
-    await waitUntil(() => !!el.querySelector(".sak-banner-error"));
+    await waitUntil(() => !!el.querySelector(".sakai-banner--error"));
 
-    expect(el.querySelector(".sak-banner-error").textContent).to.contain("The function tool.create cannot be updated by the current user");
+    expect(el.querySelector(".sakai-banner--error").textContent).to.contain("The function tool.create cannot be updated by the current user");
 
     consoleErrorStub.restore();
   });

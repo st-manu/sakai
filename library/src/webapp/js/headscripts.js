@@ -708,7 +708,7 @@ function includeWebjarLibrary(library, options = {}) {
 			document.write(`<script src="${webjars}/datatables.net-rowgroup/${libraryVersion}/js/dataTables.rowGroup.min.js${ver}"></script>`);
 			break;
 		case 'bootstrap':
-			libraryVersion = "5.2.0";
+			libraryVersion = "5.3.8";
 			jsReferences.push('/js/bootstrap.bundle.min.js');
 			includeCss && cssReferences.push('/css/bootstrap.min.css');
 			break;
@@ -833,7 +833,9 @@ if (!window.themeClassInit) {
 			script.src = '/library/js/portal/portal.theme.switcher.js';
 			script.onload = async () => {
 				try {
-					portal.addCssClassToMarkup(await portal.getCurrentSetTheme());
+					const themeClass = await portal.getCurrentSetTheme();
+					portal.addCssClassToMarkup(themeClass);
+					portal.syncBootstrapColorMode(themeClass);
 				} catch (error) {
 					console.error('Theme error:', error);
 				}
@@ -844,7 +846,7 @@ if (!window.themeClassInit) {
 	});
 }
 
-// Return the breakpoint between small and medium sized displays - for morpheus currently the same
+// Return the breakpoint between small and medium sized displays
 function portalSmallBreakPoint() { return 800; } 
 function portalMediumBreakPoint() { return 800; } 
 

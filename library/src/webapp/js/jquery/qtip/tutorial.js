@@ -29,7 +29,7 @@ function startTutorial(opts) {
     function maybeHideAccountPanel() {
         const accountPanel = document.querySelector('#sakai-account-panel');
         if (accountPanel?.classList.contains('show')) {
-            bootstrap.Offcanvas.getInstance(accountPanel)?.hide();
+            (bootstrap.Modal.getInstance(accountPanel) || bootstrap.Offcanvas.getInstance(accountPanel))?.hide();
         }
     }
     

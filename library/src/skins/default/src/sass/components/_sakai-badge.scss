@@ -1,0 +1,22 @@
+.sakai-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--sakai-space-0-5) var(--sakai-space-2);
+  border-radius: var(--sakai-radius-sm);
+  background-color: var(--sakai-surface-sunken);
+  color: var(--sakai-text-primary);
+  font-size: var(--sakai-text-caption);
+  font-weight: var(--sakai-font-weight-semibold);
+  line-height: var(--sakai-text-body-line);
+  letter-spacing: var(--sakai-text-badge-letter);
+  white-space: nowrap;
+  vertical-align: baseline;
+}
+
+.sakai-badge--subtle {
+  background-color: var(--sakai-surface-sunken);
+  color: var(--sakai-text-muted);
+  border: 1px solid var(--sakai-border-color);
+  font-weight: var(--sakai-font-weight-medium);
+  text-transform: uppercase;
+}

@@ -168,7 +168,7 @@
 .portletBody
 {
 	padding: 0;
-	margin-bottom: 3rem !important;
+	margin-bottom: 3rem;
 	> * {
 		position: relative;
 	}
@@ -247,7 +247,7 @@
 	background-position: right 50%;
 	background-repeat: no-repeat;
 	color: var(--sakai-text-color-1);
-	font-family: "Open Sans", sans-serif;
+	font-family: $font-family;
 	font-size: 13px;
 	font-weight: 600;
 	padding: 0.3em 0.5em 0.3em 0.5em;

@@ -1,0 +1,16 @@
+.sakai-card {
+  background-color: var(--sakai-surface-card);
+  border: var(--sakai-border-width) solid var(--sakai-border-subtle);
+  border-radius: var(--sakai-card-radius);
+  box-shadow: var(--sakai-elevation-card);
+  padding: var(--sakai-card-padding);
+}
+
+.sakai-page-content {
+  @extend .sakai-card;
+  width: 100%;
+  max-width: var(--sakai-page-content-max-width, none);
+  margin-inline: auto;
+  min-height: 0;
+  flex: 1 1 auto;
+}

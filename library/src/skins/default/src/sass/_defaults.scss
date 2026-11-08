@@ -1,5 +1,6 @@
-/* Global namespace */
-
+/* Global namespace
+ * New portal / component classes use the sakai- prefix without this variable.
+ */
 $namespace : "Mrphs-" !default;
 
 $break-tiny-end:	400px !default;
@@ -18,20 +19,14 @@ $standard-space: 4px !default; // the width of a keyboard space
 $standard-space-2x: 8px !default;
 $standard-space-3x: 12px !default;
 $standard-space-4x: 16px !default;
-// For the "More Sites" drawer, just use one column if there's not
-// enough room to show two side-by-side.
-$break-more-sites-single-column: 1200px !default;
-$more-sites-single-column: "only screen and (max-width : #{$break-more-sites-single-column})" !default;
-
 /* Typography*/
 
-//Google family Fonts URL
-$font-family-url: "https://fonts.googleapis.com/css?family=Open+Sans:400,600,700" !default;
-@import url(#{$font-family-url});
-
-//Typography variables
+$font-family-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !default;
+$font-family-serif: ui-serif, "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", "Liberation Serif", "DejaVu Serif", Georgia, serif !default;
+$font-family-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace !default;
 $default-font-size: 14px !default;
 $default-font-size-small: 12px !default;
+$default-font-size-x-small: 11px !default;
 $default-font-weight: 400 !default;										// 400 or 700 as you wish
 $default-line-height: 1.42857 !default;											// 20px / 14px = 1.42857
 
@@ -68,7 +63,7 @@ $top-header-sites-padding-top: 6px !default;
 $top-header-profile-border-thickness: 2px !default;
 
 /* General button design */
-$button-radius: 4px !default;
+$button-radius: var(--sakai-radius-md) !default;
 $button-text-transform: none !default;
 $button-radius-pill:            16px !default;
 
@@ -92,7 +87,7 @@ $errorBanner-icon: ".fa-ban";
 /* end of Sakai Banners */
 
 /* Swapped 'View As' view */
-$swapped-view-enabled: false !default;
+$swapped-view-enabled: true !default;
 
 /* Favorites */
 $sites-nav-menu-item-border-thickness: 1px !default;
@@ -246,8 +241,9 @@ $focus-outline-offset: 2px !default;
 //Used to give round elements an round focus and not square
 $sakai-box-shadow-emulate-focus: 0px 0px 0px $focus-outline-width !default;
 
-$font-family: "Open Sans",sans-serif !default;
-$header-font-family: $font-family !default;
+$font-family: $font-family-sans !default;
+$header-font-family: $font-family-sans !default;
+$title-font-family: $font-family-serif !default;
 $header-font-weight: 700 !default;										// 400 or 700 as you wish
 
 $skin-name : "default-skin" !default; // This is used for bootstrap font behaviour.
@@ -279,12 +275,16 @@ $breadcrumb-divider: '>';
 :root {
     font-size: 14px;
     --default-font-size: #{$default-font-size};
-    --portal-nav-sidebar-width: 22rem;
-    --select-background-image-url: url(#{$skin-path}/images/icon-arrow-down.png);
+    --portal-nav-sidebar-width: 17.5rem;
 
     //Dashboard
     --sakai-course-card-border-radius: #{$button-radius};
     --sakai-title-bar-font-weight: #{$button-font-weight};
 
     --sakai-font-family: #{$font-family};
+    --sakai-font-family-heading: #{$title-font-family};
+    --sakai-font-family-mono: #{$font-family-mono};
+    --sakai-font-size: #{$default-font-size};
+    --sakai-font-size-sm: #{$default-font-size-small};
+    --sakai-font-size-xs: #{$default-font-size-x-small};
 }

@@ -1,0 +1,70 @@
+.sakai-form-control {
+  @extend .form-control;
+  border-radius: var(--sakai-radius-md);
+  border-color: var(--sakai-border-default);
+  color: var(--sakai-text-primary);
+  background-color: var(--sakai-surface-card);
+
+  &:focus {
+    border-color: var(--sakai-interactive-primary);
+    box-shadow: var(--sakai-focus-ring);
+  }
+
+  &.is-invalid,
+  &[aria-invalid="true"] {
+    border-color: var(--sakai-status-error-text);
+
+    &:focus {
+      border-color: var(--sakai-status-error-text);
+      box-shadow: $sakai-box-shadow-emulate-focus var(--errorBanner-color);
+    }
+  }
+}
+
+.sakai-form-control--sm {
+  padding: var(--sakai-space-1) var(--sakai-space-2);
+  font-size: var(--sakai-text-body-sm);
+}
+
+.sakai-form-control[type="file"] {
+  padding: var(--sakai-space-1) var(--sakai-space-2);
+
+  &::file-selector-button {
+    margin: 0 var(--sakai-space-3) 0 0;
+    padding: var(--sakai-space-1) var(--sakai-space-3);
+    border: 0;
+    border-radius: var(--sakai-radius-sm);
+    background-color: var(--sakai-surface-sunken);
+    color: var(--sakai-text-primary);
+    font: inherit;
+    cursor: pointer;
+
+    &:hover {
+      background-color: var(--sakai-surface-sunken);
+    }
+  }
+}
+
+.sakai-form-label {
+  display: block;
+  width: auto;
+  margin: 0 0 var(--sakai-space-2);
+  padding: 0;
+  border: 0;
+  float: none;
+  font-size: var(--sakai-text-body);
+  font-weight: var(--sakai-font-weight-semibold);
+  color: var(--sakai-text-secondary);
+}
+
+.sakai-form-label.required::after {
+  content: " *";
+  color: var(--sakai-highlight-color);
+  font-weight: var(--sakai-font-weight-bold);
+}
+
+.sakai-form-error {
+  margin: var(--sakai-space-1) 0 0;
+  color: var(--sakai-status-error-text);
+  font-size: var(--sakai-text-body-sm);
+}

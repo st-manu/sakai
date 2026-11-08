@@ -1,0 +1,122 @@
+.sakai-overflow-menu {
+  position: relative;
+  display: inline-block;
+}
+
+.sakai-overflow-menu__toggle {
+  list-style: none;
+  cursor: pointer;
+
+  &::-webkit-details-marker {
+    display: none;
+  }
+
+  &::marker {
+    content: "";
+  }
+}
+
+.sakai-overflow-menu__panel {
+  display: none;
+  flex-direction: column;
+  gap: var(--sakai-space-1);
+  position: absolute;
+  top: calc(100% + var(--sakai-space-1));
+  right: 0;
+  z-index: 30;
+  min-width: 12rem;
+  padding: var(--sakai-space-2);
+  background: var(--sakai-surface-raised);
+  border: var(--sakai-border-width) solid var(--sakai-border-subtle);
+  border-radius: var(--sakai-radius-md);
+  box-shadow: var(--sakai-elevation-menu);
+
+  > a:not(.sakai-btn),
+  > button:not(.sakai-btn) {
+    display: flex;
+    align-items: center;
+    gap: var(--sakai-space-2);
+    width: 100%;
+    justify-content: flex-start;
+    margin: 0;
+    padding: var(--sakai-space-2) var(--sakai-space-3);
+    border: 0;
+    border-radius: var(--sakai-radius-sm);
+    background: transparent;
+    color: var(--sakai-text-primary);
+    font: inherit;
+    font-size: var(--sakai-text-body-sm);
+    text-align: start;
+    text-decoration: none;
+    cursor: pointer;
+
+    &:hover,
+    &:focus {
+      background: var(--sakai-surface-sunken);
+      color: var(--sakai-text-primary);
+      text-decoration: none;
+    }
+  }
+
+  > .sakai-btn {
+    width: 100%;
+  }
+}
+
+.sakai-overflow-menu[open] > .sakai-overflow-menu__panel {
+  display: flex;
+}
+
+.sakai-overflow-menu__separator {
+  height: var(--sakai-border-width);
+  margin: var(--sakai-space-1) 0;
+  background: var(--sakai-border-subtle);
+}
+
+.sakai-row-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sakai-space-2);
+  margin-top: var(--sakai-space-1);
+}
+
+.sakai-row-actions .sakai-overflow-menu__toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--sakai-link);
+  font-size: var(--sakai-text-body);
+  line-height: var(--sakai-line-height-ui);
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: var(--sakai-focus-ring);
+  }
+}
+
+.sakai-row-actions .sakai-overflow-menu__panel {
+  right: auto;
+  left: 0;
+  min-width: 10.5rem;
+}
+
+/* Priority tiers: an item that is already visible in the header at this container width
+   must not be repeated in the overflow panel. Mark panel items with data-priority="1|2".
+   The doubled class keeps this above `.sakai-tool-header__actions .sakai-btn` and the
+   panel's own menu-item display rules. */
+@container sakai-tool (min-width: 36rem) {
+  .sakai-overflow-menu .sakai-overflow-menu__panel > [data-priority="1"] {
+    display: none;
+  }
+}
+
+@container sakai-tool (min-width: 48rem) {
+  .sakai-overflow-menu .sakai-overflow-menu__panel > [data-priority="2"] {
+    display: none;
+  }
+}

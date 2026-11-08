@@ -1,0 +1,98 @@
+/* T0 — Primitive scales
+ *
+ * Raw system values. Components consume the semantic roles in L1, not these
+ * primitives directly. See library/docs/sakai-ui-foundations.md
+ */
+
+:root {
+    --sakai-font-size-display: 28px;
+    --sakai-font-size-h1: 24px;
+    --sakai-font-size-h2: 20px;
+    --sakai-font-size-h3: 18px;
+    --sakai-font-size-body: 14px;
+    --sakai-font-size-body-sm: 12px;
+    --sakai-font-size-label: 12px;
+    --sakai-font-size-caption: 11px;
+    --sakai-font-size-code: 13px;
+
+    --sakai-line-height-display: 1.15;
+    --sakai-line-height-h1: 1.2;
+    --sakai-line-height-h2: 1.25;
+    --sakai-line-height-h3: 1.3;
+    --sakai-line-height-body: 1.5;
+    --sakai-line-height-body-sm: 1.45;
+    --sakai-line-height-label: 1.3;
+    --sakai-line-height-caption: 1.3;
+    --sakai-line-height-code: 1.4;
+    --sakai-line-height-ui: 1.3;
+
+    --sakai-font-weight-regular: 400;
+    --sakai-font-weight-medium: 500;
+    --sakai-font-weight-semibold: 600;
+    --sakai-font-weight-bold: 700;
+
+    --sakai-letter-spacing-label: 0.06em;
+    --sakai-letter-spacing-caption: 0.04em;
+    --sakai-letter-spacing-badge: 0.02em;
+
+    // Spacing (4px base, with a 2px half-step for dense controls)
+    --sakai-space-0: 0;
+    --sakai-space-0-5: 2px;
+    --sakai-space-1: 4px;
+    --sakai-space-2: 8px;
+    --sakai-space-3: 12px;
+    --sakai-space-4: 16px;
+    --sakai-space-5: 24px;
+    --sakai-space-6: 32px;
+    --sakai-space-7: 40px;
+    --sakai-space-8: 48px;
+    --sakai-space-9: 64px;
+
+    --sakai-border-width: 1px;
+    --sakai-border-width-strong: 2px;
+
+    --sakai-motion-fast: 100ms;
+    --sakai-motion-base: 150ms;
+    --sakai-motion-slow: 250ms;
+    --sakai-motion-ease-standard: cubic-bezier(0.2, 0, 0, 1);
+    --sakai-motion-ease-in: cubic-bezier(0.4, 0, 1, 1);
+    --sakai-motion-ease-out: cubic-bezier(0, 0, 0.2, 1);
+
+    --sakai-z-base: 0;
+    --sakai-z-sticky: 100;
+    --sakai-z-dropdown: 1000;
+    --sakai-z-overlay: 1040;
+    --sakai-z-modal: 1050;
+    --sakai-z-toast: 1060;
+
+    // Focus
+    --sakai-focus-ring-width: 3px;
+    --sakai-focus-ring-offset: 2px;
+    --sakai-focus-ring-color: var(--focus-outline-color);
+    --sakai-focus-ring: 0 0 0 var(--sakai-focus-ring-width) var(--sakai-focus-ring-color);
+
+    // Icons
+    --sakai-icon-sm: 16px;
+    --sakai-icon-md: 20px;
+    --sakai-icon-lg: 24px;
+
+    --sakai-touch-target-min: 24px;
+    --sakai-touch-target: 2.5rem;
+    --sakai-touch-target-comfortable: 44px;
+
+    // Component geometry that must stay stable but tokenized
+    --sakai-form-choice-scroll-max: 16rem;
+    --sakai-table-select-width: 3rem;
+    --sakai-table-primary-min: 16rem;
+    --sakai-table-stack-label-width: 6.5rem;
+    --sakai-tool-header-title-min: 16rem;
+    --sakai-tool-header-title-min-compact: 12rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    :root {
+        --sakai-motion-fast: 0.01ms;
+        --sakai-motion-base: 0.01ms;
+        --sakai-motion-slow: 0.01ms;
+    }
+}

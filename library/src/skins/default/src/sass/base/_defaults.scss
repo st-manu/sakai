@@ -96,7 +96,7 @@ form, table{
 }
 
 h1, h2, h3, h4, h5, h6{
-  font-family: $header-font-family;
+  font-family: var(--sakai-font-family-heading);
   font-weight: 700;
   line-height: 1.05;
   margin: 0.75em 0 0.5em 0;
@@ -210,10 +210,6 @@ input[type="radio"], input.form-check-input[type="radio"]{
 
 select{
   @extend .select;
-}
-
-select.form-control {
-  background-image: var(--select-background-image-url, url(#{$skin-path}images/icon-arrow-down.png));
 }
 
 .is-hidden{
@@ -342,7 +338,8 @@ button.icon-button {
 
 @media (min-width: 768px) {
   ::-webkit-scrollbar {
-    width: 12px;
+    width: 6px;
+    height: 6px;
   }
 
   ::-webkit-scrollbar-track {
@@ -352,7 +349,7 @@ button.icon-button {
   ::-webkit-scrollbar-thumb {
     background: var(--sakai-scrollbar-thumb-color);
     border-radius: 30px;
-    border: solid 4px var(--sakai-scrollbar-background-color);
+    border: solid 1px var(--sakai-scrollbar-background-color);
   }
 
   ::-webkit-scrollbar-thumb:hover {

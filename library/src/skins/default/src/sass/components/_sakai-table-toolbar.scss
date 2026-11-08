@@ -1,0 +1,161 @@
+/* Search, view filter and pager strip for tool list views.
+   Markup is emitted by the shared #searchFilterPanel, #viewFilterPanel and
+   #pagerPanel Velocity macros. */
+
+.sakai-table-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sakai-space-2) var(--sakai-space-3);
+  margin-bottom: var(--sakai-space-3);
+}
+
+.sakai-table-toolbar__filters {
+  display: flex;
+  flex: 1 1 100%;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sakai-space-2) var(--sakai-space-3);
+  min-width: 0;
+}
+
+.sakai-table-toolbar__scope {
+  font-size: var(--sakai-text-body-sm);
+  color: var(--sakai-text-secondary);
+}
+
+.sakai-table-searchFilter {
+  display: flex;
+  flex: 1 1 16rem;
+  align-items: center;
+  gap: var(--sakai-space-2);
+  min-width: 12rem;
+  margin: 0;
+
+  > label {
+    margin: 0;
+    white-space: nowrap;
+  }
+}
+
+.sakai-table-searchFilterControls,
+.sakai-table-searchFilter-inputWrapper {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.sakai-table-searchFilterControls {
+  display: flex;
+  align-items: center;
+  gap: var(--sakai-space-2);
+}
+
+.sakai-table-searchFilter-inputWrapper input {
+  width: 100%;
+}
+
+.sakai-table-viewFilter {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: var(--sakai-space-2);
+  margin: 0;
+
+  > label {
+    margin: 0;
+    white-space: nowrap;
+  }
+
+  select {
+    min-width: 11rem;
+    max-width: 100%;
+  }
+}
+
+.sakai-table-pagerContainer {
+  display: flex;
+  flex: 1 1 100%;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sakai-space-2) var(--sakai-space-3);
+  margin: 0;
+  padding: 0;
+}
+
+.sakai-table-pagerLabel {
+  padding: 0;
+  font-size: var(--sakai-text-body-sm);
+  color: var(--sakai-text-secondary);
+  text-align: start;
+}
+
+.sakai-table-pagerControls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--sakai-space-1);
+
+  .sakai-btn-icon {
+    width: 2rem;
+    height: 2rem;
+    border: var(--sakai-border-width) solid var(--sakai-border-subtle);
+    border-radius: var(--sakai-radius-sm);
+    color: var(--sakai-text-secondary);
+
+    &:hover:not(:disabled) {
+      background-color: var(--sakai-surface-sunken);
+      color: var(--sakai-text-primary);
+    }
+  }
+
+  .sakai-table-pagerPageSize {
+    flex: 0 0 auto;
+    max-width: 100%;
+  }
+
+  .sakai-table-pagerPageSize select {
+    max-width: 100%;
+  }
+}
+
+/* Wrappers still emitted by tools that have not migrated to .sakai-table-toolbar. */
+.sakai-table-toolBar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sakai-space-2) var(--sakai-space-3);
+  margin: 0 0 var(--sakai-space-3);
+
+  .sakai-table-filterContainer,
+  .sakai-table-filterGroupContainer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--sakai-space-2) var(--sakai-space-3);
+    margin: 0;
+    padding: 0;
+  }
+
+  .sakai-table-buttonContainer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--sakai-space-2);
+  }
+
+  .sakai-table-toolBar-centre {
+    margin-bottom: 0;
+  }
+}
+
+@container sakai-tool (max-width: 47.999rem) {
+  .sakai-table-searchFilter {
+    flex: 1 1 100%;
+  }
+
+  .sakai-table-viewFilter select {
+    flex: 1 1 auto;
+  }
+}

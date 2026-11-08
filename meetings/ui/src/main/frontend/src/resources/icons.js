@@ -49,4 +49,4 @@ const _bi = prependBaseClass(iconsBootstrap, "bi");
 export const fa = Object.fromEntries(_fa);
 export const bi = Object.fromEntries(_bi);
 
-export default { ...fa, ...bi };
+export default { ...fa, ...si };

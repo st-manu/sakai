@@ -1,0 +1,22 @@
+.sakai-banner--info {
+	@include sakai-banner(var(--sakai-status-info-border), var(--sakai-status-info-bg), var(--sakai-status-info-text), $infoBanner-icon, false);
+}
+
+.sakai-banner--success {
+	@include sakai-banner(var(--sakai-status-success-border), var(--sakai-status-success-bg), var(--sakai-status-success-text), $successBanner-icon, false);
+}
+
+.sakai-banner--warn {
+	@include sakai-banner(var(--sakai-status-warn-border), var(--sakai-status-warn-bg), var(--sakai-status-warn-text), $warnBanner-icon, false);
+}
+
+.sakai-banner--error {
+	@include sakai-banner(var(--sakai-status-error-border), var(--sakai-status-error-bg), var(--sakai-status-error-text), $errorBanner-icon, false);
+}
+
+ul.sakai-banner,
+ol.sakai-banner,
+ul.sakai-banner > li,
+ol.sakai-banner > li {
+	list-style: none;
+}

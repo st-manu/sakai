@@ -162,7 +162,7 @@
       visibilityButton.dataset.nextVisible = String(!data.visible || !data.enabled);
       setTooltipTitle(visibilityButton, data.visible ? app.dataset.menuHide : app.dataset.menuShow);
       visibilityButton.setAttribute("aria-label", `${visibilityButton.title}: ${data.title}`);
-      const icon = visibilityButton.querySelector(".bi");
+      const icon = visibilityButton.querySelector(".si");
       if (icon) {
         icon.className = data.visible ? "bi bi-eye-slash" : "bi bi-eye";
       }
@@ -173,7 +173,7 @@
       accessButton.dataset.nextEnabled = String(!data.enabled);
       setTooltipTitle(accessButton, data.enabled ? app.dataset.menuLock : app.dataset.menuUnlock);
       accessButton.setAttribute("aria-label", `${accessButton.title}: ${data.title}`);
-      const icon = accessButton.querySelector(".bi");
+      const icon = accessButton.querySelector(".si");
       if (icon) {
         icon.className = data.enabled ? "bi bi-lock" : "bi bi-unlock";
       }

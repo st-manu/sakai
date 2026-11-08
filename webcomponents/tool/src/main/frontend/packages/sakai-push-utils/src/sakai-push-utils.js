@@ -224,8 +224,8 @@ export const subscribeIfPermitted = reg => {
     return Promise.resolve(PUSH_PERMISSION_STATES.NOT_SUPPORTED);
   }
 
-  document.body?.querySelectorAll(".portal-notifications-indicator")
-    .forEach(el => el.classList.remove("d-none"));
+  document.body?.querySelectorAll(".portal-notifications-button .portal-notifications-indicator")
+    .forEach(el => el.classList.remove("sakai-is-hidden"));
 
   return new Promise(resolve => {
 

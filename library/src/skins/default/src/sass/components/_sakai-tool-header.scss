@@ -1,0 +1,133 @@
+.sakai-tool-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--sakai-space-3) var(--sakai-space-4);
+  margin: 0 0 var(--sakai-space-4);
+  padding-bottom: var(--sakai-space-3);
+  border-bottom: var(--sakai-border-width) solid var(--sakai-border-subtle);
+}
+
+.sakai-tool-header__title {
+  flex: 1 1 var(--sakai-tool-header-title-min);
+  margin: var(--sakai-space-1) 0 0 0;
+  font-size: var(--sakai-text-h2);
+  font-weight: var(--sakai-text-h2-weight);
+  font-family: var(--sakai-font-family-heading);
+  line-height: var(--sakai-text-h2-line);
+  color: var(--sakai-text-primary);
+  min-width: var(--sakai-tool-header-title-min-compact);
+  overflow-wrap: anywhere;
+}
+
+.sakai-back-link {
+  display: inline-flex;
+  flex: 1 0 100%;
+  align-items: center;
+  gap: var(--sakai-space-2);
+  width: fit-content;
+  margin: 0 0 var(--sakai-space-2);
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--sakai-text-secondary);
+  font-size: var(--sakai-text-body-sm);
+  font-weight: var(--sakai-text-body-sm-weight);
+  line-height: var(--sakai-line-height-ui);
+  text-decoration: none;
+  cursor: pointer;
+
+  &:hover {
+    color: var(--sakai-text-primary);
+    text-decoration: underline;
+  }
+
+  &:focus-visible {
+    outline: none;
+    border-radius: var(--sakai-radius-sm);
+    box-shadow: var(--sakai-focus-ring);
+  }
+}
+
+.sakai-back-link-row {
+  flex: 1 0 100%;
+  margin: 0;
+}
+
+.sakai-tool-header__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--sakai-space-2);
+  flex: 0 0 auto;
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  min-width: 0;
+  position: relative;
+
+  .sakai-btn,
+  a[href].sakai-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sakai-space-2);
+    white-space: nowrap;
+    margin-right: 0;
+  }
+}
+
+.sakai-tool-header__secondary {
+  display: none;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sakai-space-2);
+}
+
+.sakai-tool-header__actions .sakai-overflow-menu[open] > .sakai-overflow-menu__panel.is-positioned {
+  position: fixed;
+  top: var(--sakai-overflow-panel-top, 0);
+  left: var(--sakai-overflow-panel-left, 0);
+  right: auto;
+  z-index: var(--sakai-z-dropdown);
+}
+
+@container sakai-tool (min-width: 48rem) {
+  .sakai-tool-header__secondary {
+    display: flex;
+  }
+
+  .sakai-tool-header__more {
+    display: none;
+  }
+
+  /* Tools that also own P3/P4 utilities keep the overflow visible at every width. */
+  .sakai-tool-header__more--persistent {
+    display: inline-block;
+  }
+}
+
+/* Secondary utilities move into the overflow menu at narrow container widths. */
+@container sakai-tool (max-width: 35.999rem) {
+  .sakai-tool-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .sakai-tool-header__title {
+    flex: 0 1 auto;
+    min-width: 0;
+  }
+
+  .sakai-tool-header__actions {
+    justify-content: flex-start;
+    width: 100%;
+  }
+
+  .sakai-tool-header__actions .sakai-overflow-menu__panel {
+    left: 0;
+    right: auto;
+  }
+}

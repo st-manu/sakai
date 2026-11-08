@@ -1,0 +1,21 @@
+:root {
+  --bs-form-select-bg-img: #{escape-svg($form-select-indicator)};
+}
+
+[data-bs-theme=dark] {
+  --bs-form-select-bg-img: #{escape-svg($form-select-indicator-dark)};
+}
+
+.select,
+select.form-control,
+select.sakai-form-control {
+  background-image: var(--bs-form-select-bg-img);
+  background-position: $form-select-bg-position;
+  background-repeat: no-repeat;
+  background-size: $form-select-bg-size;
+}
+
+select.form-control,
+select.sakai-form-control {
+  padding-right: $form-select-indicator-padding;
+}

@@ -176,7 +176,7 @@
 
         const icon = th.querySelector('i');
         if (icon) {
-          icon.className = 'bi bi-arrow-' + (currentSort.asc ? 'up' : 'down') + ' ms-2';
+          icon.className = 'si si-arrow-' + (currentSort.asc ? 'up' : 'down') + ' ms-2';
         }
 
         const tbody = table.querySelector('tbody');

@@ -27,16 +27,6 @@ html[dir="rtl"]{
 		} 
 	}
 
-	.#{$namespace}footerApp__presence, .#{$namespace}footerApp__portalChat {
-	    left: 20px;
-	    right: auto;
-	}
-
-	.#{$namespace}portalChat {
-	    left: 21px;
-	    right: auto;
-	}
-
 	.#{$namespace}toolTitleNav .#{$namespace}toolTitleNav__title ~ .#{$namespace}toolTitleNav__button_container>.#{$namespace}directUrl__dropDown.active {
 	    margin: 10px 0 0 0px;
 	}
@@ -75,26 +65,11 @@ html[dir="rtl"]{
 			}
 		}
 	}
-	#linkNav ul li.#{$namespace}sitesNav__menuitem ul {
-	    left: auto;
-	    right: auto;
-	    text-align: right;
-		@media #{$phone}{
-			left: 9.8em;
-			> * {
-				position: relative;
-			}
-		}
-	}
-
 	#mastLogin #loginLinks ul:after {
 	    left: 8%;
 	}
 
 	@media #{$phone}{
-		body.toolsNav--displayed #toolMenuWrap>h1.skip:after {
-		    left: 75%;
-		}
 		.#{$namespace}userNav__popup.js-toggle-user-nav{
 			position: absolute;
 			left: 0.7em;

@@ -378,7 +378,7 @@ GradebookGradeSummary.prototype.setupGroupedTableSorting = function(table) {
       });
       if (direction) {
         header.setAttribute("aria-sort", direction);
-        icon.className = `bi bi-caret-${direction === "ascending" ? "up" : "down"}-fill ms-1`;
+        icon.className = `si si-caret-${direction === "ascending" ? "up" : "down"}-fill ms-1`;
       }
 
       groups.forEach(({ body, rows }) => {

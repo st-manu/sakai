@@ -67,7 +67,7 @@ $font-size-h4:               ceil(($font-size-base * 1.25)); // ~18px
 // $line-height-computed:    floor(($font-size-base * $line-height-base)) // ~20px
 
 //** By default, this inherits from the `<body>`.
- $headings-font-family:    $header-font-family ;
+ $headings-font-family:    $title-font-family ;
  $headings-font-weight:    $header-font-weight ;
  $headings-line-height:    1.1 ;
  $headings-color:          inherit ;
