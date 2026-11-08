@@ -58,10 +58,22 @@
 - **Framework Selection**: For new tools, prefer Spring MVC/Boot with Hibernate and ThymeLeaf
 - **Modernization**: When making substantial changes to a tool, consider migrating to more modern frameworks
 
-## UI Framework
-- **Bootstrap**: Bootstrap 5.2 is the preferred UI framework for styling
-- **Responsive Design**: Ensure all UI components work across different screen sizes
-- **Components**: Leverage Bootstrap 5 components for consistent UI/UX
+## UI Framework (Niobe)
+- **Bootstrap**: Bootstrap 5.3 for **components** only (offcanvas, modal, collapse, dropdown, form controls such as `.btn` / `.form-control` when wrapped by Sakai primitives). Do **not** use Bootstrap layout/spacing utility classes in new markup (`d-flex`, `d-md-none`, `align-items-*`, `justify-content-*`, `ms-*`, `me-*`, `p-*`, `gap-*`, `w-100`, `flex-*`, etc.). Express layout in Sakai SCSS under `sakai-*` classes.
+- **No Bootstrap soup**: Prefer Sakai tokens / CSS variables over hard-coded Bootstrap look so institutions keep skin control.
+- **Professional CSS**: Do not use `!important` in Niobe-owned SCSS. Do not put visual styles in HTML `style` or set them from JS. Prefer specificity and `sakai-*` structure. Dynamic coordinates only via CSS custom properties on a host (`setProperty('--sakai-…')`); presentation stays in SCSS. Details: `.cursor/rules/frontend.mdc`, `library/docs/sakai-ui-chrome.md`.
+- **Responsive — portal chrome vs tools**: Viewport media queries (`@include media-breakpoint-*`) are for **portal shell** chrome (sidebar vs mobile bar). Inside a **tool**, use available content width, not the viewport: portal sets `container-type: inline-size` on `.sakai-page-content` / `.sakai-tool-body`; tools use `@container sakai-tool (...)`.
+- **Components**: Prefer Sakai `sakai-*` classes as the public API (`sakai-tool-header`, `sakai-table`, `sakai-actions`, `sakai-btn`, `sakai-overflow-menu`, …); Bootstrap underneath where it helps. Do not duplicate shared primitives in tool-local CSS.
+- **Forms**: `.sakai-form-section` + `__title` for sections; `.sakai-form-label` for field/group labels. One `.sakai-form-field` per field (`.sakai-form-group` is retired). Choices use `.sakai-form-choice-group` + `.sakai-form-choice` (`--scroll` for long lists); no native `<select multiple>`. Required labels use `.sakai-form-label.required`; errors use `.sakai-form-error`. No per-form `max-width` or dividers. `.sakai-actions`: primary save/confirm, secondary alternatives, ghost cancel/back/return, overflow last, current view omitted.
+- **Intra-tool navigation**: Separate places from actions. R (return/up) is a quiet back link, not an action. A1 peer sections use `.sakai-tool-nav` (current via `aria-current="page"`), A2 object views use segmented/object tabs, and search/filter/pager stay in the table toolbar. Do not add new `.navIntraTool` markup. Full model: `niobe-front-rules/navigation-model.md`.
+- **Action placement**: P0-S (surface primary) goes in the page header and empty state; P0-O (object primary) in the object header; P0-F (Save/Submit) in the form footer; P0-B (bulk) in the selection bar. P1 max 1, P2 max 2, P3 utilities and P4 destructive always in `…`. No count-based collapse, no general FAB, no auto attention animation. Retire `utilityCount`/`--collapsed`.
+- **Icons**: Front-end consumes `si si-*` only; `bi-*` lives only in `library/src/skins/default/src/sass/base/_icons.scss` as the central map. Add or change an icon in that map, never as a direct `bi bi-*` in markup. Do not add Font Awesome in new work.
+- **Design language**: Follow `library/docs/sakai-ui-foundations.md`: type roles, spacing scale, semantic color roles, radius/elevation/motion tokens, and interaction states. Components must not use raw font sizes, spacing, colors, radii, shadows or durations. Do not import external fonts or pick numbered palette steps in new code.
+- **States**: Every interactive component defines rest, hover, active, focus, selected, disabled, loading, error, success, read-only and dirty/unsaved. Status is text/icon + text, never color-only.
+- **Design tokens**: Prefer L0–L2 CSS variables in `library/src/skins/default/src/sass/tokens/` (see `library/docs/sakai-ui-tokens.md`). New code consumes roles, not `--sakai-background-color-*` / `--sakai-text-color-*`.
+- **Portal chrome**: Use the contract in `library/docs/sakai-ui-chrome.md`
+- **Print**: Hide non-content UI with `.sakai-no-print` (aliases `.noprint` / `.hidden-print`). Skin rules live in `library/src/skins/default/src/sass/print.scss`.
+- **Renovation playbook**: Plan, tool roadmap, and reference migrations live in `niobe-front-rules/` (temporary; delete when renovation is done). Cursor frontend detail: `.cursor/rules/frontend.mdc`
 
 - **Modern JavaScript**: Target evergreen browsers; assume ES2022+ features and browser APIs like `fetch` keepalive are present.
 - **Lean Code Paths**: Avoid legacy branches, UA sniffing, or fallbacks unless a specific evergreen gap is documented.
@@ -80,7 +92,8 @@
 - **Effective Locale**: Respect Sakai's effective locale for the current context, which may come from a site locale when configured, otherwise the user's preferences.
 - **Formatting**: UI messages, numbers, dates, and times must use the same Sakai-resolved locale; dates and times must display in the site or user's preferred timezone from account preferences.
 - **Java Time API**: Prefer `java.time` types such as `Instant`, `LocalDate`, and `ZonedDateTime` over legacy `java.util.Date`/`Calendar` for new or touched Java code. Use legacy conversions only at framework or display boundaries that require them.
-- **Accessibility**: Follow accessibility best practices
+- **Accessibility**: Follow WCAG-oriented practices for renovated UI — real `<button>` vs `<a>`, clear accessible names (not `title` alone), `aria-expanded` / `aria-current` / `aria-pressed` without contradictory label flips, status as text not icon-only, honest roles (no fake `menubar`/`menu` without keyboard model), visible `:focus-visible`, visually-hidden labels in the collapsed sidebar rail instead of `display:none` on the only name, and full keyboard operation of portal chrome (Tab + arrow keys in tool trees). Details: `.cursor/rules/frontend.mdc`, `library/docs/sakai-ui-chrome.md`
+- **Comments**: Do not add obvious, redundant or conversational comments, and never explain what code does line by line. Comment only non-obvious business rules, complex workarounds and critical warnings. Section banners, file-purpose headers and restatements of element or method names are not allowed in new code. Code must be clean and production-ready.
 - **Changes**: Make minimal changes, only modifying lines needed for the fix/feature
 - **Single Issue**: One issue per pull request when possible
 - **Tests**: Include tests where sensible/possible

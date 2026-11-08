@@ -1,22 +1,48 @@
 ---
-description: Sakai Frontend rules
+description: Sakai Frontend rules (Niobe)
 alwaysApply: false
 ---
 
-# Sakai Frontend rules
+# Sakai Frontend rules (Niobe)
 
-Sakai frontends use many different UI frameworks including JSF 2.3, Wicket 9, Apache Velocity, ThymeLeaf, Reasonable Server Faces (RSF), and LIT Webcomponents.
+Sakai frontends use many UI frameworks (JSF 2.3, Wicket, Velocity, Thymeleaf, RSF, Lit web components). New and renovated UI must follow Niobe: shared primitives, tokens, and portal chrome — not per-tool one-offs.
+
+## Canonical references
+- Design language / foundations: `library/docs/sakai-ui-foundations.md`
+- Tokens: `library/docs/sakai-ui-tokens.md` + `library/src/skins/default/src/sass/tokens/`
+- Portal chrome: `library/docs/sakai-ui-chrome.md`
+- Icons: `library/docs/sakai-ui-icons.md`
+- Renovation plan / roadmap: `niobe-front-rules/` (temporary; delete when done)
+- Repo-wide agent summary: `AGENTS.md` (UI Framework section)
 
 ## UI Framework
-- **Bootstrap**: Bootstrap 5.2 is the preferred UI framework for styling
-- **Responsive Design**: Ensure all UI components work across different screen sizes
-- **Components**: Leverage Bootstrap 5 components for consistent UI/UX
+- **Bootstrap**: Bootstrap 5.3 for **components** only (offcanvas, modal, collapse, dropdown, form controls when wrapped by Sakai primitives). **Do not** use Bootstrap layout/spacing utilities in new markup (`d-flex`, `d-md-none`, `align-items-*`, `justify-content-*`, `ms-*`, `me-*`, `p-*`, `gap-*`, `w-100`, `flex-*`, etc.). Express layout in Sakai SCSS under `sakai-*` classes.
+- **No Bootstrap soup**: Prefer Sakai CSS variables / tokens over hard-coded Bootstrap look. Institutions own the skin.
+- **Professional CSS**: Own Niobe/Sakai SCSS must win with specificity and structure — do **not** use `!important` in new or touched rules. Do **not** put visual styles (`color`, `display`, `height`, `margin`, `padding`, …) in HTML `style="…"` or set them from JS. Dynamic layout coordinates may use CSS custom properties on a host (`el.style.setProperty('--sakai-…', value)`); keep all presentation in SCSS.
+- **Responsive — portal vs tools**: Viewport `@include media-breakpoint-*` is for **portal shell** chrome (sidebar vs mobile bar). Inside a **tool**, use available content width: portal sets `container-type: inline-size` on `.sakai-page-content` / `.sakai-tool-body`; tools use `@container sakai-tool (...)`.
+- **Design language**: Follow `library/docs/sakai-ui-foundations.md`: type roles, spacing scale, semantic color roles, radius/elevation/motion tokens, and interaction states. Components must not use raw font sizes, spacing, colors, radii, shadows or durations. Do not import external fonts or pick numbered palette steps in new code.
+- **States**: Every interactive component defines rest, hover, active, focus, selected, disabled, loading, error, success, read-only and dirty/unsaved. Status is text/icon + text, never color-only.
+- **Components**: Public API is `sakai-*` (e.g. `sakai-tool-header`, `sakai-table`, `sakai-actions`, `sakai-btn`, `sakai-overflow-menu`). Bootstrap may sit underneath; do not invent tool-local copies of shared behavior.
+- **Navigation**: Places and actions are different things. R (return/up) is a quiet back link, not an action. A1 peer sections use `.sakai-tool-nav` (current via `aria-current="page"`), A2 object views use segmented/object tabs, and search/filter/pager stay in `.sakai-table-toolbar`. Nested tools render their own H1 + A1 + R to the parent. Do not add new `.navIntraTool` markup. Model: `niobe-front-rules/navigation-model.md`.
+- **Action placement**: P0-S in the page header and empty state; P0-O in the object header; P0-F (Save/Submit) in the form footer; P0-B (bulk) in the selection bar. P1 max 1, P2 max 2, P3/P4 always in `…`. No count-based collapse, no general FAB, no auto attention animation.
+- **Icons**: Front-end consumes `si si-*` only; `bi-*` lives only in `library/src/skins/default/src/sass/base/_icons.scss` as the central map. Add or change an icon in that map, never as a direct `bi bi-*` in markup. Do not add Font Awesome in new work.
+- **Platform unison**: Shared behavior (tables, actions, banners, permissions matrix, overflow menus) lives in shared SCSS/components — not tool-scoped duplicates.
+- **Forms**: `.sakai-form-section` + `__title` for sections; `.sakai-form-label` for field/group labels. One `.sakai-form-field` per field (`.sakai-form-group` is retired). Choices use `.sakai-form-choice-group` + `.sakai-form-choice` (`--scroll` for long lists); no native `<select multiple>`. Required labels use `.sakai-form-label.required`; errors use `.sakai-form-error`. No per-form `max-width` or dividers. `.sakai-actions`: primary save/confirm, secondary alternatives, ghost cancel/back/return, overflow last, current view omitted.
+- **Print**: Hide non-content chrome with `.sakai-no-print` (aliases `.noprint` / `.hidden-print`). Rules in `library/src/skins/default/src/sass/print.scss`. Details: `library/docs/sakai-ui-chrome.md`.
+
+## Accessibility
+- **Real controls**: Use `<button type="button">` for actions; `<a href="…">` only for navigation. Do not use `href="#"` / `onclick` as a button substitute.
+- **Accessible names**: Every interactive control needs a clear name (visible text, `aria-label`, or labelled-by). Do not rely on `title` alone. In the collapsed sidebar rail, keep labels with a visually-hidden pattern — do not `display:none` the only name.
+- **State**: Use `aria-expanded`, `aria-current="page"`, `aria-pressed` / `aria-checked` for disclosure, selection, and toggles. Do not flip the accessible name in a way that contradicts those states (prefer a stable name + state attribute).
+- **Status is text**: Hidden / locked / prerequisite cues must include visible (or visually clear) text — not icon-only trailing glyphs.
+- **Roles**: Prefer honest semantics (`nav`, `tree` / `treeitem` / `group`, `tablist` / `tab` / `tabpanel`). Do not fake `menu` / `menubar` without implementing the full keyboard model.
+- **Focus**: Provide a visible `:focus-visible` ring on sidebar and chrome controls; do not leave closed offcanvas / dialogs in the tab order.
+- **Keyboard**: Portal chrome and tool trees must be operable without a pointer. Sidebar tool trees support Tab focus plus ArrowUp/Down/Home/End and ArrowLeft/Right to collapse/expand groups. Modals/offcanvas follow Bootstrap focus management.
 
 ## JavaScript Development
-- **Modern JavaScript**: Use clean, standard modern JavaScript where possible
-- **Legacy Code**: The codebase contains legacy frameworks and libraries that should be gradually modernized
-- **jQuery**: Update jQuery code to modern JavaScript when making changes, if the changes are minimal
-- **ES6+**: Prefer ES6+ features (arrow functions, template literals, destructuring, etc.)
-- **Modular Code**: Write modular, reusable JavaScript components
-- **Avoid Global Scope**: Minimize use of global variables and functions
-- **Use Webcomponents**: Use the web components in the webcomponents/ directory when possible
+- **Modern JavaScript**: Target evergreen browsers; assume ES2022+ (`fetch` keepalive, etc.).
+- **Lean Code Paths**: Avoid legacy branches, UA sniffing, or fallbacks unless a documented evergreen gap requires them.
+- **jQuery**: Replace with modern DOM APIs when touching code; new work must not add jQuery.
+- **Modular Code**: Lit components, ES modules, encapsulated helpers; keep state local and explicit.
+- **No Global Side Channels**: Prefer module scope or class fields; expose intentional APIs.
+- **Web components**: Prefer packages under `webcomponents/`; Lit internals stay `_`-prefixed; use `renderRoot` for queries, not `shadowRoot`.
