@@ -27,7 +27,7 @@
 			<script src="/messageforums-tool/js/sak-10625.js"></script>
 			<script src="/messageforums-tool/js/forum.js"></script>
 				<%--//designNote:  if layout="table" is needed,  need rendered attr here so that no empty tables  are put in the response - leaving undefined here so that it reverts to layout="list" --%> 
-				<h:messages globalOnly="true" infoClass="success" errorClass="alertMessage" rendered="#{! empty facesContext.maximumSeverity}"/>  		
+				<h:messages globalOnly="true" infoClass="sakai-banner sakai-banner--success" warnClass="sakai-banner sakai-banner--warn" errorClass="sakai-banner sakai-banner--error" rendered="#{! empty facesContext.maximumSeverity}"/>
   
   		  <%-- include hide division here so that pvtArea can be used w/o div in isolated view --%>	
   		  <mf:forumHideDivision title="#{msgs.pvtarea_name}" id="_test_div" 
@@ -62,7 +62,7 @@
 //user is an anon user, just show a message saying they can't use this tool:
 %>
 
-<h:outputText value="#{msgs.pvt_anon_warning}" styleClass="information"/>
+<h:outputText value="#{msgs.pvt_anon_warning}" styleClass="sakai-banner sakai-banner--warn"/>
 
 <%
 }

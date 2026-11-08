@@ -16,18 +16,18 @@
 <!--jsp/privateMsg/pvtMsg.jsp-->
 		<h:form id="prefs_pvt_form">
 <%
-// FOR WHEN COMING FROM SYNOPTIC TOOL 
+// FOR WHEN COMING FROM SYNOPTIC TOOL
     FacesContext context = FacesContext.getCurrentInstance();
     ExternalContext exContext = context.getExternalContext();
     Map paramMap = exContext.getRequestParameterMap();
     Application app = context.getApplication();
     ValueBinding binding = app.createValueBinding("#{PrivateMessagesTool}");
     PrivateMessagesTool pmt = (PrivateMessagesTool) binding.getValue(context);
-    
+
      if ( "pvt_received".equals((String) paramMap.get("selectedTopic")) ) {
 	  pmt.initializeFromSynoptic();
     }
-    
+
     if(pmt.getUserId() != null){
   	//show entire page, otherwise, don't allow anon user to use this tool:
 %>
@@ -40,13 +40,6 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-
-            const menuLink = document.getElementById('messagesMainMenuLink');
-            const menuLinkSpan = menuLink?.closest('span');
-            if (menuLinkSpan) {
-                menuLinkSpan.classList.add('current');
-                menuLinkSpan.textContent = menuLink.textContent;
-            }
 
             const messagesTable = document.getElementById('prefs_pvt_form:pvtmsgs');
             if (messagesTable?.querySelector('tbody td:not(:empty)')) {
@@ -62,11 +55,10 @@
                         {"orderable": false, "searchable": false},
                         {"orderable": true, "searchable": true},
                         {"orderable": true, "searchable": false},
-                        <h:outputText value="{\"orderable\": true, \"searchable\": false}," rendered="#{PrivateMessagesTool.selectedTopic.topic.title != 'pvt_received'}" />
+                        <h:outputText value="{\"orderable\": true, \"searchable\": false}," rendered="#{PrivateMessagesTool.selectedTopic.topic.title == 'pvt_scheduler'}" />
+                        <h:outputText value="{\"orderable\": true, \"searchable\": true}," rendered="#{PrivateMessagesTool.selectedTopic.topic.title != 'pvt_sent'}" />
+                        <h:outputText value="{\"orderable\": true, \"searchable\": false}," rendered="#{PrivateMessagesTool.selectedTopic.topic.title != 'pvt_received' && PrivateMessagesTool.selectedTopic.topic.title != 'pvt_drafts' && PrivateMessagesTool.selectedTopic.topic.title != 'pvt_deleted' && PrivateMessagesTool.selectedTopic.topic.title != 'pvt_scheduler' }"/>
                         {"orderable": true, "searchable": true},
-                        <h:outputText value="{\"orderable\": true, \"searchable\": false}," rendered="#{PrivateMessagesTool.selectedTopic.topic.title != 'pvt_sent' && PrivateMessagesTool.selectedTopic.topic.title != 'pvt_received' && PrivateMessagesTool.selectedTopic.topic.title != 'pvt_drafts' && PrivateMessagesTool.selectedTopic.topic.title != 'pvt_deleted' && PrivateMessagesTool.selectedTopic.topic.title != 'pvt_scheduler' }"/>
-                        {"orderable": true, "searchable": true},
-                        <h:outputText value="{\"orderable\": false, \"searchable\": true}," rendered="#{PrivateMessagesTool.canUseTags}"/>
                     ],
                     "language": {
                         "search": <h:outputText value="'#{msgs.datatables_sSearch}'" />,
@@ -95,17 +87,9 @@
                     "layout": {"topEnd": null},
                     "order": [[4, "desc"]],
                     "info": false,
-                    "columns": [
-                        {"orderable": false, "searchable": false},
-                        {"orderable": true, "searchable": false},
-                        {"orderable": false, "searchable": false},
-                        {"orderable": true, "searchable": true},
-                        {"orderable": true, "searchable": false},
-                        <h:outputText value="{\"orderable\": true, \"searchable\": false}," rendered="#{ PrivateMessagesTool.selectedTopic.topic.title != 'pvt_received' }" />
-                        {"orderable": true, "searchable": true},
-                        <h:outputText value="{\"orderable\": true, \"searchable\": false}," rendered="#{PrivateMessagesTool.selectedTopic.topic.title != 'pvt_sent' && PrivateMessagesTool.selectedTopic.topic.title != 'pvt_received' && PrivateMessagesTool.selectedTopic.topic.title != 'pvt_drafts' && PrivateMessagesTool.selectedTopic.topic.title != 'pvt_deleted' && PrivateMessagesTool.selectedTopic.topic.title != 'pvt_scheduler' }"/>
-                        {"orderable": true, "searchable": true},
-                        <h:outputText value="{\"orderable\": false, \"searchable\": true}," rendered="#{PrivateMessagesTool.canUseTags}" />
+                    "columnDefs": [
+                        {"targets": [0], "orderable": false, "searchable": false, "className": "sakai-table__select"},
+                        {"targets": [1, 2], "orderable": false, "searchable": false, "className": "no-sort"}
                     ],
                     "language": {
                         "search": <h:outputText value="'#{msgs.datatables_sSearch}'" />,
@@ -129,47 +113,50 @@
     });
     </script>
 
-    <%@ include file="/jsp/privateMsg/pvtMenu.jsp" %>
+    <% request.setAttribute("pvtHeaderView", "list"); %>
+    <%@ include file="/jsp/privateMsg/pvtToolHeader.jsp" %>
 
-			<%@ include file="topNav.jsp" %>
- 
- 			<h:messages styleClass="alertMessage" id="errorMessages" rendered="#{! empty facesContext.maximumSeverity}"/> 
+			<h:messages styleClass="sakai-banner sakai-banner--error" id="errorMessages" rendered="#{! empty facesContext.maximumSeverity}"/>
  			<!-- Display successfully moving checked messsages to Deleted folder -->
-  			<h:outputText value="#{PrivateMessagesTool.multiDeleteSuccessMsg}" styleClass="sak-banner-success" rendered="#{PrivateMessagesTool.multiDeleteSuccess}" />
+			<h:panelGroup layout="block" styleClass="sakai-banner sakai-banner--success" rendered="#{PrivateMessagesTool.multiDeleteSuccess}">
+				<h:outputText value="#{PrivateMessagesTool.multiDeleteSuccessMsg}"/>
+			</h:panelGroup>
 
-  		<%@ include file="msgHeader.jsp"%>
-		<%-- gsilver:this table needs a render atrtibute that will make it not display if there are no messages - and a companion text block classed as "instruction" that will render instead--%>
-	  <h:panelGroup layout="block" styleClass="table table-responsive">
-	  <h:dataTable styleClass="table table-hover table-striped table-bordered" id="pvtmsgs" width="100%" value="#{PrivateMessagesTool.decoratedPvtMsgs}" var="rcvdItems" 
-	  	             rendered="#{PrivateMessagesTool.selectView != 'threaded'}"
-	  	             summary="#{msgs.pvtMsgListSummary}"
+		<%@ include file="msgHeader.jsp"%>
+		<%-- The empty state below mirrors the same table: it renders only when the folder has no messages. --%>
+	  <h:panelGroup layout="block" styleClass="sakai-table-wrap" rendered="#{not empty PrivateMessagesTool.decoratedPvtMsgs}">
+	  <h:dataTable styleClass="sakai-table sakai-table--hover sakai-table--stack" id="pvtmsgs" captionClass="visually-hidden" width="100%" value="#{PrivateMessagesTool.decoratedPvtMsgs}" var="rcvdItems"
+		             rendered="#{PrivateMessagesTool.selectView != 'threaded'}"
+		             summary="#{msgs.pvtMsgListSummary}"
 					 columnClasses="#{PrivateMessagesTool.calculateColumnClass()}">
 
-		  <h:column>
+		  <f:facet name="caption">
+		    <h:outputText value="#{msgs.pvtMsgListSummary}" styleClass="visually-hidden"/>
+		  </f:facet>
+		  <h:column headerClass="sakai-table__select sakai-no-print">
 		    <f:facet name="header">
 				<h:panelGroup>
 					<h:selectBooleanCheckbox id="checkAll" title="#{msgs.cdfm_checkall}"/>
-					<h:outputText value=" "/>
-					<h:outputLabel value="#{msgs.cdfm_checkall}"/>
+					<h:outputLabel for="checkAll" styleClass="visually-hidden"><h:outputText value="#{msgs.cdfm_checkall}"/></h:outputLabel>
 				</h:panelGroup>
 		    </f:facet>
 				<h:selectBooleanCheckbox value="#{rcvdItems.isSelected}" onclick="updateCount(this.checked); toggleBulkOperations(anyChecked(), 'prefs_pvt_form');" />
 		  </h:column>
-		  <h:column>
+		  <h:column headerClass="no-sort">
 		    <f:facet name="header">
-		        <h:outputText value="" styleClass="bi bi-paperclip" escape="false" />
-				<h:outputText value="#{msgs.sort_attachment}" styleClass="sr-only" />
+		        <h:outputText value="" styleClass="si si-attachment" escape="false" />
+				<h:outputText value="#{msgs.sort_attachment}" styleClass="visually-hidden" />
 			</f:facet>
-			<h:outputText value="" styleClass="bi bi-paperclip" escape="false" rendered="#{rcvdItems.msg.hasAttachments}" />
+			<h:outputText value="" styleClass="si si-attachment" escape="false" rendered="#{rcvdItems.msg.hasAttachments}" />
 		  </h:column>
-		  <h:column>
+		  <h:column headerClass="no-sort">
 		    <f:facet name="header">
-	        	<h:outputText value="" styleClass="bi bi-reply-fill" escape="false" />
-				<h:outputText value="#{msgs.pvt_msgs_replied}" styleClass="sr-only" />
+		<h:outputText value="" styleClass="si si-reply-fill" escape="false" />
+				<h:outputText value="#{msgs.pvt_msgs_replied}" styleClass="visually-hidden" />
 			</f:facet>
-			<h:outputText value="" styleClass="bi bi-reply-fill" escape="false" rendered="#{rcvdItems.replied}" />
+			<h:outputText value="" styleClass="si si-reply-fill" escape="false" rendered="#{rcvdItems.replied}" />
 		  </h:column>
-		  <h:column>
+		  <h:column headerClass="sakai-table__primary">
 		    <f:facet name="header">
 				<h:outputLink value="#" onclick="return false;"><h:outputText value="#{msgs.pvt_subject}"/></h:outputLink>
 		    </f:facet>
@@ -180,8 +167,13 @@
 			<h:outputText styleClass="skip" value="#{msgs.pvt_openb}#{msgs.pvt_unread}#{msgs.pvt_closeb}" rendered="#{!rcvdItems.hasRead}"/>
             <f:param value="#{rcvdItems.msg.id}" name="current_msg_detail"/>
           </h:commandLink>
+			<h:panelGroup layout="block" styleClass="sakai-messages__subject-tags" rendered="#{PrivateMessagesTool.canUseTags and !empty rcvdItems.tagList}">
+				<t:dataList value="#{rcvdItems.tagList}" var="eachTag">
+					<span class="sakai-badge sakai-badge--subtle"><h:outputText value="#{eachTag}"/></span>
+				</t:dataList>
+			</h:panelGroup>
 		  </h:column>
-		  <h:column>
+		  <h:column headerClass="sakai-table__nowrap">
 		    <f:facet name="header">
 				<h:outputLink value="#" onclick="return false;"><h:outputText value="#{msgs.pvt_date}"/></h:outputLink>
 		    </f:facet>
@@ -200,7 +192,7 @@
 			   <f:convertDateTime pattern="#{msgs.date_format}" timeZone="#{PrivateMessagesTool.userTimeZone}" locale="#{PrivateMessagesTool.userLocale}"/>
 			 </h:outputText>
 		  </h:column>
-		  <h:column rendered="#{PrivateMessagesTool.selectedTopic.topic.title != 'pvt_received'}">
+		  <h:column rendered="#{PrivateMessagesTool.selectedTopic.topic.title == 'pvt_scheduler'}">
 		    <f:facet name="header">
 				<h:outputLink value="#" onclick="return false;"><h:outputText value="#{msgs.pvt_date_scheduler}"/></h:outputLink>
 		    </f:facet>
@@ -226,7 +218,7 @@
 		     <h:outputText value="#{rcvdItems.msg.author}" rendered="#{rcvdItems.hasRead}"/>
 		     <h:outputText styleClass="unreadMsg" value="#{rcvdItems.msg.author}" rendered="#{!rcvdItems.hasRead}"/>
 		  </h:column>
-		  		  <h:column rendered="#{PrivateMessagesTool.selectedTopic.topic.title != 'pvt_received' && 
+				  <h:column rendered="#{PrivateMessagesTool.selectedTopic.topic.title != 'pvt_received' &&
 		  PrivateMessagesTool.selectedTopic.topic.title != 'pvt_drafts' &&
 		  PrivateMessagesTool.selectedTopic.topic.title != 'pvt_deleted' &&
 		  PrivateMessagesTool.selectedTopic.topic.title != 'pvt_scheduler' }">
@@ -242,48 +234,40 @@
 		    </f:facet>
 		     <h:outputText value="#{rcvdItems.label}"/>
 		  </h:column>
-		  <h:column rendered="#{PrivateMessagesTool.canUseTags}" headerClass="hidden-xs">
-		    <f:facet name="header">
-		       <h:outputText value="#{msgs.pvt_tags_header}"/>
-		    </f:facet>
-		    <t:dataList value="#{rcvdItems.tagList}" var="eachTag" >
-		      <span class="badge bg-info">
-		        <h:outputText value="#{eachTag}"/>
-		      </span>
-		    </t:dataList>
-		  </h:column>
 		</h:dataTable>
 	  </h:panelGroup>
-	  <h:panelGroup layout="block" styleClass="table" rendered="#{PrivateMessagesTool.threadedView}">
-	  <mf:hierPvtMsgDataTable styleClass="table table-hover table-striped table-bordered" id="threaded_pvtmsgs" width="100%" 
-	                          value="#{PrivateMessagesTool.decoratedPvtMsgs}" 
-	  	                        var="rcvdItems" 
+	  <h:panelGroup layout="block" styleClass="sakai-table-wrap" rendered="#{PrivateMessagesTool.threadedView and not empty PrivateMessagesTool.decoratedPvtMsgs}">
+	  <mf:hierPvtMsgDataTable styleClass="sakai-table sakai-table--hover sakai-table--stack" id="threaded_pvtmsgs" width="100%"
+	                          value="#{PrivateMessagesTool.decoratedPvtMsgs}"
+		                        var="rcvdItems"
 								 columnClasses="#{PrivateMessagesTool.calculateColumnClass()}">
-		 	<h:column>
+			<f:facet name="caption">
+			  <h:outputText value="#{msgs.pvtMsgListSummary}" styleClass="visually-hidden"/>
+			</f:facet>
+			<h:column headerClass="sakai-table__select sakai-no-print">
 		    <f:facet name="header">
 				<h:panelGroup>
 					<h:selectBooleanCheckbox id="checkAll" title="#{msgs.cdfm_checkall}"/>
-					<h:outputText value=" "/>
-					<h:outputLabel value="#{msgs.cdfm_checkall}"/>
+					<h:outputLabel for="checkAll" styleClass="visually-hidden"><h:outputText value="#{msgs.cdfm_checkall}"/></h:outputLabel>
 				</h:panelGroup>
 		    </f:facet>
 				<h:selectBooleanCheckbox value="#{rcvdItems.isSelected}" onclick="updateCount(this.checked); toggleBulkOperations(anyChecked(), 'prefs_pvt_form');" />
 		  </h:column>
-		  <h:column>
+		  <h:column headerClass="no-sort">
 				<f:facet name="header">
-					<h:outputText value="" styleClass="bi bi-paperclip" escape="false" />
-					<h:outputText value="#{msgs.msg_has_attach}" styleClass="sr-only" />
+					<h:outputText value="" styleClass="si si-attachment" escape="false" />
+					<h:outputText value="#{msgs.msg_has_attach}" styleClass="visually-hidden" />
 				</f:facet>
-				<h:outputText value="" styleClass="bi bi-paperclip" escape="false" rendered="#{rcvdItems.msg.hasAttachments}" />
+				<h:outputText value="" styleClass="si si-attachment" escape="false" rendered="#{rcvdItems.msg.hasAttachments}" />
 			</h:column>
-			<h:column>
+			<h:column headerClass="no-sort">
 				<f:facet name="header">
-					<h:outputText value="" styleClass="bi bi-reply-fill" escape="false" />
-					<h:outputText value="#{msgs.pvt_msgs_replied}" styleClass="sr-only" />
+					<h:outputText value="" styleClass="si si-reply-fill" escape="false" />
+					<h:outputText value="#{msgs.pvt_msgs_replied}" styleClass="visually-hidden" />
 				</f:facet>
-				<h:outputText value="" styleClass="bi bi-reply-fill" escape="false" rendered="#{rcvdItems.replied}" />
-		  	</h:column>
-			<h:column id="_msg_subject">
+				<h:outputText value="" styleClass="si si-reply-fill" escape="false" rendered="#{rcvdItems.replied}" />
+			</h:column>
+			<h:column id="_msg_subject" headerClass="sakai-table__primary">
 		    <f:facet name="header">
 		       <h:outputLink value="#" onclick="return false;"><h:outputText value="#{msgs.pvt_subject}"/></h:outputLink>
 		    </f:facet>
@@ -292,8 +276,13 @@
             <h:outputText styleClass="unreadMsg" value=" #{rcvdItems.msg.title}" rendered="#{!rcvdItems.hasRead}"/>
             <f:param value="#{rcvdItems.msg.id}" name="current_msg_detail"/>
           </h:commandLink>
+			<h:panelGroup layout="block" styleClass="sakai-messages__subject-tags" rendered="#{PrivateMessagesTool.canUseTags and !empty rcvdItems.tagList}">
+				<t:dataList value="#{rcvdItems.tagList}" var="eachTag">
+					<span class="sakai-badge sakai-badge--subtle"><h:outputText value="#{eachTag}"/></span>
+				</t:dataList>
+			</h:panelGroup>
 		  </h:column>
-		  <h:column>
+		  <h:column headerClass="sakai-table__nowrap">
 		    <f:facet name="header">
 		       <h:outputLink value="#" onclick="return false;"><h:outputText value="#{msgs.pvt_date}"/></h:outputLink>
 		    </f:facet>
@@ -304,7 +293,7 @@
 			     <f:convertDateTime pattern="#{msgs.date_format}" timeZone="#{PrivateMessagesTool.userTimeZone}" locale="#{PrivateMessagesTool.userLocale}"/>
 			 </h:outputText>
 		  </h:column>
-		  <h:column rendered="#{PrivateMessagesTool.selectedTopic.topic.title != 'pvt_received'}">
+		  <h:column rendered="#{PrivateMessagesTool.selectedTopic.topic.title == 'pvt_scheduler'}">
 		    <f:facet name="header">
 				<h:outputLink value="#" onclick="return false;"><h:outputText value="#{msgs.pvt_date_scheduler}"/></h:outputLink>
 		    </f:facet>
@@ -330,7 +319,7 @@
 		     <h:outputText value="#{rcvdItems.msg.author}" rendered="#{rcvdItems.hasRead}"/>
 		     <h:outputText styleClass="unreadMsg" value="#{rcvdItems.msg.author}" rendered="#{!rcvdItems.hasRead}"/>
 		  </h:column>
-		  <h:column rendered="#{PrivateMessagesTool.selectedTopic.topic.title != 'pvt_received' && 
+		  <h:column rendered="#{PrivateMessagesTool.selectedTopic.topic.title != 'pvt_received' &&
 		  PrivateMessagesTool.selectedTopic.topic.title != 'pvt_drafts' &&
 		  PrivateMessagesTool.selectedTopic.topic.title != 'pvt_deleted' &&
 		  PrivateMessagesTool.selectedTopic.topic.title != 'pvt_scheduler' }">
@@ -342,21 +331,33 @@
 		  </h:column>
 		  <h:column>
 		    <f:facet name="header">
-		       <h:outputLink value="#" onclick="return false;"><h:outputText value="#{msgs.pvt_label}"/></h:outputLink>
+			   <h:outputLink value="#" onclick="return false;"><h:outputText value="#{msgs.pvt_label}"/></h:outputLink>
 		    </f:facet>
 		     <h:outputText value="#{rcvdItems.label}"/>
 		  </h:column>
-		  <h:column rendered="#{PrivateMessagesTool.canUseTags}" headerClass="hidden-xs">
-		    <f:facet name="header">
-		       <h:outputText value="#{msgs.pvt_tags_header}"/>
-		    </f:facet>
-		    <t:dataList value="#{rcvdItems.tagList}" var="eachTag" >
-		      <span class="badge bg-info">
-		        <h:outputText value="#{eachTag}"/>
-		      </span>
-		    </t:dataList>
-		  </h:column>
 		</mf:hierPvtMsgDataTable>
+		</h:panelGroup>
+		<h:panelGroup layout="block" styleClass="sakai-messages__empty" rendered="#{empty PrivateMessagesTool.decoratedPvtMsgs}">
+			<p class="sakai-messages__empty-text"><h:outputText value="#{msgs.pvt_no_messages}"/></p>
+			<h:commandLink immediate="true" action="#{PrivateMessagesTool.processPvtMsgCompose}"
+				styleClass="sakai-btn sakai-btn-primary sakai-messages__empty-action" rendered="#{!PrivateMessagesTool.dispError}">
+				<h:outputText value="" styleClass="si si-add" escape="false"/>
+				<h:outputText value="#{msgs.pvt_compose}"/>
+			</h:commandLink>
+		</h:panelGroup>
+		<h:panelGroup layout="block" styleClass="sakai-actions sakai-no-print">
+			<h:commandButton action="#{PrivateMessagesTool.processActionMarkCheckedAsRead}" id="markAsread"
+				value="#{msgs.cdfm_mark_check_as_read}" styleClass="ToggleBulk sakai-btn sakai-btn-secondary"/>
+			<h:commandButton action="#{PrivateMessagesTool.processActionMarkCheckedAsUnread}" id="markAsUnread"
+				value="#{msgs.cdfm_mark_check_as_unread}" styleClass="ToggleBulk sakai-btn sakai-btn-secondary"/>
+			<h:commandButton action="#{PrivateMessagesTool.processActionDeleteChecked}" id="deleteMarked"
+				value="#{msgs.cdfm_mark_check_as_delete}" styleClass="ToggleBulk sakai-btn sakai-btn-secondary"
+				rendered="#{PrivateMessagesTool.msgNavMode != 'pvt_deleted'}"/>
+			<h:commandButton id="deleteChecked" action="#{PrivateMessagesTool.processPvtMsgEmptyDelete}"
+				value="#{msgs.cdfm_mark_check_as_delete}" styleClass="ToggleBulk sakai-btn sakai-btn-secondary"
+				rendered="#{PrivateMessagesTool.msgNavMode == 'pvt_deleted'}"/>
+			<h:commandButton action="#{PrivateMessagesTool.processActionMoveCheckedToFolder}" id="moveCheckedToFolder"
+				value="#{msgs.cdfm_mark_check_move_to_folder}" styleClass="ToggleBulk sakai-btn sakai-btn-secondary"/>
 		</h:panelGroup>
 <%-- Added if user clicks Check All --%>
     <script>
@@ -366,13 +367,13 @@
 
      toggleBulkOperations(numberChecked > 0, 'prefs_pvt_form');
      </script>
-     
+
 <%
 }else{
 //user is an anon user, just show a message saying they can't use this tool:
 %>
 
-<h:outputText value="#{msgs.pvt_anon_warning}" styleClass="information"/>
+<h:outputText value="#{msgs.pvt_anon_warning}" styleClass="sakai-banner sakai-banner--warn"/>
 
 <%
 }

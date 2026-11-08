@@ -81,7 +81,7 @@ class TagsTest extends SakaiUiTestBase {
         assertFalse(page.locator("#tag_selector").inputValue().contains(globalLabel));
 
         sakai.toolClick("Messages");
-        page.locator("#messagesComposeMenuLink").click();
+        page.getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("Compose Message").setExact(true)).click();
         sakai.waitForPortalFocus();
         selectTag(page.locator("sakai-tag-selector"), globalLabel);
         selectTag(page.locator("sakai-tag-selector"), localLabel);

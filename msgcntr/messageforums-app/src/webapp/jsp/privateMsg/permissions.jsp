@@ -1,3 +1,4 @@
+<%@ taglib uri="http://java.sun.com/jsf/html" prefix="h" %>
 <%@ taglib uri="http://java.sun.com/jsf/core" prefix="f" %>
 <%@ taglib uri="http://sakaiproject.org/jsf2/sakai" prefix="sakai" %>
 
@@ -6,11 +7,11 @@
 </jsp:useBean>
 <f:view>
     <sakai:view>
-
-        <div class="page-header">
-            <sakai:view_title value="#{msgs.pvt_permissions}" />
-        </div>
-
+        <h:form id="pvtPermissionsHeader">
+            <% request.setAttribute("pvtHeaderTitleKey", "pvt_permissions"); %>
+            <% request.setAttribute("pvtHeaderBack", "home"); %>
+            <%@ include file="/jsp/privateMsg/pvtToolHeader.jsp" %>
+        </h:form>
         <sakai-permissions tool="msg.permissions" bundle-key="org.sakaiproject.api.app.messagecenter.bundle.Messages" />
     </sakai:view>
-</f:view> 
+</f:view>

@@ -47,7 +47,7 @@ class MessagesReplyNotificationTest extends SakaiUiTestBase {
         subject = "Reply notification " + sakai.randomId();
         sakai.gotoPath(courseUrl);
         sakai.toolClick("Messages");
-        page.locator("#messagesComposeMenuLink").click();
+        page.locator(".sakai-messages__compose-link").click();
         page.locator("[id='compose:list1']").selectOption(new SelectOption().setLabel("Student Role"));
         page.locator("[id='compose:subject']").fill(subject);
         sakai.typeCkEditor("compose:pvt_message_body_inputRichText", "<p>Original instructor message</p>");
@@ -99,7 +99,7 @@ class MessagesReplyNotificationTest extends SakaiUiTestBase {
 
     private void send() {
         page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Send").setExact(true)).first().click();
-        assertThat(page.locator("#messagesComposeMenuLink")).isVisible();
+        assertThat(page.locator(".sakai-messages__compose-link")).isVisible();
     }
 
     private List<JsonObject> siteNotifications(String siteId) {
@@ -132,12 +132,13 @@ class MessagesReplyNotificationTest extends SakaiUiTestBase {
 
     private void openNotification(JsonObject notification) {
         page.locator("button[aria-controls='sakai-notifications-panel']:visible").click();
-        Locator messages = page.locator("sakai-notifications #messages-accordion");
-        page.locator("sakai-notifications button[aria-controls='messages-accordion']").click();
-        Locator item = messages.locator("li.toast").filter(new Locator.FilterOptions()
+        Locator messages = page.locator("sakai-notifications #messages-group");
+        Locator item = messages.locator("li.sakai-notifications__item").filter(new Locator.FilterOptions()
             .setHas(page.locator("a[href='" + notification.get("url").getAsString() + "']")));
         assertThat(item).containsText(notification.get("fromDisplayName").getAsString() + " sent you a message");
-        item.locator("a").click();
-        assertThat(page.locator("#pvtMsgDetail .breadCrumb")).containsText("Received");
+        item.locator(".sakai-notifications__message").click();
+        assertThat(page.locator("#pvtMsgDetail")).isVisible();
+        // The wrong folder or the notification list would not carry the message subject in the H1.
+        assertThat(page.locator("#pvtMsgDetail .sakai-tool-header__title")).containsText("Reply notification");
     }
 }

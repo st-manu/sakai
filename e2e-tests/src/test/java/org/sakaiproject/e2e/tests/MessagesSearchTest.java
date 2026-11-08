@@ -84,9 +84,13 @@ class MessagesSearchTest extends SakaiUiTestBase {
         assertThat(page).hasURL(Pattern.compile("/privateMsg/pvtMsgEx"));
         assertThat(ours).hasCount(2);
 
+        // On list/search the utilities only live in the overflow, so it must stay visible at any width.
+        assertThat(page.locator(".sakai-tool-header__more--persistent")).hasCount(1);
+        assertThat(page.getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("All folders").setExact(true))).isVisible();
+
         // opening a folder leaves no option behind to narrow a later search unseen
-        page.locator("a, input, button").filter(new Locator.FilterOptions()
-            .setHasText(Pattern.compile("Next Folder"))).first().click();
+        page.getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("All folders").setExact(true)).click();
+        page.getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("Draft").setExact(true)).click();
         assertThat(page).hasURL(Pattern.compile("/privateMsg/pvtMsg$"));
         options.click();
         assertThat(page.locator("[id='prefs_pvt_form:label']")).not().isChecked();
@@ -95,7 +99,7 @@ class MessagesSearchTest extends SakaiUiTestBase {
     private void saveDraft(String courseUrl, String subject, String body) {
         sakai.gotoPath(courseUrl);
         sakai.toolClick("Messages");
-        page.locator("#messagesComposeMenuLink").click();
+        page.getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("Compose Message").setExact(true)).click();
         page.locator("#compose\\:subject").fill(subject);
         sakai.typeCkEditor("compose:pvt_message_body_inputRichText", body);
         page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Save Draft").setExact(true)).click();

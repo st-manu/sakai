@@ -54,11 +54,12 @@
 
 	function toggleBulkOperations(anyChecked, formRef)
 	{ 
-		if(anyChecked){
-			$('.ToggleBulk').show();
-			$('.ToggleBulkDisabled').hide();
-		}else{
-			$('.ToggleBulk').hide();
-			$('.ToggleBulkDisabled').show();
+		const root = formRef ? document.getElementById(formRef) : document;
+		if (!root) {
+			return;
 		}
+
+		root.querySelectorAll('.ToggleBulk').forEach(element => {
+			element.disabled = !anyChecked;
+		});
 	}		

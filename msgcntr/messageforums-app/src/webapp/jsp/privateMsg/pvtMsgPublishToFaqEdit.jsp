@@ -10,71 +10,41 @@
         <script>includeLatestJQuery("msgcntr");</script>
         <script src="/messageforums-tool/js/sak-10625.js"></script>
         <script src="/messageforums-tool/js/messages.js"></script>
-        <script>
-            $(document).ready(function () {
-                var menuLink = $('#messagesMainMenuLink');
-                var menuLinkSpan = menuLink.closest('span');
-                menuLinkSpan.addClass('current');
-                menuLinkSpan.html(menuLink.text());
-            });
-        </script>
 
-        <%@ include file="/jsp/privateMsg/pvtMenu.jsp" %>
+        <% request.setAttribute("pvtHeaderTitleKey", "pvt_publish_to_faq"); %>
+        <% request.setAttribute("pvtHeaderBack", "detail"); %>
+        <%@ include file="/jsp/privateMsg/pvtToolHeader.jsp" %>
 
-        <%-- BREADCRUMBS START --%>
-        <f:verbatim><div class="breadCrumb specialLink"><h3></f:verbatim>
-            <h:panelGroup rendered="#{PrivateMessagesTool.messagesandForums}" >
-                <h:commandLink action="#{PrivateMessagesTool.processActionHome}" value="#{msgs.cdfm_message_forums}" title="#{msgs.cdfm_message_forums}"/>
-                <h:outputText value="#{PrivateMessagesTool.BREADCRUMB_SEPARATOR}" />
-            </h:panelGroup>
+        <h:messages styleClass="sakai-banner sakai-banner--error" rendered="#{! empty facesContext.maximumSeverity}"/>
 
-            <h:commandLink action="#{PrivateMessagesTool.processActionPrivateMessages}" value="#{msgs.pvt_message_nav}" title=" #{msgs.cdfm_message_forums}"/>
-
-            <h:outputText value="#{PrivateMessagesTool.BREADCRUMB_SEPARATOR}" />
-
-            <h:commandLink action="#{PrivateMessagesTool.processDisplayForum}" value="#{msgs.pvt_received}" title="#{msgs.pvt_received}" />
-
-            <h:outputText value="#{PrivateMessagesTool.BREADCRUMB_SEPARATOR}" />
-
-            <h:outputText value="#{msgs.pvt_publish_to_faq}" />	
-        <f:verbatim></h3></div></f:verbatim>
-        <%-- BREADCRUMBS START --%>
-
-        <%-- ERROR MESSAGE --%>
-        <h:messages layout="table" styleClass="sak-banner-error" rendered="#{! empty facesContext.maximumSeverity}"/>
-
-        <%-- CONTENT START --%>
-
-        <h:panelGroup styleClass="mb-3" layout="block">
-            <h:outputLabel for="title" styleClass="required">
+        <h:panelGroup layout="block" styleClass="sakai-form-field">
+            <h:outputLabel for="title" styleClass="sakai-form-label required">
                 <h:outputText value="#{msgs.pvt_title}" />
             </h:outputLabel>
-            <h:inputText id="title" value="#{mfPublishToFaqBean.title}" styleClass="form-control" >
+            <h:inputText id="title" value="#{mfPublishToFaqBean.title}" styleClass="sakai-form-control" >
                 <f:validateLength maximum="255" />
             </h:inputText>
         </h:panelGroup>
-        <h:panelGroup styleClass="mb-3" layout="block">
-            <h:outputLabel for="question" styleClass="required">
+
+        <h:panelGroup layout="block" styleClass="sakai-form-field">
+            <h:outputLabel for="question" styleClass="sakai-form-label required">
                 <h:outputText value="#{msgs.pvt_question}" />
             </h:outputLabel>
             <sakai:inputRichText id="question" value="#{mfPublishToFaqBean.question}" textareaOnly="#{PrivateMessagesTool.mobileSession}"
                     rows="#{ForumTool.editorRows}" />
         </h:panelGroup>
-        <h:panelGroup styleClass="mb-3" layout="block" rendered="#{mfPublishToFaqBean.canReply}">
-            <h:outputLabel for="answer" value="#{msgs.pvt_answer}" styleClass="form-label" />
+
+        <h:panelGroup layout="block" styleClass="sakai-form-field" rendered="#{mfPublishToFaqBean.canReply}">
+            <h:outputLabel for="answer" value="#{msgs.pvt_answer}" styleClass="sakai-form-label" />
             <sakai:inputRichText id="answer" value="#{mfPublishToFaqBean.answer}" textareaOnly="#{PrivateMessagesTool.mobileSession}"
                     rows="#{ForumTool.editorRows}" />
-            <h:panelGroup styleClass="form-text" layout="block">
-                <h:outputText value="#{msgs.pvt_answer_info}" />
-            </h:panelGroup>
+            <h:outputText value="#{msgs.pvt_answer_info}" styleClass="sakai-form-help"/>
         </h:panelGroup>
 
-        <sakai:button_bar>
-            <h:commandButton action="#{PrivateMessagesTool.processPvtMsgPublishToFaq}" value="#{msgs.pvt_publish_to_faq}" accesskey="s" styleClass="active"/>
-            <h:commandButton action="#{PrivateMessagesTool.processPvtMsgCancelToDetailView}" value="#{msgs.pvt_cancel}" accesskey="x" />
-        </sakai:button_bar>
-
-        <%-- CONTENT END --%>
+        <div class="sakai-actions">
+            <h:commandButton action="#{PrivateMessagesTool.processPvtMsgPublishToFaq}" value="#{msgs.pvt_publish_to_faq}" accesskey="s" styleClass="sakai-btn sakai-btn-primary"/>
+            <h:commandButton action="#{PrivateMessagesTool.processPvtMsgCancelToDetailView}" value="#{msgs.pvt_cancel}" accesskey="x" styleClass="sakai-btn sakai-btn-ghost" />
+        </div>
 
     </h:form>
 </sakai:view></f:view>

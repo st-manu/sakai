@@ -10,269 +10,169 @@
 <f:view>
   <sakai:view title="#{msgs.pvt_detmsgreply}">
     <h:form id="pvtMsgDetail">
-    		<script>
-       			// Define i18n for js text
-       			var msgs_js = { 
-       				"loading_wait":<h:outputText value="\"#{msgs.loading_wait}\"" />,
-       				"cdfm_profile_information":<h:outputText value="\"#{msgs.cdfm_profile_information}\"" />
-       			};
-       		</script>
-           	<script>includeLatestJQuery("msgcntr");</script>
-       		<script src="/messageforums-tool/js/sak-10625.js"></script>
-       		<script src="/messageforums-tool/js/messages.js"></script>
-			<script>
-				$(document).ready(function () {
-					var menuLink = $('#messagesMainMenuLink');
-					var menuLinkSpan = menuLink.closest('span');
-					menuLinkSpan.addClass('current');
-					menuLinkSpan.html(menuLink.text());
-					
-				});
-			</script>
-			<%@ include file="/jsp/privateMsg/pvtMenu.jsp" %>
-<!--jsp/privateMsg/pvtMsgDetail.jsp-->
-<%--			<sakai:tool_bar_message value="#{msgs.pvt_detmsgreply}" /> --%> 
-			<h:messages styleClass="alertMessage" id="errorMessages" rendered="#{! empty facesContext.maximumSeverity}"/> 
-            <h:outputText value="#{PrivateMessagesTool.multiDeleteSuccessMsg}" styleClass="sak-banner-success" rendered="#{PrivateMessagesTool.multiDeleteSuccess}" />
+      <script>
+        var msgs_js = {
+          "loading_wait":<h:outputText value="\"#{msgs.loading_wait}\"" />,
+          "cdfm_profile_information":<h:outputText value="\"#{msgs.cdfm_profile_information}\"" />
+        };
+      </script>
+      <script>includeLatestJQuery("msgcntr");</script>
+      <script src="/messageforums-tool/js/sak-10625.js"></script>
+      <script src="/messageforums-tool/js/messages.js"></script>
 
-<h:panelGrid columns="2" width="100%" styleClass="navPanel specialLink">
-	<h:panelGroup>
-		<f:verbatim><div class="breadCrumb"><h3></f:verbatim>
-<%--   			  <h:commandLink action="#{PrivateMessagesTool.processActionHome}" value="#{msgs.cdfm_message_forums}" title=" #{msgs.cdfm_message_forums}"/><h:outputText value=" " /><h:outputText value=" / " /><h:outputText value=" " />
-  			  <h:commandLink action="#{PrivateMessagesTool.processActionPrivateMessages}" value="#{msgs.cdfm_message_pvtarea}" title=" #{msgs.cdfm_message_pvtarea}"/><h:outputText value=" " /><h:outputText value=" / " /><h:outputText value=" " />
---%>
-		<h:panelGroup rendered="#{PrivateMessagesTool.messagesandForums}" >
-			<h:commandLink action="#{PrivateMessagesTool.processActionHome}" value="#{msgs.cdfm_message_forums}" title="#{msgs.cdfm_message_forums}"/>
-			<h:outputText value=" / " />
-		</h:panelGroup>
-		<h:commandLink action="#{PrivateMessagesTool.processActionPrivateMessages}" value="#{msgs.pvt_message_nav}" title=" #{msgs.cdfm_message_forums}"/>
-		<h:outputText value=" " /><h:outputText value=" / " /><h:outputText value=" " />
-		<f:verbatim><h:outputText value=" " /><h:outputText value=" / " /><h:outputText value=" " /></f:verbatim>
-		<h:commandLink rendered="#{(PrivateMessagesTool.msgNavMode == 'pvt_received' || PrivateMessagesTool.msgNavMode == 'pvt_sent' || PrivateMessagesTool.msgNavMode == 'pvt_deleted' || PrivateMessagesTool.msgNavMode == 'pvt_drafts' || PrivateMessagesTool.msgNavMode == 'pvt_scheduler')}"
-				action="#{PrivateMessagesTool.processDisplayForum}" value="#{msgs[PrivateMessagesTool.msgNavMode]}" title=" #{msgs[PrivateMessagesTool.msgNavMode]}"/>
-		<h:outputText rendered="#{(PrivateMessagesTool.msgNavMode == 'pvt_received' || PrivateMessagesTool.msgNavMode == 'pvt_sent' || PrivateMessagesTool.msgNavMode == 'pvt_deleted' || PrivateMessagesTool.msgNavMode == 'pvt_drafts' || PrivateMessagesTool.msgNavMode == 'pvt_scheduler')}" value=" / " />
-		<h:outputText value="#{PrivateMessagesTool.detailMsg.msg.title}" />
-		<f:verbatim></h3></div></f:verbatim>
-	</h:panelGroup>
+      <% request.setAttribute("pvtHeaderView", "detail"); %>
+      <% request.setAttribute("pvtHeaderBack", "list"); %>
+      <%@ include file="/jsp/privateMsg/pvtToolHeader.jsp" %>
 
-	<h:panelGroup styleClass="itemNav " rendered="#{!PrivateMessagesTool.detailMsg.isPreview && !PrivateMessagesTool.detailMsg.isPreviewReply && !PrivateMessagesTool.detailMsg.isPreviewReplyAll && !PrivateMessagesTool.detailMsg.isPreviewForward}">
-		<h:panelGroup rendered="#{!PrivateMessagesTool.detailMsg.hasPre}" styleClass="button formButtonDisabled">
-			<h:outputText value="#{msgs.pvt_prev_msg}"   />
-		</h:panelGroup>
-		<h:commandLink action="#{PrivateMessagesTool.processDisplayPreviousMsg}" value="#{msgs.pvt_prev_msg}"  
-						rendered="#{PrivateMessagesTool.detailMsg.hasPre}" title=" #{msgs.pvt_prev_msg}" styleClass="btn-primary" >
-		</h:commandLink>
-		
-		<h:panelGroup styleClass="button formButtonDisabled" rendered="#{!PrivateMessagesTool.detailMsg.hasNext}">
-			<h:outputText value="#{msgs.pvt_next_msg}"  />
-		</h:panelGroup>
-		<h:commandLink action="#{PrivateMessagesTool.processDisplayNextMsg}" value="#{msgs.pvt_next_msg}" 
-					rendered="#{PrivateMessagesTool.detailMsg.hasNext}" title=" #{msgs.pvt_next_msg}" styleClass="btn-primary" >
-		</h:commandLink>
-	</h:panelGroup>
-	
-      </h:panelGrid>
-      <f:verbatim>
-      <h3>
-      </f:verbatim>
-      <h:outputText value="#{msgs.pvt_preview}"  styleClass="h1" rendered="#{PrivateMessagesTool.detailMsg.isPreview || PrivateMessagesTool.detailMsg.isPreviewReply || PrivateMessagesTool.detailMsg.isPreviewReplyAll || PrivateMessagesTool.detailMsg.isPreviewForward }"/>
-      <f:verbatim>
-      </h3>
-      </f:verbatim>
+      <h:messages styleClass="sakai-banner sakai-banner--error" id="errorMessages" rendered="#{! empty facesContext.maximumSeverity}"/>
+      <h:panelGroup layout="block" styleClass="sakai-banner sakai-banner--success" rendered="#{PrivateMessagesTool.multiDeleteSuccess}">
+        <h:outputText value="#{PrivateMessagesTool.multiDeleteSuccessMsg}"/>
+      </h:panelGroup>
 
-        <sakai:button_bar rendered="#{!PrivateMessagesTool.deleteConfirm && !PrivateMessagesTool.detailMsg.isPreview && !PrivateMessagesTool.detailMsg.isPreviewReply && !PrivateMessagesTool.detailMsg.isPreviewReplyAll && !PrivateMessagesTool.detailMsg.isPreviewForward}" >
-            <h:commandButton action="#{PrivateMessagesTool.processPvtMsgReply}" value="#{msgs.pvt_repmsg}" accesskey="r" />
-            <%--SAK-10505 add forward --%>
-            <h:commandButton action="#{PrivateMessagesTool.processPvtMsgReplyAll}" value="#{msgs.pvt_repmsg_ALL}" accesskey="r" /><h:commandButton action="#{PrivateMessagesTool.processPvtMsgForward}" value="#{msgs.pvt_forwardmsg}" accesskey="r"/>
-            <h:commandButton action="#{PrivateMessagesTool.processPvtMsgMove}" value="#{msgs.pvt_move}" accesskey="m" />
-            <h:commandButton action="#{PrivateMessagesTool.processPvtMsgPublishToFaqEdit}" value="#{msgs.pvt_publish_to_faq}"
-                    rendered="#{PrivateMessagesTool.detailMessagePublishableToFaq && mfPublishToFaqBean.canPost}" accesskey="m" />
-            <h:commandButton action="#{PrivateMessagesTool.processPvtMsgDeleteConfirm}" value="#{msgs.pvt_delete}"  />
-        </sakai:button_bar>
+      <div class="sakai-messages__detail-summary">
+        <f:subview id="authorImage" rendered="#{PrivateMessagesTool.showProfileInfoMsg}">
+          <h:panelGroup>
+            <sakai-user-photo profile-popup="on" user-id="<h:outputText value="#{PrivateMessagesTool.detailMsg.msg.authorId}"/>" />
+          </h:panelGroup>
+        </f:subview>
 
-        <sakai:button_bar rendered="#{PrivateMessagesTool.deleteConfirm}" >
-          <h:commandButton action="#{PrivateMessagesTool.processPvtMsgDeleteConfirmYes}" value="#{msgs.pvt_delete}" accesskey="s" styleClass="active"/>
-          <h:commandButton action="#{PrivateMessagesTool.processPvtMsgCancelToDetailView}" value="#{msgs.pvt_cancel}" accesskey="x" />
-        </sakai:button_bar>
-        <sakai:button_bar rendered="#{PrivateMessagesTool.detailMsg.isPreview}" >
-          <h:commandButton action="#{PrivateMessagesTool.processPvtMsgPreviewSend}" value="#{msgs.pvt_send}" accesskey="s" styleClass="active"/>
-          <h:commandButton action="#{PrivateMessagesTool.processPvtMsgPreviewBack}" value="#{msgs.pvt_back}" accesskey="b" />
-        </sakai:button_bar>
-        <sakai:button_bar rendered="#{PrivateMessagesTool.detailMsg.isPreviewReply}" >
-          <h:commandButton action="#{PrivateMessagesTool.processPvtMsgPreviewReplySend}" value="#{msgs.pvt_send}" accesskey="s" styleClass="active"/>
-          <h:commandButton action="#{PrivateMessagesTool.processPvtMsgPreviewReplyBack}" value="#{msgs.pvt_back}" accesskey="b" />
-        </sakai:button_bar>
-        <sakai:button_bar rendered="#{PrivateMessagesTool.detailMsg.isPreviewReplyAll}" >
-          <h:commandButton action="#{PrivateMessagesTool.processPvtMsgPreviewReplyAllSend}" value="#{msgs.pvt_send}" accesskey="s" styleClass="active"/>
-          <h:commandButton action="#{PrivateMessagesTool.processPvtMsgPreviewReplyAllBack}" value="#{msgs.pvt_back}" accesskey="b" />
-        </sakai:button_bar>
-        <sakai:button_bar rendered="#{PrivateMessagesTool.detailMsg.isPreviewForward}" >
-          <h:commandButton action="#{PrivateMessagesTool.processPvtMsgPreviewForwardSend}" value="#{msgs.pvt_send}" accesskey="s" styleClass="active"/>
-          <h:commandButton action="#{PrivateMessagesTool.processPvtMsgPreviewForwardBack}" value="#{msgs.pvt_back}" accesskey="b" />
-        </sakai:button_bar>
-          
-         
-         
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-md-2">
-                    <%-- author image --%>
-                    <f:subview id="authorImage" rendered="#{PrivateMessagesTool.showProfileInfoMsg}">
-                        <h:panelGroup styleClass="authorImage">
-                            <sakai-user-photo profile-popup="on" user-id="<h:outputText value="#{PrivateMessagesTool.detailMsg.msg.authorId}"/>" />
-                        </h:panelGroup>
-                    </f:subview>
-                </div>
-                <div class="col-md-10">
-                    <table class="itemSummary">
-                    <tr>
-                        <th>
-                            <h:outputText value="#{msgs.pvt_authby}"/>
-                        </th>
-                        <td>
-                            <h:outputText value="#{PrivateMessagesTool.detailMsg.msg.author}" />
-                            <h:outputText value=" #{msgs.pvt_openb}" />
-                            <h:outputText value="#{((PrivateMessagesTool.userId ne PrivateMessagesTool.detailMsg.msg.createdBy) and (! empty PrivateMessagesTool.detailMsg.msg.scheduledDate)) ? PrivateMessagesTool.detailMsg.msg.scheduledDate: PrivateMessagesTool.detailMsg.msg.created}" >
-                                <f:convertDateTime pattern="#{msgs.date_format}" timeZone="#{PrivateMessagesTool.userTimeZone}" locale="#{PrivateMessagesTool.userLocale}"/>
-                            </h:outputText>
-                            <h:outputText value="#{msgs.pvt_closeb}" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>
-                            <h:outputText value="#{msgs.pvt_group}"/>
-                        </th>
-                        <td>
-                            <h:outputText value="#{PrivateMessagesTool.senderRoleAndGroups} "/>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>
-                            <h:outputText value="#{msgs.pvt_to}" />
-                        </th>
-                        <td>
-                            <h:outputText value="#{PrivateMessagesTool.detailMsg.recipientsAsText}" />
-                            <h:outputText value=", (#{msgs.pvt_sent_as_email})" rendered="#{PrivateMessagesTool.detailMsg.msg.externalEmail}"/>
-                        </td>
-                    </tr>
-                    <f:subview id="bccRecipients" rendered="#{ForumTool.userId == PrivateMessagesTool.detailMsg.msg.createdBy && PrivateMessagesTool.detailMsg.recipientsAsTextBcc != null && PrivateMessagesTool.detailMsg.recipientsAsTextBcc != ''}">
-                    <f:verbatim>
-                    <tr>
-                        <th>
-                    </f:verbatim>
-                        <h:outputText value="#{msgs.pvt_bcc}" />
-                    <f:verbatim>
-                        </th>
-                        <td>
-                    </f:verbatim>
-                        <h:outputText value="#{PrivateMessagesTool.detailMsg.recipientsAsTextBcc}" />
-                    <f:verbatim>
-                        </td>
-                    </tr>
-                    </f:verbatim>
-                    </f:subview>
-                    <tr>
-                        <th>
-                            <h:outputText value="#{msgs.pvt_subject}"/>
-                        </th>
-                        <td>
-                            <h:outputText value="#{PrivateMessagesTool.detailMsg.msg.title}" />  
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>
-                            <h:outputText value="#{msgs.pvt_label} "/>
-                        </th>
-                        <td>
-                            <h:outputText value="#{PrivateMessagesTool.detailMsg.label}" />  
-                        </td>
-                    </tr> 
-                    <tr>
-                        <th>
-                            <h:outputText value="#{msgs.pvt_att}" rendered="#{!empty PrivateMessagesTool.detailMsg.attachList}" />
-                        </th>
-                        <td>
-                            <%-- Attachments --%>
-                            <%-- gsilver:copying the rendered attribute from the column to the dataTable - do not want a table rendered without children (is not xhtml)--%>
-                            <h:dataTable value="#{PrivateMessagesTool.detailMsg.attachList}" 
-                                        var="eachAttach"  styleClass="attachListJSF"  rendered="#{!empty PrivateMessagesTool.detailMsg.attachList}">
-                                <h:column rendered="#{!empty PrivateMessagesTool.detailMsg.attachList}">
-                                    <sakai:contentTypeMap fileType="#{eachAttach.attachment.attachmentType}" mapType="image" var="imagePath" pathPrefix="/library/image/"/>                                 
-                                        <h:graphicImage id="exampleFileIcon" value="#{imagePath}" />                                  
-                                        <%--<h:outputLink value="#{eachAttach.attachmentUrl}" target="_blank">
-                                            <h:outputText value="#{eachAttach.attachmentName}"/>
-                                            </h:outputLink>--%>
-                                    <h:outputLink value="#{eachAttach.url}" target="_blank">
-                                        <h:outputText value="#{eachAttach.attachment.attachmentName}"/>
-                                    </h:outputLink>
-                                </h:column>
-                            </h:dataTable>   
-                            <%-- Attachments --%>
-                        </td>
-                    </tr>
-                    </table>
-                </div>
+        <dl class="sakai-messages__meta">
+          <div class="sakai-messages__meta-row">
+            <dt><h:outputText value="#{msgs.pvt_authby}"/></dt>
+            <dd>
+              <h:outputText value="#{PrivateMessagesTool.detailMsg.msg.author}" />
+              <h:outputText value=" #{msgs.pvt_openb}" />
+              <h:outputText value="#{((PrivateMessagesTool.userId ne PrivateMessagesTool.detailMsg.msg.createdBy) and (! empty PrivateMessagesTool.detailMsg.msg.scheduledDate)) ? PrivateMessagesTool.detailMsg.msg.scheduledDate: PrivateMessagesTool.detailMsg.msg.created}" >
+                <f:convertDateTime pattern="#{msgs.date_format}" timeZone="#{PrivateMessagesTool.userTimeZone}" locale="#{PrivateMessagesTool.userLocale}"/>
+              </h:outputText>
+              <h:outputText value="#{msgs.pvt_closeb}" />
+            </dd>
+          </div>
+          <div class="sakai-messages__meta-row">
+            <dt><h:outputText value="#{msgs.pvt_group}"/></dt>
+            <dd><h:outputText value="#{PrivateMessagesTool.senderRoleAndGroups} "/></dd>
+          </div>
+          <div class="sakai-messages__meta-row">
+            <dt><h:outputText value="#{msgs.pvt_to}" /></dt>
+            <dd>
+              <h:outputText value="#{PrivateMessagesTool.detailMsg.recipientsAsText}" />
+              <h:outputText value=", (#{msgs.pvt_sent_as_email})" rendered="#{PrivateMessagesTool.detailMsg.msg.externalEmail}"/>
+            </dd>
+          </div>
+          <f:subview id="bccRecipients" rendered="#{ForumTool.userId == PrivateMessagesTool.detailMsg.msg.createdBy && PrivateMessagesTool.detailMsg.recipientsAsTextBcc != null && PrivateMessagesTool.detailMsg.recipientsAsTextBcc != ''}">
+            <div class="sakai-messages__meta-row">
+              <dt><h:outputText value="#{msgs.pvt_bcc}" /></dt>
+              <dd><h:outputText value="#{PrivateMessagesTool.detailMsg.recipientsAsTextBcc}" /></dd>
             </div>
-        </div>
+          </f:subview>
+          <div class="sakai-messages__meta-row">
+            <dt><h:outputText value="#{msgs.pvt_subject}"/></dt>
+            <dd><h:outputText value="#{PrivateMessagesTool.detailMsg.msg.title}" /></dd>
+          </div>
+          <div class="sakai-messages__meta-row">
+            <dt><h:outputText value="#{msgs.pvt_label}"/></dt>
+            <dd><h:outputText value="#{PrivateMessagesTool.detailMsg.label}" /></dd>
+          </div>
+          <h:panelGroup layout="block" styleClass="sakai-messages__meta-row" rendered="#{!empty PrivateMessagesTool.detailMsg.attachList}">
+            <dt><h:outputText value="#{msgs.pvt_att}" /></dt>
+            <dd>
+              <h:dataTable value="#{PrivateMessagesTool.detailMsg.attachList}" var="eachAttach"
+                styleClass="sakai-table sakai-table--sm sakai-messages__attachments"
+                rendered="#{!empty PrivateMessagesTool.detailMsg.attachList}">
+                <h:column rendered="#{!empty PrivateMessagesTool.detailMsg.attachList}">
+                  <sakai:contentTypeMap fileType="#{eachAttach.attachment.attachmentType}" mapType="image" var="imagePath" pathPrefix="/library/image/"/>
+                  <h:graphicImage id="exampleFileIcon" value="#{imagePath}" />
+                  <h:outputLink value="#{eachAttach.url}" target="_blank">
+                    <h:outputText value="#{eachAttach.attachment.attachmentName}"/>
+                  </h:outputLink>
+                  <h:outputText value=" (#{PrivateMessagesTool.getAttachmentReadableSize(eachAttach.attachment.attachmentSize)})" styleClass="sakai-messages__attachment-size"/>
+                </h:column>
+              </h:dataTable>
+            </dd>
+          </h:panelGroup>
+        </dl>
+      </div>
 
-        <h:panelGroup rendered="#{PrivateMessagesTool.canUseTags}">
-          <h4><h:outputText value="#{msgs.pvt_tags_header}" /></h4>
-          <h:inputHidden value="#{PrivateMessagesTool.selectedTags}" id="tag_selector"></h:inputHidden>
-          <h:panelGroup styleClass="#{PrivateMessagesTool.detailMsg.isPreview || PrivateMessagesTool.detailMsg.isPreviewReply || PrivateMessagesTool.detailMsg.isPreviewReplyAll || PrivateMessagesTool.detailMsg.isPreviewForward ? 'DisableTags' : ''}">
-            <sakai-tag-selector
-              id="tag-selector"
-              input-id="pvtMsgDetail:tag_selector"
-              <h:panelGroup rendered="#{PrivateMessagesTool.detailMsg.isPreview || PrivateMessagesTool.detailMsg.isPreviewReply || PrivateMessagesTool.detailMsg.isPreviewReplyAll || PrivateMessagesTool.detailMsg.isPreviewForward}">
-                tabindex="-1" 
-              </h:panelGroup>
-              selected-ids='<h:outputText value="#{PrivateMessagesTool.selectedTags}"/>'
-              collection-id='<h:outputText value="#{PrivateMessagesTool.getSiteId()}"/>'
-              site-id='<h:outputText value="#{PrivateMessagesTool.getSiteId()}"/>'
-              tool='<h:outputText value="#{PrivateMessagesTool.getTagTool()}"/>'
-              add-new="true"
-            ></sakai-tag-selector>
-          </h:panelGroup>
-          <h:panelGroup rendered="#{!PrivateMessagesTool.detailMsg.isPreview && !PrivateMessagesTool.detailMsg.isPreviewReply && !PrivateMessagesTool.detailMsg.isPreviewReplyAll && !PrivateMessagesTool.detailMsg.isPreviewForward}">
-            <h:commandButton action="#{PrivateMessagesTool.processPvtMsgSaveTags}" value="#{msgs.pvt_tags_save}"  />
-          </h:panelGroup>
+      <div class="sakai-messages__body">
+        <mf:htmlShowArea value="#{PrivateMessagesTool.detailMsg.msg.body}" id="htmlMsgText" hideBorder="true" />
+      </div>
+
+      <h:panelGroup layout="block" styleClass="sakai-form-section" rendered="#{PrivateMessagesTool.canUseTags}">
+        <h:outputText value="#{msgs.pvt_tags_header}" styleClass="sakai-form-section__title" />
+        <h:inputHidden value="#{PrivateMessagesTool.selectedTags}" id="tag_selector"></h:inputHidden>
+        <h:panelGroup styleClass="#{PrivateMessagesTool.detailMsg.isPreview || PrivateMessagesTool.detailMsg.isPreviewReply || PrivateMessagesTool.detailMsg.isPreviewReplyAll || PrivateMessagesTool.detailMsg.isPreviewForward ? 'DisableTags' : ''}">
+          <sakai-tag-selector
+            id="tag-selector"
+            input-id="pvtMsgDetail:tag_selector"
+            <h:panelGroup rendered="#{PrivateMessagesTool.detailMsg.isPreview || PrivateMessagesTool.detailMsg.isPreviewReply || PrivateMessagesTool.detailMsg.isPreviewReplyAll || PrivateMessagesTool.detailMsg.isPreviewForward}">
+              tabindex="-1"
+            </h:panelGroup>
+            selected-ids='<h:outputText value="#{PrivateMessagesTool.selectedTags}"/>'
+            collection-id='<h:outputText value="#{PrivateMessagesTool.getSiteId()}"/>'
+            site-id='<h:outputText value="#{PrivateMessagesTool.getSiteId()}"/>'
+            tool='<h:outputText value="#{PrivateMessagesTool.getTagTool()}"/>'
+            add-new="true"
+          ></sakai-tag-selector>
         </h:panelGroup>
+        <h:panelGroup layout="block" styleClass="sakai-actions" rendered="#{!PrivateMessagesTool.detailMsg.isPreview && !PrivateMessagesTool.detailMsg.isPreviewReply && !PrivateMessagesTool.detailMsg.isPreviewReplyAll && !PrivateMessagesTool.detailMsg.isPreviewForward}">
+          <h:commandButton action="#{PrivateMessagesTool.processPvtMsgSaveTags}" value="#{msgs.pvt_tags_save}" styleClass="sakai-btn sakai-btn-secondary" />
+        </h:panelGroup>
+      </h:panelGroup>
 
-		<hr class="itemSeparator" />
-		
-        	  <mf:htmlShowArea value="#{PrivateMessagesTool.detailMsg.msg.body}" id="htmlMsgText" hideBorder="true" />
-        
-        <sakai:button_bar rendered="#{!PrivateMessagesTool.deleteConfirm && !PrivateMessagesTool.detailMsg.isPreview && !PrivateMessagesTool.detailMsg.isPreviewReply && !PrivateMessagesTool.detailMsg.isPreviewReplyAll && !PrivateMessagesTool.detailMsg.isPreviewForward}" >
-            <h:commandButton action="#{PrivateMessagesTool.processPvtMsgReply}" value="#{msgs.pvt_repmsg}" accesskey="r"/>
-            <%--SAKAI-10505 add forward--%>
-            <h:commandButton action="#{PrivateMessagesTool.processPvtMsgReplyAll}" value="#{msgs.pvt_repmsg_ALL}" accesskey="r" /><h:commandButton action="#{PrivateMessagesTool.processPvtMsgForward}" value="#{msgs.pvt_forwardmsg}" accesskey="r"/>
-            <h:commandButton action="#{PrivateMessagesTool.processPvtMsgMove}" value="#{msgs.pvt_move}" accesskey="m" />
-            <h:commandButton action="#{PrivateMessagesTool.processPvtMsgPublishToFaqEdit}" value="#{msgs.pvt_publish_to_faq}"
-                    rendered="#{PrivateMessagesTool.detailMessagePublishableToFaq && mfPublishToFaqBean.canPost}" accesskey="m" />
-            <h:commandButton action="#{PrivateMessagesTool.processPvtMsgDeleteConfirm}" value="#{msgs.pvt_delete}"  />
-        </sakai:button_bar>
-        <sakai:button_bar rendered="#{PrivateMessagesTool.deleteConfirm}" >
-          <h:commandButton action="#{PrivateMessagesTool.processPvtMsgDeleteConfirmYes}" value="#{msgs.pvt_delete}" accesskey="s" styleClass="active"/>
-          <h:commandButton action="#{PrivateMessagesTool.processPvtMsgCancelToDetailView}" value="#{msgs.pvt_cancel}" accesskey="x" />
-        </sakai:button_bar>
-		<sakai:button_bar rendered="#{PrivateMessagesTool.detailMsg.isPreview}" >
-          <h:commandButton action="#{PrivateMessagesTool.processPvtMsgPreviewSend}" value="#{msgs.pvt_send}" accesskey="s" styleClass="active"/>
-          <h:commandButton action="#{PrivateMessagesTool.processPvtMsgPreviewBack}" value="#{msgs.pvt_back}" accesskey="b" />
-        </sakai:button_bar>
-        <sakai:button_bar rendered="#{PrivateMessagesTool.detailMsg.isPreviewReply}" >
-          <h:commandButton action="#{PrivateMessagesTool.processPvtMsgPreviewReplySend}" value="#{msgs.pvt_send}" accesskey="s" styleClass="active"/>
-          <h:commandButton action="#{PrivateMessagesTool.processPvtMsgPreviewReplyBack}" value="#{msgs.pvt_back}" accesskey="b" />
-        </sakai:button_bar>
-        <sakai:button_bar rendered="#{PrivateMessagesTool.detailMsg.isPreviewReplyAll}" >
-          <h:commandButton action="#{PrivateMessagesTool.processPvtMsgPreviewReplyAllSend}" value="#{msgs.pvt_send}" accesskey="s" styleClass="active"/>
-          <h:commandButton action="#{PrivateMessagesTool.processPvtMsgPreviewReplyAllBack}" value="#{msgs.pvt_back}" accesskey="b" />
-        </sakai:button_bar>
-        <sakai:button_bar rendered="#{PrivateMessagesTool.detailMsg.isPreviewForward}" >
-          <h:commandButton action="#{PrivateMessagesTool.processPvtMsgPreviewForwardSend}" value="#{msgs.pvt_send}" accesskey="s" styleClass="active"/>
-          <h:commandButton action="#{PrivateMessagesTool.processPvtMsgPreviewForwardBack}" value="#{msgs.pvt_back}" accesskey="b" />
-        </sakai:button_bar>
-        
-      </h:form>
+      <h:panelGroup layout="block" styleClass="sakai-actions" rendered="#{!PrivateMessagesTool.deleteConfirm && !PrivateMessagesTool.detailMsg.isPreview && !PrivateMessagesTool.detailMsg.isPreviewReply && !PrivateMessagesTool.detailMsg.isPreviewReplyAll && !PrivateMessagesTool.detailMsg.isPreviewForward}">
+        <h:commandButton action="#{PrivateMessagesTool.processPvtMsgReply}" value="#{msgs.pvt_repmsg}" accesskey="r" styleClass="sakai-btn sakai-btn-primary" />
+        <h:commandButton action="#{PrivateMessagesTool.processPvtMsgReplyAll}" value="#{msgs.pvt_repmsg_ALL}" styleClass="sakai-btn sakai-btn-secondary" />
+        <h:commandButton action="#{PrivateMessagesTool.processPvtMsgForward}" value="#{msgs.pvt_forwardmsg}" styleClass="sakai-btn sakai-btn-secondary" />
+        <details class="sakai-overflow-menu">
+          <summary class="sakai-btn sakai-btn-ghost sakai-overflow-menu__toggle">
+            <h:outputText value="" styleClass="si si-three-dots" escape="false"/>
+            <h:outputText value="#{msgs.pvt_more_actions}" styleClass="visually-hidden"/>
+          </summary>
+          <div class="sakai-overflow-menu__panel">
+            <h:commandLink action="#{PrivateMessagesTool.processPvtMsgMove}">
+              <h:outputText value="#{msgs.pvt_move}"/>
+            </h:commandLink>
+            <h:commandLink action="#{PrivateMessagesTool.processPvtMsgPublishToFaqEdit}"
+              rendered="#{PrivateMessagesTool.detailMessagePublishableToFaq && mfPublishToFaqBean.canPost}">
+              <h:outputText value="#{msgs.pvt_publish_to_faq}"/>
+            </h:commandLink>
+            <div class="sakai-overflow-menu__separator" role="separator"></div>
+            <h:commandLink action="#{PrivateMessagesTool.processPvtMsgDeleteConfirm}">
+              <h:outputText value="#{msgs.pvt_delete}"/>
+            </h:commandLink>
+          </div>
+        </details>
+      </h:panelGroup>
 
+      <h:panelGroup layout="block" styleClass="sakai-actions" rendered="#{PrivateMessagesTool.deleteConfirm}">
+        <h:commandButton action="#{PrivateMessagesTool.processPvtMsgDeleteConfirmYes}" value="#{msgs.pvt_delete}" accesskey="s" styleClass="sakai-btn sakai-btn-primary"/>
+        <h:commandButton action="#{PrivateMessagesTool.processPvtMsgCancelToDetailView}" value="#{msgs.pvt_cancel}" accesskey="x" styleClass="sakai-btn sakai-btn-ghost" />
+      </h:panelGroup>
+
+      <h:panelGroup layout="block" styleClass="sakai-actions" rendered="#{PrivateMessagesTool.detailMsg.isPreview}">
+        <h:commandButton action="#{PrivateMessagesTool.processPvtMsgPreviewSend}" value="#{msgs.pvt_send}" accesskey="s" styleClass="sakai-btn sakai-btn-primary"/>
+        <h:commandButton action="#{PrivateMessagesTool.processPvtMsgPreviewBack}" value="#{msgs.pvt_back}" accesskey="b" styleClass="sakai-btn sakai-btn-ghost" />
+      </h:panelGroup>
+      <h:panelGroup layout="block" styleClass="sakai-actions" rendered="#{PrivateMessagesTool.detailMsg.isPreviewReply}">
+        <h:commandButton action="#{PrivateMessagesTool.processPvtMsgPreviewReplySend}" value="#{msgs.pvt_send}" accesskey="s" styleClass="sakai-btn sakai-btn-primary"/>
+        <h:commandButton action="#{PrivateMessagesTool.processPvtMsgPreviewReplyBack}" value="#{msgs.pvt_back}" accesskey="b" styleClass="sakai-btn sakai-btn-ghost" />
+      </h:panelGroup>
+      <h:panelGroup layout="block" styleClass="sakai-actions" rendered="#{PrivateMessagesTool.detailMsg.isPreviewReplyAll}">
+        <h:commandButton action="#{PrivateMessagesTool.processPvtMsgPreviewReplyAllSend}" value="#{msgs.pvt_send}" accesskey="s" styleClass="sakai-btn sakai-btn-primary"/>
+        <h:commandButton action="#{PrivateMessagesTool.processPvtMsgPreviewReplyAllBack}" value="#{msgs.pvt_back}" accesskey="b" styleClass="sakai-btn sakai-btn-ghost" />
+      </h:panelGroup>
+      <h:panelGroup layout="block" styleClass="sakai-actions" rendered="#{PrivateMessagesTool.detailMsg.isPreviewForward}">
+        <h:commandButton action="#{PrivateMessagesTool.processPvtMsgPreviewForwardSend}" value="#{msgs.pvt_send}" accesskey="s" styleClass="sakai-btn sakai-btn-primary"/>
+        <h:commandButton action="#{PrivateMessagesTool.processPvtMsgPreviewForwardBack}" value="#{msgs.pvt_back}" accesskey="b" styleClass="sakai-btn sakai-btn-ghost" />
+      </h:panelGroup>
+
+      <h:panelGroup layout="block" styleClass="sakai-actions sakai-messages__pager sakai-no-print"
+        rendered="#{!PrivateMessagesTool.deleteConfirm && !PrivateMessagesTool.detailMsg.isPreview && !PrivateMessagesTool.detailMsg.isPreviewReply && !PrivateMessagesTool.detailMsg.isPreviewReplyAll && !PrivateMessagesTool.detailMsg.isPreviewForward}">
+        <h:commandButton action="#{PrivateMessagesTool.processDisplayPreviousMsg}" value="#{msgs.pvt_prev_msg}"
+          disabled="#{!PrivateMessagesTool.detailMsg.hasPre}" styleClass="sakai-btn sakai-btn-ghost"/>
+        <h:commandButton action="#{PrivateMessagesTool.processDisplayNextMsg}" value="#{msgs.pvt_next_msg}"
+          disabled="#{!PrivateMessagesTool.detailMsg.hasNext}" styleClass="sakai-btn sakai-btn-ghost"/>
+      </h:panelGroup>
+    </h:form>
   </sakai:view>
-</f:view> 
-                    
+</f:view>

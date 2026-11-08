@@ -322,7 +322,7 @@ function mySetMainFrameHeightViewCell(id)
 %>
 <div>
 <br>
-<h:outputText styleClass="bi bi-envelope" value="" escape="false" />
+<h:outputText styleClass="si si-envelope" value="" escape="false" />
 &nbsp;<a href="#" onclick="load();"><h:outputText value="#{msgs.viewSynopticInfo}"/></a>
 </div>
 <% 

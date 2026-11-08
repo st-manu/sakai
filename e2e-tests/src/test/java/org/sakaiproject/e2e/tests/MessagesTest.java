@@ -36,7 +36,7 @@ class MessagesTest extends SakaiUiTestBase {
         String courseUrl = sakai.createCourse("instructor1", List.of("sakai\\.messages"));
         page.navigate(courseUrl);
         sakai.toolClick("Messages");
-        page.locator("#messagesComposeMenuLink").click();
+        page.locator(".sakai-messages__compose-link").click();
         sakai.waitForPortalFocus();
 
         Locator to = page.locator("#compose\\:list1 + sakai-user-picker");
@@ -77,7 +77,7 @@ class MessagesTest extends SakaiUiTestBase {
         String courseUrl = sakai.createCourse("instructor1", List.of("sakai\\.messages"));
         page.navigate(courseUrl);
         sakai.toolClick("Messages");
-        page.locator("#messagesComposeMenuLink").click();
+        page.locator(".sakai-messages__compose-link").click();
         sakai.waitForPortalFocus();
         String recipient = sakai.resolveUsername("student0011");
         String blindRecipient = sakai.resolveUsername("student0012");
@@ -144,10 +144,11 @@ class MessagesTest extends SakaiUiTestBase {
         Locator draftFolder = page.getByRole(AriaRole.LINK,
             new Page.GetByRoleOptions().setName("Draft").setExact(true));
         if (!draftFolder.isVisible()) {
-            page.locator("#messagesMainMenuLink a").click();
+            sakai.toolClick("Messages");
         }
         draftFolder.click();
-        page.locator("#messagesComposeMenuLink").click();
+        // The header action is the stable hook; an empty folder also repeats Compose in its empty state.
+        page.locator(".sakai-messages__compose-link").click();
         sakai.waitForPortalFocus();
         String subject = "Tagged draft " + System.currentTimeMillis();
         String tag = "Draft tag " + System.currentTimeMillis();

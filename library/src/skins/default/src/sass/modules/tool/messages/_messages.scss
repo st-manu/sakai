@@ -1,242 +1,237 @@
- .#{$namespace}sakai-messages{
+ :is(.#{$namespace}sakai-messages, .#{$namespace}sakai-forums){
 
- 	.container_messages{
- 		margin-left: 0;
- 		margin-right: 0;
- 		max-width: 980px;
- 	}
-
- 	.nav_table{
- 		font-size: 0.9em; 
- 		margin: 0.5em 0;
- 		img{
- 			vertical-align: sub;
- 		}
- 	}
-
- 	.searchNav{
- 		margin-bottom: 1em;
- 		.input-group{
- 			max-width: 30em;
- 		}
- 	}
-
- 	#adv_input{
- 		background: var(--sakai-background-color-2);
- 		margin: 1em 0em 1em 0em;
- 		padding: 0 0 1em 0;
- 		.header{
- 			background: var(--sakai-background-color-2);
- 			display: block;
- 			font-size: 1em;
- 			font-weight: 600;
- 			padding: 0.8em 0.5em;
- 		}
- 		.specialLink{
- 			margin: 0 0 0 0;
- 			.button{
- 				padding: 0.1em 0.8em 0em 0.8em;
- 			}
- 		}
- 		.checkbox{
- 			display: inline-block;
- 			input[type="checkbox"]{
- 				margin-left: 10px;
- 				position: inherit;
- 				+ label{
- 					padding-left: 10px;
- 					padding-right: 40px;
- 				}
- 			}
- 		}
- 		.shorttext{
- 			display: none;
- 			&.showed{
- 				display: block;
- 				padding: 0.5em 0em 0em 0.8em;
- 				.labeled{
- 					font-weight: 700;
- 					display: inline-block;
- 					padding: 0em 0.5em 0em 0em;
- 					@media #{$phone}{
- 						display: block;
- 						padding: 0.4em 0 0.4em 0;
- 					}
- 				}
- 			}
- 		}
- 	}
-
- 	#pvtMsgSettings{
- 		h1{
- 			margin: 2em 0 0.8em 0;
- 			padding: 0 0 0.5em 0;
- 			border-bottom: 1px solid var(--sakai-border-color);
- 		}
- 		h2{
- 			border-bottom: 1px solid var(--sakai-border-color);
- 			margin: 2em 0 0.8em 0;
- 			padding: 0 0 0.5em 0;
- 		}
- 	}
- 	
- 	#prefs_pvt_form{
- 		&\:pvtmsgs, &\:threaded_pvtmsgs{
- 			th{
- 				min-width: 32px;
- 			}
- 			td.check{
- 				width: 10%;
- 			} 		
- 			td.attach{
- 				width: 1%;
- 			}
- 			td.reply{
- 				width: 1%;
- 			}
-  			td.specialLink{
- 				width: 25%;
- 			}
-  			td.created{
- 				width: 25%;
- 			}
-  			td.date{
- 				width: 18%;
- 			}
-			td.dateScheduler{
-				width: 18%;
-			}
-  			td.bogus{
- 				width: 17%;
- 			}
-			td.addressee{
-				width: 17%;
-			}
-			td.priority{
-				width: 7%;
-			}
-  			td.taglist{
- 				width: 17%;
-				list-style-type: none;
-				padding: 0;
-				max-width: 250px;
- 			}
-
- 			&\:pvtmsgs_filter {
- 				input[type=search] {
- 					margin-left: $standard-space;
- 					font-weight: normal;
-				}
- 			}
- 		}
- 	}
- 	
- 	table.table-inline{
- 		display: block;
- 		margin: 0 0 1.5em 0;
- 		tr, td{
- 			display: inline-block;
- 		}
- 	}
-
- 	.messages_viewnav{
- 		margin: 1em 0;
- 		label{
- 			margin: 0 0.5em 5px 0;
- 		}
- 	}
-	
-	.composeForm {
-	    position: relative;
-	    width: 100%;
-	    .row{
-	    	display: block;
-	    	margin-top: 10px;
-	    	margin-bottom: 10px;
-	    	&.bcc-row {
-	    		margin: 20px -15px 20px -15px;
-	    	}
-	    }
-	    .form-label{
-	    	margin-top: 16px;
-	    	margin-bottom: 10px;
-	    	@media #{$phone}{
-	    		margin-top:    0px;
-	    		margin-bottom: 0px;
-	    	}
-	    }
-	    .radio input[type="radio"], .radio-inline input[type="radio"], .checkbox input[type="checkbox"], .checkbox-inline input[type="checkbox"] {
-	        position: absolute;
-	        margin-left: 0px;
-	        margin-top: 4px;
-	    }
-	    .checkbox {
-	    	margin: 0;
-	    }
-	    & + h4 + table{
-	    	width: 100%;
-	    	table {
-	    		width: 100%;
-	    	}
-	    }
-	    @media #{$phone}{
-	    	.delete_selection{
-	    		display: block;
-	    		padding: 0.5em 0;
-	    	}
-	    	.pvt_send_cc{
-	    		display: block;
-	    	}
-	    }
+	.sakai-messages__list-toolbar {
+		margin-bottom: var(--sakai-space-4);
 	}
 
-	.dataTable {
-		thead {
-			.sorting:after {
-				opacity: 1;
-				color: var(--sakai-text-color-dimmed);
-			}
-			.sorting_asc, .sorting_desc {
-				a {
-					position: relative;
-					margin-right: 11px;
+	.sakai-messages__search-options {
+		margin: 0 0 var(--sakai-space-4);
+		padding: var(--sakai-space-3) var(--sakai-space-4);
+		border: var(--sakai-border-width) solid var(--sakai-border-default);
+		border-radius: var(--sakai-radius-md);
+		background: var(--sakai-surface-sunken);
+	}
 
-					&::after {
-						content: " ";
-						width: 11px;
-						height: 11px;
-						position: absolute;
-						bottom: 2px;
-						right: -14px;
-					}
-				}
+	.sakai-messages__search-scope {
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--sakai-space-2) var(--sakai-space-4);
+		margin-block: var(--sakai-space-3);
+	}
+
+	.sakai-messages__search-fields {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+		gap: var(--sakai-space-3);
+	}
+
+	.sakai-messages__search-extra {
+		display: none;
+		min-width: 0;
+
+		&.showed {
+			display: grid;
+			gap: var(--sakai-space-2);
+		}
+	}
+
+	.sakai-messages__search-tags {
+		grid-column: 1 / -1;
+	}
+
+	.sakai-messages__search-actions {
+		margin: 0 0 var(--sakai-space-2);
+	}
+
+	.sakai-messages__folders {
+		.sakai-messages__folder-icon {
+			margin-inline-end: var(--sakai-space-2);
+			color: var(--sakai-text-muted);
+		}
+	}
+
+	.sakai-messages__unread,
+	.unreadMsg {
+		font-weight: var(--sakai-font-weight-bold);
+	}
+
+	.sakai-messages__subject-tags {
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--sakai-space-1);
+		margin-top: var(--sakai-space-1);
+	}
+
+	.sakai-messages__empty {
+		display: grid;
+		gap: var(--sakai-space-3);
+		justify-items: start;
+		margin: 0 0 var(--sakai-space-4);
+		padding: var(--sakai-space-5) var(--sakai-space-4);
+		border: var(--sakai-border-width) solid var(--sakai-border-subtle);
+		border-radius: var(--sakai-radius-md);
+		background: var(--sakai-surface-sunken);
+	}
+
+	.sakai-messages__empty-text {
+		margin: 0;
+		color: var(--sakai-text-secondary);
+	}
+
+	.sakai-messages__pager {
+		justify-content: space-between;
+	}
+
+	#prefs_pvt_form {
+		.sakai-table {
+			th.sakai-table__primary {
+				width: auto;
+				min-width: 0;
 			}
 
-			.sorting_asc {
-				a::after {
-					background: url(/library/image/sakai/sortascending.gif?panel=Main);
-				}
+			td.specialLink {
+				min-width: 0;
+				overflow-wrap: anywhere;
 			}
 
-			.sorting_desc {
-				a::after {
-					background: url(/library/image/sakai/sortdescending.gif?panel=Main);
-				}
+			td.attach,
+			td.reply {
+				width: 2.5rem;
+				color: var(--sakai-text-muted);
+				text-align: center;
+			}
+
+			td.date,
+			td.dateScheduler {
+				width: 1%;
+				white-space: nowrap;
+			}
+
+			td.created,
+			td.addressee {
+				min-width: 8rem;
+				white-space: normal;
+			}
+
+			td.priority {
+				white-space: nowrap;
 			}
 		}
 	}
-	.ToggleBulkDisabled {
-		color: var(--sakai-text-color-disabled);
+
+	.sakai-messages__detail-summary {
+		display: grid;
+		grid-template-columns: auto minmax(0, 1fr);
+		gap: var(--sakai-space-4);
+		align-items: start;
 	}
+
+	.sakai-messages__meta {
+		display: grid;
+		gap: 0;
+		margin: 0;
+	}
+
+	.sakai-messages__meta-row {
+		display: grid;
+		grid-template-columns: minmax(7rem, 12rem) minmax(0, 1fr);
+		gap: var(--sakai-space-3);
+		padding-block: var(--sakai-space-2);
+		border-bottom: var(--sakai-border-width) solid var(--sakai-border-subtle);
+
+		dt {
+			color: var(--sakai-text-secondary);
+			font-weight: var(--sakai-font-weight-semibold);
+		}
+
+		dd {
+			margin: 0;
+			min-width: 0;
+			overflow-wrap: anywhere;
+		}
+	}
+
+	.sakai-messages__body {
+		margin-block: var(--sakai-space-4);
+	}
+
+	.sakai-messages__attachments {
+		margin: 0;
+	}
+
+	.sakai-messages__attachment-size {
+		color: var(--sakai-text-muted);
+	}
+
+	.sakai-messages__folder-summary {
+		display: grid;
+		grid-template-columns: auto minmax(0, 1fr);
+		gap: var(--sakai-space-1) var(--sakai-space-3);
+		margin: 0 0 var(--sakai-space-4);
+
+		dt {
+			color: var(--sakai-text-secondary);
+			font-weight: var(--sakai-font-weight-semibold);
+		}
+
+		dd {
+			margin: 0;
+			min-width: 0;
+			overflow-wrap: anywhere;
+		}
+	}
+
+	.sakai-messages__clear-selection {
+		display: inline-flex;
+		align-items: center;
+		gap: var(--sakai-space-1);
+		margin-top: var(--sakai-space-1);
+		font-size: var(--sakai-text-body-sm);
+	}
+
+	.sakai-messages__choice-group {
+		display: block;
+		width: auto;
+		margin: 0;
+		border-collapse: collapse;
+
+		td {
+			padding: 0 var(--sakai-space-2) var(--sakai-space-1) 0;
+			border: 0;
+		}
+
+		input[type="radio"] {
+			margin-inline-end: var(--sakai-space-2);
+		}
+
+		label {
+			margin: 0;
+			font-size: var(--sakai-text-body);
+		}
+	}
+
 	.DisableTags {
 		pointer-events: none;
+	}
+}
+
+@container sakai-tool (max-width: 40rem) {
+	:is(.#{$namespace}sakai-messages, .#{$namespace}sakai-forums) {
+		.sakai-messages__detail-summary {
+			grid-template-columns: minmax(0, 1fr);
+		}
+
+		.sakai-messages__meta-row {
+			grid-template-columns: minmax(0, 1fr);
+			gap: var(--sakai-space-1);
+		}
 	}
 }
 
 // sakai.motd's carousel (see chef_synoptic_message-List.vm). Scoped to this tool's own
 // body class so it only affects the MOTD widget's own page, not the rest of the portal.
 .#{$namespace}sakai-motd {
-	// The skin's .portletBody has a fixed margin-bottom: 3rem !important (modules/tool/_base.scss)
+	// The skin's .portletBody has a fixed margin-bottom: 3rem (modules/tool/_base.scss)
 	// that collapses through <body> into <html>, inflating document.documentElement.scrollHeight by
 	// that same amount (measured live: 42px) regardless of actual content - wasted space under every
 	// slide. .Mrphs-sakai-motd alone isn't enough to scope this: it's on <body> for every sakai.motd
