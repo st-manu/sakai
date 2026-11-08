@@ -2239,6 +2239,31 @@ public class SimplePageToolDaoImpl implements SimplePageToolDao, PortalSubPageNa
 	}
 
 
+	private void addLessonSubPagesRecursive(LessonsSubNavBuilder builder, String sakaiToolId, SimplePage parentPage,
+			String userId, List<Map<String, Object>> targetList) {
+		for (SimplePageItem spi : findSubPageItemsByPageId(parentPage.getPageId())) {
+			SimplePage page;
+			try {
+				page = findPage(Long.parseLong(spi.getSakaiId()));
+			} catch (NumberFormatException e) {
+				log.warn("Invalid subpage sakaiId [{}] under page [{}]", spi.getSakaiId(), parentPage.getPageId());
+				continue;
+			}
+			if (page == null) {
+				continue;
+			}
+			Map<String, Object> item = builder.createSubnavItem(sakaiToolId, parentPage, spi, page,
+					getLogEntry(userId, spi.getId(), -1L));
+			if (item == null) {
+				continue;
+			}
+			@SuppressWarnings("unchecked")
+			List<Map<String, Object>> children = (List<Map<String, Object>>) item.get("children");
+			targetList.add(item);
+			addLessonSubPagesRecursive(builder, sakaiToolId, page, userId, children);
+		}
+	}
+
 	@Override
 	public String getLessonSubPageJSON(final String userId, final String siteId, final Collection<String> pageIds) {
 		if (!pageIds.isEmpty()) {
@@ -2262,13 +2287,8 @@ public class SimplePageToolDaoImpl implements SimplePageToolDao, PortalSubPageNa
 					try {
 						String sakaiToolId = siteService.getSite(siteId).getPage(p.getToolId()).getTools().get(0).getId();
 						m.put(p, sakaiToolId);
-						findSubPageItemsByPageId(p.getPageId()).forEach(spi -> lessonsSubNavBuilder.processResult(
-								sakaiToolId,
-								p,
-								spi,
-								findPage(Long.parseLong(spi.getSakaiId())),
-								getLogEntry(userId, spi.getId(), -1L))
-						);
+						addLessonSubPagesRecursive(lessonsSubNavBuilder, sakaiToolId, p, userId,
+								lessonsSubNavBuilder.ensurePageList(sakaiToolId));
 					} catch (Exception e) {
 						// This condition commonly occurs when executing Site Info > Import from Site, such that
 						// the top-level pages for a target site do not yet exist or have just been created. The

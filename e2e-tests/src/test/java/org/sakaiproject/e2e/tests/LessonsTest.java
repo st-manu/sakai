@@ -146,7 +146,7 @@ class LessonsTest extends SakaiUiTestBase {
         lessonsRadio.check();
         useSelectedItem();
         assertThat(page.locator("body")).containsText("The page could not be added to site navigation.");
-        Locator currentSiteNavigation = page.locator("li.site-list-item.is-current-site .site-page-list a.btn-nav");
+        Locator currentSiteNavigation = page.locator("#current-site-pages .sakai-sidebar-page__link");
         assertThat(currentSiteNavigation.filter(new Locator.FilterOptions()
             .setHasText(Pattern.compile("^\\s*Lessons\\s*$", Pattern.CASE_INSENSITIVE)))).hasCount(1);
 
@@ -441,9 +441,7 @@ class LessonsTest extends SakaiUiTestBase {
     }
 
     private void assertNavigationLinkCount(String title, int expectedCount) {
-        Locator currentSiteNavigation = page.locator(
-            "li.site-list-item.is-current-site .site-page-list a.btn-nav");
-        // Count exact labels in the DOM, including links in collapsed tool lists.
+        Locator currentSiteNavigation = page.locator("#current-site-pages .sakai-sidebar-page__link");
         assertThat(currentSiteNavigation.filter(new Locator.FilterOptions()
             .setHas(page.getByText(title, new Page.GetByTextOptions().setExact(true)))))
             .hasCount(expectedCount);
