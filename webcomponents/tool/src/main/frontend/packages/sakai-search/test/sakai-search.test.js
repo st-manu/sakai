@@ -18,7 +18,7 @@ describe("sakai-search tests", () => {
 
   it ("renders correctly", async () => {
 
-    let el = await fixture(html`
+    const el = await fixture(html`
       <sakai-search site-id="${data.siteId}" tool="${data.tool}"></sakai-search>
     `);
 
@@ -28,8 +28,8 @@ describe("sakai-search tests", () => {
     expect(el.querySelector("input[type='search']")).to.exist;
     document.getElementById("sakai-search-input").value = data.terms;
     document.getElementById("sakai-search-button").click();
-    await waitUntil(() => el.querySelector(".search-result-link"), "Element did not render results");
-    expect(document.querySelectorAll(".search-result-link").length).to.equal(2);
+    await waitUntil(() => el.querySelector(".sakai-search__result-link"), "Element did not render results");
+    expect(document.querySelectorAll(".sakai-search__result-link").length).to.equal(2);
 
     await expect(el).to.be.accessible();
   });
