@@ -27,21 +27,27 @@ export class SakaiSiteStatsTable extends SakaiShadowElement {
         border-collapse: collapse;
         inline-size: 100%;
         min-inline-size: 32rem;
-        background: var(--sakai-background-color-1, #fff);
+        background: transparent;
+        color: var(--sakai-text-color-1);
       }
 
       th,
       td {
-        border: 1px solid var(--sakai-border-color, #d8dde6);
-        padding: 0.45rem 0.6rem;
+        border: 0;
+        border-block-end: 1px solid var(--sakai-border-color, #d8dde6);
+        padding: 0.5rem 0.75rem;
         text-align: start;
-        vertical-align: top;
+        vertical-align: middle;
       }
 
       th {
-        background: var(--sakai-background-color-2, #f5f7f9);
+        background: transparent;
+        color: var(--sakai-text-color-dimmed, #5f6773);
         white-space: nowrap;
-        font-size: 0.9125rem;
+        font-size: var(--sakai-font-size-xs, 11px);
+        font-weight: 600;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
       }
 
       td[data-align="end"],
@@ -49,8 +55,8 @@ export class SakaiSiteStatsTable extends SakaiShadowElement {
         text-align: end;
       }
 
-      tbody tr:nth-child(even) {
-        background: var(--sakai-background-color-2, #f8f9fb);
+      tbody tr:hover {
+        background: var(--sakai-background-color-2);
       }
 
       a:any-link {

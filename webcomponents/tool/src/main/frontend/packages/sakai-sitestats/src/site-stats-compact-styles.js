@@ -16,10 +16,17 @@ export const siteStatsCompactMetricsStyles = css`
 
   .sitestats-metrics {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 10rem), 1fr));
     margin: 0;
     background: var(--sakai-background-color-1);
     overflow: visible;
+  }
+
+  .sitestats-error {
+    padding: 8px 16px;
+    border: 1px solid var(--errorBanner-bordercolor, var(--sakai-border-color));
+    background: var(--errorBanner-bgcolor, var(--sakai-background-color-2));
+    color: var(--errorBanner-color, var(--sakai-text-color-1));
   }
 
   .sitestats-metric {
@@ -115,7 +122,7 @@ export const siteStatsCompactMetricsStyles = css`
     position: static;
     background: var(--sakai-background-color-1, #fff);
     border: 1px solid var(--sakai-border-color, #ddd);
-    border-radius: var(--bs-border-radius, 0.375rem);
+    border-radius: var(--sakai-radius-md, 0.375rem);
     cursor: default;
   }
 
@@ -182,7 +189,7 @@ export const siteStatsCompactHighlightsStyles = css`
     display: block;
     width: 100%;
     padding: 8px;
-    border-block-top: 1px solid var(--sakai-border-color);
+    border-block-start: 1px solid var(--sakai-border-color);
     background: var(--sakai-background-color-2);
     box-sizing: border-box;
   }

@@ -30,14 +30,15 @@ export class SakaiSiteStatsResourceSearch extends SakaiShadowElement {
       :host([hidden]) { display: none; }
       fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
       label { display: block; margin-block-end: 0.5rem; }
-      input.form-control { width: 100%; box-sizing: border-box; font: inherit;
+      input.resource-search__input { width: 100%; box-sizing: border-box; font: inherit;
+        padding: 0.25rem 0.5rem;
         background-color: var(--sakai-background-color-1); color: var(--sakai-text-color-1);
-        border-color: var(--sakai-border-color); }
-      input.form-control:focus { background-color: var(--sakai-background-color-1);
+        border: 1px solid var(--sakai-border-color); border-radius: var(--sakai-radius-md); }
+      input.resource-search__input:focus { background-color: var(--sakai-background-color-1);
         color: var(--sakai-text-color-1); border-color: var(--focus-outline-color); box-shadow: none; }
-      input.form-control:disabled { background-color: var(--sakai-background-color-4);
+      input.resource-search__input:disabled { background-color: var(--sakai-background-color-4);
         color: var(--sakai-text-color-disabled); border-color: var(--sakai-border-color); }
-      input.form-control:focus-visible { outline-color: var(--focus-outline-color); }
+      input.resource-search__input:focus-visible { outline-color: var(--focus-outline-color); }
       .resource-list { list-style: none; padding: 0; margin: 0.5rem 0 1rem; }
       .resource-list li { display: flex; align-items: center; gap: 0.75rem;
         padding-block: 0.5rem; border-block-end: 1px solid var(--sakai-border-color); }
@@ -45,6 +46,14 @@ export class SakaiSiteStatsResourceSearch extends SakaiShadowElement {
       .resource-name, .resource-location { display: block; }
       .resource-location { color: var(--sakai-text-color-2); }
       button { flex-shrink: 0; min-height: 2.5rem; font: inherit; }
+      .resource-search__button { padding: 0.25rem 0.75rem; border: 1px solid var(--button-border-color);
+        border-radius: var(--sakai-radius-md); background: var(--button-background);
+        color: var(--button-text-color); font-weight: 600; cursor: pointer; }
+      .resource-search__button:hover { background: var(--button-hover-background);
+        border-color: var(--button-hover-border-color); color: var(--button-hover-text-color); }
+      .resource-search__button:disabled { background: var(--button-disabled-background);
+        border-color: var(--button-disabled-border-color); color: var(--button-disabled-text-color);
+        cursor: not-allowed; }
       button:focus-visible, input:focus-visible { outline: 2px solid var(--sakai-active-color-1);
         outline-offset: 2px; }
       .pages { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-block-end: 1rem; }
@@ -241,13 +250,13 @@ export class SakaiSiteStatsResourceSearch extends SakaiShadowElement {
     return html`
       <fieldset ?disabled=${this._disabled}>
         <label for="resource-query">${this._i18n.resource_search_label}</label>
-        <input id="resource-query" class="form-control" type="search" maxlength="256"
+        <input id="resource-query" class="resource-search__input" type="search" maxlength="256"
                aria-describedby="resource-search-status" autocomplete="off" .value=${this._query}
                @input=${this._queryChanged}
                @keydown=${event => { if (event.key === "Enter" && !event.isComposing) event.preventDefault(); }}>
         <p id="resource-search-status" class="status" role="status" aria-live="polite">${this._status()}</p>
         ${this._state === "error" ? html`
-          <button class="btn btn-secondary" type="button" @click=${() => this._loadResources()}>
+          <button class="resource-search__button" type="button" @click=${() => this._loadResources()}>
             ${this._i18n.resource_search_retry}
           </button>` : nothing}
         <ul id="resource-results" class="resource-list" aria-busy=${String(this._state === "searching")}>
@@ -257,7 +266,7 @@ export class SakaiSiteStatsResourceSearch extends SakaiShadowElement {
                 <span class="resource-name">${resource.label}</span>
                 <span class="resource-location">${resource.location}</span>
               </span>
-              <button class="btn btn-secondary" type="button" ?disabled=${selectedIds.has(resource.id)}
+              <button class="resource-search__button" type="button" ?disabled=${selectedIds.has(resource.id)}
                       aria-label=${this.tr("resource_search_add_named", [ resource.label, resource.location ])}
                       @click=${() => this._add(resource)}>
                 ${selectedIds.has(resource.id) ? this._i18n.resource_search_selected : this._i18n.resource_search_add}
@@ -274,16 +283,16 @@ export class SakaiSiteStatsResourceSearch extends SakaiShadowElement {
                 ${resource.location ? html`<span class="resource-location">${resource.location}</span>` : nothing}
                 ${resource.legacyCollection ? html`<span>${this._i18n.resource_search_legacy_collection}</span>` : nothing}
               </span>
-              <button class="btn btn-secondary" type="button"
+              <button class="resource-search__button" type="button"
                       aria-label=${this.tr("resource_search_remove_named", [ resource.label ])}
                       @click=${() => this._remove(resource, index)}>${this._i18n.resource_search_remove}</button>
             </li>`)}
         </ul>
         ${this._selected.length > SELECTED_PAGE_SIZE ? html`
           <div class="pages">
-            <button class="btn btn-secondary" type="button" ?disabled=${this._selectedPage === 0}
+            <button class="resource-search__button" type="button" ?disabled=${this._selectedPage === 0}
                     @click=${() => this._selectedPage--}>${this._i18n.resource_search_previous_selected}</button>
-            <button class="btn btn-secondary" type="button" ?disabled=${(this._selectedPage + 1) * SELECTED_PAGE_SIZE >= this._selected.length}
+            <button class="resource-search__button" type="button" ?disabled=${(this._selectedPage + 1) * SELECTED_PAGE_SIZE >= this._selected.length}
                     @click=${() => this._selectedPage++}>${this._i18n.resource_search_more_selected}</button>
           </div>` : nothing}
       </fieldset>

@@ -2,10 +2,10 @@
 <html xmlns:th="http://www.thymeleaf.org" th:lang="${locale}">
 <head th:replace="~{fragments/common :: head(#{menu_overview})}"></head>
 <body>
-<main class="portletBody container-fluid">
-  <div th:replace="~{fragments/common :: menu('overview')}"></div>
-  <h1 class="h3 mt-3" th:text="#{menu_overview}">Overview</h1>
-  <div class="sak-banner-info" role="status"
+<main class="portletBody sakai-tool-body sakai-sitestats">
+  <div th:replace="~{fragments/common :: toolHeader(#{menu_overview}, 'overview')}"></div>
+  <div th:replace="~{fragments/common :: messages}"></div>
+  <div class="sakai-banner sakai-banner--info" role="status"
        th:if="${#lists.isEmpty(overview.widgets)}"
        th:text="#{sitestats_no_statistics}">
     No statistics are available for this site.
@@ -46,29 +46,29 @@
         <span slot="title" th:text="${tab.title}">Report</span>
         <div slot="filter" class="sitestats-widget-filter" th:each="filter : ${tab.filters}"
              th:hidden="${filter.id == 'whenFrom' or filter.id == 'whenTo'}">
-          <label class="form-label"
+          <label class="sakai-form-label"
                  th:for="${'filter-' + widget.id + '-' + tab.id + '-' + filter.id}"
                  th:text="${filter.label}"></label>
-          <select class="form-select form-select-sm"
+          <select class="sakai-form-control sakai-form-control--sm"
                   th:if="${filter.type == null or filter.type == 'select'}"
                   th:id="${'filter-' + widget.id + '-' + tab.id + '-' + filter.id}"
                   th:attr="data-report-filter=${filter.id}">
             <option th:each="option : ${filter.options}"
                     th:value="${option.value}" th:text="${option.label}"></option>
           </select>
-          <input class="form-control form-control-sm"
+          <input class="sakai-form-control sakai-form-control--sm"
                  th:if="${filter.type == 'number'}"
                  type="number"
                  th:id="${'filter-' + widget.id + '-' + tab.id + '-' + filter.id}"
                  th:value="${filter.value}"
                  th:attr="data-report-filter=${filter.id}">
-          <input class="form-control form-control-sm"
+          <input class="sakai-form-control sakai-form-control--sm"
                  th:if="${filter.type == 'date'}"
                  type="date"
                  th:id="${'filter-' + widget.id + '-' + tab.id + '-' + filter.id}"
                  th:value="${filter.value}"
                  th:attr="data-report-filter=${filter.id}">
-          <input class="form-control form-control-sm"
+          <input class="sakai-form-control sakai-form-control--sm"
                  th:if="${filter.type == 'text'}"
                  type="text"
                  th:id="${'filter-' + widget.id + '-' + tab.id + '-' + filter.id}"

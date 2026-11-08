@@ -7,9 +7,11 @@
   <th:block th:utext="${sakaiHtmlHead}"></th:block>
 </head>
 <body>
-<main class="portletBody container-fluid">
-  <h1 class="h3" th:text="${errorTitle}">SiteStats error</h1>
-  <div class="sak-banner-error" role="alert" th:text="${error}">
+<main class="portletBody sakai-tool-body sakai-sitestats">
+  <header class="sakai-tool-header">
+    <h1 class="sakai-tool-header__title" th:text="${errorTitle}">SiteStats error</h1>
+  </header>
+  <div class="sakai-banner sakai-banner--error" role="alert" th:text="${error}">
     The operation could not be completed. Try again.
   </div>
 </main>

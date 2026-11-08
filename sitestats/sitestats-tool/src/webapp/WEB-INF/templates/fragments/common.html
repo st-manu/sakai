@@ -6,25 +6,101 @@
   <title th:text="${title}">SiteStats</title>
   <th:block th:utext="${sakaiHtmlHead}"></th:block>
   <script type="module" th:src="@{~/webcomponents/bundles/sitestats.js} + ${cdnQuery}"></script>
-  <script type="module" th:src="@{/js/sitestats-tool.js}"></script>
+  <script type="module" th:src="@{/js/sitestats-tool.js} + ${cdnQuery}"></script>
 </head>
 <body>
-  <nav th:fragment="menu(active)" th:if="${toolMenuAvailable}" class="navIntraTool actionToolBar navIntraToolMobile" aria-label="SiteStats">
-    <div class="dropdown-toggle dropdown-navIntraTool" th:text="#{menu_tooloptions}">Tool Options</div>
-    <ul>
-      <li th:if="${!adminTool}"><a th:classappend="${active == 'overview'} ? ' current'" th:attr="aria-current=${active == 'overview'} ? 'page' : null" th:href="@{/home(siteId=${siteId})}" th:text="#{menu_overview}">Overview</a></li>
-      <li th:if="${!adminTool}"><a th:classappend="${active == 'reports'} ? ' current'" th:attr="aria-current=${active == 'reports'} ? 'page' : null" th:href="@{/reports(siteId=${siteId})}" th:text="#{menu_reports}">Reports</a></li>
-      <li th:if="${!adminTool and userActivityAvailable}"><a th:classappend="${active == 'useractivity'} ? ' current'" th:attr="aria-current=${active == 'useractivity'} ? 'page' : null" th:href="@{/useractivity(siteId=${siteId})}" th:text="#{menu_useractivity}">User Activity</a></li>
-      <li th:if="${!adminTool}"><a th:classappend="${active == 'preferences'} ? ' current'" th:attr="aria-current=${active == 'preferences'} ? 'page' : null" th:href="@{/preferences(siteId=${siteId})}" th:text="#{menu_prefs}">Preferences</a></li>
-      <li th:if="${adminTool}"><a th:classappend="${active == 'summary'} ? ' current'" th:attr="aria-current=${active == 'summary'} ? 'page' : null" th:href="@{/summary}" th:text="#{menu_summary}">Summary</a></li>
-      <li th:if="${adminTool}"><a th:classappend="${active == 'admin'} ? ' current'" th:attr="aria-current=${active == 'admin'} ? 'page' : null" th:href="@{/admin}" th:text="#{menu_sitelist}">Sites</a></li>
-      <li th:if="${adminTool}"><a th:classappend="${active == 'serverwide'} ? ' current'" th:attr="aria-current=${active == 'serverwide'} ? 'page' : null" th:href="@{/serverwide(siteId=${siteId})}" th:text="#{menu_serverwide}">Server-wide</a></li>
-    </ul>
-  </nav>
 
-  <div th:fragment="messages" aria-live="polite">
-    <div th:if="${success}" class="sak-banner-success" role="status" th:text="${success}"></div>
-    <div th:if="${error}" class="sak-banner-error" role="alert" th:text="${error}"></div>
-  </div>
+<div th:fragment="toolHeader(title, current)">
+  <header class="sakai-tool-header">
+    <a th:if="${current == 'report-view' or current == 'report-edit'}" class="sakai-back-link"
+       th:href="@{/reports(siteId=${siteId})}">
+      <span class="si si-arrow-left" aria-hidden="true"></span>
+      <span th:text="#{report_back}">Back</span>
+    </a>
+    <a th:if="${current == 'useractivity-details'}" class="sakai-back-link"
+       th:href="@{/useractivity(siteId=${siteId})}">
+      <span class="si si-arrow-left" aria-hidden="true"></span>
+      <span th:text="#{useractivity_back}">Back</span>
+    </a>
+    <h1 class="sakai-tool-header__title" th:text="${title}">Statistics</h1>
+    <div th:if="${current == 'reports' or current == 'report-view'}"
+         class="sakai-tool-header__actions sakai-no-print" role="group"
+         th:attr="aria-label=#{menu_tooloptions}">
+      <th:block th:replace="~{fragments/common :: toolActions(${current})}"></th:block>
+    </div>
+  </header>
+
+  <nav th:if="${toolMenuAvailable and !#lists.contains({'report-edit', 'report-view', 'useractivity-details'}, current)}"
+       class="sakai-tool-nav" th:attr="aria-label=#{menu_tooloptions}">
+    <th:block th:unless="${adminTool}">
+      <a class="sakai-tool-nav__btn" th:classappend="${activeMenu == 'overview'} ? 'is-active'"
+         th:attr="aria-current=${activeMenu == 'overview'} ? 'page' : null"
+         th:href="@{/home(siteId=${siteId})}" th:text="#{menu_overview}">Overview</a>
+      <a class="sakai-tool-nav__btn" th:classappend="${activeMenu == 'reports'} ? 'is-active'"
+         th:attr="aria-current=${activeMenu == 'reports'} ? 'page' : null"
+         th:href="@{/reports(siteId=${siteId})}" th:text="#{menu_reports}">Reports</a>
+      <a th:if="${userActivityAvailable}" class="sakai-tool-nav__btn"
+         th:classappend="${activeMenu == 'useractivity'} ? 'is-active'"
+         th:attr="aria-current=${activeMenu == 'useractivity'} ? 'page' : null"
+         th:href="@{/useractivity(siteId=${siteId})}" th:text="#{menu_useractivity}">User Activity</a>
+      <a class="sakai-tool-nav__btn" th:classappend="${activeMenu == 'preferences'} ? 'is-active'"
+         th:attr="aria-current=${activeMenu == 'preferences'} ? 'page' : null"
+         th:href="@{/preferences(siteId=${siteId})}" th:text="#{menu_prefs}">Preferences</a>
+    </th:block>
+    <th:block th:if="${adminTool}">
+      <a class="sakai-tool-nav__btn" th:classappend="${activeMenu == 'summary'} ? 'is-active'"
+         th:attr="aria-current=${activeMenu == 'summary'} ? 'page' : null"
+         th:href="@{/summary}" th:text="#{menu_summary}">Summary</a>
+      <a class="sakai-tool-nav__btn" th:classappend="${activeMenu == 'admin'} ? 'is-active'"
+         th:attr="aria-current=${activeMenu == 'admin'} ? 'page' : null"
+         th:href="@{/admin}" th:text="#{menu_sitelist}">All sites</a>
+      <a class="sakai-tool-nav__btn" th:classappend="${activeMenu == 'serverwide'} ? 'is-active'"
+         th:attr="aria-current=${activeMenu == 'serverwide'} ? 'page' : null"
+         th:href="@{/serverwide(siteId=${siteId})}" th:text="#{menu_serverwide}">Server-wide Reports</a>
+    </th:block>
+  </nav>
+</div>
+
+<th:block th:fragment="toolActions(current)">
+  <a th:if="${current == 'reports'}" class="sakai-btn sakai-btn-primary"
+     th:href="@{/reports/new(siteId=${siteId})}">
+    <span class="si si-add" aria-hidden="true"></span>
+    <span th:text="#{report_new}">Add</span>
+  </a>
+  <button th:if="${current == 'report-view'}" id="print-report" type="button"
+          class="sakai-btn sakai-btn-primary sakai-no-print"
+          th:text="#{report_print}">Print report</button>
+
+  <details th:if="${current == 'report-view'}" class="sakai-overflow-menu">
+    <summary class="sakai-btn sakai-btn-ghost sakai-overflow-menu__toggle"
+             th:attr="aria-label=#{more_actions}">
+      <span class="si si-three-dots" aria-hidden="true"></span>
+    </summary>
+    <div class="sakai-overflow-menu__panel">
+      <th:block th:if="${preview}">
+        <a th:href="@{/reports/preview/{id}/export/xls(id=${previewId},siteId=${siteId})}"
+           th:text="#{bt_export_excel}">Export XLS</a>
+        <a th:href="@{/reports/preview/{id}/export/csv(id=${previewId},siteId=${siteId})}"
+           th:text="#{bt_export_csv}">Export CSV</a>
+        <a th:href="@{/reports/preview/{id}/export/pdf(id=${previewId},siteId=${siteId})}"
+           th:text="#{bt_export_pdf}">Export PDF</a>
+      </th:block>
+      <th:block th:unless="${preview}">
+        <a th:href="@{/reports/{id}/export/xls(id=${report.id},siteId=${siteId})}"
+           th:text="#{bt_export_excel}">Export XLS</a>
+        <a th:href="@{/reports/{id}/export/csv(id=${report.id},siteId=${siteId})}"
+           th:text="#{bt_export_csv}">Export CSV</a>
+        <a th:href="@{/reports/{id}/export/pdf(id=${report.id},siteId=${siteId})}"
+           th:text="#{bt_export_pdf}">Export PDF</a>
+      </th:block>
+    </div>
+  </details>
+</th:block>
+
+<div th:fragment="messages" aria-live="polite">
+  <div th:if="${success}" class="sakai-banner sakai-banner--success" role="status" th:text="${success}"></div>
+  <div th:if="${error}" class="sakai-banner sakai-banner--error" role="alert" th:text="${error}"></div>
+</div>
+
 </body>
 </html>

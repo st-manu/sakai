@@ -51,6 +51,20 @@ export class SakaiSiteStatsReportPanel extends SakaiShadowElement {
         padding: 1rem;
         background: var(--sakai-background-color-2, #f8f9fb);
       }
+
+      .error {
+        border: 1px solid var(--errorBanner-bordercolor, #d8dde6);
+        padding: 0.75rem 1rem;
+        border-radius: var(--sakai-radius-md, 0.375rem);
+        background: var(--errorBanner-bgcolor, #f8f9fb);
+        color: var(--errorBanner-color, #7a1f1f);
+      }
+
+      @container sakai-tool (max-width: 40rem) {
+        .summary {
+          grid-template-columns: 1fr;
+        }
+      }
     `
   ];
 
@@ -93,7 +107,7 @@ export class SakaiSiteStatsReportPanel extends SakaiShadowElement {
         ? this.tr("failed_to_load_statistics", [ this._errorStatus ])
         : this._i18n.failed_to_load_statistics_unknown;
 
-      return html`<div class="sak-banner-error" role="alert">${message}</div>`;
+      return html`<div class="error" role="alert">${message}</div>`;
     }
 
     if (!this._report) {

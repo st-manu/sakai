@@ -111,7 +111,7 @@ class SiteStatsTest extends SakaiUiTestBase {
             ".sitestats-widget-tab[endpoint*='/widgets/visits/tabs/bydate']");
         assertThat(widgetTab).hasCount(1);
         widgetTab.locator("summary").click();
-        widgetTab.getByLabel("Period:").selectOption("when-all");
+        widgetTab.getByLabel("Period").selectOption("when-all");
 
         Locator reportPanel = widgetTab.locator("sakai-sitestats-report-panel");
         assertThat(reportPanel).isVisible();
@@ -128,7 +128,7 @@ class SiteStatsTest extends SakaiUiTestBase {
         Locator visitsWidget = page.locator(".sitestats-widget")
             .filter(new Locator.FilterOptions().setHas(widgetTab));
         assertTrue(visitsWidget.locator("sakai-sitestats-highlights").count() <= 1);
-        widgetTab.getByLabel("Period:").selectOption("when-custom");
+        widgetTab.getByLabel("Period").selectOption("when-custom");
         assertThat(widgetTab.locator("[data-report-filter='whenFrom']")).isVisible();
         assertThat(widgetTab.locator("[data-report-filter='whenTo']")).isVisible();
         assertFalse(widgetTab.locator("[data-report-filter='whenFrom']").inputValue().isEmpty());
@@ -269,11 +269,11 @@ class SiteStatsTest extends SakaiUiTestBase {
         page.getByRole(AriaRole.LINK,
             new Page.GetByRoleOptions().setName(Pattern.compile("^Add$", Pattern.CASE_INSENSITIVE))).click();
         page.getByLabel("Title").fill(REPORT_TITLE);
-        page.getByLabel("Period:").selectOption("when-custom");
+        page.getByLabel("Period").selectOption("when-custom");
         page.locator("#when-from").fill("");
         page.locator("#when-to").fill("");
 
-        Locator validationError = page.locator(".sak-banner-error[role='alert']");
+        Locator validationError = page.locator(".sakai-banner--error[role='alert']");
         for (String action : List.of("Save report", "Generate report")) {
             page.getByRole(AriaRole.BUTTON,
                 new Page.GetByRoleOptions().setName(Pattern.compile("^" + action + "$", Pattern.CASE_INSENSITIVE)))
@@ -292,53 +292,53 @@ class SiteStatsTest extends SakaiUiTestBase {
             new Page.GetByRoleOptions().setName(Pattern.compile("^Add$", Pattern.CASE_INSENSITIVE)));
         addReportLink.click();
 
-        Locator activity = page.getByLabel("Activity:");
+        Locator activity = page.getByLabel("Activity");
         assertThat(activity).isVisible();
         assertThat(activity.locator("option[value='what-resources']")).hasCount(0);
         assertThat(page.locator("#event-options")).isHidden();
         activity.selectOption("what-events");
         assertThat(page.locator("#event-options")).isVisible();
         assertThat(page.locator("#tool-selection")).isVisible();
-        page.getByLabel("Selection:").selectOption(new SelectOption().setLabel("Select by event"));
+        page.getByLabel("Selection").selectOption(new SelectOption().setLabel("Select by event"));
         assertThat(page.locator("#tool-selection")).isHidden();
         assertThat(page.locator("#event-selection-list")).isVisible();
 
         assertThat(page.locator("#custom-dates")).isHidden();
-        page.getByLabel("Period:").selectOption("when-custom");
+        page.getByLabel("Period").selectOption("when-custom");
         assertThat(page.locator("#custom-dates")).isVisible();
         assertThat(page.locator("#who-role-options")).isHidden();
-        page.getByLabel("Users:").selectOption("who-role");
+        page.getByLabel("Users").selectOption("who-role");
         assertThat(page.locator("#who-role-options")).isVisible();
-        page.getByLabel("Users:").selectOption("who-custom");
+        page.getByLabel("Users").selectOption("who-custom");
         Locator userSearch = page.getByLabel("Search site users");
         assertThat(userSearch).isVisible();
         userSearch.fill("instructor1");
         Locator userResult = page.locator("#who-user-search-results button").first();
         assertThat(userResult).isVisible();
         userResult.click();
-        assertThat(page.locator("#who-users option:checked")).hasCount(1);
+        assertThat(page.locator("#who-users input:checked")).hasCount(1);
 
         page.getByLabel("Specify sorting field").check();
         assertThat(page.locator("#sorting-options")).isVisible();
-        page.getByLabel("Limit to:").check();
+        page.getByLabel("Limit to").check();
         assertThat(page.locator("#max-results-options")).isVisible();
         Locator maxResults = page.locator("#max-results");
         maxResults.fill("25");
-        page.getByLabel("Limit to:").uncheck();
+        page.getByLabel("Limit to").uncheck();
         assertThat(page.locator("#max-results-options")).isHidden();
-        page.getByLabel("Limit to:").check();
+        page.getByLabel("Limit to").check();
         assertThat(maxResults).hasValue("25");
         page.getByLabel(Pattern.compile("Presentation", Pattern.CASE_INSENSITIVE)).selectOption("how-presentation-both");
         assertThat(page.locator("#chart-options")).isVisible();
-        page.getByLabel("Chart type:").selectOption("timeseries");
+        page.getByLabel("Chart type").selectOption("timeseries");
         assertThat(page.locator("#chart-source-options")).isHidden();
         assertThat(page.locator("#chart-series-options")).isVisible();
 
         activity.selectOption("what-visits");
-        page.getByLabel("Period:").selectOption("when-last7days");
-        page.getByLabel("Users:").selectOption("who-all");
+        page.getByLabel("Period").selectOption("when-last7days");
+        page.getByLabel("Users").selectOption("who-all");
         page.getByLabel("Specify sorting field").uncheck();
-        page.getByLabel("Limit to:").uncheck();
+        page.getByLabel("Limit to").uncheck();
         page.getByLabel("Title").fill(REPORT_TITLE);
         page.getByLabel("Description").fill(REPORT_DESC);
         page.getByLabel(Pattern.compile("Presentation", Pattern.CASE_INSENSITIVE)).selectOption("how-presentation-both");
@@ -362,7 +362,7 @@ class SiteStatsTest extends SakaiUiTestBase {
         assertThat(page.locator("#report-editor")).isVisible();
         assertThat(page.getByLabel("Title")).hasValue(REPORT_TITLE);
         assertThat(page.getByLabel("Description")).hasValue(REPORT_DESC);
-        assertThat(page.getByLabel("Period:")).hasValue("when-last7days");
+        assertThat(page.getByLabel("Period")).hasValue("when-last7days");
         assertThat(page.getByLabel(Pattern.compile("Presentation", Pattern.CASE_INSENSITIVE)))
             .hasValue("how-presentation-both");
         page.reload();
@@ -381,10 +381,11 @@ class SiteStatsTest extends SakaiUiTestBase {
         page.getByRole(AriaRole.BUTTON,
             new Page.GetByRoleOptions().setName(Pattern.compile("^Save report$", Pattern.CASE_INSENSITIVE))).click();
 
-        assertThat(page.locator(".sak-banner-success")).containsText(
+        assertThat(page.locator(".sakai-banner--success")).containsText(
             "Report '" + SAVED_REPORT_TITLE + "' saved successfully");
         assertThat(page.getByRole(AriaRole.HEADING,
             new Page.GetByRoleOptions().setName(SAVED_REPORT_TITLE))).isVisible();
+        page.locator(".sakai-tool-header__actions summary.sakai-overflow-menu__toggle").click();
         Download csv = page.waitForDownload(() -> page.getByRole(AriaRole.LINK,
             new Page.GetByRoleOptions().setName(Pattern.compile("Export CSV", Pattern.CASE_INSENSITIVE))).click());
         assertTrue(csv.suggestedFilename().endsWith(".csv"));
@@ -392,6 +393,7 @@ class SiteStatsTest extends SakaiUiTestBase {
         page.getByRole(AriaRole.LINK,
             new Page.GetByRoleOptions().setName(Pattern.compile("^Back$", Pattern.CASE_INSENSITIVE))).click();
         Locator savedRow = page.getByRole(AriaRole.ROW).filter(new Locator.FilterOptions().setHasText(SAVED_REPORT_TITLE));
+        openReportRowMenu(savedRow);
         savedRow.getByRole(AriaRole.LINK,
             new Locator.GetByRoleOptions().setName(Pattern.compile("^Edit$", Pattern.CASE_INSENSITIVE))).click();
         page.getByLabel("Title").fill(SAVED_REPORT_TITLE + " Edited");
@@ -402,6 +404,7 @@ class SiteStatsTest extends SakaiUiTestBase {
 
         Locator editedRow = page.getByRole(AriaRole.ROW)
             .filter(new Locator.FilterOptions().setHasText(SAVED_REPORT_TITLE + " Edited"));
+        openReportRowMenu(editedRow);
         editedRow.getByRole(AriaRole.BUTTON,
             new Locator.GetByRoleOptions().setName(Pattern.compile("^Duplicate$", Pattern.CASE_INSENSITIVE))).click();
         assertThat(page.getByText("The report was copied.")).isVisible();
@@ -411,10 +414,19 @@ class SiteStatsTest extends SakaiUiTestBase {
         Locator deleteButtons = page.getByRole(AriaRole.BUTTON,
             new Page.GetByRoleOptions().setName(Pattern.compile("^Delete$", Pattern.CASE_INSENSITIVE)));
         assertThat(deleteButtons).hasCount(2);
-        deleteButtons.first().click();
-        page.getByRole(AriaRole.BUTTON,
-            new Page.GetByRoleOptions().setName(Pattern.compile("^Delete$", Pattern.CASE_INSENSITIVE))).click();
+        Locator firstReportRow = page.locator("main.portletBody table tbody tr").first();
+        openReportRowMenu(firstReportRow);
+        firstReportRow.getByRole(AriaRole.BUTTON,
+            new Locator.GetByRoleOptions().setName(Pattern.compile("^Delete$", Pattern.CASE_INSENSITIVE))).click();
+        firstReportRow = page.locator("main.portletBody table tbody tr").first();
+        openReportRowMenu(firstReportRow);
+        firstReportRow.getByRole(AriaRole.BUTTON,
+            new Locator.GetByRoleOptions().setName(Pattern.compile("^Delete$", Pattern.CASE_INSENSITIVE))).click();
         assertThat(page.getByText("No reports defined.")).isVisible();
+    }
+
+    private void openReportRowMenu(Locator row) {
+        row.locator("summary.sakai-overflow-menu__toggle").click();
     }
 
     @Test
@@ -525,7 +537,7 @@ class SiteStatsTest extends SakaiUiTestBase {
         page.getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("Reports").setExact(true)).click();
         page.getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("Add").setExact(true)).click();
         page.getByLabel("Title").fill(REPORT_TITLE + " Resources");
-        page.getByLabel("Activity:").selectOption("what-resources");
+        page.getByLabel("Activity").selectOption("what-resources");
         assertThat(page.locator("#resource-selection")).isHidden();
         page.locator("#limit-resources").check();
         Locator component = page.locator("sakai-sitestats-resource-search");
@@ -582,14 +594,14 @@ class SiteStatsTest extends SakaiUiTestBase {
         assertThat(page.locator("#resource-ids")).hasCount(0);
         assertThat(component).not().containsText(root);
         assertThat(component.locator("select")).hasCount(0);
-        page.getByLabel("Period:").selectOption("when-custom");
+        page.getByLabel("Period").selectOption("when-custom");
         page.locator("#when-from").fill("");
         page.locator("#when-to").fill("");
         page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Save report").setExact(true)).click();
         assertThat(page.locator("#report-error")).containsText("Custom time period not defined");
         assertResourceFormValue(selectedIds);
         assertThat(component.locator("#selected-resources li")).hasCount(2);
-        page.getByLabel("Period:").selectOption("when-all");
+        page.getByLabel("Period").selectOption("when-all");
         page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Generate report").setExact(true)).click();
         assertThat(page.getByRole(AriaRole.HEADING,
             new Page.GetByRoleOptions().setName(REPORT_TITLE + " Resources").setExact(true))).isVisible();
@@ -599,7 +611,7 @@ class SiteStatsTest extends SakaiUiTestBase {
         // An unfinished query must not replace the filters already selected in the form.
         component.getByLabel("Search resources").fill("unfinished query");
         page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Save report").setExact(true)).click();
-        assertThat(page.locator(".sak-banner-success")).containsText("saved successfully");
+        assertThat(page.locator(".sakai-banner--success")).containsText("saved successfully");
         page.getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("Back").setExact(true)).click();
         page.getByRole(AriaRole.ROW).filter(new Locator.FilterOptions().setHasText(REPORT_TITLE + " Resources"))
             .getByRole(AriaRole.LINK, new Locator.GetByRoleOptions().setName("Edit").setExact(true)).click();
@@ -614,6 +626,34 @@ class SiteStatsTest extends SakaiUiTestBase {
         page.locator("#limit-resources").check();
         assertResourceFormValue(selectedIds);
         assertThat(component.locator("#selected-resources li")).hasCount(2);
+    }
+
+    @Test
+    @Order(13)
+    void overviewChartsStayWithinTheirWidgetsWhenTheViewportNarrows() {
+        sakai.login("instructor1");
+        page.navigate(sakaiUrl);
+        sakai.toolClick("Statistics");
+
+        Locator widgetTab = page.locator(".sitestats-widget-tab[endpoint*='/widgets/visits/tabs/bydate']");
+        widgetTab.locator("summary").click();
+        Locator widget = page.locator(".sitestats-widget")
+            .filter(new Locator.FilterOptions().setHas(widgetTab));
+        Locator chart = widget.locator("sakai-sitestats-chart").first();
+        assertThat(chart).isVisible();
+        assertThat(chart.locator("canvas")).hasCount(1);
+
+        page.setViewportSize(720, 900);
+        page.waitForCondition(() -> (Boolean) widget.evaluate("el => el.scrollWidth <= el.clientWidth + 1"));
+
+        assertTrue((Boolean) widget.evaluate(
+            "el => el.getBoundingClientRect().right <= el.parentElement.getBoundingClientRect().right + 1"),
+            "The widget must not overflow its grid container after narrowing the viewport");
+        double chartWidth = (Double) chart.evaluate(
+            "chart => chart.shadowRoot.querySelector('.chart-frame').getBoundingClientRect().width");
+        double widgetWidth = (Double) widget.evaluate("el => el.getBoundingClientRect().width");
+        assertTrue(chartWidth <= widgetWidth + 1,
+            "The chart must resize inside its widget after narrowing the viewport");
     }
 
     private String themeColor(Locator input, String token) {

@@ -2,70 +2,68 @@
 <html xmlns:th="http://www.thymeleaf.org" th:lang="${locale}">
 <head th:replace="~{fragments/common :: head(#{menu_useractivity})}"></head>
 <body>
-<main class="portletBody container-fluid">
-  <div th:replace="~{fragments/common :: menu('useractivity')}"></div>
-  <h1 class="h3 mt-3" th:text="#{menu_useractivity}">User Activity</h1>
-  <p class="instruction" th:text="#{de_introBlurb}"></p>
+<main class="portletBody sakai-tool-body sakai-sitestats">
+  <div th:replace="~{fragments/common :: toolHeader(#{menu_useractivity}, 'useractivity')}"></div>
+  <div th:replace="~{fragments/common :: messages}"></div>
+  <p class="sitestats-intro" th:text="#{de_introBlurb}"></p>
   <search>
-    <form method="get" class="row g-3 align-items-end"
+    <form method="get" class="sitestats-filter-form"
           th:action="@{/useractivity}" th:object="${userActivityForm}">
       <input type="hidden" name="siteId" th:value="${siteId}"/>
-      <div class="col-12 col-md-6">
-        <label class="form-label" for="activity-user" th:text="#{de_userFilter}">User</label>
-        <select id="activity-user" class="form-select" th:field="*{userId}" required>
+      <div class="sakai-form-field">
+        <label class="sakai-form-label required" for="activity-user" th:text="#{de_userFilter}">User</label>
+        <select id="activity-user" class="sakai-form-control" th:field="*{userId}" required>
           <option value="" th:text="#{de_select_user}">Select user</option>
           <option th:each="user : ${activity.users}"
                   th:value="${user.id}" th:text="${user.displayName}"></option>
         </select>
       </div>
-      <div class="col-12 col-md-6">
-        <label class="form-label" for="activity-tool" th:text="#{de_eventFilter}">Tool</label>
-        <select id="activity-tool" class="form-select" th:field="*{toolId}">
+      <div class="sakai-form-field">
+        <label class="sakai-form-label" for="activity-tool" th:text="#{de_eventFilter}">Tool</label>
+        <select id="activity-tool" class="sakai-form-control" th:field="*{toolId}">
           <option th:each="tool : ${activity.tools}"
                   th:value="${tool.id}" th:text="${tool.label}"></option>
         </select>
       </div>
-      <div class="col-12 col-md-4">
-        <label class="form-label" for="start-date" th:text="#{de_dateRangeFrom}">From</label>
-        <input id="start-date" class="form-control" type="date" th:field="*{startDate}" required/>
+      <div class="sakai-form-field">
+        <label class="sakai-form-label required" for="start-date" th:text="#{de_dateRangeFrom}">From</label>
+        <input id="start-date" class="sakai-form-control" type="date" th:field="*{startDate}" required/>
       </div>
-      <div class="col-12 col-md-4">
-        <label class="form-label" for="end-date" th:text="#{de_dateRangeTo}">To</label>
-        <input id="end-date" class="form-control" type="date" th:field="*{endDate}" required/>
+      <div class="sakai-form-field">
+        <label class="sakai-form-label required" for="end-date" th:text="#{de_dateRangeTo}">To</label>
+        <input id="end-date" class="sakai-form-control" type="date" th:field="*{endDate}" required/>
       </div>
-      <div class="col-12 col-md-4">
-        <button class="btn btn-primary" type="submit" th:text="#{de_search}">Search activity</button>
+      <div class="sakai-form-field sitestats-filter-form__actions">
+        <button class="sakai-btn sakai-btn-primary" type="submit" th:text="#{de_search}">Search activity</button>
       </div>
     </form>
   </search>
-  <div class="sak-banner-info mt-4" role="status"
+  <div class="sakai-banner sakai-banner--info" role="status"
        th:if="${userActivityForm.userId != 'who-none' and #lists.isEmpty(activity.events)}"
        th:text="#{sitestats_no_activity}">
     No activity matched these filters.
   </div>
-  <div class="table-responsive mt-4" th:if="${!#lists.isEmpty(activity.events)}">
-    <table class="table table-striped">
-      <caption class="visually-hidden" th:text="#{sitestats_activity_caption}">
-        User activity events
-      </caption>
+  <div class="sakai-table-wrap" th:if="${!#lists.isEmpty(activity.events)}">
+    <table class="sakai-table sakai-table--hover sakai-table--stack">
+      <caption class="visually-hidden" th:text="#{sitestats_activity_caption}">User activity events</caption>
       <thead>
         <tr>
           <th scope="col" th:text="#{th_date}">Date</th>
           <th scope="col" th:text="#{th_event}">Event</th>
           <th scope="col" th:text="#{sitestats_reference}">Reference</th>
-          <th scope="col">
+          <th scope="col" class="sakai-table__actions">
             <span class="visually-hidden" th:text="#{th_action}">Actions</span>
           </th>
         </tr>
       </thead>
       <tbody>
         <tr th:each="event : ${activity.events}">
-          <td>
+          <td class="sakai-table__nowrap" th:attr="data-label=#{th_date}">
             <time th:datetime="${event.timestamp}" th:text="${event.displayTimestamp}"></time>
           </td>
-          <td th:text="${event.label}"></td>
-          <td class="text-break" th:text="${event.reference}"></td>
-          <td>
+          <td th:attr="data-label=#{th_event}" th:text="${event.label}"></td>
+          <td class="sitestats-break" th:attr="data-label=#{sitestats_reference}" th:text="${event.reference}"></td>
+          <td class="sakai-table__actions" th:attr="data-label=#{th_action}">
             <a th:if="${event.resolvable}"
                th:href="@{/useractivity/events/{id}(id=${event.id},siteId=${siteId},userId=${userActivityForm.userId},toolId=${userActivityForm.toolId},startDate=${userActivityForm.startDate},endDate=${userActivityForm.endDate},page=${userActivityForm.page})}"
                th:text="#{de_resultsTable_detailsLink}">View details</a>
@@ -74,7 +72,7 @@
       </tbody>
     </table>
   </div>
-  <nav th:attr="aria-label=#{sitestats_activity_pages}"
+  <nav class="sitestats-pagination" th:attr="aria-label=#{sitestats_activity_pages}"
        th:if="${activity.total > activity.pageSize}">
     <ul class="pagination">
       <li class="page-item" th:classappend="${userActivityForm.page <= 1} ? ' disabled'">
