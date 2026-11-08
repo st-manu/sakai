@@ -58,7 +58,7 @@ class AccessibilityTest extends SakaiUiTestBase {
 
     @Test
     void viewAllSitesPanelOpensAndCloses() {
-        page.locator("#sakai-system-indicators button[title=\"View All Sites\"]").click();
+        page.locator("#sakai-system-indicators button[title=\"View All Sites\"], #sakai-view-all-sites").first().click();
         Locator sidebar = page.locator("#select-site-sidebar");
         assertThat(sidebar).containsText("All Sites");
 

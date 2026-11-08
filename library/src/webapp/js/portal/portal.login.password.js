@@ -6,10 +6,10 @@ class PasswordField {
 
     this._element = element;
     this._icons = config.icons;
-    this._passInput = this._element.querySelector("#pw");
+    this._passInput = this._element.querySelector("input[name='pw']");
     this._showPassCheck = this._element.querySelector("input[type='checkbox']");
     this._showPassCheck.addEventListener("click", this.handleShowPassClick.bind(this));
-    this._showPassIcon = this._element.querySelector(`[for="${this._showPassCheck.id}"] .bi`);
+    this._showPassIcon = this._element.querySelector(`[for="${this._showPassCheck.id}"] .si`);
     window.addEventListener("keydown", this.handleCapslock.bind(this));
   }
 
@@ -37,7 +37,7 @@ class PasswordField {
     if (this._capsLockActive) {
       const indicatorTemplate = `
           <span aria-hidden="true" class="input-group-text" id="${capsLockIndicatorId}">
-              <i class="bi ${this._icons.capsLock}"></i>
+              <i class="si ${this._icons.capsLock}"></i>
           </span>
       `;
       this._element.insertAdjacentHTML("afterbegin", indicatorTemplate);

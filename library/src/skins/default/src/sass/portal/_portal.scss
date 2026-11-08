@@ -1,0 +1,294 @@
+.portal-container {
+  --sakai-sidebar-current-width: var(--portal-nav-sidebar-width);
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: auto auto 1fr auto;
+  grid-template-areas:
+      "paBanner"
+      "header"
+      "mainContainer"
+      "mobilebar";
+  background-color: var(--sakai-page-background);
+  min-height: 100vh;
+  min-height: 100dvh;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+
+  &.sidebar-collapsed {
+    --sakai-sidebar-current-width: var(--sakai-sidebar-collapsed-width);
+  }
+}
+
+@include media-breakpoint-up(md) {
+
+  .portal-container {
+    grid-template-columns: var(--portal-nav-sidebar-width) 1fr;
+    grid-template-rows: auto 1fr;
+    grid-template-areas:
+        "paBanner paBanner"
+        "sidebar mainContainer";
+    &.sidebar-collapsed {
+      grid-template-columns: var(--sakai-sidebar-collapsed-width) 1fr;
+      grid-template-areas:
+          "paBanner paBanner"
+          "sidebar mainContainer";
+    }
+  }
+  #portal-nav-sidebar {
+    visibility: visible;
+    box-shadow: none;
+    transform: none;
+    a {
+      text-decoration: none;
+    }
+  }
+}
+
+.portal-pasystem {
+  grid-area: paBanner;
+}
+.portal-header {
+  height: var(--portal-header-height);
+  grid-area: header;
+  background-color: var(--top-header-background);
+  border-bottom: 1px solid var(--sakai-border-color);
+}
+
+@import "layout-utils";
+@import "sidebar";
+@import "offcanvas";
+@import "sites-launcher";
+@import "account-launcher";
+@import "main-toolbar";
+@import "page-chrome";
+@import "portal-fabs";
+@import "gateway-nav";
+@import "login";
+
+
+@include media-breakpoint-up(md) {
+  .sakai-sites-launcher__dialog,
+  .sakai-account-launcher__dialog {
+    margin-block: calc(var(--sakai-main-toolbar-height) + var(--sakai-space-2)) var(--sakai-space-4);
+    margin-inline: calc(var(--sakai-sidebar-current-width, var(--portal-nav-sidebar-width)) + var(--sakai-space-4)) auto;
+    max-width: calc(100vw - var(--sakai-sidebar-current-width, var(--portal-nav-sidebar-width)) - (2 * var(--sakai-space-4)));
+  }
+}
+
+
+@include media-breakpoint-down(md) {
+  .portal-main-content .portal-header-breadcrumb {
+      display: flex;
+      margin-bottom: 1rem;
+  }
+}
+
+.portal-header-breadcrumb {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0 var(--sakai-space-1);
+}
+
+.portal-header-breadcrumb-separator,
+.portal-header-breadcrumb-item > a {
+  text-decoration: none;
+  font-weight: 600;
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.portal-header-breadcrumb-separator {
+  font-size: 0.65em;
+  flex-shrink: 0;
+}
+
+.portal-header-breadcrumb-item {
+  flex: 0 1 auto;
+  white-space: nowrap;
+  min-width: 0;
+  max-width: min(14rem, 70%);
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.portal-header-breadcrumb-item > a:focus-visible,
+.portal-header-breadcrumb__all-sites:focus-visible {
+  outline: var(--sakai-focus-ring-width) solid var(--sakai-focus-ring-color);
+  outline-offset: 2px;
+  border-radius: var(--sakai-radius-sm);
+}
+
+.portal-header-breadcrumb__all-sites {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sakai-space-1);
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-weight: 600;
+  line-height: inherit;
+  cursor: pointer;
+
+  .si {
+    font-size: 1em;
+    color: var(--sakai-text-color-dimmed);
+  }
+
+  &:hover {
+    text-decoration: underline;
+
+    .si {
+      color: inherit;
+    }
+  }
+}
+
+.portal-header-hamburger-button {
+  &:hover {
+    border-color: transparent;
+    box-shadow: none;
+  }
+
+  &:focus-visible {
+    outline: var(--sakai-focus-ring-width) solid var(--sakai-focus-ring-color);
+    outline-offset: 2px;
+    box-shadow: none;
+  }
+}
+@include media-breakpoint-down(md) {
+  .portal-header.sakai-portal-header {
+    justify-content: space-between;
+    box-shadow: none;
+  }
+}
+
+@media screen and (max-width: 560px) {
+  .portal-header-logo img {
+    width: 26vw;
+    height: auto;
+  }
+
+  .portal-main-container.sakai-portal-main {
+    display: block;
+  }
+}
+
+.sakai-accountProfileImage {
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+}
+
+.portal-main-content {
+  outline: none;
+}
+
+.breadcrumb-item + .breadcrumb-item::before {
+  color: var(--sakai-text-color-dimmed);
+}
+
+#xlogin-logo {
+  height: calc(var(--portal-header-height) * 2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .portal-header-logo {
+    height: var(--portal-header-height);
+  }
+}
+@include media-breakpoint-up(md) {
+  .portal-header {
+    .portal-header-logo {
+      width: fit-content;
+      min-width: fit-content;
+      background: var(--top-header-background-logo);
+      border-right: solid 1px var(--top-header-border-color);
+    }
+  }
+}
+.portal-header-logo .sakai-btn-logo {
+  background-image: var(--logo);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  display: inline-block;
+  max-height: var(--logo-height);
+  min-height: var(--logo-height);
+  width: var(--logo-width);
+}
+.portal-header-logo .btn:hover {
+  border-color: transparent;
+}
+
+.portal-notifications-button {
+  position: relative;
+}
+
+@mixin focus-outline($color) {
+  &:focus {
+    box-shadow: 0 0 0 $input-focus-width rgba($color, .5);
+  }
+}
+
+@each $color, $value in $theme-colors {
+  .focus-#{$color} {
+    @include focus-outline($value);
+  }
+}
+
+.sakai-btn-logo {
+  border: none;
+}
+
+.modal-content {
+  background: var(--sakai-modal-content-bg);
+  .modal-header {
+    background: var(--sakai-modal-header-bg);
+    color: var(--sakai-modal-header-color);
+    .btn-close {
+      background-color: var(--sakai-modal-close-btn-bg);
+    }
+  }
+}
+
+div.wicket-modal div.w_caption,
+body div.wicket-modal.w_blue div.w_caption {
+  cursor: move;
+  background: var(--sakai-modal-header-bg);
+  color: var(--sakai-modal-header-color);
+}
+
+#portal-nav-sidebar {
+  grid-area: sidebar;
+
+  .si-hidden {
+    color: var(--sakai-text-color-1);
+  }
+}
+
+.sakai-sitesAndToolsNav * {
+  text-decoration: none;
+}
+
+#create-task {
+  @media (max-width: 460px) {
+    width: 100%;
+  }
+}
+
+.toast-header {
+  color: var(--sakai-text-color-1);
+  background-color: var(--sakai-background-color-3);
+}
+
+.toast-body {
+  color: var(--sakai-text-color-1);
+  background-color: var(--sakai-background-color-2);
+}

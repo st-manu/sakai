@@ -1,0 +1,187 @@
+.sakai-account-launcher.modal {
+  --bs-modal-width: min(20rem, calc(100vw - 2rem));
+  width: 100%;
+}
+
+.sakai-account-launcher__dialog {
+  margin: clamp(0.75rem, 5vh, 4rem) auto 1rem;
+  width: var(--bs-modal-width);
+  max-width: 100%;
+}
+
+@include media-breakpoint-up(md) {
+  body:has(.sakai-account-launcher.show) .modal-backdrop.show {
+    opacity: 0.15;
+  }
+}
+
+.sakai-account-launcher__panel {
+  display: flex;
+  flex-direction: column;
+  max-height: min(36rem, calc(100vh - 3rem));
+  border: 1px solid var(--sakai-border-color);
+  border-radius: var(--sakai-radius-xl);
+  background: var(--sakai-background-color-1);
+  box-shadow: var(--sakai-elevation-toast);
+  overflow: hidden;
+}
+
+.sakai-account-launcher.show .sakai-account-launcher__panel {
+  animation: sakai-account-launcher-in var(--sakai-motion-slow) var(--sakai-motion-ease-out);
+}
+
+@keyframes sakai-account-launcher-in {
+  from {
+    opacity: 0;
+    transform: translateY(-0.5rem) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.sakai-account-launcher__top {
+  display: flex;
+  align-items: center;
+  gap: var(--sakai-space-2);
+  flex-shrink: 0;
+  padding: var(--sakai-space-2) var(--sakai-space-3);
+  border-bottom: 1px solid var(--sakai-border-color);
+}
+
+.sakai-account-launcher__title {
+  margin: 0;
+  margin-inline-end: auto;
+  font-size: var(--sakai-font-size);
+  font-weight: var(--sakai-font-weight-semibold);
+  color: var(--sakai-text-color-1);
+}
+
+.sakai-account-launcher__close {
+  flex: 0 0 auto;
+  margin: 0;
+}
+
+.sakai-account-launcher__body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  padding: var(--sakai-space-3);
+}
+
+.sakai-account-panel__nav {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+
+  .sakai-offcanvas-nav__link {
+    padding-block: var(--sakai-space-2);
+  }
+}
+
+@include media-breakpoint-down(md) {
+  .sakai-account-launcher__dialog {
+    max-width: calc(100vw - (2 * var(--sakai-space-3)));
+    margin: calc(var(--sakai-mobile-header-height) + var(--sakai-space-2)) var(--sakai-space-3) var(--sakai-space-3) auto;
+  }
+
+  .sakai-account-launcher__panel {
+    max-height: calc(100dvh - var(--sakai-mobile-header-height) - var(--sakai-space-2) - var(--sakai-space-3));
+  }
+}
+
+.sakai-account-panel__body {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  gap: var(--sakai-space-2);
+}
+
+.sakai-account-panel__identity {
+  display: flex;
+  align-items: center;
+  gap: var(--sakai-space-3);
+  padding-bottom: var(--sakai-space-3);
+  border-bottom: 1px solid var(--sakai-border-color);
+  text-align: start;
+}
+
+.sakai-account-panel__avatar-wrap {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+}
+
+.sakai-account-panel__avatar {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.sakai-account-panel__avatar--placeholder {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--sakai-background-color-2);
+  color: var(--sakai-text-color-dimmed);
+  font-size: var(--sakai-icon-lg);
+}
+
+.sakai-account-panel__identity-text {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.sakai-account-panel__name {
+  margin: 0;
+  overflow: hidden;
+  font-size: var(--sakai-font-size);
+  font-weight: var(--sakai-font-weight-semibold);
+  line-height: var(--sakai-text-h2-line);
+  color: var(--sakai-text-color-1);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sakai-account-panel__id {
+  margin: 0;
+  overflow: hidden;
+  font-size: var(--sakai-font-size-sm);
+  font-weight: var(--sakai-font-weight-regular);
+  line-height: var(--sakai-text-h2-line);
+  color: var(--sakai-text-color-dimmed);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sakai-account-panel__footer {
+  margin-top: auto;
+  padding-top: var(--sakai-space-2);
+  border-top: 1px solid var(--sakai-border-color);
+}
+
+.sakai-account-panel__logout {
+  display: flex;
+  align-items: center;
+  gap: var(--sakai-space-2);
+  width: 100%;
+  padding: var(--sakai-space-2) var(--sakai-space-3);
+  border: 0;
+  border-radius: var(--sakai-radius-md);
+  background: transparent;
+  color: var(--sakai-text-color-1);
+  font-weight: var(--sakai-font-weight-medium);
+  text-decoration: none;
+
+  &:hover,
+  &:focus-visible {
+    background: var(--sakai-background-color-2);
+    color: var(--sakai-text-color-1);
+    text-decoration: none;
+  }
+}

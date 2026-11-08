@@ -877,32 +877,14 @@ public class SiteHandler extends WorksiteHandler
 				// The roleInSite check makes sure a role is in the site
 				// The current user role can't be one of the roles to be swapped
 				if (activeSite.getType() != null && roleInSite) {
-					String switchRoleUrl = "";
-
-					//if the userRole is null, this means they are more than likely a Delegated Access user.  Since the security check has already allowed
-					//the user to "swaproles" @allowroleswap, we know they have access to this site
-					if (svRolesFinal.size() > 1) {
-						rcontext.put("roleswapdropdown", true);
-						switchRoleUrl = serverConfigurationService.getPortalUrl()
-								+ "/role-switch/"
-								+ siteId
-								+ TOOL_URL_SEGMENT
-								+ toolId
-								+ "/";
-
-						rcontext.put("panelString", "/?panel=Main");
-					} else {
-						rcontext.put("roleswapdropdown", false);
-						switchRoleUrl = serverConfigurationService.getPortalUrl()
-								+ "/role-switch/"
-								+ siteId
-								+ TOOL_URL_SEGMENT
-								+ toolId
-								+ "/"
-								+ svRolesFinal.get(0)
-								+ "/?panel=Main";
-						rcontext.put("roleUrlValue", svRolesFinal.get(0));
-					}
+					String switchRoleUrl = serverConfigurationService.getPortalUrl()
+							+ "/role-switch/"
+							+ siteId
+							+ TOOL_URL_SEGMENT
+							+ toolId
+							+ "/";
+					rcontext.put("roleswapdropdown", true);
+					rcontext.put("panelString", "/?panel=Main");
 					// We'll show the swap role snippet if the current user role is not in "studentview.roles"
 					roleswapcheck = userRole == null || !svRolesFinal.contains(userRole.getId());
 					rcontext.put("siteRoles", svRolesFinal);
@@ -912,32 +894,42 @@ public class SiteHandler extends WorksiteHandler
 			
 			rcontext.put("viewAsStudentLink", Boolean.valueOf(roleswapcheck)); // this will tell our UI if we want the link for swapping roles to display
 			rcontext.put("roleSwitchState", roleswitchstate); // this will tell our UI if we are in a role swapped state or not
+
+			boolean displayRole = serverConfigurationService.getBoolean(PortalConstants.PROP_PORTAL_DISPLAY_CURRENT_ROLE, false);
+			rcontext.put("currentRole", null);
+			if (displayRole && loggedIn && !siteService.isUserSite(siteId)) {
+				try {
+					Site roleSite = siteService.getSite(siteId);
+					String roleId = null;
+					if (roleSite.getMember(session.getUserId()) != null) {
+						roleId = roleSite.getMember(session.getUserId()).getRole().getId();
+					}
+					if (securityService.isSuperUser()) {
+						roleId = "admin";
+					}
+					rcontext.put("currentRole", roleId);
+				} catch (IdUnusedException e) {
+					log.debug("Could not resolve site {} for current role display", siteId);
+				}
+			}
 			
 			int tabDisplayLabel = PreferencesService.USE_SITE_TITLE;
 			boolean sidebarCollapsed = false;
-			boolean currentExpanded = false;
 			boolean toolMaximised = false;
 
 			if (loggedIn) 
 			{
 				tabDisplayLabel = preferencesService.getSiteTitleDisplayPreference();
-				currentExpanded = true;
 
 				Preferences prefs = preferencesService.getPreferences(session.getUserId());
 				ResourceProperties props = prefs.getProperties(org.sakaiproject.user.api.PreferencesService.SITENAV_PREFS_KEY);
 
 				sidebarCollapsed = props.getBooleanProperty(PortalConstants.PROP_SIDEBAR_COLLAPSED, false);
-				String expandedSite = props.getProperty(PortalConstants.PROP_EXPANDED_SITE);
-				if (StringUtils.equals(expandedSite, siteId)) {
-					currentExpanded = props.getBooleanProperty(PortalConstants.PROP_CURRENT_EXPANDED, true);
-				}
 				toolMaximised = props.getBooleanProperty("toolMaximised", false);
 			}
 
 			rcontext.put("tabDisplayLabel", tabDisplayLabel);
 			rcontext.put(PortalConstants.PROP_SIDEBAR_COLLAPSED, Boolean.valueOf(sidebarCollapsed));
-			rcontext.put(PortalConstants.PROP_CURRENT_EXPANDED,
-					Boolean.valueOf(currentExpanded));
 			rcontext.put("toolMaximised", Boolean.valueOf(toolMaximised));
 			
 			SiteView siteView = portal.getSiteHelper().getSitesView(

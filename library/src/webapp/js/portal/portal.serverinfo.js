@@ -11,7 +11,7 @@ class ServerInfoPopover {
 
     this._element.addEventListener("show.bs.popover", this.handleShow.bind(this));
     this._element.addEventListener("hide.bs.popover", this.handleHide.bind(this));
-    this._iconElement = this._element.querySelector(".bi");
+    this._iconElement = this._element.querySelector(".si");
     this._popover = new bootstrap.Popover(this._element);
   }
 

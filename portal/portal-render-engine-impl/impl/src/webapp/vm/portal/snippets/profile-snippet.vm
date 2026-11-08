@@ -1,0 +1,99 @@
+#if (${userIsLoggedIn})
+<div id="sakai-account-panel"
+    class="modal fade sakai-account-launcher sakai-no-print"
+    tabindex="-1"
+    aria-labelledby="sakai-account-panel-label"
+    aria-modal="true"
+    role="dialog">
+  <div class="modal-dialog sakai-account-launcher__dialog">
+    <div class="modal-content sakai-account-launcher__panel">
+      <div class="sakai-account-launcher__top">
+        <h2 class="sakai-account-launcher__title" id="sakai-account-panel-label">${rloader.mainnav_btn_account}</h2>
+        #if (${themeSwitcher})
+        <button type="button"
+            role="switch"
+            #if ($userTheme == "sakaiUserTheme-dark")
+            aria-checked="true"
+            #else
+            aria-checked="false"
+            #end
+            aria-label="$rloader.sit_theme_switcher"
+            id="sakai-dark-theme-switcher"
+            class="sakai-theme-switch switch">
+          <span class="si si-sun" aria-hidden="true"></span>
+          <span class="si si-moon" aria-hidden="true"></span>
+        </button>
+        #end
+        <button type="button" class="btn-close sakai-account-launcher__close" data-bs-dismiss="modal" aria-label="${rloader.sit_closepage}"></button>
+      </div>
+
+      <div class="sakai-account-launcher__body sakai-account-panel__body">
+        <div class="sakai-account-panel__identity">
+          <div id="sakai-profile-image-block" class="sakai-account-panel__avatar-wrap">
+            #if (${profileImageUrl})
+              <img class="sakai-account-panel__avatar sakai-accountProfileImage" src="${profileImageUrl}" alt="">
+            #else
+              <span class="sakai-account-panel__avatar sakai-account-panel__avatar--placeholder si si-person-circle" aria-hidden="true"></span>
+            #end
+          </div>
+          <div class="sakai-account-panel__identity-text">
+            <h3 class="sakai-account-panel__name">${loginUserDispName}</h3>
+            <p class="sakai-account-panel__id">${loginUserDispId}</p>
+          </div>
+        </div>
+
+        <ul class="sakai-account-panel__nav sakai-offcanvas-nav nav">
+          #foreach ( $site in $tabsSites.tabsSites )
+            #if (${site.isMyWorkspace})
+              #if (${prefsToolUrl})
+                <li><a href="${prefsToolUrl}" class="sakai-offcanvas-nav__link">${rloader.sit_preferences}</a></li>
+              #end
+            #end
+          #end
+
+          #if (${tabsSites.tutorial})
+            <li>
+              <button type="button"
+                  id="tutorial-start-button"
+                  class="sakai-offcanvas-nav__link"
+                  onclick="startTutorial({userInitiatedTutorial: true});">
+                ${rloader.sit_tutorial}
+              </button>
+            </li>
+          #end
+
+          <li>
+            <button type="button"
+                data-user-id="${loginUserId}"
+                onclick="portal.displayProfile(event);"
+                class="sakai-offcanvas-nav__link">
+              ${rloader.sit_profile}
+            </button>
+          </li>
+        </ul>
+
+        <div class="sakai-account-panel__footer">
+          <a href="${loginLogInOutUrl}" title="${loginMessage}" id="loginLink1" class="sakai-account-panel__logout" data-warning="${logoutWarningMessage}">
+            <span class="si si-box-arrow-right" aria-hidden="true"></span>
+            <span>${loginMessage}</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="account-details-modal" tabindex="-1" aria-labelledby="account-details-modal-label" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="account-details-modal-label">${rloader.sit_profile}</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="${rloader.sit_closepage}"></button>
+      </div>
+      <div class="modal-body">
+        <sakai-account></sakai-account>
+      </div>
+    </div>
+  </div>
+</div>
+#end

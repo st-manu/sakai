@@ -486,28 +486,31 @@ public class PortalSiteHelperImpl implements PortalSiteHelper
 			List<Map<String, Object>> pinnedSiteMaps = getSiteMaps(pinnedSites, currentSiteId, userId, true, false, parentToChildSites);
             contextSites.put("pinnedSites", pinnedSiteMaps);
 
-			// Get most recent sites
 			Collection<String> recentSiteIds = portalService.getRecentSites(userId);
-			// The current site is added to recent sites, except when it:
-			// is in recents, is in pinned, is excluded, is a user site
-			if (!recentSiteIds.contains(currentSiteId)
-					&& !pinnedSiteIds.contains(currentSiteId)
+			boolean currentIsMostRecent = !recentSiteIds.isEmpty()
+					&& StringUtils.equals(recentSiteIds.iterator().next(), currentSiteId);
+			if (!currentIsMostRecent
+					&& StringUtils.isNotBlank(currentSiteId)
 					&& !excludedSiteIds.contains(currentSiteId)
-					&& !siteService.isUserSite(currentSiteId)) {
+					&& !siteService.isUserSite(currentSiteId)
+					&& !SiteService.SITE_ERROR.equals(currentSiteId)) {
 				portalService.addRecentSite(userId, currentSiteId);
 				recentSiteIds = portalService.getRecentSites(userId);
 			}
 
-			Collection<String> filteredRecentSiteIds = recentSiteIds.stream()
-					.filter(Predicate.not(pinnedSiteIds::contains))
+			int maxRecentSites = serverConfigurationService.getInt("portal.max.recent.sites", 3);
+			List<String> filteredRecentSiteIds = recentSiteIds.stream()
 					.filter(Predicate.not(excludedSiteIds::contains))
-					.collect(Collectors.toSet());
+					.filter(id -> !StringUtils.equals(id, currentSiteId))
+					.limit(maxRecentSites)
+					.collect(Collectors.toList());
 
-			Collection<Site> recentSites = filteredRecentSiteIds.stream()
+			List<Site> recentSites = filteredRecentSiteIds.stream()
 					.map(this::getSite)
 					.filter(Objects::nonNull)
 					.collect(Collectors.toList());
 			List<Map<String, Object>> recentSitesMaps = getSiteMaps(recentSites, currentSiteId, userId, false, false, parentToChildSites);
+			recentSitesMaps.forEach(m -> m.put("isPinned", pinnedSiteIds.contains(m.get("id"))));
 
 			// If the current site is excluded it should appear in recent as hidden
 			if (excludedSiteIds.contains(currentSiteId)) {
@@ -515,11 +518,15 @@ public class PortalSiteHelperImpl implements PortalSiteHelper
 			}
             contextSites.put("recentSites", recentSitesMaps);
 
-            // We need a way to only mark one site as the current. We don't want two sites to
-            // be highlighted because the site is pinned and recent.
-            if (pinnedSiteMaps.stream().anyMatch(m -> (Boolean) m.get("isCurrent"))) {
-                recentSitesMaps.stream().filter(m -> (Boolean) m.get("isCurrent")).findAny().ifPresent(m -> m.remove("isCurrent"));
-            }
+			if (StringUtils.isNotBlank(currentSiteId)
+					&& !SiteService.SITE_ERROR.equals(currentSiteId)) {
+				Site currentSite = getSite(currentSiteId);
+				if (currentSite != null) {
+					boolean currentPinned = pinnedSiteIds.contains(currentSiteId);
+					boolean currentHidden = excludedSiteIds.contains(currentSiteId);
+					contextSites.put("currentSite", getSiteMap(currentSite, currentSiteId, userId, currentPinned, currentHidden, parentToChildSites));
+				}
+			}
 
 		} else {
 			//Get gateway site

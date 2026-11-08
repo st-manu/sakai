@@ -1,0 +1,8 @@
+##
+## the Page part of the standard view, with page navigation
+##
+<!-- START VM includePageWithNav.vm -->
+        #parse("/vm/portal/includeSiteNav.vm")
+        #parse("/vm/portal/includePage.vm")
+
+<!-- END VM includePageWithNav.vm -->

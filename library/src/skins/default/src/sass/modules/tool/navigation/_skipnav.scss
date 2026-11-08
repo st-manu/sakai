@@ -1,11 +1,19 @@
-.#{$namespace}skipNav__menu {
+.sakai-skip-nav__menu {
     position: absolute;
     top: -30em;
     left: -30em;
     list-style: none;
     padding: 0 0 0 0;
 
-    a {
+    a,
+    button {
+        border: 0;
+        background: transparent;
+        color: inherit;
+        font: inherit;
+        text-align: start;
+        cursor: pointer;
+
         &:focus {
             @media #{$desktop} {
                 background-color: var(--sakai-selected-page-bg-color);
@@ -37,7 +45,7 @@
         list-style: none;
         padding: 0 0 0 0;
 
-        a:focus {
+        :is(a, button):focus {
             position: fixed;
             top: 9px;
             left: 5px;

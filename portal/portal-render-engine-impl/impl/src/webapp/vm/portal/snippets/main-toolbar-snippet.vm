@@ -1,0 +1,15 @@
+<div class="sakai-main-toolbar sakai-no-print">
+  <div class="sakai-main-toolbar__breadcrumbs">
+    #parse("/vm/portal/includePortalHeaderBreadcrumb.vm")
+    #parse("/vm/portal/snippets/roleSwitch-snippet.vm")
+  </div>
+  <div class="sakai-main-toolbar__utilities">
+    #if (${userIsLoggedIn})
+      #parse("/vm/portal/includeAccountNav.vm")
+    #elseif (${loginTopLogin})
+      <a class="sakai-btn sakai-btn-primary sakai-login__link" href="${loginPortalPath}/xlogin">${rloader.login}</a>
+    #else
+      #parse("/vm/portal/snippets/loginImage-snippet.vm")
+    #end
+  </div>
+</div>

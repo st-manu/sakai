@@ -138,16 +138,15 @@ public class SakaiHelper {
                 .hasAttribute("data-portal-sidebar-collapsed", "false");
         }
 
-        Locator expandButtons = page.locator("li.site-list-item.is-current-site button[data-bs-toggle='collapse'][aria-expanded='false']");
-        if (expandButtons.count() > 0 && expandButtons.first().isVisible()) {
-            expandButtons.first().click();
-        }
-
         if (clickToolByText(label)) {
             return;
         }
 
-        Locator allSitesButton = page.locator("button.responsive-allsites-button").first();
+        Locator allSitesButton = page.locator(
+            "button.portal-header-breadcrumb__all-sites:visible, "
+                + "button.sakai-sidebar__all-sites:visible, "
+                + "button.responsive-allsites-button:visible"
+        ).first();
         if (allSitesButton.count() > 0 && allSitesButton.isVisible()) {
             allSitesButton.click(new Locator.ClickOptions().setForce(true));
         }
@@ -668,7 +667,7 @@ public class SakaiHelper {
     }
 
     private boolean clickToolByText(String label) {
-        Locator tool = page.locator("li.site-list-item.is-current-site .site-list-item-collapse.collapse.show a.btn-nav")
+        Locator tool = page.locator("#current-site-pages .sakai-sidebar-page__link")
             .filter(new Locator.FilterOptions().setHasText(label)).first();
         if (!waitForVisible(tool, 5000)) {
             return false;

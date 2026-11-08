@@ -543,21 +543,23 @@ public class PortalServiceTests extends SakaiTests {
 
         pauseForOneSecondIfWindows();
         portalService.addRecentSite(user1, site4Id);
-        Assert.assertEquals(3, portalService.getRecentSites(user1).size());
+        Assert.assertEquals(4, portalService.getRecentSites(user1).size());
 
         recentSites = portalService.getRecentSites(user1).iterator();
         Assert.assertEquals("site4", recentSites.next());
         Assert.assertEquals("site3", recentSites.next());
         Assert.assertEquals("site2", recentSites.next());
+        Assert.assertEquals("site1", recentSites.next());
 
         pauseForOneSecondIfWindows();
         portalService.addRecentSite(user1, site1Id);
-        Assert.assertEquals(3, portalService.getRecentSites(user1).size());
+        Assert.assertEquals(4, portalService.getRecentSites(user1).size());
 
         recentSites = portalService.getRecentSites(user1).iterator();
         Assert.assertEquals("site1", recentSites.next());
         Assert.assertEquals("site4", recentSites.next());
         Assert.assertEquals("site3", recentSites.next());
+        Assert.assertEquals("site2", recentSites.next());
 
         Event event = mock(Event.class);
         when(event.getContext()).thenReturn(site1Id);
@@ -571,7 +573,7 @@ public class PortalServiceTests extends SakaiTests {
 
         ((Observer) portalService).update(null, event);
 
-        Assert.assertEquals(2, portalService.getRecentSites(user1).size());
+        Assert.assertEquals(3, portalService.getRecentSites(user1).size());
 
         recentSites = portalService.getRecentSites(user1).iterator();
         Assert.assertEquals("site4", recentSites.next());
@@ -582,7 +584,7 @@ public class PortalServiceTests extends SakaiTests {
 
         ((Observer) portalService).update(null, event);
 
-        Assert.assertEquals(1, portalService.getRecentSites(user1).size());
+        Assert.assertEquals(2, portalService.getRecentSites(user1).size());
     }
 
     /**
@@ -625,33 +627,29 @@ public class PortalServiceTests extends SakaiTests {
         Assert.assertEquals(0, portalService.getUnpinnedSites(user1).size());
         Assert.assertEquals(0, portalService.getRecentSites(user1).size());
 
-        // unpin all 4 sites, results in 0 pinned, 4 unpinned, 3 recent
         siteIds.forEach(siteId -> portalService.addPinnedSite(user1, siteId, false));
         Assert.assertEquals(0, portalService.getPinnedSites(user1).size());
         Assert.assertEquals(4, portalService.getUnpinnedSites(user1).size());
-        Assert.assertEquals(3, portalService.getRecentSites(user1).size());
+        Assert.assertEquals(4, portalService.getRecentSites(user1).size());
 
         // simulate another login
         ((Observer) portalService).update(null, event);
 
-        // no change after login, results in 0 pinned, 4 unpinned, 3 recent
         Assert.assertEquals(0, portalService.getPinnedSites(user1).size());
         Assert.assertEquals(4, portalService.getUnpinnedSites(user1).size());
-        Assert.assertEquals(3, portalService.getRecentSites(user1).size());
+        Assert.assertEquals(4, portalService.getRecentSites(user1).size());
 
-        // re pin site3, results in 1 pinned, 3 unpinned, 3 recent
         portalService.addPinnedSite(user1, "site3", true);
         Assert.assertEquals(1, portalService.getPinnedSites(user1).size());
         Assert.assertEquals(3, portalService.getUnpinnedSites(user1).size());
-        Assert.assertEquals(3, portalService.getRecentSites(user1).size());
+        Assert.assertEquals(4, portalService.getRecentSites(user1).size());
 
         // simulate another login
         ((Observer) portalService).update(null, event);
 
-        // no change after login, results in 1 pinned, 3 unpinned, 3 recent
         Assert.assertEquals(1, portalService.getPinnedSites(user1).size());
         Assert.assertEquals(3, portalService.getUnpinnedSites(user1).size());
-        Assert.assertEquals(3, portalService.getRecentSites(user1).size());
+        Assert.assertEquals(4, portalService.getRecentSites(user1).size());
     }
 
     @Test

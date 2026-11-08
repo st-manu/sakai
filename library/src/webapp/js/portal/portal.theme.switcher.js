@@ -6,6 +6,16 @@ portal.defaultThemeClass = 'sakaiUserTheme-notSet';
 portal.lightThemeClass = 'sakaiUserTheme-light';
 portal.darkThemeClass = 'sakaiUserTheme-dark';
 
+portal.syncBootstrapColorMode = themeClass => {
+  const mode = themeClass === portal.darkThemeClass ? 'dark' : 'light';
+  document.documentElement.setAttribute('data-bs-theme', mode);
+  document.querySelectorAll('iframe').forEach(iframe => {
+    if (iframe.contentDocument?.documentElement) {
+      iframe.contentDocument.documentElement.setAttribute('data-bs-theme', mode);
+    }
+  });
+};
+
 portal.toggleDarkTheme = () => {
   // toggle the dark theme switch to the opposite state
   portal.darkThemeSwitcher && portal.darkThemeSwitcher.getAttribute("aria-checked") === "false" ? portal.enableDarkTheme() : portal.enableLightTheme();
@@ -48,12 +58,14 @@ portal.getCurrentThemeClass = () => {
 
 portal.updateIframeTheme = () => {
 
+  const themeClass = portal.getCurrentThemeClass();
   document.querySelectorAll('iframe').forEach(iframe => {
     if (iframe.contentDocument?.documentElement) {
       iframe.contentDocument.documentElement.classList.remove(portal.defaultThemeClass, portal.lightThemeClass, portal.darkThemeClass);
-      iframe.contentDocument.documentElement.classList.add(portal.getCurrentThemeClass()); 
+      iframe.contentDocument.documentElement.classList.add(themeClass);
     }
   });
+  portal.syncBootstrapColorMode(themeClass);
 };
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -72,10 +84,8 @@ portal.enableDarkTheme = () => {
   portal.removeCssClassFromMarkup(portal.defaultThemeClass);
   portal.removeCssClassFromMarkup(portal.lightThemeClass);
   portal.addCssClassToMarkup(portal.darkThemeClass);
+  portal.syncBootstrapColorMode(portal.darkThemeClass);
   portal.updateIframeTheme();
-  if (portal.darkThemeSwitcher) {
-    portal.darkThemeSwitcher.title = portal.i18n.theme_switch_to_light;
-  }
 };
 
 portal.enableLightTheme = () => {
@@ -84,10 +94,8 @@ portal.enableLightTheme = () => {
   portal.removeCssClassFromMarkup(portal.defaultThemeClass);
   portal.removeCssClassFromMarkup(portal.darkThemeClass);
   portal.addCssClassToMarkup(portal.lightThemeClass);
+  portal.syncBootstrapColorMode(portal.lightThemeClass);
   portal.updateIframeTheme();
-  if (portal.darkThemeSwitcher) {
-    portal.darkThemeSwitcher.title = portal.i18n.theme_switch_to_dark;
-  }
 };
 
 
@@ -113,6 +121,7 @@ if (document.documentElement.classList.contains(portal.darkThemeClass)) {
   portal.setDarkThemeSwitcherToggle(true);
 }
 
+portal.syncBootstrapColorMode(portal.getCurrentThemeClass());
 
 portal.getCurrentSetTheme = async () => {
   

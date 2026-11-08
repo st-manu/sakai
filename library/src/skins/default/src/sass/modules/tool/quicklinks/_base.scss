@@ -23,8 +23,7 @@
 }
 
 #selectQuickLink {
-  /* Re-use the Sites pop styles. */
-  @extend #selectSite;
+  @extend #selectSite !optional;
   @extend ul, .favoriteSiteList !optional;
 }
 

@@ -137,17 +137,17 @@ class PortalScriptsTest {
                 <base href='https://portal.test/'>
                 <div id='select-site-sidebar'>
                   <div class='fav-sites-card'>
-                    <button class='favorites-select-all-none'><i class='si-pin'></i><i class='si-pin-fill'></i></button>
+                    <button class='favorites-select-all-none'><i class='si si-pin'></i><i class='si si-pin-fill'></i></button>
                     <div class='fav-sites-entry'>
                       <button id='pin-a' class='site-favorite-btn' data-site-id='a' data-pinned-state='pinned'
-                          aria-pressed='true'><i class='si-pin'></i><i class='si-pin-fill'></i></button>
+                          aria-pressed='true'><i class='si si-pin'></i><i class='si si-pin-fill'></i></button>
                     </div>
                     <div class='fav-sites-entry'>
                       <button id='pin-b' class='site-favorite-btn' data-site-id='b' data-pinned-state='unpinned'
-                          aria-pressed='false'><i class='si-pin'></i><i class='si-pin-fill'></i></button>
+                          aria-pressed='false'><i class='si si-pin'></i><i class='si si-pin-fill'></i></button>
                     </div>
                   </div>
-                <div id='allsites-refresh-notification' style='display:none'>Saved</div>
+                <div id='allsites-refresh-notification' hidden>Saved</div>
                 <ul id='organize-favorites-list'><li class='organize-favorite-item'>A</li></ul>
                 </div>
                 """;

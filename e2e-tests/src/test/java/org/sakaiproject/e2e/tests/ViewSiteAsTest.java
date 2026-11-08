@@ -21,7 +21,6 @@ import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.options.AriaRole;
 import com.microsoft.playwright.options.LoadState;
-import com.microsoft.playwright.options.SelectOption;
 import java.net.URI;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -54,14 +53,16 @@ class ViewSiteAsTest extends SakaiUiTestBase {
         Locator roleSwitcher = page.locator("#roleSwitch");
         assertThat(roleSwitcher).isVisible();
 
-        Locator roleSelect = roleSwitcher.locator("#roleSwitchSelect");
-        page.waitForNavigation(() -> {
-            if (roleSelect.count() > 0 && roleSelect.isVisible()) {
-                roleSelect.selectOption(new SelectOption().setIndex(1));
-            } else {
-                roleSwitcher.locator("#roleSwitchAnchor").click();
-            }
-        });
+        Locator roleOpen = roleSwitcher.locator("#roleSwitchOpen");
+        if (roleOpen.count() > 0 && roleOpen.isVisible()) {
+            roleOpen.click();
+            Locator roleModal = page.locator("#sakai-role-switch-panel");
+            assertThat(roleModal).isVisible();
+            roleModal.locator(".sakai-role-switch__role-link").first().click();
+        } else {
+            roleSwitcher.locator("#roleSwitchAnchor").click();
+        }
+        page.waitForLoadState();
 
         assertThat(page.locator("#roleSwitchAnchor.Mrphs-roleSwitch__exit")).isVisible();
 

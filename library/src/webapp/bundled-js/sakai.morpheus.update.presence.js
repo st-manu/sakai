@@ -35,7 +35,7 @@ function updatePresence() {
       if ($presenceIframe.is(':empty')) {
         $presenceCount.html(' ');
         $presenceCount.removeClass('present').addClass('empty');
-        location.reload();
+        updatePresenceTimeout(30000, true);
         return;
       }
 

@@ -29,6 +29,7 @@ import org.sakaiproject.messaging.api.UserNotificationTransferBean;
 import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.api.SiteService;
 import org.sakaiproject.site.api.ToolConfiguration;
+import org.sakaiproject.tool.api.Session;
 import org.sakaiproject.user.api.UserNotDefinedException;
 
 import org.springframework.http.MediaType;
@@ -82,13 +83,14 @@ public class SitesController extends AbstractSakaiApiController {
     private UserMessagingService userMessagingService;
 
     @GetMapping(value = "/users/{userId}/sites", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, List<Map<String, Object>>> getSites(@PathVariable("userId") String userId, @RequestParam("pinned") Optional<Boolean> pinned)
+    public Map<String, Object> getSites(@PathVariable("userId") String userId, @RequestParam("pinned") Optional<Boolean> pinned)
         throws UserNotDefinedException {
 
-        checkSakaiSession();
+        Session session = checkSakaiSession();
 
         List<String> pinnedSites = portalService.getPinnedSites();
         List<UserNotificationTransferBean> notifications = userMessagingService.getNotifications();
+        int maxRecentSites = serverConfigurationService.getInt("portal.max.recent.sites", 3);
 
         return Map.of(
             "terms", cmService.getAcademicSessions().stream().map(as -> {
@@ -101,7 +103,10 @@ public class SitesController extends AbstractSakaiApiController {
                     }
 
                     return this.getSiteMap(s, notifications, pinnedSites);
-                }).filter(Objects::nonNull).collect(Collectors.toList()));
+                }).filter(Objects::nonNull).collect(Collectors.toList()),
+            "recentSiteIds", portalService.getRecentSites(session.getUserId()).stream()
+                .limit(maxRecentSites)
+                .collect(Collectors.toList()));
     }
 
     @GetMapping(value = "/sites/{siteId}", produces = MediaType.APPLICATION_JSON_VALUE)

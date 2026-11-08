@@ -33,8 +33,6 @@ public class PortalConstants {
     public static final String TOOLRESET_URL_SEGMENT = "/" + TOOLRESET_URL_PREFIX + "/";
     public static final String PAGE_URL_SEGMENT = "/" + PAGE_URL_PREFIX + "/";
 
-    public static final String PROP_CURRENT_EXPANDED = "currentExpanded";
-    public static final String PROP_EXPANDED_SITE = "expandedSite";
     public static final String PROP_SIDEBAR_COLLAPSED = "sidebarCollapsed";
     public static final String PROP_BULLHORN_ALERTS_ENABLED = "portal.bullhorns.enabled";
     public static final String PROP_CONTAINER_LOGIN = "container.login";
