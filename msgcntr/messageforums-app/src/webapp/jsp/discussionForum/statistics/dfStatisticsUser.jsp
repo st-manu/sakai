@@ -281,7 +281,7 @@
 					<f:param value="dialogDiv" name="dialogDivId"/>
 					<f:param value="dialogFrame" name="frameId"/>
 					<f:param value="gradesSavedDiv" name="gradesSavedDiv"/>
-					<span class="bi bi-star-fill" aria-hidden="true"></span>
+					<span class="si si-star-fill" aria-hidden="true"></span>
 					<h:outputText value=" #{msgs.cdfm_button_bar_grade}" />
 				</h:outputLink>
 				<h:outputText value=" #{msgs.cdfm_toolbar_separator} " rendered="#{ForumTool.instructor}" />

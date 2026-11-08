@@ -13,8 +13,8 @@ document.addEventListener("DOMContentLoaded", () => {
         toggle.setAttribute("aria-expanded", show.toString());
         toggle.querySelector(".item-list-toggle-label-show").hidden = show;
         toggle.querySelector(".item-list-toggle-label-hide").hidden = !show;
-        toggle.querySelector(".bi")?.classList.toggle("bi-caret-down-fill", !show);
-        toggle.querySelector(".bi")?.classList.toggle("bi-caret-up-fill", show);
+        toggle.querySelector(".si")?.classList.toggle("si-caret-down-fill", !show);
+        toggle.querySelector(".si")?.classList.toggle("si-caret-up-fill", show);
     };
 
     itemToggles.forEach((toggle) => {

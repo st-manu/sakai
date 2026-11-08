@@ -35,14 +35,14 @@
                    th:href="@{/videos(viewMode=${viewMode},q=${q},accessMode='viewable',size=${size},sortBy=${sortBy},sortDir=${sortDir})}"
                    th:title="#{video.training.access.mode.viewable}"
                    th:attr="aria-label=#{video.training.access.mode.viewable}">
-                    <span class="bi bi-eye" aria-hidden="true"></span>
+                    <span class="si si-visible" aria-hidden="true"></span>
                 </a>
                 <a class="btn vt-icon-toggle"
                    th:classappend="${isManageableList} ? 'btn-primary' : 'btn-outline-secondary'"
                    th:href="@{/videos(viewMode=${viewMode},q=${q},accessMode='manageable',size=${size},sortBy=${sortBy},sortDir=${sortDir})}"
                    th:title="#{video.training.access.mode.manageable}"
                    th:attr="aria-label=#{video.training.access.mode.manageable}">
-                    <span class="bi bi-pencil" aria-hidden="true"></span>
+                    <span class="si si-edit" aria-hidden="true"></span>
                 </a>
             </div>
 
@@ -54,10 +54,10 @@
                     <input type="hidden" name="sortBy" th:value="${sortBy}">
                     <input type="hidden" name="sortDir" th:value="${sortDir}">
                     <button type="submit" name="viewMode" value="cards" class="btn vt-icon-toggle" th:classappend="${isCardsView} ? 'btn-primary' : 'btn-outline-secondary'" th:title="#{video.training.view.mode.cards}" th:aria-label="#{video.training.view.mode.cards}">
-                        <span class="bi bi-grid"></span>
+                        <span class="si si-grid"></span>
                     </button>
                     <button type="submit" name="viewMode" value="table" class="btn vt-icon-toggle" th:classappend="${isTableView} ? 'btn-primary' : 'btn-outline-secondary'" th:title="#{video.training.view.mode.table}" th:aria-label="#{video.training.view.mode.table}">
-                        <span class="bi bi-view-list"></span>
+                        <span class="si si-view-list"></span>
                     </button>
                 </form>
             </div>
@@ -99,7 +99,7 @@
             data-bs-target="#categorySidebar"
             aria-controls="categorySidebar"
             th:if="${!#lists.isEmpty(categoryTree)}">
-        <span class="bi bi-funnel" aria-hidden="true"></span>
+        <span class="si si-filter" aria-hidden="true"></span>
         <span th:text="#{video.training.categories.title}">Categories</span>
     </button>
 

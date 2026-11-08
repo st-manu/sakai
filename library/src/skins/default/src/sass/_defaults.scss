@@ -79,12 +79,10 @@ $button-primary-font-weight: 600 !default;
 
 $instruction-size:          $default-font-size-small !default;
 
-/* Sakai Banners */
-$infoBanner-icon: ".fa-info-circle";
-$successBanner-icon: ".fa-check-circle";
-$warnBanner-icon: ".fa-exclamation-circle";
-$errorBanner-icon: ".fa-ban";
-/* end of Sakai Banners */
+$infoBanner-icon: ".si-info";
+$successBanner-icon: ".si-success";
+$warnBanner-icon: ".si-warning";
+$errorBanner-icon: ".si-cancel";
 
 /* Swapped 'View As' view */
 $swapped-view-enabled: true !default;

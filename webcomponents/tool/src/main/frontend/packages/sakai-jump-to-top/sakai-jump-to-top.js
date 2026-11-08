@@ -12,7 +12,7 @@ async function init() {
   jumpToTopButton.title = jumptotopLabel;
   jumpToTopButton.ariaLabel = jumptotopLabel;
   jumpToTopButton.classList.add("jump-to-top");
-  jumpToTopButton.insertAdjacentHTML("beforeend", "<i class=\"si si-arrow-up-circle-fill\"></i>");
+  jumpToTopButton.insertAdjacentHTML("beforeend", "<i class=\"si si-arrow-up\"></i>");
   jumpToTopButton.addEventListener("click", function () {
     portalMainContainer.scrollTo({ top: 0, behavior: "smooth" });
   });

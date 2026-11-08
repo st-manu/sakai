@@ -34,7 +34,7 @@
             <a href="<h:outputText value="#{attach.location}"/>" 
               download="<h:outputText value="#{attach.filename}"/>" 
               aria-label="<h:outputText value="#{commonMessages.action_download}"/>" 
-              class="btn btn-secondary me-3 bi bi-download"></a>
+              class="btn btn-secondary me-3 si si-download"></a>
           </h:panelGroup>
 
           <div class="flex-grow-1">

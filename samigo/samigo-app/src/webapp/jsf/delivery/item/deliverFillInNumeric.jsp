@@ -54,7 +54,7 @@ should be included in file importing DeliveryMessages
         <f:converter converterId="org.sakaiproject.tool.assessment.jsf.convert.SecureContentWrapper" />
       </h:outputText>
       <f:verbatim>&nbsp;</f:verbatim>
-      <h:panelGroup styleClass="si si-check-lg" id="image"
+      <h:panelGroup styleClass="si si-check" id="image"
         rendered="#{delivery.feedback eq 'true' &&
                     delivery.feedbackComponent.showCorrectResponse &&
                     answer.isCorrect && answer.hasInput && !delivery.noFeedback=='true' && 

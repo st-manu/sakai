@@ -34,7 +34,7 @@
             data-action="reset-order"
             th:if="${siteOrdered}"
             th:attr="data-confirm=#{reset_order_confirm}">
-      <span class="bi bi-arrow-counterclockwise" aria-hidden="true"></span>
+      <span class="si si-arrow-counterclockwise" aria-hidden="true"></span>
       <span th:text="#{reset}">Reset</span>
     </button>
 
@@ -77,7 +77,7 @@
                     th:disabled="${page.first}"
                     th:title="#{move_up}"
                     th:attr="aria-label=#{move_up}">
-              <span class="bi bi-chevron-up" aria-hidden="true"></span>
+              <span class="si si-chevron-up" aria-hidden="true"></span>
             </button>
             <button type="button"
                     class="btn btn-icon"
@@ -85,7 +85,7 @@
                     th:disabled="${page.last}"
                     th:title="#{move_down}"
                     th:attr="aria-label=#{move_down}">
-              <span class="bi bi-chevron-down" aria-hidden="true"></span>
+              <span class="si si-chevron-down" aria-hidden="true"></span>
             </button>
           </div>
 
@@ -123,14 +123,14 @@
                   <button type="submit"
                           class="btn btn-primary btn-sm"
                           th:title="#{save_tool_title}">
-                    <span class="bi bi-check-lg" aria-hidden="true"></span>
+                    <span class="si si-check" aria-hidden="true"></span>
                     <span th:text="#{save}">Save</span>
                   </button>
                   <button type="button"
                           class="btn btn-outline-secondary btn-sm"
                           data-action="cancel-edit"
                           th:title="#{cancel_tool_title}">
-                    <span class="bi bi-x-lg" aria-hidden="true"></span>
+                    <span class="si si-close" aria-hidden="true"></span>
                     <span th:text="#{cancel}">Cancel</span>
                   </button>
                 </div>
@@ -145,7 +145,7 @@
                     th:if="${page.allowsEdit}"
                     th:title="#{menu_edit_page_title}"
                     th:attr="aria-label=#{page_edit(${page.title})}">
-              <span class="bi bi-pencil" aria-hidden="true"></span>
+              <span class="si si-edit" aria-hidden="true"></span>
             </button>
             <button type="button"
                     class="btn btn-icon"
@@ -155,7 +155,7 @@
                     th:attr="data-next-visible=${!page.visible || !page.enabled},
                              aria-label=${page.visible} ? #{page_hide(${page.title})} : #{page_show(${page.title})},
                              title=${page.visible} ? #{menu_hide_page} : #{menu_show_page}">
-              <span th:class="${page.visible} ? 'bi bi-eye-slash' : 'bi bi-eye'" aria-hidden="true"></span>
+              <span th:class="${page.visible} ? 'si si-hidden' : 'si si-visible'" aria-hidden="true"></span>
             </button>
             <button type="button"
                     class="btn btn-icon"
@@ -164,7 +164,7 @@
                     th:attr="data-next-enabled=${!page.enabled},
                              aria-label=${page.enabled} ? #{page_disable(${page.title})} : #{page_enable(${page.title})},
                              title=${page.enabled} ? #{menu_lock_page} : #{menu_enable_page}">
-              <span th:class="${page.enabled} ? 'bi bi-lock' : 'bi bi-unlock'" aria-hidden="true"></span>
+              <span th:class="${page.enabled} ? 'si si-locked' : 'si si-unlocked'" aria-hidden="true"></span>
             </button>
             <button type="button"
                     class="btn btn-icon text-danger"
@@ -172,7 +172,7 @@
                     th:if="${page.deletable}"
                     th:title="#{menu_remove_page}"
                     th:attr="aria-label=#{page_remove(${page.title})}">
-              <span class="bi bi-trash" aria-hidden="true"></span>
+              <span class="si si-trash" aria-hidden="true"></span>
             </button>
           </div>
         </div>

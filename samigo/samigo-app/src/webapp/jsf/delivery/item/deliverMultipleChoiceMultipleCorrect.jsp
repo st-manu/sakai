@@ -35,7 +35,7 @@ should be included in file importing DeliveryMessages
        delivery.feedbackComponent.showCorrectResponse && !delivery.noFeedback=='true'}" styleClass="feedBackMultipleChoice">
       <h:panelGroup id="image"
         rendered="#{selection.answer.isCorrect eq 'true' && selection.response}"
-        styleClass="si si-check-lg">
+        styleClass="si si-check">
       </h:panelGroup>
       <h:panelGroup id="image2"
         rendered="#{selection.answer.isCorrect != null && !selection.answer.isCorrect && selection.response}"

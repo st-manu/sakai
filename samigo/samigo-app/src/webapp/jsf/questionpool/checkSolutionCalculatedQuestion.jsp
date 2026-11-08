@@ -39,7 +39,7 @@ should be included in file importing DeliveryMessages
         <f:converter converterId="org.sakaiproject.tool.assessment.jsf.convert.SecureContentWrapper" />
       </h:outputText>
       <f:verbatim>&nbsp;</f:verbatim>
-      <h:panelGroup styleClass="si si-check-lg" id="image" rendered="#{answer.isCorrect}">
+      <h:panelGroup styleClass="si si-check" id="image" rendered="#{answer.isCorrect}">
       </h:panelGroup>
       <h:outputText style="text-decoration: underline" value="#{answer.response}"/>
   </h:column>
@@ -55,7 +55,7 @@ should be included in file importing DeliveryMessages
   </h:panelGroup>
   <h:panelGroup>
     <f:verbatim><br /></f:verbatim>
-    <h:panelGroup styleClass="si si-check-lg" id="imageCheck"></h:panelGroup>
+    <h:panelGroup styleClass="si si-check" id="imageCheck"></h:panelGroup>
     <f:verbatim><b></f:verbatim>
     <h:outputLabel for="feedSC" value="#{authorMessages.correctItemFeedback}#{deliveryMessages.column} " />
     <f:verbatim></b></f:verbatim>

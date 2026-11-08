@@ -62,8 +62,8 @@
 					
 					<h:outputText value="&nbsp;" escape="false"/>
 					<h:outputLabel  onclick="showDetails('','meeting:closeImagne','meeting:commentSetting');signup_resetIFrameHeight('#{AttendeeSignupMBean.iframeId}');"  styleClass="activeTag" >
-						<i class="bi bi-chevron-down" aria-label="open"></i>
-						<i class="bi bi-chat-left-text" aria-label="add comment"></i>
+						<i class="si si-chevron-down" aria-label="open"></i>
+						<i class="si si-chat-left-text" aria-label="add comment"></i>
 						<h:outputText value="&nbsp;#{msgs.event_add_comment_link}" escape="false"/>
 					</h:outputLabel>							
 				   	

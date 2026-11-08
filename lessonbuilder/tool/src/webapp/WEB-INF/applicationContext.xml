@@ -450,11 +450,11 @@ simplePageBean.addForumSummary,
 				<entry key="application/x-shockwave-flash" value="si si-sakai-meetings"/>
 				<entry key="video/x-flv" value="si si-sakai-meetings"/>
 				<entry key="video/mp4" value="si si-sakai-meetings"/>
-				<entry key="video/quicktime" value="si si-file-quicktime"/>
+				<entry key="video/quicktime" value="si si-collection-play"/>
 				<entry key="video/x-mp4" value="si si-sakai-meetings"/>
 				<entry key="video/x-m4v" value="si si-sakai-meetings"/>
-				<entry key="text/plain" value="si si-file-earmark-text"/>
-				<entry key="text/rtf" value="si si-file-earmark-text"/>
+				<entry key="text/plain" value="si si-file-text"/>
+				<entry key="text/rtf" value="si si-file-text"/>
 				<entry key="LBWEBSITE" value="si si-external"/>
 				<entry key="text/html" value="si si-external"/>
 				<entry key="application/xhtml+xml" value="si-external"/>

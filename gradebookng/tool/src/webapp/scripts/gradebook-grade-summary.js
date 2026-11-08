@@ -364,7 +364,7 @@ GradebookGradeSummary.prototype.setupGroupedTableSorting = function(table) {
     button.className = "btn btn-link p-0 text-reset text-start fw-bold";
     button.append(...header.childNodes);
     const icon = document.createElement("span");
-    icon.className = "bi bi-arrow-down-up ms-1";
+    icon.className = "si si-arrow-down-up ms-1";
     icon.setAttribute("aria-hidden", "true");
     button.append(icon);
     header.append(button);
@@ -374,7 +374,7 @@ GradebookGradeSummary.prototype.setupGroupedTableSorting = function(table) {
       const direction = previous === "ascending" ? "descending" : previous === "descending" ? null : "ascending";
       headers.forEach(other => {
         other.removeAttribute("aria-sort");
-        other.querySelector("button > .bi").className = "bi bi-arrow-down-up ms-1";
+        other.querySelector("button > .si").className = "si si-arrow-down-up ms-1";
       });
       if (direction) {
         header.setAttribute("aria-sort", direction);

@@ -126,7 +126,7 @@
 		header.classList.add(ascending ? "headerSortUp" : "headerSortDown");
 
 		const icon = document.createElement("span");
-		icon.className = `bi ${ascending ? "bi-caret-up-fill" : "bi-caret-down-fill"} sakai-forum-sort-icon`;
+		icon.className = `si ${ascending ? "si-caret-up-fill" : "si-caret-down-fill"} sakai-forum-sort-icon`;
 		icon.setAttribute("aria-hidden", "true");
 		(header.querySelector("a") || header).appendChild(icon);
 	}

@@ -446,7 +446,7 @@
 				var button = document.createElement('button');
 				button.type = 'button';
 				button.className = 'calendarImageIcon btn btn-sm';
-				button.innerHTML = '<i class="bi bi-calendar-plus" aria-label="Calendar"></i>';
+				button.innerHTML = '<i class="si si-calendar-plus" aria-label="Calendar"></i>';
 				button.setAttribute("onclick", inputTags[i].getAttribute("onclick") + ";return false;");
 				inputTags[i].parentNode.replaceChild(button, inputTags[i]);
 			}

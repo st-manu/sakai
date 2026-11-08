@@ -39,7 +39,7 @@ should be included in file importing DeliveryMessages
 
   <h:dataTable value="#{question.matchingArray}" var="matching">
     <h:column rendered="#{delivery.feedback eq true && delivery.feedbackComponent.showCorrectResponse eq true && delivery.noFeedback ne true}">
-      <h:panelGroup id="image" rendered="#{matching.isCorrect eq true}" styleClass="si si-check-lg" > </h:panelGroup>
+      <h:panelGroup id="image" rendered="#{matching.isCorrect eq true}" styleClass="si si-check" > </h:panelGroup>
       <h:panelGroup id="ximage" rendered="#{matching.isCorrect eq false}" styleClass="si si-remove feedBackCross"> </h:panelGroup>
    </h:column>
    <h:column>

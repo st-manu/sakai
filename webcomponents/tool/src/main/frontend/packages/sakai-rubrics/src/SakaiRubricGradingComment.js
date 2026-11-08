@@ -85,7 +85,7 @@ export class SakaiRubricGradingComment extends RubricsElement {
             data-bs-auto-close="false"
             aria-label="${this._i18n.criterion_comment}"
             aria-expanded="false">
-          <i class="bi bi-chat${this.criterion.comments ? "-fill" : ""} ${this.criterion.comments ? "active" : ""}"></i>
+          <i class="si si-chat${this.criterion.comments ? "-fill" : ""} ${this.criterion.comments ? "active" : ""}"></i>
         </button>
 
         <div class="rubric-comment-dropdown dropdown-menu">

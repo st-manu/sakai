@@ -243,7 +243,7 @@
 						<h:panelGroup styleClass="col-xs-12 col-md-9 valueColumn" layout="block">
 							<h:panelGroup>
 								<h:panelGroup rendered="#{OrganizerSignupMBean.meetingWrapper.meeting.recurrenceId !=null}">
-									<i class="bi bi-arrow-repeat" aria-label="recurrence"></i>
+									<i class="si si-arrow-repeat" aria-label="recurrence"></i>
 									<h:outputText value="&nbsp;" escape="false"/>
 								</h:panelGroup>
 								<h:outputText value="#{OrganizerSignupMBean.meetingWrapper.meeting.title}" styleClass="longtext"/>
@@ -261,7 +261,7 @@
 						<h:panelGroup styleClass="col-xs-12 col-md-9 valueColumn" layout="block">
 							<h:panelGroup>
 								<h:panelGroup rendered="#{OrganizerSignupMBean.meetingWrapper.meeting.recurrenceId !=null}">
-									<i class="bi bi-arrow-repeat" aria-label="recurrence"></i>
+									<i class="si si-arrow-repeat" aria-label="recurrence"></i>
 									<h:outputText value="&nbsp;" escape="false"/>
 								</h:panelGroup>
 								<h:outputText value="#{OrganizerSignupMBean.meetingWrapper.meeting.title}" styleClass="longtext"/>
@@ -350,7 +350,7 @@
 						</h:panelGroup>
 						<h:panelGroup styleClass="col-xs-12 col-md-9 valueColumn" layout="block">
 							<h:commandLink id="mICS" action="#{OrganizerSignupMBean.downloadICSForMeeting}" rendered="#{OrganizerSignupMBean.icsEnabled}">
-								<i class="bi bi-calendar-plus" aria-label="calendar"></i>
+								<i class="si si-calendar-plus" aria-label="calendar"></i>
 								<h:outputText value="#{msgs.event_icalendar_label}"/>
 							</h:commandLink>
 						</h:panelGroup>
@@ -479,11 +479,11 @@
 						</h:panelGroup>							
 						<h:panelGroup>	
 		   	    				<h:outputLabel  id="imageOpen_meetingInfoDetail"  styleClass="activeTag" onclick="showDetails('meeting:imageOpen_meetingInfoDetail','meeting:imageClose_meetingInfoDetail','meetingInfoDetails');setMeetingCollapseInfo(true);">
-			   	    				<i class="bi bi-chevron-down" aria-label="open"></i>
+								<i class="si si-chevron-down" aria-label="open"></i>
 			   	    				<h:outputText value="#{msgs.event_hide_meetingIfo_detail}" escape="false" />
 		   	    				</h:outputLabel>
 		   	    				<h:outputLabel id="imageClose_meetingInfoDetail" style="display:none" styleClass="activeTag" onclick="showDetails('meeting:imageOpen_meetingInfoDetail','meeting:imageClose_meetingInfoDetail','meetingInfoDetails');setMeetingCollapseInfo(false);">
-		   	    					<i class="bi bi-chevron-right" aria-label="close"></i>
+								<i class="si si-chevron-right" aria-label="close"></i>
 		   	    					<h:outputText value="#{msgs.event_show_meetingIfo_detail}" escape="false" />
 		   	    				</h:outputLabel>
 		   	    				<h:inputHidden id="meetingInfoCollapseExpand" value="#{OrganizerSignupMBean.collapsedMeetingInfo}"/>
@@ -509,8 +509,8 @@
 								<h:panelGrid columns="1" columnClasses="noWrapCol">
 										<h:panelGroup id="timeslot">
 											
-											<i class="bi bi-lock-fill" aria-label="locked"></i>
-											<i class="bi bi-x-circle-fill" aria-label="cancelled"></i>
+											<i class="si si-locked" aria-label="locked"></i>
+											<i class="si si-cancelled" aria-label="cancelled"></i>
 											<h:outputLink title="#{msgs.event_tool_tips_lockOrcancel}"  onclick="showEditTimeslot('#{timeSlotWrapper.positionInTSlist}'); return false;"
 												rendered="#{!OrganizerSignupMBean.meetingWrapper.meeting.meetingExpired}">
 									   			<h:outputText value="#{timeSlotWrapper.timeSlot.startTime}">
@@ -554,22 +554,22 @@
 											<h:panelGrid columns="1"  >
 												<h:panelGroup >
 													<h:commandLink id="lockTimeslot" action="#{OrganizerSignupMBean.processLockTsAction}" rendered="#{!timeSlotWrapper.timeSlot.locked}" title="#{msgs.event_tool_tips_lock_label}">
-														<i class="bi bi-lock-fill" aria-label="locked"></i>
+														<i class="si si-locked" aria-label="locked"></i>
 														<h:outputText value="#{msgs.event_lock_timeslot_label}" style="white-space: nowrap;" escape="false"/>
 													</h:commandLink>
 													<h:commandLink id="lockedTimeslot" action="#{OrganizerSignupMBean.processLockTsAction}" rendered="#{timeSlotWrapper.timeSlot.locked}" title="#{msgs.event_tool_tips_unlock_label}">
-														<i class="bi bi-lock-fill" aria-label="locked"></i>
+														<i class="si si-locked" aria-label="locked"></i>
 														<h:outputText value="#{msgs.event_unlock_timeslot_label}" escape="false"/>
 													</h:commandLink>
 												</h:panelGroup>
 												
 												<h:panelGroup >
 													<h:commandLink id="cancelTimeslot" action="#{OrganizerSignupMBean.initiateCancelTimeslot}" rendered="#{!timeSlotWrapper.timeSlot.canceled}" onclick="return confirm('#{msgs.confirm_cancel}');" title="#{msgs.event_tool_tips_cancel_label}">
-														<i class="bi bi-x-circle-fill" aria-label="cancelled"></i>
+														<i class="si si-cancelled" aria-label="cancelled"></i>
 														<h:outputText value="#{msgs.event_cancel_timeslot_label}" style="white-space: nowrap;" escape="false"/>
 													</h:commandLink>
 													<h:commandLink id="restoreTimeslot" action="#{OrganizerSignupMBean.restoreTimeslot}" rendered="#{timeSlotWrapper.timeSlot.canceled}" title="#{msgs.event_tool_tips_restore_timeslot_label}">
-														<i class="bi bi-x-circle-fill" aria-label="cancelled"></i>
+														<i class="si si-cancelled" aria-label="cancelled"></i>
 														<h:outputText value="#{msgs.event_restore_timeslot_label}" escape="false"/>
 													</h:commandLink>
 												</h:panelGroup>
@@ -631,10 +631,10 @@
 							   					<h:column>
 							   						<h:panelGrid columns="2" columnClasses="editAddImages,attName"  rendered="#{attendeeWrapper.signupAttendee.attendeeUserId !=null}" id="editLink">
 							   							<h:panelGroup>
-								   							<i class="bi bi-pencil" aria-label="edit"></i>
+															<i class="si si-edit" aria-label="edit"></i>
 								   							<h:outputText value="&nbsp;" escape="false"/>
 								   							<h:commandLink id="deleteAttendee" action="#{OrganizerSignupMBean.removeAttendee}" onclick="return confirm('#{msgs.delete_attandee_confirmation}');"  title="#{msgs.event_tool_tips_delete}" rendered="#{!OrganizerSignupMBean.meetingWrapper.meeting.meetingExpired}" >
-								   								<i class="bi bi-trash" aria-label="delete"></i>
+																<i class="si si-trash" aria-label="delete"></i>
 								   								<f:param id="deletAttendeeUserId" name="#{OrganizerSignupMBean.attendeeUserId}" value="#{attendeeWrapper.signupAttendee.attendeeUserId}"></f:param>
 								   							</h:commandLink>
 															<%--creating mailtos--%>
@@ -643,9 +643,9 @@
 																	value="mailto:#{attendeeWrapper.attendeeEmail}?subject=#{OrganizerSignupMBean.meetingWrapper.meeting.title}" 
 																	title="#{attendeeWrapper.attendeeEmail}"
 																	 rendered="#{attendeeWrapper.attendeeEmail !=null}">
-																	<i class="bi bi-envelope" aria-label="email"></i>
+																	<i class="si si-envelope" aria-label="email"></i>
 																</h:outputLink>	
-																<i class="bi bi-envelope-x" aria-label="no email"></i>
+																<i class="si si-envelope-x" aria-label="no email"></i>
 								   							<h:outputText value="&nbsp;" escape="false" />
 							   							</h:panelGroup>
 							   							
@@ -655,7 +655,7 @@
 								   								<f:param id="timeslotId" name="timeslotId" value="#{timeSlotWrapper.timeSlot.id}"/>
 								   								<f:param id="attendeeUserId" name="attendeeUserId" value="#{attendeeWrapper.signupAttendee.attendeeUserId}"/>				   										   								
 								   								<h:outputText value="#{attendeeWrapper.displayName}" title="#{attendeeWrapper.commentForTooltips}" style="cursor:pointer;" rendered="#{attendeeWrapper.signupAttendee.attendeeUserId !=null}"/>
-								   								<i class="bi bi-chat-dots" aria-label="comment"></i>
+																<i class="si si-chat-dots" aria-label="comment"></i>
 								   							</h:commandLink>
 								   							<br />
 								   							<h:outputText id="attendeeInscriptionTime" rendered="#{OrganizerSignupMBean.getDisplayTimeFromInstant(attendeeWrapper.signupAttendee.inscriptionTime) != ''}" 
@@ -800,7 +800,7 @@
 										   					<h:panelGrid columns="2" border="0" columnClasses="editAddImages,attName" rendered="#{waiterWrapper.signupAttendee.attendeeUserId !=null}">
 																	<h:panelGroup>
 										   						<h:commandLink id="removeWaitingList" action="#{OrganizerSignupMBean.removeAttendeeFromWList}" title="#{msgs.event_tool_tips_delete}" rendered="#{!OrganizerSignupMBean.meetingWrapper.meeting.meetingExpired}" style="text-decoration:none !important">
-										   							<i class="bi bi-trash" aria-label="delete"></i>
+																	<i class="si si-trash" aria-label="delete"></i>
 										   							<f:param id="waiterUserId" name="#{OrganizerSignupMBean.attendeeUserId}" value="#{waiterWrapper.signupAttendee.attendeeUserId}"/>
 										   							<h:outputText value="&nbsp;" escape="false" />
 										   						</h:commandLink>
@@ -810,9 +810,9 @@
 																		value="mailto:#{waiterWrapper.attendeeEmail}?subject=#{OrganizerSignupMBean.meetingWrapper.meeting.title}" 
 																		title="#{waiterWrapper.attendeeEmail}"
 																	  rendered="#{waiterWrapper.attendeeEmail !=null}">
-																		<i class="bi bi-envelope" aria-label="email"></i>
+																		<i class="si si-envelope" aria-label="email"></i>
 																	</h:outputLink>	
-																	<i class="bi bi-envelope-x" aria-label="no email"></i>
+																	<i class="si si-envelope-x" aria-label="no email"></i>
 																		<h:outputText value="&nbsp;" escape="false"/>
 																</h:panelGroup>
 										   						<h:panelGroup>
@@ -886,28 +886,28 @@
 								<h:outputText value="&nbsp;" escape="false"/>
 								<h:panelGroup>							 
 									<h:outputText value="#{msgs.organizer_instruction_click}" escape="false" />
-									<i class="bi bi-pencil" aria-label="edit"></i>
+									<i class="si si-edit" aria-label="edit"></i>
 									<h:outputText value="#{msgs.organizer_instruction_edit_image}" escape="false"/> 
 								</h:panelGroup>
 								
 								<h:outputText value="&nbsp;" escape="false"/>
 								<h:panelGroup >							 
 									<h:outputText value="#{msgs.organizer_instruction_click}" escape="false"/>
-									<i class="bi bi-trash" aria-label="delete"></i>
+									<i class="si si-trash" aria-label="delete"></i>
 									<h:outputText value="#{msgs.organizer_instruction_delete_image}" escape="false"/>
 								</h:panelGroup>
 								
 								<h:outputText value="&nbsp;" escape="false"/>
 								<h:panelGroup >							 
 									<h:outputText value="#{msgs.organizer_instruction_click}" escape="false"/>
-									<i class="bi bi-envelope" aria-label="email"></i>
+									<i class="si si-envelope" aria-label="email"></i>
 									<h:outputText value="#{msgs.organizer_instruction_mailto_image}" escape="false"/>
 								</h:panelGroup>
 								
 								<h:outputText value="&nbsp;" escape="false"/>
 								<h:panelGroup >							 
 									<h:outputText value="#{msgs.organizer_instruction_click}" escape="false"/>
-									<i class="bi bi-chat-dots" aria-label="comment"></i>
+									<i class="si si-chat-dots" aria-label="comment"></i>
 									<h:outputText value="#{msgs.organizer_instruction_comment_image}" escape="false"/>
 								</h:panelGroup>
 								

@@ -93,7 +93,7 @@ export const ReactionsMixin = Base => class extends Base {
               aria-expanded="false"
               title="${this._i18n.reactions_tooltip}">
             <div class="d-flex align-items-center">
-              <div><i class="bi bi-emoji-smile fs-6"></i></div>
+              <div><i class="si si-emoji-smile fs-6"></i></div>
               <div class="ms-1 small">${this._i18n.add_reaction}</div>
             </div>
           </button>
@@ -112,7 +112,7 @@ export const ReactionsMixin = Base => class extends Base {
     return html`
       <div class="upvote converations-action d-flex align-items-center border border-1 rounded-pill py-1 px-2">
         ${upvotable.canUpvote ? html`
-        <div><i class="si si-up"></i></div>
+        <div><i class="si si-arrow-up"></i></div>
         ` : nothing}
         <div class="mx-1 small">${this._i18n.upvotes}</div>
         <div class="ms-1 small">${upvotable.upvotes || 0}</div>

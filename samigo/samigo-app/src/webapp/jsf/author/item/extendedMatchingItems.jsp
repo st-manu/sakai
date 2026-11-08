@@ -207,7 +207,7 @@
 									<h:outputLink id="RemoveLink"
 										title="#{authorMessages.t_removeO}">
 										<f:verbatim>
-											<span class="bi bi-x" aria-hidden="true"></span>
+											<span class="si si-close" aria-hidden="true"></span>
 										</f:verbatim>
 									</h:outputLink>
 								</h:panelGroup>
@@ -216,7 +216,7 @@
 					</h:dataTable>
 
                     <h:outputLink id="addEmiAnswerOptionsLink" value="#" rendered="#{author.isEditPendingAssessmentFlow}">
-                        <span class="bi bi-plus-circle" aria-hidden="true"></span>
+                        <span class="si si-add" aria-hidden="true"></span>
                         <h:outputLabel for="addEmiAnswerOptionsSelect" value="#{authorMessages.add_more_options}" />
                     </h:outputLink>
 					<h:selectOneMenu id="addEmiAnswerOptionsSelect" value="1" rendered="#{author.isEditPendingAssessmentFlow}">
@@ -283,13 +283,13 @@
 						</h:panelGroup>
 						<h:panelGroup rendered="#{!itemauthor.hasAttachment}">
 							<h:commandLink action="#{itemauthor.addAttachmentsRedirect}"
-								value="" immediate="false" styleClass="bi bi-paperclip">
+								value="" immediate="false" styleClass="si si-attachment">
 								<h:outputText value="#{authorMessages.add_attachments}" />
 							</h:commandLink>
 						</h:panelGroup>
 						<h:panelGroup rendered="#{itemauthor.hasAttachment}">
 							<h:commandLink action="#{itemauthor.addAttachmentsRedirect}"
-								value="" immediate="false" styleClass="bi bi-paperclip">
+								value="" immediate="false" styleClass="si si-attachment">
 								<h:outputText value="#{authorMessages.add_remove_attachments}" />
 							</h:commandLink>
 						</h:panelGroup>
@@ -416,14 +416,14 @@
 
 									<h:panelGroup rendered="#{!answer.hasAttachment}">
 										<h:commandLink action="#{answer.addAttachmentsRedirect}"
-											value="" immediate="false" styleClass="bi bi-paperclip">
+											value="" immediate="false" styleClass="si si-attachment">
 											<h:outputText value="#{authorMessages.add_attachments}" />
 										</h:commandLink>
 									</h:panelGroup>
 
 									<h:panelGroup rendered="#{answer.hasAttachment}">
 										<h:commandLink action="#{answer.addAttachmentsRedirect}"
-											value="" immediate="false" styleClass="bi bi-paperclip">
+											value="" immediate="false" styleClass="si si-attachment">
 											<h:outputText
 												value="#{authorMessages.add_remove_attachments}" />
 										</h:commandLink>
@@ -504,7 +504,7 @@
 								<h:outputLink id="RemoveLink"
 									title="#{authorMessages.t_removeI}" rendered="true">
 									<f:verbatim>
-										<span class="bi bi-x" aria-hidden="true"></span>
+										<span class="si si-close" aria-hidden="true"></span>
 									</f:verbatim>
 								</h:outputLink>
 							</h:panelGroup>
@@ -515,7 +515,7 @@
 					<br />
 				</f:verbatim>
 				<h:outputLink id="addEmiQuestionAnswerCombinationsLink" value="#" 
-					styleClass="bi bi-plus-circle" rendered="#{author.isEditPendingAssessmentFlow}">
+					styleClass="si si-add" rendered="#{author.isEditPendingAssessmentFlow}">
 					<h:outputLabel for="addEmiQuestionAnswerCombinationsSelect" value="#{authorMessages.add_more_items}" />
 				</h:outputLink>
 				<h:selectOneMenu id="addEmiQuestionAnswerCombinationsSelect" value="1" rendered="#{author.isEditPendingAssessmentFlow}">

@@ -1443,15 +1443,15 @@ document.addEventListener('DOMContentLoaded', () => {
       if (siteManage.toolsLoaded.includes(toolId) && !siteManage.toolsCollapsed.get(toolId)) {
         document.querySelectorAll(`.tool-item-row[data-tool-id="${toolId}"]`).forEach(row => row.classList.add("d-none"));
         siteManage.toolsCollapsed.set(toolId, true);
-        iconEl.classList.remove("bi-caret-down-fill");
-        iconEl.classList.add("bi-caret-right-fill");
+        iconEl.classList.remove("si-caret-down-fill");
+        iconEl.classList.add("si-caret-right-fill");
         btn.setAttribute("title", expandState);
         btn.setAttribute("aria-label", expandState);
       } else {
         document.querySelectorAll(`.tool-item-row[data-tool-id="${toolId}"]`).forEach(row => row.classList.remove("d-none"));
         siteManage.toolsCollapsed.set(toolId, false);
-        iconEl.classList.remove("bi-caret-right-fill");
-        iconEl.classList.add("bi-caret-down-fill");
+        iconEl.classList.remove("si-caret-right-fill");
+        iconEl.classList.add("si-caret-down-fill");
         btn.setAttribute("title", collapseState);
         btn.setAttribute("aria-label", collapseState);
       }
@@ -1480,8 +1480,8 @@ document.addEventListener('DOMContentLoaded', () => {
         })
         .then(sites => {
 
-          iconEl.classList.remove("bi-caret-right-fill");
-          iconEl.classList.add("bi-caret-down-fill");
+          iconEl.classList.remove("si-caret-right-fill");
+          iconEl.classList.add("si-caret-down-fill");
 
           siteManage.toolsLoaded.push(toolId);
 

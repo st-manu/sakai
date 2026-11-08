@@ -55,7 +55,7 @@
                         aria-label="${pinTitle}">
                     </button>
                 #else
-                    <span class="d-inline-block p-1 bi si si-eye-slash-fill"
+                    <span class="d-inline-block p-1 bi si si-hidden"
                         title="$rloader.sitenav_btn_hide"
                         aria-label="$rloader.sitenav_btn_hide">
                     </span>

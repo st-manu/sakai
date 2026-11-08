@@ -2816,7 +2816,7 @@ $(document).ready(function () {
     cursor: 'pointer',
     activation: 'click',
     closePosition: 'title',
-    closeText: '<span class="bi bi-x" aria-hidden="true"></span>'
+    closeText: '<span class="si si-close" aria-hidden="true"></span>'
   });
 
   function submitgrading(item) {

@@ -789,7 +789,7 @@ import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 					//SAM-755-"checkmark" indicates right, add "X" to indicate wrong
 					String correct = evaluationMessages.getString("alt_correct");
 					String incorrect = evaluationMessages.getString("alt_incorrect");
-					String checkmarkGif = String.format("<span title=\"%s\" class=\"si si-check-lg\"></span>", correct);
+					String checkmarkGif = String.format("<span title=\"%s\" class=\"si si-check\"></span>", correct);
 					String crossmarkGif = String.format("<span title=\"%s\" class=\"si si-remove feedBackCross\"></span>", incorrect);
 					if (gdataAnswer != null) {
 						answerText = ComponentManager.get(FormattedText.class).escapeHtml(answerText, true);

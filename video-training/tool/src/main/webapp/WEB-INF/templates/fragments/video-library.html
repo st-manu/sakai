@@ -14,10 +14,10 @@
             th:title="${isFavorite} ? #{video.training.favorites.remove} : #{video.training.favorites.add}"
             th:attr="aria-label=${isFavorite} ? #{video.training.favorites.remove} : #{video.training.favorites.add}"
             th:attrappend="data-add-text=#{video.training.favorites.add}, data-remove-text=#{video.training.favorites.remove}">
-            <span class="vt-icon-default bi bi-heart" data-role="fav-off-default" th:attr="hidden=${isFavorite} ? 'hidden' : null" aria-hidden="true"></span>
-            <span class="vt-icon-hover bi bi-heart-fill" data-role="fav-off-hover" th:attr="hidden=${isFavorite} ? 'hidden' : null" aria-hidden="true"></span>
-            <span class="vt-icon-default bi bi-heart-fill" data-role="fav-on-default" th:attr="hidden=${isFavorite} ? null : 'hidden'" aria-hidden="true"></span>
-            <span class="vt-icon-hover bi bi-heartbreak-fill" data-role="fav-on-hover" th:attr="hidden=${isFavorite} ? null : 'hidden'" aria-hidden="true"></span>
+            <span class="vt-icon-default si si-heart" data-role="fav-off-default" th:attr="hidden=${isFavorite} ? 'hidden' : null" aria-hidden="true"></span>
+            <span class="vt-icon-hover si si-heart-fill" data-role="fav-off-hover" th:attr="hidden=${isFavorite} ? 'hidden' : null" aria-hidden="true"></span>
+            <span class="vt-icon-default si si-heart-fill" data-role="fav-on-default" th:attr="hidden=${isFavorite} ? null : 'hidden'" aria-hidden="true"></span>
+            <span class="vt-icon-hover si si-heartbreak-fill" data-role="fav-on-hover" th:attr="hidden=${isFavorite} ? null : 'hidden'" aria-hidden="true"></span>
             <span class="visually-hidden" th:text="${isFavorite} ? #{video.training.favorites.remove} : #{video.training.favorites.add}">Favorite</span>
         </button>
     </form>
@@ -30,10 +30,10 @@
             th:title="${isWatchLater} ? #{video.training.watchLater.remove} : #{video.training.watchLater.add}"
             th:attr="aria-label=${isWatchLater} ? #{video.training.watchLater.remove} : #{video.training.watchLater.add}"
             th:attrappend="data-add-text=#{video.training.watchLater.add}, data-remove-text=#{video.training.watchLater.remove}">
-            <span class="vt-icon-default bi bi-collection-play" data-role="wl-off-default" th:attr="hidden=${isWatchLater} ? 'hidden' : null" aria-hidden="true"></span>
-            <span class="vt-icon-hover bi bi-smartwatch" data-role="wl-off-hover" th:attr="hidden=${isWatchLater} ? 'hidden' : null" aria-hidden="true"></span>
-            <span class="vt-icon-default bi bi-collection-play-fill" data-role="wl-on-default" th:attr="hidden=${isWatchLater} ? null : 'hidden'" aria-hidden="true"></span>
-            <span class="vt-icon-hover bi bi-collection-play" data-role="wl-on-hover" th:attr="hidden=${isWatchLater} ? null : 'hidden'" aria-hidden="true"></span>
+            <span class="vt-icon-default si si-collection-play" data-role="wl-off-default" th:attr="hidden=${isWatchLater} ? 'hidden' : null" aria-hidden="true"></span>
+            <span class="vt-icon-hover si si-smartwatch" data-role="wl-off-hover" th:attr="hidden=${isWatchLater} ? 'hidden' : null" aria-hidden="true"></span>
+            <span class="vt-icon-default si si-collection-play-fill" data-role="wl-on-default" th:attr="hidden=${isWatchLater} ? null : 'hidden'" aria-hidden="true"></span>
+            <span class="vt-icon-hover si si-collection-play" data-role="wl-on-hover" th:attr="hidden=${isWatchLater} ? null : 'hidden'" aria-hidden="true"></span>
             <span class="visually-hidden" th:text="${isWatchLater} ? #{video.training.watchLater.remove} : #{video.training.watchLater.add}">Watch later</span>
         </button>
     </form>
@@ -51,53 +51,53 @@
                         data-bs-toggle="tooltip"
                         data-bs-placement="left"
                         th:title="#{video.training.visibility.global}">
-                        <span class="bi bi-globe" aria-hidden="true"></span>
+                        <span class="si si-globe" aria-hidden="true"></span>
                     </span>
                     <span class="vt-card-badge"
                         th:if="${video.visibilityScope != null && video.visibilityScope.name() == 'LESSON'}"
                         data-bs-toggle="tooltip"
                         data-bs-placement="left"
                         th:title="#{video.training.visibility.lesson}">
-                        <span class="bi bi-file-text" aria-hidden="true"></span>
+                        <span class="si si-file-text" aria-hidden="true"></span>
                     </span>
                     <span class="vt-card-badge"
                         th:if="${video.visibilityScope == null || video.visibilityScope.name() == 'COURSE'}"
                         data-bs-toggle="tooltip"
                         data-bs-placement="left"
                         th:title="#{video.training.visibility.course}">
-                        <span class="bi bi-journals" aria-hidden="true"></span>
+                        <span class="si si-journals" aria-hidden="true"></span>
                     </span>
                     <span class="vt-card-badge" data-role="status-DRAFT" data-bs-toggle="tooltip" data-bs-placement="left"
                         th:attr="hidden=${video.publicationStatus != null and video.publicationStatus.name() != 'DRAFT' ? 'hidden' : (video.publicationStatus == null ? null : null)}"
                         th:title="#{video.training.status.DRAFT}">
-                        <span class="bi bi-pen" aria-hidden="true"></span>
+                        <span class="si si-edit" aria-hidden="true"></span>
                     </span>
                     <span class="vt-card-badge" data-role="status-PENDING_APPROVAL" data-bs-toggle="tooltip" data-bs-placement="left"
                         th:attr="hidden=${video.publicationStatus == null or video.publicationStatus.name() != 'PENDING_APPROVAL' ? 'hidden' : null}"
                         th:title="#{video.training.status.PENDING_APPROVAL}">
-                        <span class="bi bi-hourglass-split" aria-hidden="true"></span>
+                        <span class="si si-hourglass-split" aria-hidden="true"></span>
                     </span>
                     <span class="vt-card-badge" data-role="status-PUBLISHED" data-bs-toggle="tooltip" data-bs-placement="left"
                         th:attr="hidden=${video.publicationStatus == null or video.publicationStatus.name() != 'PUBLISHED' ? 'hidden' : null}"
                         th:title="#{video.training.status.PUBLISHED}">
-                        <span class="bi bi-patch-check" aria-hidden="true"></span>
+                        <span class="si si-patch-check" aria-hidden="true"></span>
                     </span>
                     <span class="vt-card-badge" data-role="status-WITHDRAWN" data-bs-toggle="tooltip" data-bs-placement="left"
                         th:attr="hidden=${video.publicationStatus == null or video.publicationStatus.name() != 'WITHDRAWN' ? 'hidden' : null}"
                         th:title="#{video.training.status.WITHDRAWN}">
-                        <span class="bi bi-eye-slash" aria-hidden="true"></span>
+                        <span class="si si-hidden" aria-hidden="true"></span>
                     </span>
                     <span class="vt-card-badge" data-role="status-ARCHIVED" data-bs-toggle="tooltip" data-bs-placement="left"
                         th:attr="hidden=${video.publicationStatus == null or video.publicationStatus.name() != 'ARCHIVED' ? 'hidden' : null}"
                         th:title="#{video.training.status.ARCHIVED}">
-                        <span class="bi bi-archive" aria-hidden="true"></span>
+                        <span class="si si-archive" aria-hidden="true"></span>
                     </span>
                     <span class="vt-card-badge"
                         th:if="${video.sourceDeleted}"
                         data-bs-toggle="tooltip"
                         data-bs-placement="left"
                         th:title="#{video.training.source.deleted.title}">
-                        <span class="bi bi-trash3" aria-hidden="true"></span>
+                        <span class="si si-trash" aria-hidden="true"></span>
                     </span>
                 </div>
 
@@ -132,11 +132,11 @@
         </a>
         <div class="vt-card-actions btn-group-sm" th:if="${showManageButtons}" th:with="status=${video.publicationStatus != null ? video.publicationStatus.name() : 'DRAFT'}, moderationEnabledSafe=${moderationEnabled != null ? moderationEnabled : false}, moderationRequired=${moderationEnabledSafe && video.visibilityScope != null && video.visibilityScope.name() == 'GLOBAL'}">
             <a class="btn btn-sm" th:href="@{/videos/{id}/edit(id=${video.id})}" th:aria-label="#{video.training.edit}">
-                <span class="bi bi-pencil-fill" aria-hidden="true"></span>
+                <span class="si si-edit" aria-hidden="true"></span>
             </a>
             <form class="vt-inline-form" method="post" th:action="@{/videos/{id}/delete(id=${video.id})}">
                 <button class="btn btn-sm" type="submit" th:aria-label="#{video.training.delete}">
-                    <span class="bi bi-trash-fill" aria-hidden="true"></span>
+                    <span class="si si-trash" aria-hidden="true"></span>
                     <span class="visually-hidden" th:text="#{video.training.delete}">Delete</span>
                 </button>
             </form>
@@ -203,7 +203,7 @@
                         alt="Video thumbnail">
                     <div class="vt-table-thumb-placeholder"
                         th:classappend="${!#strings.isEmpty(thumbnailUrlById[video.id]) && !video.sourceDeleted} ? ' vt-is-hidden' : ''">
-                        <span class="bi bi-play-btn" aria-hidden="true"></span>
+                        <span class="si si-play-btn" aria-hidden="true"></span>
                     </div>
                 </div>
                 <div class="vt-title-content">
@@ -219,11 +219,11 @@
                     </div>
                     <div th:if="${showManageButtons}" class="vt-actions-row btn-group-sm" th:with="status=${video.publicationStatus != null ? video.publicationStatus.name() : 'DRAFT'}, moderationEnabledSafe=${moderationEnabled != null ? moderationEnabled : false}, visibilityScopeName=${video.visibilityScope != null ? video.visibilityScope.name() : null}, moderationRequired=${moderationEnabledSafe && visibilityScopeName == 'GLOBAL'}">
                         <a class="btn btn-sm" th:href="@{/videos/{id}/edit(id=${video.id})}" th:aria-label="#{video.training.edit}">
-                            <span class="bi bi-pencil-fill" aria-hidden="true"></span>
+                            <span class="si si-edit" aria-hidden="true"></span>
                         </a>
                         <form class="vt-inline-form" method="post" th:action="@{/videos/{id}/delete(id=${video.id})}">
                             <button class="btn btn-sm" type="submit" th:aria-label="#{video.training.delete}">
-                                <span class="bi bi-trash-fill" aria-hidden="true"></span>
+                                <span class="si si-trash" aria-hidden="true"></span>
                                 <span class="visually-hidden" th:text="#{video.training.delete}">Delete</span>
                             </button>
                         </form>

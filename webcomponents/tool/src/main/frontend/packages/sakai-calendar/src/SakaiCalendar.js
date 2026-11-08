@@ -258,7 +258,7 @@ export class SakaiCalendar extends LionCalendar {
           aria-expanded="${expanded ? "true" : "false"}"
           title="${label}"
           aria-label="${label}">
-        <span class="si ${expanded ? "si-up" : "si-down"}" aria-hidden="true"></span>
+        <span class="si ${expanded ? "si-arrow-up" : "si-arrow-down"}" aria-hidden="true"></span>
         <span>${label}</span>
       </button>
     `;

@@ -85,7 +85,7 @@
 							<h:outputText value="#{msgs.event_name}" styleClass="titleText" escape="false"/>
 								<h:panelGroup>
 									<h:panelGroup rendered="#{AttendeeSignupMBean.meetingWrapper.meeting.recurrenceId !=null}">
-										<i class="bi bi-arrow-repeat" aria-label="recurrence"></i>
+										<i class="si si-arrow-repeat" aria-label="recurrence"></i>
 										<h:outputText value="&nbsp;" escape="false"/>
 									</h:panelGroup>
 								<h:outputText value="#{AttendeeSignupMBean.meetingWrapper.meeting.title}" styleClass="longtext"/>
@@ -98,7 +98,7 @@
 							<h:outputText value="#{msgs.event_name}" styleClass="titleText" escape="false"/>
 							<h:panelGroup>
 								<h:panelGroup rendered="#{AttendeeSignupMBean.meetingWrapper.meeting.recurrenceId !=null}">
-									<h:outputText value="<i class='bi bi-arrow-repeat' title='#{msgs.event_tool_tips_recurrence}' aria-label='recurrence'></i>" escape="false"/>
+									<h:outputText value="<i class='si si-arrow-repeat' title='#{msgs.event_tool_tips_recurrence}' aria-label='recurrence'></i>" escape="false"/>
 									<h:outputText value="&nbsp;" escape="false"/>
 								</h:panelGroup>
 								<h:outputText value="#{AttendeeSignupMBean.meetingWrapper.meeting.title}" styleClass="longtext" />
@@ -148,7 +148,7 @@
 							<!-- iCalendar link, only rendered for attendees if it is a 'no signup required/announcement' meeting -->
 							<h:outputText value="#{msgs.event_icalendar_link}" styleClass="titleText" escape="false" rendered="#{AttendeeSignupMBean.icsEnabled && AttendeeSignupMBean.meetingWrapper.meeting.meetingType =='announcement'}"/>
 							<h:commandLink id="mICS" action="#{AttendeeSignupMBean.downloadICSForMeeting}" rendered="#{AttendeeSignupMBean.icsEnabled && AttendeeSignupMBean.meetingWrapper.meeting.meetingType =='announcement'}">
-								<i class="bi bi-calendar-plus" aria-label="calendar"></i>
+								<i class="si si-calendar-plus" aria-label="calendar"></i>
 								<h:outputText value="#{msgs.event_icalendar_label}"/>
 							</h:commandLink>
 		
@@ -188,11 +188,11 @@
 								<h:panelGrid columns="1" styleClass="published_siteGroupTable">
 										<h:panelGroup >	
 						   	    				<h:outputLabel  id="imageOpen_publishedSiteGroup" style="display:none" styleClass="activeTag" onclick="showDetails('meeting:imageOpen_publishedSiteGroup','meeting:imageClose_publishedSiteGroup','meeting:publishedSiteGroups');">
-							   	    				<i class="bi bi-chevron-down" aria-label="open"></i>
+												<i class="si si-chevron-down" aria-label="open"></i>
 							   	    				<h:outputText value="#{msgs.event_hide_site_group_detail}" escape="false" />
 						   	    				</h:outputLabel>
 						   	    				<h:outputLabel id="imageClose_publishedSiteGroup" styleClass="activeTag" onclick="showDetails('meeting:imageOpen_publishedSiteGroup','meeting:imageClose_publishedSiteGroup','meeting:publishedSiteGroups');">
-						   	    					<i class="bi bi-chevron-right" aria-label="close"></i>
+												<i class="si si-chevron-right" aria-label="close"></i>
 						   	    					<h:outputText value="#{msgs.event_show_site_group_detail}" escape="false" />
 						   	    				</h:outputLabel>
 							            </h:panelGroup>
@@ -245,11 +245,11 @@
 				<h:panelGrid id="noAnnouncement197" columns="1" rendered="#{!AttendeeSignupMBean.announcementType}" columnClasses="alignRightColumn" styleClass="emailTable">																		
 						<h:panelGroup>	
 		   	    				<h:outputLabel  id="imageOpen_meetingInfoDetail"  styleClass="activeTag" onclick="showDetails('meeting:imageOpen_meetingInfoDetail','meeting:imageClose_meetingInfoDetail','meeting:meetingInfoDetails');setMeetingCollapseInfo(true);">
-			   	    				<i class="bi bi-chevron-down" aria-label="open"></i>
+								<i class="si si-chevron-down" aria-label="open"></i>
 			   	    				<h:outputText value="#{msgs.event_hide_meetingIfo_detail}" escape="false" />
 		   	    				</h:outputLabel>
 		   	    				<h:outputLabel id="imageClose_meetingInfoDetail" style="display:none" styleClass="activeTag" onclick="showDetails('meeting:imageOpen_meetingInfoDetail','meeting:imageClose_meetingInfoDetail','meeting:meetingInfoDetails');setMeetingCollapseInfo(false);">
-		   	    					<i class="bi bi-chevron-right" aria-label="close"></i>
+								<i class="si si-chevron-right" aria-label="close"></i>
 		   	    					<h:outputText value="#{msgs.event_show_meetingIfo_detail}" escape="false" />
 		   	    				</h:outputLabel>
 		   	    				<h:inputHidden id="meetingInfoCollapseExpand" value="#{AttendeeSignupMBean.collapsedMeetingInfo}"/>
@@ -272,8 +272,8 @@
 						</f:facet>
 						<h:panelGroup>
 							
-							<i class="bi bi-lock-fill" aria-label="locked"></i>
-							<i class="bi bi-x-circle-fill" aria-label="cancelled"></i>
+							<i class="si si-locked" aria-label="locked"></i>
+							<i class="si si-cancelled" aria-label="cancelled"></i>
 							<h:outputText value="#{timeSlotWrapper.timeSlot.startTime}"
 								styleClass="longtext">
 								<f:convertDateTime pattern="#{UserLocale.localizedTimeFormat}" timeZone="#{UserTimeZone.userTimeZone}"/>
@@ -356,13 +356,13 @@
 								title="#{msgs.event_tool_tip_you_signed_up}"
 								styleClass="attendee_status" />
 							<h:commandLink id="tsICS" action="#{AttendeeSignupMBean.downloadICSForTimeslot}" rendered="#{AttendeeSignupMBean.icsEnabled}">
-								<i class="bi bi-calendar-plus" aria-label="calendar"></i>
+								<i class="si si-calendar-plus" aria-label="calendar"></i>
 							</h:commandLink>
 							<h:panelGroup>
 								<h:commandLink action="#{AttendeeSignupMBean.editAttendeeComment}">
 									<f:param id="timeslotId" name="timeslotId" value="#{timeSlotWrapper.timeSlot.id}"/>				   										   								
 									<h:outputText value="#{attendeeWrapper.displayName}" title="#{attendeeWrapper.commentForTooltips}" style="cursor:pointer;" rendered="#{attendeeWrapper.signupAttendee.attendeeUserId !=null}"/>
-									<i class="bi bi-chat-dots" aria-label="comment"></i>
+									<i class="si si-chat-dots" aria-label="comment"></i>
 								</h:commandLink>
 							</h:panelGroup>
 						</h:panelGroup>

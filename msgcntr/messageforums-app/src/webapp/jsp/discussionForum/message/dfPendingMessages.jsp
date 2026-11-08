@@ -73,11 +73,11 @@
 				<f:facet name="header">
 						<h:panelGroup styleClass="messageActions">
 						<h:commandLink id="denyMsgs" title="#{msgs.cdfm_button_bar_deny}" action="#{ForumTool.markCheckedAsDenied}">
-		  				<span class="bi bi-x-circle-fill" aria-hidden="true"></span>
+						<span class="si si-cancelled" aria-hidden="true"></span>
 		  				<h:outputText value=" #{msgs.cdfm_button_bar_deny} " />
 		  			</h:commandLink>
 						<h:commandLink id="approveMsgs" title="#{msgs.cdfm_button_bar_approve}" action="#{ForumTool.markCheckedAsApproved}" style="padding-left: 1.0em; padding-right: 1.0em;">
-		  				<span class="bi bi-check-circle-fill" aria-hidden="true"></span>
+						<span class="si si-success" aria-hidden="true"></span>
 		  				<h:outputText value=" #{msgs.cdfm_button_bar_approve}" />
 		  		</h:commandLink>
 					</h:panelGroup>

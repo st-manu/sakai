@@ -83,7 +83,7 @@
 	      					<h:column>
 	      						<h:outputText value="&nbsp;" escape="false" />
 	      						<h:panelGroup onclick="javascript:removeOverride(this);" id="deleteImage"
-	      							styleClass="bi bi-trash cursor-pointer" />
+								styleClass="si si-trash cursor-pointer" />
 	      						<t:inputHidden id="shouldRemove" forceId="true" value="#{decoOverrideSite.remove}" />
 	      					</h:column>
 	      				</h:dataTable>

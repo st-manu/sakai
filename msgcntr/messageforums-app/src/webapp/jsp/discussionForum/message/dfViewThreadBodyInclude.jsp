@@ -92,7 +92,7 @@
 				<%-- Reply link --%>
 				<h:panelGroup rendered="#{ForumTool.selectedTopic.isNewResponseToResponse && message.msgApproved && !ForumTool.selectedTopic.locked && !ForumTool.selectedForum.locked == 'true'}">
 					<h:commandLink action="#{ForumTool.processDfMsgReplyMsgFromEntire}" title="#{msgs.cdfm_reply}" styleClass="button"> 
-						<span class="bi bi-reply-fill middle" aria-hidden="true"></span>
+						<span class="si si-reply-fill middle" aria-hidden="true"></span>
 						<h:outputText value=" #{msgs.cdfm_reply}" />
 						<f:param value="#{message.message.id}" name="messageId" />
 						<f:param value="#{ForumTool.selectedTopic.topic.id}" name="topicId" />
@@ -106,7 +106,7 @@
 						|| message.userCanDelete}" style="display:none">
 						<h:outputText value=" #{msgs.cdfm_toolbar_separator} " rendered="#{ForumTool.selectedTopic.isNewResponseToResponse && message.msgApproved && !ForumTool.selectedTopic.locked}" />
 						<h:outputLink value="#" onclick="toggleDisplayInline('#{message.message.id}_advanced_box'); return false;">
-						<span class="bi bi-gear" aria-hidden="true"></span>
+						<span class="si si-settings" aria-hidden="true"></span>
 						<h:outputText value="#{msgs.cdfm_other_actions}" />
 					</h:outputLink>
 				</h:panelGroup>

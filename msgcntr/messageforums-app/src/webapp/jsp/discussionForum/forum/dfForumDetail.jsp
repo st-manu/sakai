@@ -39,8 +39,8 @@
 			<h:panelGroup>
 				<h:outputText styleClass="highlight title" id="draft" value="#{msgs.cdfm_draft}" rendered="#{ForumTool.selectedForum.forum.draft == 'true'}"/>
 				<h:outputText id="draft_space" value=" -  " rendered="#{ForumTool.selectedForum.forum.draft == 'true'}" styleClass="title"/>
-				<h:outputText styleClass="bi bi-calendar-x" rendered="#{ForumTool.selectedForum.forum.availability == 'false'}" style="margin-right:.5em"/>
-				<h:outputText styleClass="bi bi-lock-fill" rendered="#{ForumTool.selectedForum.locked == 'true'}" style="margin-right:.5em"/>
+				<h:outputText styleClass="si si-calendar-x forum-status-icon" rendered="#{ForumTool.selectedForum.forum.availability == 'false'}"/>
+				<h:outputText styleClass="si si-locked forum-status-icon" rendered="#{ForumTool.selectedForum.locked == 'true'}"/>
 				<%-- Rubrics marker --%>
 				<h:panelGroup rendered="#{ForumTool.selectedForum.hasRubric == 'true'}">
 					<sakai-rubric-student-preview-button
@@ -77,7 +77,7 @@
 				<h:panelGroup>
 					<h:panelGroup layout="block" id="openLinkBlock" styleClass="toggleParent openLinkBlock">
 						<a href="#" id="showMessage" class="toggle show">
-							<span class="bi bi-plus-square" aria-hidden="true"></span>
+							<span class="si si-chevron-down" aria-hidden="true"></span>
 							<h:outputText value=" #{msgs.cdfm_read_full_description}" />
 							<h:outputText value=" #{msgs.cdfm_and}" rendered="#{!empty ForumTool.selectedForum.attachList}"/>
 							<h:outputText value=" #{msgs.cdfm_attach}" rendered="#{!empty ForumTool.selectedForum.attachList}"/>
@@ -85,7 +85,7 @@
 					</h:panelGroup>
 					<h:panelGroup layout="block" id="hideLinkBlock" styleClass="toggleParent hideLinkBlock display-none">
 						<a href="#" id="hideMessage" class="toggle show">
-							<span class="bi bi-dash-square" aria-hidden="true"></span>
+							<span class="si si-chevron-up" aria-hidden="true"></span>
 							<h:outputText value=" #{msgs.cdfm_hide_full_description}"/>
 							<h:outputText value=" #{msgs.cdfm_and}" rendered="#{!empty ForumTool.selectedForum.attachList}" />
 							<h:outputText value=" #{msgs.cdfm_attach}" rendered="#{!empty ForumTool.selectedForum.attachList}"/>
@@ -124,13 +124,13 @@
 				<h:panelGrid columns="1" width="100%"  styleClass="topicBloc specialLink"  cellspacing="0" cellpadding="0">
           <h:panelGroup>
 
-						<h:outputText styleClass="bi bi-folder topicIcon" style="margin-right:.5em" rendered="#{topic.unreadNoMessages == 0}" escape="false" />
-						<h:outputText styleClass="bi bi-folder-fill topicIcon" style="margin-right:.5em" rendered="#{topic.unreadNoMessages > 0}" escape="false" />
+						<h:outputText styleClass="si si-folder topicIcon forum-status-icon" rendered="#{topic.unreadNoMessages == 0}" escape="false" />
+						<h:outputText styleClass="si si-folder-fill topicIcon forum-status-icon" rendered="#{topic.unreadNoMessages > 0}" escape="false" />
 
 						<h:outputText styleClass="highlight title" id="draft" value="#{msgs.cdfm_draft}" rendered="#{topic.topic.draft == 'true'}"/>
 						<h:outputText id="draft_space" value="  - " rendered="#{topic.topic.draft == 'true'}" styleClass="title"/>
-						<h:outputText styleClass="bi bi-calendar-x" title="#{msgs.topic_restricted_message}" style="margin-right:.5em" rendered="#{topic.availability == 'false'}" escape="false" />
-						<h:outputText styleClass="bi bi-lock-fill" title="#{msgs.cdfm_forum_locked}" style="margin-right:.5em" rendered="#{ForumTool.selectedForum.locked == 'true' || topic.locked == 'true'}" escape="false" />
+						<h:outputText styleClass="si si-calendar-x forum-status-icon" title="#{msgs.topic_restricted_message}" rendered="#{topic.availability == 'false'}" escape="false" />
+						<h:outputText styleClass="si si-locked forum-status-icon" title="#{msgs.cdfm_forum_locked}" rendered="#{ForumTool.selectedForum.locked == 'true' || topic.locked == 'true'}" escape="false" />
 						<%-- Rubrics marker --%>
 						<h:panelGroup rendered="#{topic.hasRubric == 'true'}">
 							<sakai-rubric-student-preview-button
@@ -198,7 +198,7 @@
 						<h:panelGroup>
 							<h:panelGroup layout="block" id="openLinkBlock" styleClass="toggleParent openLinkBlock">
 								<a href="#" id="showMessage" class="toggle show">
-									<span class="bi bi-plus-square" aria-hidden="true"></span>
+									<span class="si si-chevron-down" aria-hidden="true"></span>
 									<h:outputText value=" #{msgs.cdfm_read_full_description}"/>
 									<h:outputText value=" #{msgs.cdfm_and}" rendered="#{!empty topic.attachList}" />
 									<h:outputText value=" #{msgs.cdfm_attach}" rendered="#{!empty topic.attachList}"/>
@@ -206,7 +206,7 @@
 							</h:panelGroup>
 							<h:panelGroup layout="block" id="hideLinkBlock" styleClass="toggleParent hideLinkBlock display-none">
 								<a href="#" id="hideMessage" class="toggle show">
-									<span class="bi bi-dash-square" aria-hidden="true"></span>
+									<span class="si si-chevron-up" aria-hidden="true"></span>
 									<h:outputText value=" #{msgs.cdfm_hide_full_description}" />
 									<h:outputText value=" #{msgs.cdfm_and}" rendered="#{!empty topic.attachList}"/>
 									<h:outputText value=" #{msgs.cdfm_attach}" rendered="#{!empty topic.attachList}"/>
@@ -221,7 +221,7 @@
 							<h:panelGroup rendered="#{!empty topic.attachList}">
 								<h:dataTable styleClass="table table-hover table-striped table-bordered attachListTable" value="#{topic.attachList}" var="eachAttach" border="0" cellpadding="3" cellspacing="0" columnClasses="attach,bogus">
 									<h:column>
-										<span class="bi bi-paperclip" aria-hidden="true"></span>
+										<span class="si si-attachment" aria-hidden="true"></span>
 									</h:column>
 									<h:column>
 										<h:outputLink value="#{eachAttach.url}" target="_blank">

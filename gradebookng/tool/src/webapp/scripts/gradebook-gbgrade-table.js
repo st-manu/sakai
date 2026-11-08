@@ -987,7 +987,7 @@ GbGradeTable.renderTable = function (elementId, tableData) {
           if (relativeDiv) {
             const hiddenCue = document.createElement("a");
             hiddenCue.href = "javascript:void(0);";
-            hiddenCue.className = "btn-link gb-hidden-column-visual-cue bi bi-arrows-expand-vertical";
+            hiddenCue.className = "btn-link gb-hidden-column-visual-cue si si-arrows-expand-vertical";
             relativeDiv.appendChild(hiddenCue);
           }
         }
@@ -999,7 +999,7 @@ GbGradeTable.renderTable = function (elementId, tableData) {
             if (relativeDiv) {
               const hiddenCue = document.createElement("a");
               hiddenCue.href = "javascript:void(0);";
-              hiddenCue.className = "btn-link gb-hidden-column-visual-cue bi bi-arrows-expand-vertical";
+              hiddenCue.className = "btn-link gb-hidden-column-visual-cue si si-arrows-expand-vertical";
               relativeDiv.appendChild(hiddenCue);
             }
           }

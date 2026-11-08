@@ -188,7 +188,7 @@
 
 			<h:panelGroup id="forumsAction">
 				<h:outputLink styleClass="button" id="print" value="javascript:printFriendly('#{ForumTool.printFriendlyAllAuthoredMsg}');" title="#{msgs.cdfm_print}">
-					<span class="bi bi-printer" aria-hidden="true"></span>
+					<span class="si si-print" aria-hidden="true"></span>
 					<span class="sr-only"><h:outputText value="#{msgs.print_friendly}" /></span>
 				</h:outputLink>
 			</h:panelGroup>
@@ -224,11 +224,11 @@
 					<h:commandLink action="#{mfStatisticsBean.toggleTopicTitleSort3}" title=" #{msgs.stat_sort_by_topic}">
 						<h:outputText value="#{msgs.stat_sort_by_topic}" />
 						<h:panelGroup rendered="#{mfStatisticsBean.topicTitleSort3 && mfStatisticsBean.ascendingForUser3}">
-							<span class="bi bi-sort-up" aria-hidden="true"></span>
+							<span class="si si-sort-up" aria-hidden="true"></span>
 							<span class="sr-only"><h:outputText value="#{msgs.stat_topic_title}"/></span>
 						</h:panelGroup>
 						<h:panelGroup rendered="#{mfStatisticsBean.topicTitleSort3 && !mfStatisticsBean.ascendingForUser3}">
-							<span class="bi bi-sort-down" aria-hidden="true"></span>
+							<span class="si si-sort-down" aria-hidden="true"></span>
 							<span class="sr-only"><h:outputText value="#{msgs.stat_topic_title}"/></span>
 						</h:panelGroup>
 					</h:commandLink>
@@ -236,11 +236,11 @@
 					<h:commandLink action="#{mfStatisticsBean.toggleDateSort3}" title=" #{msgs.stat_sort_by_date}">	
 						<h:outputText value="#{msgs.stat_sort_by_date}" />
 						<h:panelGroup rendered="#{mfStatisticsBean.forumDateSort3 && mfStatisticsBean.ascendingForUser3}">
-							<span class="bi bi-sort-up" aria-hidden="true"></span>
+							<span class="si si-sort-up" aria-hidden="true"></span>
 							<span class="sr-only"><h:outputText value="#{msgs.stat_forum_date}"/></span>
 						</h:panelGroup>
 						<h:panelGroup rendered="#{mfStatisticsBean.forumDateSort3 && !mfStatisticsBean.ascendingForUser3}">
-							<span class="bi bi-sort-down" aria-hidden="true"></span>
+							<span class="si si-sort-down" aria-hidden="true"></span>
 							<span class="sr-only"><h:outputText value="#{msgs.stat_forum_date}"/></span>
 						</h:panelGroup>
 					</h:commandLink>
@@ -254,7 +254,7 @@
 	  					<h:outputText escape="false" value="#{stat.message}"/>
 	  					</span>
 						<span>
-							<span class="bi bi-plus-square-fill" aria-hidden="true"></span>
+							<span class="si si-add" aria-hidden="true"></span>
 							<h:outputText value="#{msgs.cdfm_message_count}: " escape="false" />
 							<span id="wordCountSpan<h:outputText value="#{stat.msgId}"/>"> </span>
 						</span>
@@ -281,7 +281,7 @@
 								<f:param value="dialogFrame" name="frameId"/>
 								<f:param value="gradesSavedDiv" name="gradesSavedDiv"/>
 								<f:param value="#{mfStatisticsBean.selectedSiteUserId}" name="userId"/>
-								<span class="bi bi-star-fill" aria-hidden="true"></span>
+								<span class="si si-star-fill" aria-hidden="true"></span>
 								<h:outputText value=" #{msgs.cdfm_button_bar_grade}" />
 							</h:outputLink>
 							<h:outputText value=" #{msgs.cdfm_toolbar_separator} " rendered="#{ForumTool.instructor}" />

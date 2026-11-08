@@ -55,10 +55,10 @@ if (thisId == null)
 			  <tr>
 					<td><h:messages styleClass="sak-banner-warn" id="errorMessages" rendered="#{! empty facesContext.maximumSeverity}" />
 				<h:panelGroup rendered="#{ForumTool.selectedForum.locked=='true'}">
-					<span class="bi bi-lock-fill" aria-hidden="true" style="margin-right:.3em"></span>
+					<span class="si si-locked forum-status-icon forum-status-icon--compact" aria-hidden="true"></span>
 				</h:panelGroup>
 				<h:panelGroup rendered="#{ForumTool.selectedForum.locked=='false'}">
-					<span class="bi bi-unlock-fill" aria-hidden="true" style="margin-right:.3em"></span>
+					<span class="si si-unlocked forum-status-icon forum-status-icon--compact" aria-hidden="true"></span>
 				</h:panelGroup>
 				<span class="title">
                     <h:outputText value="#{ForumTool.selectedForum.forum.title}" rendered="#{!ForumTool.selectedForum.markForDuplication}"/>

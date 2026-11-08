@@ -15,7 +15,7 @@
 		
 			<div class="navIntraTool">
 				<a id="printIcon" href="javascript:" onClick="javascript:window.print();">
-					<span class="bi bi-printer" aria-hidden="true"></span>
+					<span class="si si-print" aria-hidden="true"></span>
 					<h:outputText value="#{msgs.send_to_printer}" />
 				</a>
 				<a value="" href="" onClick="window.close();" >

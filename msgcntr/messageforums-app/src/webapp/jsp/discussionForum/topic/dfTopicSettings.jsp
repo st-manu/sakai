@@ -52,10 +52,10 @@
 			<p>
 				<span class="title">
 					<h:panelGroup rendered="#{ForumTool.selectedTopic.locked=='true'}">
-						<span class="bi bi-lock-fill" aria-hidden="true" style="margin-right:.3em"></span>
+						<span class="si si-locked forum-status-icon forum-status-icon--compact" aria-hidden="true"></span>
 					</h:panelGroup>
 					<h:panelGroup rendered="#{ForumTool.selectedTopic.locked=='false'}">
-						<span class="bi bi-unlock-fill" aria-hidden="true" style="margin-right:.3em"></span>
+						<span class="si si-unlocked forum-status-icon forum-status-icon--compact" aria-hidden="true"></span>
 					</h:panelGroup>
 					<h:outputText value="#{ForumTool.selectedTopic.topic.title}" rendered="#{!ForumTool.selectedTopic.markForDuplication}"/>
                     <h:inputText size="50" value="#{ForumTool.selectedTopic.topic.title}" id="topic_title" rendered="#{ForumTool.selectedTopic.markForDuplication}">

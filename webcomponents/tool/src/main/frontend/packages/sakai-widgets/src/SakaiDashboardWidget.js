@@ -124,7 +124,7 @@ export class SakaiDashboardWidget extends SakaiShadowElement {
               @click=${this.moveLeft}
               title="${this._t("left", "Move left")}"
               aria-label="${this._t("left", "Move left")}">
-            <span class="si si-left fs-6" aria-hidden="true"></span>
+            <span class="si si-arrow-left fs-6" aria-hidden="true"></span>
           </button>
         </div>
         <div class="${ifDefined(this.disableRightAndDown ? "d-none" : undefined)}">
@@ -133,7 +133,7 @@ export class SakaiDashboardWidget extends SakaiShadowElement {
               @click=${this.moveRight}
               title="${this._t("right", "Move right")}"
               aria-label="${this._t("right", "Move right")}">
-            <span class="si si-right fs-6" aria-hidden="true"></span>
+            <span class="si si-arrow-right fs-6" aria-hidden="true"></span>
           </button>
         </div>
         <div>

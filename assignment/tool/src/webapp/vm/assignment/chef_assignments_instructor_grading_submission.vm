@@ -459,7 +459,7 @@
                         #end
                         #if($assignment.getAllowPeerAssessment())
                             <div class="alert alert-secondary d-inline-flex align-items-center ms-2 mb-0 py-1 px-2">
-                                <span class="bi bi-info-circle me-2" aria-hidden="true"></span>
+                                <span class="si si-info me-2" aria-hidden="true"></span>
                                 <span>$tlang.getString('peerassessment.peerGradeInfo')</span>
                             </div>
                         #end

@@ -108,19 +108,19 @@
 				<tr>
 					<th class="sortable" data-sort="text">
 						$tlang.getString("archive.download.site")
-						<i class="bi bi-arrow-down-up"></i>
+						<i class="si si-arrow-down-up"></i>
 					</th>
 					<th class="sortable" data-sort="date">
 						$tlang.getString("archive.download.date")
-						<i class="bi bi-arrow-down-up"></i>
+						<i class="si si-arrow-down-up"></i>
 					</th>
 					<th class="sortable" data-sort="size">
 						$tlang.getString("archive.download.size")
-						<i class="bi bi-arrow-down-up"></i>
+						<i class="si si-arrow-down-up"></i>
 					</th>
 					<th class="sortable" data-sort="text">
 						$tlang.getString("archive.download.hash")
-						<i class="bi bi-arrow-down-up"></i>
+						<i class="si si-arrow-down-up"></i>
 					</th>
 				</tr>
 			</thead>
@@ -171,7 +171,7 @@
           : { column: colIndex, asc: true };
 
         table.querySelectorAll('th i').forEach(icon => {
-          icon.className = 'bi bi-arrow-down-up ms-2';
+          icon.className = 'si si-arrow-down-up ms-2';
         });
 
         const icon = th.querySelector('i');

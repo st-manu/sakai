@@ -111,11 +111,11 @@
 						</h:commandLink>
 						<h:outputText value=" " /><h:outputText value=" / " /><h:outputText value=" " />
 						<h:panelGroup rendered="#{ForumTool.selectedTopic.availability == 'false'}">
-							<span class="bi bi-calendar-x" aria-hidden="true" style="margin-right:.5em"></span>
+							<span class="si si-calendar-x forum-status-icon" aria-hidden="true"></span>
 							<h:outputText styleClass="sr-only" value="#{msgs.topic_restricted_message}" />
 						</h:panelGroup>
 						<h:panelGroup rendered="#{ForumTool.selectedTopic.locked =='true'}">
-							<span class="bi bi-lock-fill" aria-hidden="true" style="margin-right:.5em"></span>
+							<span class="si si-locked forum-status-icon" aria-hidden="true"></span>
 							<h:outputText styleClass="sr-only" value="#{msgs.cdfm_forum_locked}" />
 						</h:panelGroup>
 						<h:outputText value="#{ForumTool.selectedThreadHead.message.title}" />
@@ -151,7 +151,7 @@
 			<h:commandLink styleClass="button" value=" #{msgs.cdfm_mark_all_as_not_read}" id="markAllNotRead" action="#{ForumTool.processActionMarkAllThreadAsNotRead}" rendered="#{ForumTool.selectedTopic.isMarkAsNotRead and not ForumTool.selectedTopic.topic.autoMarkThreadsRead}"/>
 			<h:outputText value="&#160;" escape="false" />
 			<h:outputLink styleClass="button" id="print" value="javascript:printFriendly('#{ForumTool.printFriendlyUrlThread}');">
-				<span class="bi bi-printer-fill" aria-hidden="true"></span>
+				<span class="si si-print" aria-hidden="true"></span>
 				<h:outputText value="#{msgs.print_friendly}" styleClass="sr-only" />
 			</h:outputLink>
 		</h:panelGroup>

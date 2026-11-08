@@ -96,7 +96,7 @@
 	#else
 		<div class="d-flex align-items-center mb-3">
 			<button class="btn btn-link p-0" onclick="location='#toolLink("AssignmentAction" "doShow_view_assignment")'; return false;" title="$tlang.getString("viewassig.shoassinf")">
-				<i class="bi bi-chevron-right"></i>
+				<i class="si si-chevron-right"></i>
 				$tlang.getString("gen.settfor") "$formattedText.escapeHtml($assignment.title)"
 			</button>
 		</div>

@@ -167,7 +167,7 @@
 			</h:commandLink>
 			<h:outputText value="&#160;" escape="false" />
 			<h:outputLink styleClass="button" id="print" value="javascript:printFriendly('#{ForumTool.printFriendlyUrl}');" title="#{msgs.print_friendly}">
-				<span class="bi bi-printer-fill" aria-hidden="true"></span>
+				<span class="si si-print" aria-hidden="true"></span>
 			</h:outputLink>
 		</h:panelGroup>
 

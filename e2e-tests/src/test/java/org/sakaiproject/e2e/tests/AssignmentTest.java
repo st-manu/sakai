@@ -653,7 +653,7 @@ class AssignmentTest extends SakaiUiTestBase {
         assertThat(page.locator("#undo-last")).isDisabled();
         assertThat(page.locator("#undo-all")).isDisabled();
         assertThat(page.locator("#reorder-list-sortingToolBar.sakai-reorder-list-header")).isVisible();
-        assertThat(page.locator("#reorder-list-sortingToolBar .bi-sort-up, #reorder-list-sortingToolBar .bi-sort-down, #reorder-list-sortingToolBar a").first()).isVisible();
+        assertThat(page.locator("#reorder-list-sortingToolBar .si-sort-up, #reorder-list-sortingToolBar .si-sort-down, #reorder-list-sortingToolBar a").first()).isVisible();
         assertThat(page.locator("#reorder-list li.reorder-element [data-action=\"move-up\"]").first()).isVisible();
         assertThat(page.locator("#reorder-list li.reorder-element [data-action=\"move-down\"]").first()).isVisible();
     }

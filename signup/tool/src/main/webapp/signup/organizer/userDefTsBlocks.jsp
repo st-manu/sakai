@@ -176,11 +176,11 @@
 											<h:outputText value="&nbsp;" escape="false"/>
 									</f:facet>
 										<h:commandLink action="#{UserDefineTimeslotBean.deleteTSblock}" rendered="#{tsWrapper.newlyAddedTS || UserDefineTimeslotBean.placeOrderBean == UserDefineTimeslotBean.copyBeanOrderName}" actionListener="#{UserDefineTimeslotBean.validateTimeslots}">
-											<i class="bi bi-plus-circle-fill" aria-label="new"></i>
-							        		<i class="bi bi-trash" aria-label="delete"></i>
+											<i class="si si-add" aria-label="new"></i>
+									<i class="si si-trash" aria-label="delete"></i>
 							        	</h:commandLink>
 							        	<h:commandLink action="#{UserDefineTimeslotBean.deleteTSblock}" rendered="#{!tsWrapper.newlyAddedTS && UserDefineTimeslotBean.placeOrderBean != UserDefineTimeslotBean.copyBeanOrderName }" actionListener="#{UserDefineTimeslotBean.validateTimeslots}" onclick="return confirm('#{msgs.confirm_cancel}');">
-							        		<i class="bi bi-trash" aria-label="delete"></i>
+									<i class="si si-trash" aria-label="delete"></i>
 							        	</h:commandLink>
 								</t:column>
 						    	<t:column rendered="#{!tsWrapper.deleted}">

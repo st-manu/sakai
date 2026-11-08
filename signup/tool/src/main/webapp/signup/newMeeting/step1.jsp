@@ -459,7 +459,7 @@
                             </h:panelGroup>
                             <h:panelGroup id="createEditTS" style="display:none;padding-left:35px;">
                                 <h:commandLink id="createTS" action="#{NewSignupMeetingBean.createUserDefTimeSlots}" rendered="#{!NewSignupMeetingBean.userDefineTimeslotBean.userEverCreateCTS}">
-                                    <i class="bi bi-calendar-plus openCloseImageIcon" style="border:none;cursor:pointer; padding-right:5px;" aria-label="Calendar"></i>
+                                    <i class="si si-calendar-plus openCloseImageIcon" style="border:none;cursor:pointer; padding-right:5px;" aria-label="Calendar"></i>
                                     <h:outputText value="#{msgs.label_create_timeslots}" escape="false" styleClass="activeTag"/>
                                 </h:commandLink>
                                 <h:panelGroup rendered="#{NewSignupMeetingBean.userDefineTimeslotBean.userEverCreateCTS}">

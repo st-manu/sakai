@@ -66,7 +66,7 @@
         <div class="vt-category-node" th:each="root : ${categoryTree}" th:attr="data-category-id=${root.id},data-has-children=${!#lists.isEmpty(root.children)}">
             <div class="vt-category-row">
                 <button class="btn btn-sm btn-link vt-category-drag-handle" type="button" th:aria-label="#{video.training.categories.drag}">
-                    <span class="bi bi-grip-vertical" aria-hidden="true"></span>
+                    <span class="si si-grip-vertical" aria-hidden="true"></span>
                 </button>
                 <div class="vt-category-row-main">
                     <div class="d-flex align-items-center gap-2 flex-wrap">
@@ -82,22 +82,22 @@
                     <button type="button"
                             class="btn btn-sm btn-outline-secondary vt-btn-move-up"
                             th:attr="aria-label=#{video.training.categories.reorder.up}">
-                        <span class="bi bi-chevron-up" aria-hidden="true"></span>
+                        <span class="si si-chevron-up" aria-hidden="true"></span>
                     </button>
                     <button type="button"
                             class="btn btn-sm btn-outline-secondary vt-btn-move-down me-1"
                             th:attr="aria-label=#{video.training.categories.reorder.down}">
-                        <span class="bi bi-chevron-down" aria-hidden="true"></span>
+                        <span class="si si-chevron-down" aria-hidden="true"></span>
                     </button>
                     <button type="button"
                         class="btn btn-sm btn-outline-secondary vt-category-edit-trigger"
                         data-bs-toggle="modal"
                         data-bs-target="#vtCategoryModal"
                         th:attr="data-category-id=${root.id},data-category-name=${root.name},data-category-parent-id=${root.parentCategoryId},aria-label=#{video.training.categories.edit.aria}">
-                        <span class="bi bi-pencil" aria-hidden="true"></span>
+                        <span class="si si-edit" aria-hidden="true"></span>
                     </button>
                     <a class="btn btn-sm btn-outline-danger ms-1" th:href="@{/categories/{id}/delete(id=${root.id},q=${q},page=${page},size=${size})}" th:attr="aria-label=#{video.training.categories.delete.aria}">
-                        <span class="bi bi-trash" aria-hidden="true"></span>
+                        <span class="si si-trash" aria-hidden="true"></span>
                     </a>
                 </div>
             </div>
@@ -105,7 +105,7 @@
                 <div class="vt-category-node" th:each="child : ${root.children}" th:attr="data-category-id=${child.id},data-has-children=${!#lists.isEmpty(child.children)}">
                     <div class="vt-category-row">
                         <button class="btn btn-sm btn-link vt-category-drag-handle" type="button" th:aria-label="#{video.training.categories.drag}">
-                            <span class="bi bi-grip-vertical" aria-hidden="true"></span>
+                            <span class="si si-grip-vertical" aria-hidden="true"></span>
                         </button>
                         <div class="vt-category-row-main">
                             <div class="d-flex align-items-center gap-2 flex-wrap">
@@ -121,22 +121,22 @@
                             <button type="button"
                                     class="btn btn-sm btn-outline-secondary vt-btn-move-up"
                                     th:attr="aria-label=#{video.training.categories.reorder.up}">
-                                <span class="bi bi-chevron-up" aria-hidden="true"></span>
+                                <span class="si si-chevron-up" aria-hidden="true"></span>
                             </button>
                             <button type="button"
                                     class="btn btn-sm btn-outline-secondary vt-btn-move-down me-1"
                                     th:attr="aria-label=#{video.training.categories.reorder.down}">
-                                <span class="bi bi-chevron-down" aria-hidden="true"></span>
+                                <span class="si si-chevron-down" aria-hidden="true"></span>
                             </button>
                             <button type="button"
                                 class="btn btn-sm btn-outline-secondary vt-category-edit-trigger"
                                 data-bs-toggle="modal"
                                 data-bs-target="#vtCategoryModal"
                                 th:attr="data-category-id=${child.id},data-category-name=${child.name},data-category-parent-id=${child.parentCategoryId},aria-label=#{video.training.categories.edit.aria}">
-                                <span class="bi bi-pencil" aria-hidden="true"></span>
+                                <span class="si si-edit" aria-hidden="true"></span>
                             </button>
                             <a class="btn btn-sm btn-outline-danger ms-1" th:href="@{/categories/{id}/delete(id=${child.id},q=${q},page=${page},size=${size})}" th:attr="aria-label=#{video.training.categories.delete.aria}">
-                                <span class="bi bi-trash" aria-hidden="true"></span>
+                                <span class="si si-trash" aria-hidden="true"></span>
                             </a>
                         </div>
                     </div>

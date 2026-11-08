@@ -82,7 +82,7 @@ should be included in file importing DeliveryMessages
 		<h:column>
 		  <h:panelGroup id="image"
 			rendered="#{matching.isCorrect}"
-			styleClass="si si-check-lg" >
+			styleClass="si si-check" >
 		  </h:panelGroup>
 		  <h:panelGroup id="ximage"
 			rendered="#{!matching.isCorrect}"

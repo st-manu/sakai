@@ -140,7 +140,7 @@
 							<h:dataTable id="attendees" value="#{timeSlot.attendeeWrappers}" var="attendeeWrapper" columnClasses="noWrapCol">
 								<h:column>
 									<h:commandLink id="deleteAttendee" title="#{msgs.event_tool_tips_delete}" action="#{NewSignupMeetingBean.removeAttendee}" >
-										<h:outputText value="<i class='bi bi-trash openCloseImageIcon' style='border:none' aria-label='delete' title='#{msgs.event_tool_tips_delete}'></i>" escape="false"/>
+										<h:outputText value="<i class='si si-trash openCloseImageIcon' style='border:none' aria-label='delete' title='#{msgs.event_tool_tips_delete}'></i>" escape="false"/>
 					   						<f:param id="deletAttendeeUserId" name="#{NewSignupMeetingBean.attendeeUserId}" value="#{attendeeWrapper.signupAttendee.attendeeUserId}"/>
 					   				</h:commandLink>
 					   				<h:outputText value="&nbsp;" escape="false" />

@@ -115,10 +115,10 @@
 			<h:panelGroup layout="block" styleClass="topicBloc">
 				<h:panelGroup layout="block" styleClass="textPanel">
 					<h:panelGroup rendered="#{ForumTool.selectedTopic.availability == 'false'}">
-						<span class="bi bi-calendar-x" aria-hidden="true" style="margin-right:.5em"></span>
+						<span class="si si-calendar-x forum-status-icon" aria-hidden="true"></span>
 					</h:panelGroup>
 					<h:panelGroup rendered="#{ForumTool.selectedTopic.locked =='true'}">
-						<span class="bi bi-lock-fill" aria-hidden="true" style="margin-right:.5em"></span>
+						<span class="si si-locked forum-status-icon" aria-hidden="true"></span>
 					</h:panelGroup>
 					<h:outputText value="#{ForumTool.selectedTopic.topic.shortDescription}" />
 				</h:panelGroup>
@@ -147,7 +147,7 @@
 			</h:panelGroup>
 			<h:messages globalOnly="true" infoClass="success" errorClass="alertMessage" rendered="#{! empty facesContext.maximumSeverity}"/>
 			<h:panelGroup styleClass="ms-2">
-				<span class="bi bi-table" aria-hidden="true"></span>&nbsp;
+				<span class="si si-table" aria-hidden="true"></span>&nbsp;
 				<h:outputText value="#{msgs.cdfm_message_count}" />:&nbsp;
 				<h:panelGroup id="counttotal"></h:panelGroup>
 			</h:panelGroup>
@@ -161,58 +161,58 @@
 				<h:panelGroup style="display:block">
 					<h:commandLink styleClass="button" title="#{msgs.cdfm_button_bar_reply_to_msg}" action="#{ForumTool.processDfMsgReplyMsg}" 
 							rendered="#{ForumTool.selectedTopic.isNewResponseToResponse && ForumTool.selectedMessage.msgApproved && !ForumTool.selectedTopic.locked && !ForumTool.selectedForum.locked == 'true'}">
-						<span class="bi bi-reply-fill" aria-hidden="true"></span>
+						<span class="si si-reply-fill" aria-hidden="true"></span>
 						<h:outputText value=" #{msgs.cdfm_button_bar_reply_to_msg}" />
 					</h:commandLink>
 					
 					<h:commandLink styleClass="button"  title="#{msgs.cdfm_button_bar_reply_to_thread}" action="#{ForumTool.processDfMsgReplyThread}" 
 							rendered="#{ForumTool.selectedTopic.isNewResponseToResponse && ForumTool.selectedThreadHead.msgApproved && !ForumTool.selectedTopic.locked && !ForumTool.selectedForum.locked == 'true'}">
-						<span class="bi bi-reply-all-fill" aria-hidden="true"></span>
+						<span class="si si-reply-all-fill" aria-hidden="true"></span>
 						<h:outputText value=" #{msgs.cdfm_button_bar_reply_to_thread}" />
 					</h:commandLink>
 					
 					<h:commandLink styleClass="button"  title="#{msgs.cdfm_button_bar_delete_msg}" action="#{ForumTool.processDfMsgDeleteConfirm}" rendered="#{ForumTool.selectedMessage.userCanDelete}" >
-						<span class="bi bi-trash-fill" aria-hidden="true"></span>
+						<span class="si si-trash" aria-hidden="true"></span>
 						<h:outputText value=" #{msgs.cdfm_button_bar_delete_msg}" />
 					</h:commandLink>
 					
 					<h:commandLink styleClass="button"  title="#{msgs.cdfm_button_bar_revise}" action="#{ForumTool.processDfMsgRvs}" 
 							rendered="#{ForumTool.selectedMessage.revise}">
-						<span class="bi bi-pencil-fill" aria-hidden="true"></span>
+						<span class="si si-edit" aria-hidden="true"></span>
 						<h:outputText value=" #{msgs.cdfm_button_bar_revise}" />
 					</h:commandLink>
 					
 					<h:commandLink styleClass="button"  title="#{msgs.cdfm_button_bar_grade}" action="#{ForumTool.processDfMsgGrd}" 
 							rendered="#{ForumTool.selectedTopic.isPostToGradebook && ForumTool.gradebookExist}">
-						<span class="bi bi-award" aria-hidden="true"></span>
+						<span class="si si-award" aria-hidden="true"></span>
 						<h:outputText value=" #{msgs.cdfm_button_bar_grade}" />
 					</h:commandLink>
 					<%-- Email --%>
 					<h:outputLink styleClass="button"  id="createEmail1" value="mailto:#{ForumTool.selectedMessage.authorEmail}" title="#{msgs.cdfm_button_bar_email}" rendered="#{ForumTool.selectedMessage.userCanEmail && ForumTool.selectedMessage.authorEmail != '' && ForumTool.selectedMessage.authorEmail != null}"> 
 						<f:param value="#{msgs.cdfm_feedback_on} #{ForumTool.selectedMessage.message.title}" name="subject" />
-						<span class="bi bi-envelope" aria-hidden="true"></span>
+						<span class="si si-envelope" aria-hidden="true"></span>
   						<h:outputText value=" #{msgs.cdfm_button_bar_email}"/>
 					</h:outputLink>
 					<%-- premalink --%>
 					<h:outputLink id="permalink1" value="#{ForumTool.messageURL}" styleClass="button permaLink" title="#{msgs.cdfm_button_bar_permalink_message}"> 
-						<span class="bi bi-link" aria-hidden="true"></span>
+						<span class="si si-link" aria-hidden="true"></span>
   						<h:outputText value=" #{msgs.cdfm_button_bar_permalink}"/>
 					</h:outputLink>
 				</h:panelGroup>
 				<h:panelGroup style="display:block;white-space:nowrap;">
 					<h:commandLink styleClass="button" title="#{msgs.cdfm_button_bar_deny}" action="#{ForumTool.processDfMsgDeny}" 
 							rendered="#{ForumTool.allowedToDenyMsg}">
-						<span class="bi bi-x-circle" aria-hidden="true"></span>
+						<span class="si si-cancel" aria-hidden="true"></span>
 						<h:outputText value=" #{msgs.cdfm_button_bar_deny}" />
 					</h:commandLink>
 					<h:commandLink styleClass="button" title="#{msgs.cdfm_button_bar_add_comment}" action="#{ForumTool.processDfMsgAddComment}" 
 							rendered="#{ForumTool.allowedToApproveMsg && ForumTool.selectedMessage.msgDenied}">
-						<span class="bi bi-chat-text" aria-hidden="true"></span>
+						<span class="si si-chat-text" aria-hidden="true"></span>
 						<h:outputText value=" #{msgs.cdfm_button_bar_add_comment}" />
 					</h:commandLink>
 					<h:commandLink styleClass="button" title="#{msgs.cdfm_button_bar_approve}" action="#{ForumTool.processDfMsgApprove}" 
 							rendered="#{ForumTool.allowedToApproveMsg}">
-						<span class="bi bi-check-circle" aria-hidden="true"></span>
+						<span class="si si-success" aria-hidden="true"></span>
 						<h:outputText value=" #{msgs.cdfm_button_bar_approve}" />
 					</h:commandLink>
 				</h:panelGroup>

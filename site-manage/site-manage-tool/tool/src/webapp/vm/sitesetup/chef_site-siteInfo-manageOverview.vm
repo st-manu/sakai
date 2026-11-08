@@ -46,13 +46,13 @@
                                 <td headers="left-column-move-header" class="buttonCol">
                                     #if ($toolCount > 1)
                                         <a class="btn btn-link btn-sm p-0" href='#toolLinkParam($action "doEdit_tool_up" "id=$formattedText.escapeUrl($tool.Tool.Id)")' title='$tlang.getString("manover.up")'>
-                                             <span class="si si-up" aria-hidden="true"></span>
+                                             <span class="si si-arrow-up" aria-hidden="true"></span>
                                              <span class="visually-hidden">$tlang.getString("manover.up")</span>
                                          </a>
                                      #end
                                      #if ($toolCount < $tools.size())
                                         <a class="btn btn-link btn-sm p-0" href='#toolLinkParam($action "doEdit_tool_down" "id=$formattedText.escapeUrl($tool.Tool.Id)")' title='$tlang.getString("manover.down")'>
-                                             <span class="si si-down" aria-hidden="true"></span>
+                                             <span class="si si-arrow-down" aria-hidden="true"></span>
                                              <span class="visually-hidden">$tlang.getString("manover.down")</span>
                                          </a>
                                      #end
@@ -125,20 +125,20 @@
                                     <td headers="either-column-move-header" class="buttonCol">
                                         #if ($leftToolCount > 1)
                                             <a class="btn btn-link btn-sm p-0" href='#toolLinkParam($action "doEdit_tool_up" "id=$formattedText.escapeUrl($tool.Tool.Id)")' title='$tlang.getString("manover.up")'>
-                                                <span class="si si-up" aria-hidden="true"></span>
+                                                <span class="si si-arrow-up" aria-hidden="true"></span>
                                                 <span class="visually-hidden">$tlang.getString("manover.up")</span>
                                             </a>
                                         #end
                                         #if ($leftToolCount < $leftTools.size())
                                             <a class="btn btn-link btn-sm p-0" href='#toolLinkParam($action "doEdit_tool_down" "id=$formattedText.escapeUrl($tool.Tool.Id)")' title='$tlang.getString("manover.down")'>
-                                                 <span class="si si-down" aria-hidden="true"></span>
+                                                 <span class="si si-arrow-down" aria-hidden="true"></span>
                                                  <span class="visually-hidden">$tlang.getString("manover.down")</span>
                                            </a>
                                         #end
                                     </td>
                                     <td headers="either-column-move-header" class="buttonCol">
                                         <a class="btn btn-link btn-sm p-0" href='#toolLinkParam($action "doEdit_tool_right" "id=$formattedText.escapeUrl($tool.Id)")' title='$tlang.getString("manover.right")'>
-                                            <span class="si si-right" aria-hidden="true"></span>
+                                            <span class="si si-arrow-right" aria-hidden="true"></span>
                                             <span class="visually-hidden">$tlang.getString("manover.right")</span>
                                         </a>
                                     </td>
@@ -164,20 +164,20 @@
                                 <tr>
                                     <td headers="right-column-move-header" class="buttonCol">
                                         <a class="btn btn-link btn-sm p-0" href='#toolLinkParam($action "doEdit_tool_left" "id=$formattedText.escapeUrl($tool.Id)")' title='$tlang.getString("manover.left")'>
-                                            <span class="si si-left" aria-hidden="true"></span>
+                                            <span class="si si-arrow-left" aria-hidden="true"></span>
                                             <span class="visually-hidden">$tlang.getString("manover.left")</span>
                                         </a>
                                     </td>
                                     <td headers="right-column-move-header" class="buttonCol">
                                         #if ($rightToolCount > 1)
                                             <a class="btn btn-link btn-sm p-0" href='#toolLinkParam($action "doEdit_tool_up" "id=$formattedText.escapeUrl($tool.Tool.Id)")' title='$tlang.getString("manover.up")'>
-                                                <span class="si si-up" aria-hidden="true"></span>
+                                                <span class="si si-arrow-up" aria-hidden="true"></span>
                                                 <span class="visually-hidden">$tlang.getString("manover.up")</span>
                                             </a>
                                         #end
                                         #if ($rightToolCount < $rightTools.size())
                                             <a class="btn btn-link btn-sm p-0" href='#toolLinkParam($action "doEdit_tool_down" "id=$formattedText.escapeUrl($tool.Tool.Id)")' title='$tlang.getString("manover.down")'>
-                                                <span class="si si-down" aria-hidden="true"></span>
+                                                <span class="si si-arrow-down" aria-hidden="true"></span>
                                                 <span class="visually-hidden">$tlang.getString("manover.down")</span>
                                             </a>
                                         #end
@@ -263,7 +263,7 @@
                          #set ($currentTool = $toolIds.contains($widget.Id))
                          #if ($currentTool == false)
                              <li class="list-group-item-action disabled">
-                                 <span class="bi bi-ban"></span>
+                                 <span class="si si-slash-circle"></span>
                                  <span class="widgetName">$formattedText.escapeHtml($widget.Title)</span>
                              </li>
                          #end

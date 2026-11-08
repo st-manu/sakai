@@ -251,7 +251,7 @@ public class PagePickerProducer implements ViewComponentProducer, NavigationCase
         }
 
         UIOutput.make(row, "page-icon")
-                .decorate(new UIStyleDecorator(topLevel ? "bi-folder2" : "bi-file-earmark-text"));
+                .decorate(new UIStyleDecorator(topLevel ? "si-folder" : "si-file-text"));
 
         GeneralViewParameters preview = new GeneralViewParameters(PreviewProducer.VIEW_ID);
         preview.setSendingPage(page.getPageId());
@@ -318,13 +318,13 @@ public class PagePickerProducer implements ViewComponentProducer, NavigationCase
 
     private String releaseIconClass(SimplePage page) {
         if (page.isHidden()) {
-            return "bi-eye-slash";
+            return "si-hidden";
         }
         Date releaseDate = page.getReleaseDate();
         if (releaseDate != null && Instant.now().isBefore(releaseDate.toInstant())) {
-            return "bi-clock";
+            return "si-clock";
         }
-        return "bi-calendar-check";
+        return "si-calendar-check";
     }
 
     private void renderAccessibilityDebug(UIBranchContainer row, SimplePage page, Long itemId, String siteId) {

@@ -126,7 +126,7 @@
                                          '<div class="modal-header">'+
                                            '<h5 class="modal-title">'+editor.lang.sakaipreview.preview+'</h5>'+
                                            '<button type="button" class="btn btn-transparent text-white sakaipreview-print ms-2 me-auto">'+
-                                             '<span class="bi bi-printer" aria-hidden="true"></span>'+
+                                             '<span class="si si-print" aria-hidden="true"></span>'+
                                            '</button>'+
                                            '<button type="button" class="btn-close ms-0 me-1" data-bs-dismiss="modal" aria-label="Close"></button>'+
                                          '</div>'+

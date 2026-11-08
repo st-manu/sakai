@@ -87,8 +87,8 @@ class PaSystemTest extends SakaiUiTestBase {
             Locator showAlerts = page.getByRole(AriaRole.BUTTON,
                 new Page.GetByRoleOptions().setName("Show dismissed system alerts").setExact(true));
             assertThat(banner).isVisible();
-            assertThat(banner.locator(".bi-exclamation-triangle")).isVisible();
-            assertThat(banner.locator(".bi-x-lg")).isVisible();
+            assertThat(banner.locator(".si-warning")).isVisible();
+            assertThat(banner.locator(".si-close")).isVisible();
             openAccountMenu();
             assertThat(showAlerts).isHidden();
             closeAccountMenu();
@@ -271,7 +271,7 @@ class PaSystemTest extends SakaiUiTestBase {
             assertThat(banner).isHidden();
             Locator timezoneBanner = page.locator(".pasystem-banner-timezone").filter(
                 new Locator.FilterOptions().setHasText(timezoneMessage));
-            assertThat(timezoneBanner.locator(".bi-info-circle")).isVisible();
+            assertThat(timezoneBanner.locator(".si-info")).isVisible();
 
             page.reload();
             assertThat(banner).isHidden();

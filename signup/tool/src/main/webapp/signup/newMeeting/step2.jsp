@@ -87,7 +87,7 @@
 						<h:panelGroup styleClass="col-xs-12 col-md-9 valueColumn" layout="block">
 							<h:panelGroup>
 								<h:panelGroup rendered="#{NewSignupMeetingBean.recurrence}">
-									<h:outputText value="<i class='bi bi-arrow-repeat' title='#{msgs.event_tool_tips_recurrence}' style='border:none' aria-label='recurrence'></i>" escape="false"/>
+									<h:outputText value="<i class='si si-arrow-repeat' title='#{msgs.event_tool_tips_recurrence}' style='border:none' aria-label='recurrence'></i>" escape="false"/>
 									<h:outputText value="&nbsp;" escape="false"/>
 								</h:panelGroup>
 								<h:outputText value="#{NewSignupMeetingBean.signupMeeting.title}" styleClass="longtext" escape="false"/>
@@ -286,11 +286,11 @@
 						<h:panelGroup styleClass="col-xs-12 col-md-9 valueColumn" layout="block" rendered="#{NewSignupMeetingBean.customTimeslotType}">
 							<h:panelGroup>
 								<h:outputLabel  id="imageOpen_schedule" style="display:none" styleClass="activeTag" onclick="showDetails('meeting:imageOpen_schedule','meeting:imageClose_schedule','meeting:scheduleDetail');">
-									<h:outputText value="<i class='bi bi-chevron-down openCloseImageIcon' title='#{msgs.title_tip_click_hide_schedule}' style='border:none;' aria-label='#{msgs.title_tip_click_hide_schedule}'></i>" escape="false"/>
+									<h:outputText value="<i class='si si-chevron-down openCloseImageIcon' title='#{msgs.title_tip_click_hide_schedule}' style='border:none;' aria-label='#{msgs.title_tip_click_hide_schedule}'></i>" escape="false"/>
 									<h:outputText value="#{msgs.event_hide_custom_ts}" escape="false" style="vertical-align: top;"/>
 								</h:outputLabel>
 								<h:outputLabel id="imageClose_schedule" styleClass="activeTag" onclick="showDetails('meeting:imageOpen_schedule','meeting:imageClose_schedule','meeting:scheduleDetail');">
-									<h:outputText value="<i class='bi bi-chevron-right openCloseImageIcon' title='#{msgs.title_tip_click_show_schedule}' style='border:none;vertical-align:top;' aria-label='#{msgs.title_tip_click_show_schedule}'></i>" escape="false"/>
+									<h:outputText value="<i class='si si-chevron-right openCloseImageIcon' title='#{msgs.title_tip_click_show_schedule}' style='border:none;vertical-align:top;' aria-label='#{msgs.title_tip_click_show_schedule}'></i>" escape="false"/>
 									<h:outputText value="#{msgs.event_show_custom_ts}" escape="false" style="vertical-align: top;"/>
 								</h:outputLabel>
 							</h:panelGroup>
@@ -494,11 +494,11 @@
 						<h:panelGroup styleClass="col-xs-12 col-md-9 valueColumn" layout="block" rendered="#{!NewSignupMeetingBean.announcementType}">
 							<h:panelGroup>
 								<h:panelGroup id="imageOpen_otherSetting" style="display:none" styleClass="activeTag">
-									<i class="bi bi-chevron-down openCloseImageIcon" title="Click to hide details." style="border:none;vertical-align: middle;" aria-label="open"></i>
+									<i class="si si-chevron-down openCloseImageIcon" title="Click to hide details." style="border:none;vertical-align: middle;" aria-label="open"></i>
 									<h:outputText value="#{msgs.event_close_other_default_setting}" escape="false" style="vertical-align: middle;"/>
 								</h:panelGroup>
 								<h:panelGroup id="imageClose_otherSetting" styleClass="activeTag">
-									<i class="bi bi-chevron-right openCloseImageIcon" title="Click to show details." style="border:none;vertical-align:middle;" aria-label="close"></i>
+									<i class="si si-chevron-right openCloseImageIcon" title="Click to show details." style="border:none;vertical-align:middle;" aria-label="close"></i>
 									<h:outputText value="#{msgs.event_show_other_default_setting}" escape="false" style="vertical-align: middle;"/>
 								</h:panelGroup>
 							</h:panelGroup>

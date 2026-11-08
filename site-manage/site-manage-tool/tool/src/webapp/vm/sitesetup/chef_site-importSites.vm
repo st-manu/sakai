@@ -103,7 +103,7 @@
 								    data-expand-state="$btnExpand"
 								    data-collapse-state="$btnCollapse"
 								    data-tool-id="$toolId">
-							        <span class="bi bi-caret-right-fill" aria-hidden="true"></span>
+							        <span class="si si-caret-right-fill" aria-hidden="true"></span>
 							    </button>
 							#end
 						</td>

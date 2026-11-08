@@ -529,7 +529,7 @@ button.btn.btn-default.multiselect-clear-filter{
 											/>
 											$tlang.getString("access.secured")
 										</label>
-										<button id="infoTooltip" class="btn icon-button" data-bs-toggle="tooltip" tabindex="0" title="$tlang.getString('access.secured.tooltip')"><i class="si si-info-circle"></i></button>
+										<button id="infoTooltip" class="btn icon-button" data-bs-toggle="tooltip" tabindex="0" title="$tlang.getString('access.secured.tooltip')"><i class="si si-info"></i></button>
 									</div>
 								</div>
 							#end

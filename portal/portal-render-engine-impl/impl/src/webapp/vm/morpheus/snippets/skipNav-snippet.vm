@@ -23,7 +23,7 @@
                     aria-controls="select-site-sidebar"
                     class="Mrphs-skipNav__link js-toggle-sites-nav"
                     title="${rloader.sit_jumpworksite}" accesskey="w">
-                <i class="si si-grid-3x3-fill all-sites-icon" aria-hidden="true"></i> ${rloader.sit_worksites}
+                <i class="si si-all-sites all-sites-icon" aria-hidden="true"></i> ${rloader.sit_worksites}
                 <span class="accesibility_key">[w]</span>
             </a>
         </li>

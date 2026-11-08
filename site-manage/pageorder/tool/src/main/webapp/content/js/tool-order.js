@@ -164,7 +164,7 @@
       visibilityButton.setAttribute("aria-label", `${visibilityButton.title}: ${data.title}`);
       const icon = visibilityButton.querySelector(".si");
       if (icon) {
-        icon.className = data.visible ? "bi bi-eye-slash" : "bi bi-eye";
+        icon.className = data.visible ? "si si-hidden" : "si si-visible";
       }
     }
 
@@ -175,7 +175,7 @@
       accessButton.setAttribute("aria-label", `${accessButton.title}: ${data.title}`);
       const icon = accessButton.querySelector(".si");
       if (icon) {
-        icon.className = data.enabled ? "bi bi-lock" : "bi bi-unlock";
+        icon.className = data.enabled ? "si si-locked" : "si si-unlocked";
       }
     }
   };

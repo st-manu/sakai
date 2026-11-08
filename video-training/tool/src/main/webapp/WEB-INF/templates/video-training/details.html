@@ -63,11 +63,11 @@
             <button class="btn btn-primary" type="submit" th:text="#{video.training.restoreDraft}">Restore to draft</button>
         </form>
         <a class="btn ms-2" th:href="@{/videos/{id}/edit(id=${video.id})}" th:aria-label="#{video.training.edit}">
-            <span class="bi bi-pencil-fill" aria-hidden="true"></span>
+            <span class="si si-edit" aria-hidden="true"></span>
         </a>
         <form class="vt-inline-form" method="post" th:action="@{/videos/{id}/delete(id=${video.id})}">
             <button class="btn" type="submit" th:aria-label="#{video.training.delete}">
-                <span class="bi bi-trash-fill" aria-hidden="true"></span>
+                <span class="si si-trash" aria-hidden="true"></span>
                 <span class="visually-hidden" th:text="#{video.training.delete}">Delete</span>
             </button>
         </form>
@@ -96,7 +96,7 @@
 
     <div id="pip-overlay" class="vt-pip-overlay" aria-hidden="true">
         <div class="vt-pip-overlay-content">
-            <span class="bi bi-box-arrow-up-right vt-pip-overlay-icon" aria-hidden="true"></span>
+            <span class="si si-box-arrow-up-right vt-pip-overlay-icon" aria-hidden="true"></span>
             <p class="vt-pip-overlay-message" th:text="#{video.training.pip.overlay.message}">The platform has opened in a new tab.</p>
             <p class="vt-pip-overlay-warning" th:text="#{video.training.pip.overlay.warning}">Do not close this window to keep the floating video playing. You can continue browsing the platform in the new window.</p>
             <p id="pip-popup-blocked-warning" class="vt-pip-overlay-warning vt-pip-overlay-popup-warning vt-is-hidden" th:text="#{video.training.pip.overlay.popupBlocked}">Your browser blocked the new tab. To keep browsing the platform while PiP is active, allow pop-ups for this site and try again.</p>

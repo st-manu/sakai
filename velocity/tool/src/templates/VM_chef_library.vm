@@ -614,6 +614,7 @@ ${extra}")
 	#if($backAction)
 	<a class="sakai-back-link" href="#"
 		onclick="location = '#toolLink("$action" $backAction)';return false;">
+		<span class="si si-arrow-left" aria-hidden="true"></span>
 		<span>$!backLabel</span>
 	</a>
 	#end
@@ -673,6 +674,7 @@ ${extra}")
 			#if($hasUtilities)
 		<details class="sakai-overflow-menu sakai-tool-header__more">
 			<summary class="sakai-btn sakai-btn-ghost sakai-overflow-menu__toggle"#if($moreLabel) aria-label="$moreLabel"#end>
+				<span class="si si-three-dots" aria-hidden="true"></span>
 			</summary>
 			<div class="sakai-overflow-menu__panel">
 				#foreach($item in $menu.Items)
@@ -754,11 +756,13 @@ ${extra}")
 	<div class="sakai-table-pagerControls">
 		<button type="button" class="sakai-btn-icon" name="eventSubmit_doList_first" title="$tlang.getString("gen.first")"
 			onclick="VM_PP.doPageNav('#toolLink("$action", "doList_first")', this);" #if ($goFPButton != "true") disabled="disabled" #end>
+			<span class="si si-chevron-double-left" aria-hidden="true"></span>
 			<span class="visually-hidden">$tlang.getString("gen.first")</span>
 		</button>
 
 		<button type="button" class="sakai-btn-icon" name="eventSubmit_doList_prev" title="$tlang.getFormattedMessage('gen.previous.pagesize', $pagesize)"
 			onclick="VM_PP.doPageNav('#toolLink("$action", "doList_prev")', this);" #if ($goPPButton != "true") disabled="disabled" #end>
+			<span class="si si-chevron-left" aria-hidden="true"></span>
 			<span class="visually-hidden">$tlang.getFormattedMessage('gen.previous.pagesize', $pagesize)</span>
 		</button>
 
@@ -773,11 +777,13 @@ ${extra}")
 
 		<button type="button" class="sakai-btn-icon" name="eventSubmit_doList_next" title="$tlang.getFormattedMessage('gen.next.pagesize', $pagesize)"
 			onclick="VM_PP.doPageNav('#toolLink("$action", "doList_next")', this);" #if ($goNPButton != "true") disabled="disabled" #end>
+			<span class="si si-chevron-right" aria-hidden="true"></span>
 			<span class="visually-hidden">$tlang.getFormattedMessage('gen.next.pagesize', $pagesize)</span>
 		</button>
 
 		<button type="button" class="sakai-btn-icon" name="eventSubmit_doList_last" title="$tlang.getString("gen.last")"
 			onclick="VM_PP.doPageNav('#toolLink("$action", "doList_last")', this);" #if ($goLPButton != "true") disabled="disabled" #end>
+			<span class="si si-chevron-double-right" aria-hidden="true"></span>
 			<span class="visually-hidden">$tlang.getString("gen.last")</span>
 		</button>
 	</div>

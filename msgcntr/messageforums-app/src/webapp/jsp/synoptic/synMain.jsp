@@ -61,7 +61,7 @@
 									--%>
 											<h:outputText value="#{eachSite.unreadPrivateAmt}" rendered="#{eachSite.unreadPrivateAmt > 0}" style="width:3.5em;display:block;float:left"/>
 											<h:panelGroup style="display:block;float:left">
-											<h:outputText value="" styleClass="bi bi-envelope-fill" 
+											<h:outputText value="" styleClass="si si-envelope-fill"
 												rendered="#{eachSite.unreadPrivateAmt > 0}"/>	
 											<h:outputText value="#{msgs.syn_tool_link_begin}#{eachSite.privateMessagesUrl}';\">
 												Read</a>" 
@@ -97,7 +97,7 @@
 										<h:outputText value="#{eachSite.unreadForumsAmt}" rendered="#{eachSite.unreadForumsAmt > 0}" style="width:3.5em;display:block;float:left"/>								
 										<h:panelGroup style="display:block;float:left">
 					<%-- === To create a link to (Messages &) Forums home page === --%>
-										<h:outputText value="" styleClass="bi bi-chat-text" title="#{msgs.syn_goto_forums}" 
+										<h:outputText value="" styleClass="si si-chat-text" title="#{msgs.syn_goto_forums}"
 											rendered="#{eachSite.unreadForumsAmt > 0}"/>
 										<h:outputText value="#{msgs.syn_tool_link_begin}#{eachSite.mcPageURL}';\">Read</a>" 
 							escape="false" title="#{msgs.syn_goto_forums}" rendered="#{eachSite.unreadForumsAmt > 0}"/>
@@ -134,7 +134,7 @@
 			<h:panelGroup rendered="#{mfSynopticBean.siteInfo.unreadPrivateAmt > 0}" >
 							<h:outputText value="#{mfSynopticBean.siteInfo.unreadPrivateAmt}" rendered="#{mfSynopticBean.siteInfo.unreadPrivateAmt > 0}" style="width:3.5em;display:block;float:left"/>
 							<h:panelGroup style="display:block;float:left">
-								<h:outputText value="" styleClass="bi bi-envelope-fill"
+								<h:outputText value="" styleClass="si si-envelope-fill"
 										rendered="#{mfSynopticBean.siteInfo.unreadPrivateAmt > 0}"/>
 				<h:outputText 
 										value="#{msgs.syn_tool_link_begin}#{mfSynopticBean.siteInfo.privateMessagesUrl}';\">Read</a>"
@@ -161,7 +161,7 @@
 							<h:outputText value="#{mfSynopticBean.siteInfo.unreadForumsAmt}" rendered="#{mfSynopticBean.siteInfo.unreadForumsAmt > 0}" style="width:3.5em;display:block;float:left"/>
 							<h:panelGroup style="display:block;float:left">
 								<h:panelGroup rendered="#{mfSynopticBean.siteInfo.unreadForumsAmt > 0}">
-									<span class="bi bi-chat-text" aria-hidden="true" aria-label="#{msgs.syn_goto_forums}"></span>
+									<span class="si si-chat-text" aria-hidden="true" aria-label="#{msgs.syn_goto_forums}"></span>
 								</h:panelGroup>
 								<h:outputText value="#{msgs.syn_tool_link_begin}#{mfSynopticBean.siteInfo.mcPageURL}';\">Read</a>" 
 							escape="false" title="#{msgs.syn_goto_forums}" rendered="#{mfSynopticBean.siteInfo.unreadForumsAmt > 0}"/>

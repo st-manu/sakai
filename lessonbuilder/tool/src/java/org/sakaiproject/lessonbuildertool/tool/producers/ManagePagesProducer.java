@@ -149,10 +149,10 @@ public class ManagePagesProducer implements ViewComponentProducer, NavigationCas
             String status = null;
             String iconClass = "invisible";
             if (logEntry != null && logEntry.isComplete()) {
-                iconClass = "bi-check2";
+                iconClass = "si-check";
                 status = messageLocator.getMessage("simplepage.status.completed");
             } else if (logEntry != null && !logEntry.getDummy()) {
-                iconClass = "bi-hourglass-split";
+                iconClass = "si-hourglass-split";
                 status = messageLocator.getMessage("simplepage.status.inprogress");
             } else if (!canEditPage && hasPrerequisites) {
                 continue;
@@ -251,13 +251,13 @@ public class ManagePagesProducer implements ViewComponentProducer, NavigationCas
 
     private String releaseIconClass(SimplePage page) {
         if (page.isHidden()) {
-            return "bi-eye-slash";
+            return "si-hidden";
         }
         Date releaseDate = page.getReleaseDate();
         if (releaseDate != null && Instant.now().isBefore(releaseDate.toInstant())) {
-            return "bi-clock";
+            return "si-clock";
         }
-        return "bi-calendar-check";
+        return "si-calendar-check";
     }
 
     private void renderPageItems(UIBranchContainer row, Long pageId) {
@@ -364,28 +364,28 @@ public class ManagePagesProducer implements ViewComponentProducer, NavigationCas
             case SimplePageItem.ASSIGNMENT -> new UIStyleDecorator("si si-sakai-assignment-grades");
             case SimplePageItem.ASSESSMENT -> new UIStyleDecorator("si si-sakai-samigo");
             case SimplePageItem.SCORM -> new UIStyleDecorator("si si-sakai-scorm-tool");
-            case SimplePageItem.QUESTION -> new UIStyleDecorator("bi-question-circle");
-            case SimplePageItem.COMMENTS -> new UIStyleDecorator("bi-chat-dots");
-            case SimplePageItem.BLTI -> new UIStyleDecorator("bi-box-arrow-up-right");
-            case SimplePageItem.PAGE -> new UIStyleDecorator("bi-folder");
-            case SimplePageItem.BREAK -> new UIStyleDecorator("bi-textarea-t");
-            case SimplePageItem.URL -> new UIStyleDecorator("bi-link-45deg");
-            case SimplePageItem.STUDENT_CONTENT -> new UIStyleDecorator("bi-person-square");
-            case SimplePageItem.PEEREVAL -> new UIStyleDecorator("bi-people");
-            case SimplePageItem.CHECKLIST -> new UIStyleDecorator("bi-list-check");
+            case SimplePageItem.QUESTION -> new UIStyleDecorator("si-help");
+            case SimplePageItem.COMMENTS -> new UIStyleDecorator("si-chat-dots");
+            case SimplePageItem.BLTI -> new UIStyleDecorator("si-box-arrow-up-right");
+            case SimplePageItem.PAGE -> new UIStyleDecorator("si-folder");
+            case SimplePageItem.BREAK -> new UIStyleDecorator("si-textarea-t");
+            case SimplePageItem.URL -> new UIStyleDecorator("si-link");
+            case SimplePageItem.STUDENT_CONTENT -> new UIStyleDecorator("si-person-square");
+            case SimplePageItem.PEEREVAL -> new UIStyleDecorator("si-people");
+            case SimplePageItem.CHECKLIST -> new UIStyleDecorator("si-list-check");
             case SimplePageItem.FORUM_SUMMARY -> new UIStyleDecorator("si si-sakai-forums");
             case SimplePageItem.ANNOUNCEMENTS -> new UIStyleDecorator("si si-sakai-announcements");
-            case SimplePageItem.TWITTER -> new UIStyleDecorator("bi-twitter");
+            case SimplePageItem.TWITTER -> new UIStyleDecorator("si-twitter");
             case SimplePageItem.CALENDAR -> new UIStyleDecorator("si si-sakai-schedule");
-            case SimplePageItem.RESOURCE_FOLDER -> new UIStyleDecorator("bi-folder2-open");
+            case SimplePageItem.RESOURCE_FOLDER -> new UIStyleDecorator("si-folder-open");
             case SimplePageItem.RESOURCE, SimplePageItem.MULTIMEDIA -> getMimeTypeDecorator(item);
-            case SimplePageItem.TEXT -> new UIStyleDecorator(imageToMimeMap.getOrDefault("text/html", "bi-file-text"));
-            default -> new UIStyleDecorator("bi-type");
+            case SimplePageItem.TEXT -> new UIStyleDecorator(imageToMimeMap.getOrDefault("text/html", "si-file-text"));
+            default -> new UIStyleDecorator("si-type");
         };
     }
 
     private UIStyleDecorator getMimeTypeDecorator(SimplePageItem item) {
-        return new UIStyleDecorator(imageToMimeMap.getOrDefault(simplePageBean.getContentType(item), "bi-file-text"));
+        return new UIStyleDecorator(imageToMimeMap.getOrDefault(simplePageBean.getContentType(item), "si-file-text"));
     }
 
     @Override

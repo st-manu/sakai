@@ -1650,7 +1650,7 @@
     position: relative;
     padding-left: 25px;
     &::before {
-      content: "\F5DE"; /* bi-trash */
+      content: "\F5DE"; /* si-trash */
       font-family: bootstrap-icons;
       position: absolute;
       left: 2px;
@@ -2049,7 +2049,7 @@
     position: relative;
     padding-right: 20px;
     &::after {
-      content: "\F277"; /* bi-link-45deg */
+      content: "\F277"; /* si-link */
       font-family: bootstrap-icons;
       position: absolute;
       right: 0;
@@ -2059,7 +2059,7 @@
     position: relative;
     padding-right: 20px;
     &::after {
-      content: "\F144"; /* bi-box-arrow-up-right */
+      content: "\F144"; /* si-box-arrow-up-right */
       font-family: bootstrap-icons;
       position: absolute;
       right: 0;

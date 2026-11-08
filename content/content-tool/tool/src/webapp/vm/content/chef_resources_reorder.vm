@@ -31,11 +31,11 @@
 
 		<div class="sakai-reorder-undo noPrint">
 			<button type="button" class="btn btn-transparent btn-sm" id="undo-last" disabled>
-				<span class="bi bi-arrow-counterclockwise" aria-hidden="true"></span>
+				<span class="si si-arrow-counterclockwise" aria-hidden="true"></span>
 				$clang.getString("sort.undo.last.label")
 			</button>
 			<button type="button" class="btn btn-transparent btn-sm" id="undo-all" disabled>
-				<span class="bi bi-arrow-repeat" aria-hidden="true"></span>
+				<span class="si si-arrow-repeat" aria-hidden="true"></span>
 				$clang.getString("sort.undo.all.label")
 			</button>
 		</div>
@@ -66,7 +66,7 @@
 										#if ($count == 1) disabled="disabled" #end
 										title="$clang.getString('sort.move.up')"
 										aria-label="$clang.getString('sort.move.up')">
-									<span class="bi bi-chevron-up" aria-hidden="true"></span>
+									<span class="si si-chevron-up" aria-hidden="true"></span>
 								</button>
 								<button type="button"
 										class="btn btn-icon"
@@ -74,7 +74,7 @@
 										#if ($count == $membersize) disabled="disabled" #end
 										title="$clang.getString('sort.move.down')"
 										aria-label="$clang.getString('sort.move.down')">
-									<span class="bi bi-chevron-down" aria-hidden="true"></span>
+									<span class="si si-chevron-down" aria-hidden="true"></span>
 								</button>
 							</div>
 

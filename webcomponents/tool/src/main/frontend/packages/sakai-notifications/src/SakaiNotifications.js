@@ -445,7 +445,7 @@ export class SakaiNotifications extends SakaiElement {
                     <div>
                       ${prefix !== "motd" && prefix !== "test" ? html`
                         <a href="${noti.url}">
-                          <i class="si si-sakai-filled-right-arrow"></i>
+                          <i class="si si-arrow-right-circle-fill"></i>
                         </a>` : nothing}
                       ${prefix === "motd" ? html`
                         <button type="button"

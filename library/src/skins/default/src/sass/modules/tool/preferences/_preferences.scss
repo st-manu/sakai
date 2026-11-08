@@ -66,7 +66,7 @@
     outline:none;
     background-color: #fff;
     &::after {
-      content: "\F46a"; /* bi-lock */
+      content: "\F46a"; /* si-locked */
       font-family: bootstrap-icons;
       position: absolute;
       right: 5px;
@@ -126,7 +126,7 @@
   .layoutReorderer-dropMarker {
     background-color: #9f9;
     &::before {
-      content: "\F138"; /* bi-chevron-right */
+      content: "\F138"; /* si-chevron-right */
       font-family: bootstrap-icons;
       position: absolute;
       left: 5px;

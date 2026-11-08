@@ -252,13 +252,13 @@
 							<h:panelGroup rendered="#{wrapper.firstOneRecurMeeting && wrapper.recurEventsSize >1}" styleClass="toggleMeetings toggleDownload">
 								<h:outputText value="<span id='imageOpen_RM_#{wrapper.recurId}' style='display:none'>"  escape="false"/>
 								<h:outputLink value="javascript:showDetails('imageOpen_RM_#{wrapper.recurId}','imageClose_RM_#{wrapper.recurId}');showAllRelatedRecurMeetings('#{wrapper.recurId}','#{DownloadEventBean.iframeId}');">
-									<i class="bi bi-dash-circle" aria-label="remove"></i>
+									<i class="si si-minus" aria-label="remove"></i>
 								</h:outputLink>
 		   	    				<h:outputText value="</span>" escape="false" />
 		   	    			
 		   	    				<h:outputText value="<span id='imageClose_RM_#{wrapper.recurId}'>"  escape="false"/>
 								<h:outputLink value="javascript:showDetails('imageOpen_RM_#{wrapper.recurId}','imageClose_RM_#{wrapper.recurId}');showAllRelatedRecurMeetings('#{wrapper.recurId}','#{DownloadEventBean.iframeId}');">
-									<i class="bi bi-plus-circle" aria-label="add"></i>
+									<i class="si si-add" aria-label="add"></i>
 								</h:outputLink>
 		   	    				<h:outputText value="</span>" escape="false" />
 		   	    				
