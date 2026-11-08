@@ -1,0 +1,13 @@
+#if (!${userIsLoggedIn} && $tabsSites.tabsSites.size() > 1)
+<nav class="sakai-gateway-nav" aria-label="${rloader.sit_worksiteshead}">
+    <ul class="sakai-gateway-nav__menu">
+        #foreach ( $site in $tabsSites.tabsSites )
+            <li class="sakai-gateway-nav__item #if (${site.isCurrentSite}) is-selected #end">
+                <a class="sakai-gateway-nav__link" href="${site.siteUrl}" title="${site.fullTitle}">
+                    <span>#if ( ( ${tabDisplayLabel} == 2 ) && ( ${site.shortDescription} ) )${site.shortDescription}#else${site.siteTitleTrunc}#end</span>
+                </a>
+            </li>
+        #end
+    </ul>
+</nav>
+#end

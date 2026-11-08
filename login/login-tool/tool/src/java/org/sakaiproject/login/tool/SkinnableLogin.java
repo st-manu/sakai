@@ -402,7 +402,7 @@ public class SkinnableLogin extends HttpServlet implements Login {
 				// Decide whether or not to put up the Cancel
 				String portalUrl = (String) session.getAttribute(Tool.HELPER_DONE_URL);
 				String actualPortal = serverConfigurationService.getPortalUrl();
-						if ( portalUrl != null && portalUrl.indexOf("/site/") < 1 && portalUrl.startsWith(actualPortal) ) {
+				if ( portalUrl != null && portalUrl.indexOf("/site/") < 1 && portalUrl.startsWith(actualPortal) ) {
 					rcontext.put("doCancel", Boolean.TRUE);
 				}
 
@@ -455,8 +455,19 @@ public class SkinnableLogin extends HttpServlet implements Login {
 		String passwordResetUrl = getPasswordResetUrl();
 
 		String xloginChoice = serverConfigurationService.getString("xlogin.choice", null);
-		String containerText = serverConfigurationService.getString("login.text.title", "Container Login");
-		String loginContainerUrl = serverConfigurationService.getString("login.container.url");
+		String containerText = serverConfigurationService.getString("login.text.title", rb.getString("log.container.login"));
+		String loginContainerUrl = serverConfigurationService.getString("login.container.url", null);
+		boolean containerLogin = serverConfigurationService.getBoolean("container.login", false);
+
+		// Offer the container (SSO) login from xlogin even when login.container.url is not set.
+		if (StringUtils.isBlank(loginContainerUrl) && containerLogin) {
+			String containerCheckPath = getServletConfig().getInitParameter("container");
+			if (StringUtils.isNotBlank(containerCheckPath)) {
+				loginContainerUrl = RequestFilter.serverUrl(request) + containerCheckPath;
+				String queryString = request.getQueryString();
+				if (queryString != null) loginContainerUrl = loginContainerUrl + "?" + queryString;
+			}
+		}
 
 		String eidWording = rb.getString("userid");
 		String pwWording = rb.getString("log.pass");
@@ -481,6 +492,8 @@ public class SkinnableLogin extends HttpServlet implements Login {
 		rcontext.put("xloginChoice", xloginChoice);
 		rcontext.put("containerText", containerText);
 		rcontext.put("loginContainerUrl", loginContainerUrl);
+		rcontext.put("containerLogin", containerLogin);
+		rcontext.put("xloginInternalEnabled", serverConfigurationService.getBoolean("xlogin.enabled", false));
 		rcontext.put("rloader", rb);
 
 		String eid = StringEscapeUtils.escapeHtml4(request.getParameter("eid"));

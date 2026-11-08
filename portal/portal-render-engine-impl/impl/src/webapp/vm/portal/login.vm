@@ -1,13 +1,13 @@
 <!DOCTYPE html>
-<html lang="$!{locale}" class="Mrphs-html $!{userTheme}">
+<html lang="$!{locale}" class="sakai-html Mrphs-html $!{userTheme}" data-bs-theme="#if($userTheme == 'sakaiUserTheme-dark')dark#else light#end">
     <head>
         <!-- START VM login.vm -->
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>${pageTitle}</title>
 
-        #parse("/vm/morpheus/snippets/portalCSS-snippet.vm")
-        #parse("/vm/morpheus/snippets/title-snippet.vm")
+        #parse("/vm/portal/snippets/portalCSS-snippet.vm")
+        #parse("/vm/portal/snippets/title-snippet.vm")
 
         <script src="${pageScriptPath}jquery.js$!{portalCDNQuery}"></script>
         <script src="${pageScriptPath}headscripts.js$!{portalCDNQuery}"></script>
@@ -26,11 +26,11 @@
 
             #if (!${loginTopLogin})
 
-                #parse("/vm/morpheus/snippets/loginImage-snippet.vm")
+                #parse("/vm/portal/snippets/loginImage-snippet.vm")
 
             #else
 
-                #parse("/vm/morpheus/snippets/loginForm-snippet.vm")
+                #parse("/vm/portal/snippets/loginForm-snippet.vm")
 
                 <script>
                     document.forms[0].eid.focus();

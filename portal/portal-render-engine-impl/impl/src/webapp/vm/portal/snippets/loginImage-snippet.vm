@@ -1,0 +1,41 @@
+<div id="loginLinksImage" class="sakai-login-links">
+
+    #if (${loginHasImage1})
+
+        <a href="${loginLogInOutUrl}" title="${loginMessage}" id="loginLink1" class="sakai-btn sakai-btn-primary" data-warning="${logoutWarningMessage}">
+            <img src="${loginImage1}" alt="${loginMessage}">
+        </a>
+
+    #else
+
+        <a href="${loginLogInOutUrl}" title="${loginMessage}" id="loginLink1" class="sakai-btn sakai-btn-primary" data-warning="${logoutWarningMessage}">
+            #if ($userIsLoggedIn)
+                <span class="si si-box-arrow-right" aria-hidden="true"></span>
+            #else
+                <span class="si si-box-arrow-in-right" aria-hidden="true"></span>
+            #end
+            <span>${loginMessage}</span>
+        </a>
+
+    #end ## END of IF (${loginHasImage1})
+
+    #if (${loginHasLogInOutUrl2})
+
+        #if (${loginHasImage2})
+
+            <a href="${loginLogInOutUrl2}" title="${loginMessage2}" id="loginLink2" class="sakai-btn sakai-btn-secondary">
+                <img src="${loginImage2}" alt="${loginMessage2}">
+            </a>
+
+        #else
+
+            <a href="${loginLogInOutUrl2}" title="${loginMessage2}" id="loginLink2" class="sakai-btn sakai-btn-secondary">
+                <span class="si si-box-arrow-in-right" aria-hidden="true"></span>
+                <span>${loginMessage2}</span>
+            </a>
+
+        #end
+
+   #end ## END of IF (${loginHasLogInOutUrl2})
+
+</div>

@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="$!{locale}" class="Mrphs-html $!{userTheme}">
+<html lang="$!{locale}" class="sakai-html Mrphs-html $!{userTheme}" data-bs-theme="#if($userTheme == 'sakaiUserTheme-dark')dark#else light#end">
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>${pageTitle}</title>
         
-        #parse("/vm/morpheus/snippets/portalCSS-snippet.vm")
+        #parse("/vm/portal/snippets/portalCSS-snippet.vm")
 
         <link href="${pageSkinRepo}/tool_base.css$!{portalCDNQuery}" rel="stylesheet" media="all">
         <script src="${pageScriptPath}headscripts.js$!{portalCDNQuery}"></script>
@@ -14,7 +14,7 @@
 
     </head>
     <!-- START VM join.vm -->
-    <body class="Mrphs-portalBody Mrphs-joinpage">
+    <body class="sakai-portal-body Mrphs-portalBody Mrphs-joinpage">
         #if ( $pageTop )
             <script>
                var sakaiPortalWindow = "";

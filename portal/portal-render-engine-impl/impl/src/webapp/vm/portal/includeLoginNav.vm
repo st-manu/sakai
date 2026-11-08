@@ -1,0 +1,4 @@
+## Mobile login trigger. The login form is the xlogin page, loaded into a modal.
+<button id="mobileLoginBtn" type="button" class="sakai-btn sakai-btn-primary sakai-login__mobile-trigger">
+    ${rloader.login}
+</button>
