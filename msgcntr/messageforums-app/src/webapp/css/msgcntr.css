@@ -703,3 +703,15 @@ img.authorImage {
   float: right;
   background: var(--sakai-background-color-1);
 }
+
+.forum-status-icon {
+  margin-inline-end: var(--sakai-space-2);
+}
+
+.forum-status-icon--compact {
+  margin-inline-end: var(--sakai-space-1);
+}
+
+.forum-status-icon--warn {
+  color: var(--sakai-status-warn-text);
+}

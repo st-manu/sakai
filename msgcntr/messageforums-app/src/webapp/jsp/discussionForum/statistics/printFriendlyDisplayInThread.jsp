@@ -10,23 +10,15 @@
 <sakai:view  toolCssHref="/messageforums-tool/css/msgcntr.css">
 	<h:form id="msgForum">
 		<!-- discussionForum/statistics/printFriendlyDisplayInThread.jsp-->	
-		<ul class="navIntraTool actionToolBar">
-			<li class="firstToolBarItem">
-				<span>
-					<span class="bi bi-printer-fill" aria-hidden="true" aria-label="#{msgs.print_friendly}"></span>
-					<a id="printIcon" href="javascript:" onClick="javascript:window.print();">
-						<h:outputText value="#{msgs.send_to_printer}" />
-					</a>
-				</span>
-			</li>
-			<li>
-				<span>		
-					<a value="" href="" onClick="window.close();" >
-						<h:outputText value="#{msgs.close_window}" />
-					</a>
-				</span>
-			</li>	
-		</ul>
+		<div class="sakai-actions sakai-no-print">
+			<a id="printIcon" class="sakai-btn sakai-btn-ghost" href="#" onclick="window.print(); return false;">
+				<span class="si si-print" aria-hidden="true"></span>
+				<h:outputText value="#{msgs.send_to_printer}" />
+			</a>
+			<a class="sakai-btn sakai-btn-ghost" href="#" onclick="window.close(); return false;">
+				<h:outputText value="#{msgs.close_window}" />
+			</a>
+		</div>
 		 <f:verbatim><div class="breadCrumb idnt2"><h3></f:verbatim>
 			<h:outputText value="#{msgs.cdfm_discussions}"/>
 			<h:outputText value=" " /><h:outputText value=" / " /><h:outputText value=" " />

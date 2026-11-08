@@ -87,12 +87,12 @@ $(document).ready(function() {
                 <h:outputText styleClass="highlight title draftForum" id="draft" value="#{msgs.cdfm_draft}" rendered="#{forum.forum.draft == 'true'}"/>
                 <h:outputText id="draft_space" value=" -  " rendered="#{forum.forum.draft == 'true'}" styleClass="title"/>
                 <%-- availability marker --%>
-                <h:panelGroup rendered="#{forum.availability == 'false'}" style="margin-right:.5em">
+                <h:panelGroup styleClass="forum-status-icon" rendered="#{forum.availability == 'false'}">
                     <span class="si si-calendar-x" aria-hidden="true"></span>
                     <span class="sr-only"><h:outputText value="#{msgs.forum_restricted_message}" escape="false" /></span>
                 </h:panelGroup>
                 <%-- locked marker --%>
-                <h:panelGroup rendered="#{forum.locked == 'true'}" style="margin-right:.5em">
+                <h:panelGroup styleClass="forum-status-icon" rendered="#{forum.locked == 'true'}">
                     <span class="si si-locked" aria-hidden="true"></span>
                     <span class="sr-only"><h:outputText value="#{msgs.cdfm_forum_locked}" escape="false" /></span>
                 </h:panelGroup>
@@ -239,20 +239,20 @@ $(document).ready(function() {
                             
                             <%-- Show warning icon for topics in draft forums instead of regular folder icon --%>
                             <h:panelGroup rendered="#{forum.forum.draft == 'true'}">
-                                <span class="si si-warning topicIcon" style="margin-right:.5em; color: var(--bs-warning);" aria-hidden="true"></span>
+                                <span class="si si-warning topicIcon forum-status-icon forum-status-icon--warn" aria-hidden="true"></span>
                                 <span class="sr-only"><h:outputText value="#{msgs.cdfm_forum_draft_topic_unavailable}" escape="false" /></span>
                             </h:panelGroup>
                             <h:panelGroup rendered="#{forum.forum.draft != 'true'}">
-                                <h:outputText styleClass="si si-folder topicIcon" style="margin-right:.5em" rendered="#{topic.unreadNoMessages == 0}" escape="false" />
-                                <h:outputText styleClass="si si-folder-fill topicIcon" style="margin-right:.5em" rendered="#{topic.unreadNoMessages > 0}" escape="false" />
+                                <h:outputText styleClass="si si-folder topicIcon forum-status-icon" rendered="#{topic.unreadNoMessages == 0}" escape="false" />
+                                <h:outputText styleClass="si si-folder-fill topicIcon forum-status-icon" rendered="#{topic.unreadNoMessages > 0}" escape="false" />
                             </h:panelGroup>
                             <h:outputText styleClass="highlight title draftTopic" id="draft" value="#{msgs.cdfm_draft}" rendered="#{topic.topic.draft == 'true'}"/>
                             <h:outputText id="draft_space" value="  - " rendered="#{topic.topic.draft == 'true'}" styleClass="title"/>
-                            <h:panelGroup rendered="#{topic.availability == 'false'}" style="margin-right:.5em">
+                            <h:panelGroup styleClass="forum-status-icon" rendered="#{topic.availability == 'false'}">
                                 <span class="si si-calendar-x" aria-hidden="true"></span>
                                 <span class="sr-only"><h:outputText value="#{msgs.topic_restricted_message}" escape="false" /></span>
                             </h:panelGroup>
-                            <h:panelGroup rendered="#{forum.locked == 'true' || topic.locked == 'true'}" style="margin-right:.5em">
+                            <h:panelGroup styleClass="forum-status-icon" rendered="#{forum.locked == 'true' || topic.locked == 'true'}">
                                 <span class="si si-locked" aria-hidden="true"></span>
                                 <span class="sr-only"><h:outputText value="#{msgs.cdfm_forum_locked}" escape="false" /></span>
                             </h:panelGroup>
