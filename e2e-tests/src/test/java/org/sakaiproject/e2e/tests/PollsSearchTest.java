@@ -53,7 +53,7 @@ class PollsSearchTest extends AbstractToolSearchTest {
     @Override
     protected String createItem(String siteId, String title, String body) {
         openPolls(siteId);
-        page.locator(".navIntraTool").getByRole(AriaRole.LINK,
+        page.locator(".sakai-tool-header__actions").getByRole(AriaRole.LINK,
             new Locator.GetByRoleOptions().setName("Add").setExact(true)).click();
         page.locator("form:visible input[type=\"text\"]").first().fill(title);
         page.locator("#poll-details").fill(body);

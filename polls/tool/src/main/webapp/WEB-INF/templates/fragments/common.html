@@ -7,33 +7,64 @@
     <script th:src="@{~/library/js/headscripts.js}"></script>
 </head>
 
-<div th:fragment="menu (current)">
-    <ul class="navIntraTool">
-        <li>
-        <span th:class="${current}=='list' ? 'current'">
-          <span th:if="${current}=='list'" th:text="#{action_main}">Polls</span>
-          <a th:href="@{/votePolls}" th:text="#{action_main}" th:unless="${current}=='list'">Polls</a>
-        </span>
-        </li>
-        <li th:if="${canAdd}">
-        <span th:class="${current}=='add' ? 'current'">
-          <span th:if="${current}=='add'" th:text="#{action_add_poll}">Add</span>
-          <a th:href="@{/voteAdd}" th:text="#{action_add_poll}" th:unless="${current}=='add'">Add</a>
-        </span>
-        </li>
-        <li th:if="${canAdd}">
-        <span th:class="${current}=='import' ? 'current'">
-          <span th:if="${current}=='import'" th:text="#{action_import_polls}">Bulk Creation</span>
-          <a th:href="@{/pollImport}" th:text="#{action_import_polls}" th:unless="${current}=='import'">Bulk Creation</a>
-        </span>
-        </li>
-        <li th:if="${isSiteOwner}">
-        <span th:class="${current}=='permissions' ? 'current'">
-          <span th:if="${current}=='permissions'" th:text="#{action_set_permissions}">Permissions</span>
-          <a th:href="@{/votePermissions}" th:text="#{action_set_permissions}" th:unless="${current}=='permissions'">Permissions</a>
-        </span>
-        </li>
-    </ul>
-</div>
+<th:block th:fragment="toolBack">
+  <a class="sakai-back-link" th:href="@{/votePolls}">
+    <span class="si si-arrow-left" aria-hidden="true"></span>
+    <span th:text="#{action_back_to_list}">Back to list</span>
+  </a>
+</th:block>
+
+<th:block th:fragment="toolSecondaryActions">
+  <a th:if="${canAdd}"
+     class="sakai-btn sakai-btn-secondary"
+     th:href="@{/pollImport}">
+    <span class="si si-upload" aria-hidden="true"></span>
+    <span th:text="#{action_import_polls}">Bulk Creation</span>
+  </a>
+</th:block>
+
+<!-- P2/P3 — the overflow panel is the only place P3 lives. P2 repeats here only while
+     the container is narrower than wide (data-priority hides it in the panel at wide). -->
+<th:block th:fragment="toolOverflowActions">
+  <a th:if="${canAdd}"
+     data-priority="2"
+     class="sakai-btn sakai-btn-secondary"
+     th:href="@{/pollImport}">
+    <span class="si si-upload" aria-hidden="true"></span>
+    <span th:text="#{action_import_polls}">Bulk Creation</span>
+  </a>
+  <a th:if="${isSiteOwner}"
+     class="sakai-btn sakai-btn-ghost"
+     th:href="@{/votePermissions}"
+     th:text="#{action_set_permissions}">Permissions</a>
+</th:block>
+
+<th:block th:fragment="toolActions">
+  <div class="sakai-tool-header__actions sakai-no-print" role="group" th:attr="aria-label=#{poll_actions}">
+    <a th:if="${canAdd}"
+       class="sakai-btn sakai-btn-primary"
+       th:href="@{/voteAdd}">
+      <span class="si si-add" aria-hidden="true"></span>
+      <span th:text="#{action_add_poll}">Add</span>
+    </a>
+
+    <div class="sakai-tool-header__secondary" th:if="${canAdd}">
+      <th:block th:replace="~{fragments/common :: toolSecondaryActions}" />
+    </div>
+
+    <details class="sakai-overflow-menu sakai-tool-header__more"
+             th:classappend="${isSiteOwner} ? ' sakai-tool-header__more--persistent'"
+             th:if="${canAdd or isSiteOwner}">
+      <summary class="sakai-btn sakai-btn-ghost sakai-overflow-menu__toggle"
+               th:attr="aria-label=#{action_more}">
+        <span class="si si-three-dots" aria-hidden="true"></span>
+      </summary>
+      <div class="sakai-overflow-menu__panel">
+        <th:block th:replace="~{fragments/common :: toolOverflowActions}" />
+      </div>
+    </details>
+  </div>
+</th:block>
+
 </body>
 </html>

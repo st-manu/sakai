@@ -8,11 +8,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const updateGroupsVisibility = () => {
     const isGroupAccess = typeOfAccess.value === "GROUP";
-    groupsWrapper.classList.toggle("d-none", !isGroupAccess);
-    const groupSelect = groupsWrapper.querySelector("select");
-    if (groupSelect) {
-      groupSelect.disabled = !isGroupAccess;
-    }
+    groupsWrapper.classList.toggle("sakai-polls-is-hidden", !isGroupAccess);
+    groupsWrapper.querySelectorAll("input[type=checkbox]").forEach(input => {
+      input.disabled = !isGroupAccess;
+    });
   };
 
   typeOfAccess.addEventListener("change", updateGroupsVisibility);
