@@ -1156,6 +1156,16 @@ public class AnnouncementAction extends PagedResourceActionII
 
 	} // getTemplate
 
+	@Override
+	protected String build_permissions_context(VelocityPortlet portlet, Context context, RunData data, SessionState state)
+	{
+		String template = super.build_permissions_context(portlet, context, data, state);
+		context.put("toolBackAction", "doCancel");
+		context.put("toolBackLabel", rb.getString("meta.retlis"));
+		context.put("toolMoreLabel", rb.getString("gen.more.actions"));
+		return template;
+	}
+
 	/**
 	 * Setup for the options panel.
 	 */

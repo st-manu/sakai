@@ -1,65 +1,60 @@
-<!-- $Header: /cvs/sakai2/legacy/tools/src/webapp/vm/announcement/chef_announcements-delete.vm,v 1.2 2005/05/15 04:54:19 gsilver.umich.edu Exp $ -->
-<div class="portletBody">
-	#if ($isOnWorkspaceTab.equals("false") && $menu && $EnabledMenuItemExists)
-		#if ($toolId == "sakai.synoptic.announcement")
-			<ul class="navIntraTool actionToolBar" role="menu">
-				<li class="firstToolBarItem" role="menuitem"><span><a href="#" title="$tlang.getString("gen.recopt")" onclick="location = '#toolLink("$action" "doOptions")';return false;">
-					$tlang.getString("custom.options")
-					<span class="skip">$toolTitle</span>
-				</a></span></li>
-			</ul>
-		#else
-			#toolbar($menu)
-		#end
-	#end
-	<h3>$title</h3>
-	#if ($alertMessage)<div class="sak-banner-error">$tlang.getFormattedMessage("gen.alert.message", $alertMessage)</div>#end
-	<div class="sak-banner-warn">$confirmMessage</div>
+#parse("/vm/announcement/announcements_macros.vm")
+
+<div class="portletBody sakai-tool-body sakai-announcements">
+	#announcementsHeader($title "" "" "doCancel")
+
+	#announcementsAlert($alertMessage)
+
+	<div class="sakai-banner sakai-banner--warn" role="status">$confirmMessage</div>
+
 	<form name="forNotLetDeleteSelectedOnLoad"></form>
-		<div class="table">
-			<table class="table table-bordered table-striped table-hover" cellspacing="0">
+
+	<div class="sakai-table-wrap">
+		<table class="sakai-table sakai-table--hover sakai-table--stack">
+			<caption class="visually-hidden">$title</caption>
+			<thead>
 				<tr>
-					<th>$tlang.getString("gen.subject")</th>
-					<th>$tlang.getString("gen.from")</th>
-					<th>$tlang.getString("gen.date")</th>
-					<th>$tlang.getString("gen.visible")</th>
+					<th id="subject" scope="col" class="sakai-table__primary">$tlang.getString("gen.subject")</th>
+					<th id="author" scope="col" class="sakai-table__nowrap">$tlang.getString("gen.from")</th>
+					<th id="date" scope="col" class="sakai-table__nowrap">$tlang.getString("gen.date")</th>
+					<th id="visible" scope="col">$tlang.getString("gen.visible")</th>
 				</tr>
+			</thead>
+			<tbody>
 				#foreach ($delete_item in $delete_messages)
 					<tr>
-						<td>
-							<h4>
+						<td headers="subject" class="sakai-table__primary" data-label="$tlang.getString('gen.subject')">
 							#if ($delete_item.Header.draft)
 								$tlang.getFormattedMessage("gen.draft.subject", $formattedText.escapeHtml($delete_item.Header.subject))
 							#else
-							$formattedText.escapeHtml($delete_item.Header.subject)
+								$formattedText.escapeHtml($delete_item.Header.subject)
 							#end
-							</h4>
 						</td>
-						<td>$formattedText.escapeHtml($delete_item.Header.From.DisplayName)</td>
-						<td>$delete_item.Header.Date.toStringLocalFull()</td>
-						<td>
+						<td headers="author" class="sakai-table__nowrap" data-label="$tlang.getString('gen.from')">$formattedText.escapeHtml($delete_item.Header.From.DisplayName)</td>
+						<td headers="date" class="sakai-table__nowrap" data-label="$tlang.getString('gen.date')">$delete_item.Header.Date.toStringLocalFull()</td>
+						<td headers="visible" data-label="$tlang.getString('gen.visible')">
 							#set($publicProperty = $delete_item.getProperties().getProperty("SAKAI:pubview"))
 							#set($selectedRoles = $delete_item.getProperties().getPropertyList("selectedRoles"))
 							#if ($!publicProperty && $publicProperty.equals("true"))
 								$tlang.getString("gen.public")
 							#elseif ($selectedRoles)
-							#set($count = 0)
+								#set($count = 0)
 								#foreach($selectedRole in $selectedRoles)
 									#set($count = $count + 1)
 									#if ($count == $selectedRoles.size())
 										$selectedRole
 									#else
-										$selectedRole, 
+										$selectedRole,
 									#end
 								#end
 							#elseif ($delete_item.getAnnouncementHeader().getAccess().equals($!channelAccess))
 								$tlang.getString("range.allgroups")
 							#else
 								#set($count = 0)
-								#set($allGroupString="")
+								#set($allGroupString = "")
 								#foreach ($aGroupRef in $delete_item.getAnnouncementHeader().getGroups())
-									#set($aGroup=$!site.getGroup($aGroupRef))
-									#set($count=$count+1)
+									#set($aGroup = $!site.getGroup($aGroupRef))
+									#set($count = $count + 1)
 									#if ($count > 1)
 										#set($allGroupString = $allGroupString.concat(", ").concat($aGroup.getTitle()))
 									#else
@@ -71,13 +66,15 @@
 						</td>
 					</tr>
 				#end
-			</table>
-		</div>
+			</tbody>
+		</table>
+	</div>
+
 	<form name="deleteTemplateForm" action="#toolForm("AnnouncementAction")" method="post">
-		<p class="act">
-			<input type="submit" accesskey="s" class="active" name="$submitName" value="$submitLabel" />
-			<input type="submit" accesskey="x" value="$tlang.getString("gen.cancel")" name="eventSubmit_doCancel" />
-		</p>
+		<div class="sakai-actions">
+			<input type="submit" accesskey="s" class="sakai-btn sakai-btn-primary" name="$submitName" value="$submitLabel" />
+			<input type="submit" accesskey="x" class="sakai-btn sakai-btn-ghost" value="$tlang.getString("gen.cancel")" name="eventSubmit_doCancel" />
+		</div>
 		<input type="hidden" name="sakai_csrf_token" value="$sakai_csrf_token" />
 	</form>
 </div>
