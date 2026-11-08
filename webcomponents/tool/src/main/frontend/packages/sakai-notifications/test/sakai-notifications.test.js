@@ -48,8 +48,8 @@ describe("sakai-notifications tests", () => {
     await el.loadNotifications();
     await elementUpdated(el);
 
-    expect(el.querySelector(".toast-body").textContent).to.contain("Student Example sent you a message");
-    expect(el.querySelector(".toast-body a").getAttribute("href")).to.equal("http://example.com/messages/2");
+    expect(el.querySelector(".sakai-notifications__item-body").textContent).to.contain("Student Example sent you a message");
+    expect(el.querySelector(".sakai-notifications__item-body a").getAttribute("href")).to.equal("http://example.com/messages/2");
     expect(el.notifications[0].title).to.equal("Re: Question");
   });
 
@@ -69,39 +69,37 @@ describe("sakai-notifications tests", () => {
 
     await expect(el).to.be.accessible();
 
-    expect(el.querySelectorAll(".accordion-item").length).to.equal(2);
+    expect(el.querySelectorAll(".sakai-notifications__group").length).to.equal(2);
 
-    const assnAccordion = document.getElementById("assn-accordion");
-    expect(assnAccordion).to.exist;
-    expect(assnAccordion.querySelectorAll("li.toast").length).to.equal(1);
+    const assnGroup = document.getElementById("assn-group");
+    expect(assnGroup).to.exist;
+    expect(assnGroup.querySelectorAll(".sakai-notifications__item").length).to.equal(1);
 
-    const anncAccordion = document.getElementById("annc-accordion");
-    expect(anncAccordion).to.exist;
-    expect(anncAccordion.querySelectorAll("li.toast").length).to.equal(1);
+    const anncGroup = document.getElementById("annc-group");
+    expect(anncGroup).to.exist;
+    expect(anncGroup.querySelectorAll(".sakai-notifications__item").length).to.equal(1);
 
-    const closeButton = anncAccordion.querySelector("button.btn-close");
+    const closeButton = anncGroup.querySelector("button.sakai-notifications__clear");
     expect(closeButton).to.exist;
 
     closeButton.click();
 
-    // Wait for the clearNotification fetch call to do its thing
     await aTimeout(200);
 
     await expect(el).to.be.accessible();
 
-    expect(el.querySelectorAll(".accordion-item").length).to.equal(1);
+    expect(el.querySelectorAll(".sakai-notifications__group").length).to.equal(1);
 
     const clearAllButton = document.getElementById("sakai-notifications-clear-all-button");
     expect(clearAllButton).to.exist;
 
     clearAllButton.click();
 
-    // Wait for the clearAllNotifications fetch call to do its thing
     await aTimeout(200);
 
     await expect(el).to.be.accessible();
 
-    expect(el.querySelectorAll(".accordion-item").length).to.equal(0);
+    expect(el.querySelectorAll(".sakai-notifications__group").length).to.equal(0);
   });
   it ("does not duplicate site title when notifications are filtered multiple times", async () => {
 
@@ -168,9 +166,9 @@ describe("sakai-notifications tests", () => {
 
     expect(el._filteredNotifications.get("site")[0].title).to.equal('Import completed for "Biology 101"');
 
-    const siteAccordion = document.getElementById("site-accordion");
-    expect(siteAccordion).to.exist;
-    expect(siteAccordion.querySelectorAll("li.toast").length).to.equal(1);
+    const siteGroup = document.getElementById("site-group");
+    expect(siteGroup).to.exist;
+    expect(siteGroup.querySelectorAll(".sakai-notifications__item").length).to.equal(1);
   });
 
   it ("skips user photo fetch when notification has no fromUser", async () => {

@@ -263,7 +263,7 @@ export class SakaiNotifications extends SakaiElement {
 
   _clearNotification(e) {
 
-    const notificationId = e.target.dataset.notificationId;
+    const notificationId = e.currentTarget.dataset.notificationId;
 
     const url = `/api/users/me/notifications/${notificationId}/clear`;
     fetch(url, { method: "POST", credentials: "include" })
@@ -299,7 +299,7 @@ export class SakaiNotifications extends SakaiElement {
       .catch(error => console.error(error));
   }
 
-  _clearTestNotifications() {
+  clearTestNotifications() {
 
     this.notifications = [ ...this.notifications.filter(n => !n.event.startsWith("test")) ];
     this._filterIntoToolNotifications();
@@ -323,10 +323,11 @@ export class SakaiNotifications extends SakaiElement {
 
   _viewMotd(e) {
 
-    const noti = this._filteredNotifications.get(e.target.dataset.prefix).find(n => n.ref === e.target.dataset.ref);
+    const trigger = e.currentTarget;
+    const noti = this._filteredNotifications.get(trigger.dataset.prefix).find(n => n.ref === trigger.dataset.ref);
 
     if (!noti?.body) {
-      const url = `/direct${e.target.dataset.ref}.json`;
+      const url = `/direct${trigger.dataset.ref}.json`;
       fetch(url)
       .then(r => {
 
@@ -406,72 +407,74 @@ export class SakaiNotifications extends SakaiElement {
     return this._i18n;
   }
 
-  _renderAccordion(prefix, notifications) {
+  _renderGroup(prefix, notifications) {
+
+    const groupId = `${prefix}-group`;
 
     return html`
-      <div class="accordion-item rounded-1 mb-2">
-        <h2 class="accordion-header mt-0 fs-2">
-          <button class="accordion-button ${prefix === "test" ? "" : "collapsed"}"
-              type="button"
+      <div class="accordion-item sakai-notifications__group">
+        <h2 class="accordion-header sakai-notifications__group-header">
+          <button type="button"
+              class="accordion-button sakai-notifications__group-toggle"
               data-bs-toggle="collapse"
-              data-bs-target="#${prefix}-accordion"
-              aria-expanded="false"
-              aria-controls="${prefix}-accordion">
-            ${this._i18n[prefix]}<span class="badge bg-secondary ms-2">${notifications.length}</span>
+              data-bs-target="#${groupId}"
+              aria-expanded="true"
+              aria-controls="${groupId}">
+            <span class="sakai-notifications__count">${notifications.length}</span>
+            <span class="sakai-notifications__group-title">${this._i18n[prefix]}</span>
           </button>
         </h2>
-        <div id="${prefix}-accordion" class="accordion-collapse collapse ${prefix === "test" ? "show" : ""}">
-          <div class="accordion-body px-0 py-1 rounded-0">
-            <ul class="list-unstyled d-flex flex-column align-items-center py-2">
+        <div id="${groupId}" class="accordion-collapse collapse show sakai-notifications__group-panel">
+          <div class="accordion-body sakai-notifications__group-body">
+            <ul class="sakai-notifications__list">
               ${notifications.map(noti => html`
-              <li class="toast fade show mt-2 shadow-sm">
-                <div class="toast-header">
-                  <sakai-user-photo user-id="${this._getNotificationUserId(noti)}" classes="mh-100 me-2"
-                                    profile-popup="on"
-                                    site-id="${getSiteId()}"></sakai-user-photo>
-                  <strong class="me-auto">${noti.fromDisplayName}</strong>
-                  <small>${noti.formattedEventDate}</small>
-                  ${prefix !== "motd" && prefix !== "test" ? html`
-                    <button type="button"
-                            class="btn-close"
-                            aria-label="${this._i18n.clear_this_notification}"
-                            data-notification-id="${noti.id}"
-                            @click=${this._clearNotification}>
-                    </button>` : nothing}
-                </div>
-                <div class="toast-body">
-                  <div class="d-flex justify-content-between">
-                    <div class="me-1">${noti.title}</div>
-                    <div>
-                      ${prefix !== "motd" && prefix !== "test" ? html`
-                        <a href="${noti.url}">
-                          <i class="si si-arrow-right-circle-fill"></i>
-                        </a>` : nothing}
-                      ${prefix === "motd" ? html`
-                        <button type="button"
-                                data-ref="${noti.ref}"
-                                data-prefix="${prefix}"
-                                class="btn btn-link"
-                                @click=${this._viewMotd}>
-                          ${noti.bodyShowing ? this._i18n.hide : this._i18n.show}
-                        </button>` : nothing}
+                <li class="sakai-notifications__item">
+                  <div class="sakai-notifications__item-header">
+                    <sakai-user-photo class="sakai-notifications__photo"
+                        user-id="${this._getNotificationUserId(noti)}"
+                        classes="sakai-notifications__photo-img"
+                        profile-popup="on"
+                        site-id="${getSiteId()}"></sakai-user-photo>
+                    <div class="sakai-notifications__details">
+                      <strong class="sakai-notifications__from">${noti.fromDisplayName}</strong>
+                      <time class="sakai-notifications__when">${noti.formattedEventDate}</time>
                     </div>
+                    ${prefix !== "motd" && prefix !== "test" ? html`
+                      <button type="button"
+                          class="sakai-btn-icon sakai-notifications__clear"
+                          aria-label="${this._i18n.clear_this_notification}"
+                          data-notification-id="${noti.id}"
+                          @click=${this._clearNotification}>
+                        <span class="si si-close" aria-hidden="true"></span>
+                      </button>` : nothing}
                   </div>
-                  ${noti.bodyShowing ? html`
-                    <div class="mt-3">${unsafeHTML(noti.body)}</div>` : nothing}
-                </div>
-              </li>
+                  <div class="sakai-notifications__item-body">
+                    ${prefix === "motd" ? html`
+                      <button type="button"
+                          class="sakai-notifications__message"
+                          data-ref="${noti.ref}"
+                          data-prefix="${prefix}"
+                          aria-expanded="${noti.bodyShowing ? "true" : "false"}"
+                          @click=${this._viewMotd}>
+                        ${noti.title}
+                      </button>` : prefix === "test" ? html`
+                      <div class="sakai-notifications__message">${noti.title}</div>` : html`
+                      <a class="sakai-notifications__message" href="${noti.url}">${noti.title}</a>`}
+                    ${noti.bodyShowing ? html`
+                      <div class="sakai-notifications__body">${unsafeHTML(noti.body)}</div>` : nothing}
+                  </div>
+                </li>
               `)}
             </ul>
+            ${prefix === "test" ? html`
+              <div class="sakai-notifications__group-footer">
+                <button type="button"
+                    class="sakai-btn sakai-btn-ghost"
+                    @click=${this.clearTestNotifications}>
+                  ${this._i18n.clear}
+                </button>
+              </div>` : nothing}
           </div>
-          ${prefix === "test" ? html`
-          <div>
-            <button type="button"
-                class="btn btn-link shadow-sm ms-2 mb-2"
-                @click=${this._clearTestNotifications}>
-              ${this._i18n.clear}
-            </button>
-          </div>` : nothing}
         </div>
       </div>`;
   }
@@ -479,114 +482,108 @@ export class SakaiNotifications extends SakaiElement {
   render() {
 
     return html`
-      ${this._state === PUSH_SETUP_INFO ? html`
-        <div class="sak-banner-warn sakai-notifications__banner-warn">
-          <div class="fw-bold">${this._i18n.push_setup_failure_info}</div>
-          <ol class="mt-2">
-            <li>${this._i18n.push_setup_failure_info_1.replace("{0}", getServiceName())}</li>
-            <li>${this._i18n.push_setup_failure_info_2}</li>
-            <li>${this._i18n.push_setup_failure_info_3}</li>
-          </ol>
-          <div class="fw-bold">${this._i18n.push_setup_failure_info_4.replaceAll("{}", getServiceName())}</div>
-        </div>
-      ` : nothing}
-
-      ${this._state === PUSH_DENIED_INFO ? html`
-        <div class="sak-banner-error sakai-notifications__banner-error">
-          <div class="mb-3">${this._i18n.notifications_denied.replace("{0}", getServiceName())}</div>
-          <div>${this._i18n.notifications_not_allowed2.replace("{0}", getServiceName())}</div>
-          ${this._browserInfoUrl ? html`
-          <div class="mt-3">
-            <a href="${this._browserInfoUrl}" class="sakai-notifications__title" target="_blank">${this._i18n.browser_info_link_text}</a>
-          </div>
-          ` : nothing}
-        </div>
-        <div class="text-center">
-          <button @click=${this._showNotifications} class="btn btn-primary mt-4">${this._i18n.show_notifications}</button>
-        </div>
-      ` : nothing}
-
-      ${this._state === PWA_INSTALL_INFO ? html`
-        <div class="sak-banner-info sakai-notifications__banner-info mb-3">
-          <div>
-            <div class="fw-bold mb-2">${this._i18n.pwa_install_title}</div>
-            <div class="mb-1">${this._i18n.pwa_install_instructions}</div>
-          </div>
-        </div>
-      ` : nothing}
-
-      ${this._state === PUSH_INTRO ? html`
-        <div class="sak-banner-info sakai-notifications__banner-info">
-          <div>
-            <div class="mb-1">${this._i18n.notifications_not_allowed.replace("{0}", getServiceName())}</div>
-            <div class="sakai-notifications__title">${this._i18n.notifications_not_allowed2.replace("{0}", getServiceName())}</div>
-          </div>
-        </div>
-        <div class="text-center">
-          <button @click=${this._triggerPushSubscription} class="btn btn-primary mt-4">${this._i18n.accept_notifications}</button>
-        </div>
-      ` : nothing}
-
-      ${this._state === NOTIFICATIONS || this._state === PWA_INSTALL_INFO ? html`
-        ${Notification.permission !== "granted" && this._online && this.pushEnabled ? html`
-          <div class="alert alert-warning">
-            <span class="me-1">${this._i18n.push_not_enabled}</span>
-            <button type="button"
-                class="btn btn-secondary btn-sm"
-                aria-label="${this._i18n.enable_push_label}"
-                @click=${this._enablePush}>
-              ${this._i18n.enable_push}
-            </button>
+      <div class="sakai-notifications">
+        ${this._state === PUSH_SETUP_INFO ? html`
+          <div class="sakai-banner sakai-banner--warn">
+            <div class="sakai-notifications__banner-heading">${this._i18n.push_setup_failure_info}</div>
+            <ol class="sakai-notifications__banner-list">
+              <li>${this._i18n.push_setup_failure_info_1.replace("{0}", getServiceName())}</li>
+              <li>${this._i18n.push_setup_failure_info_2}</li>
+              <li>${this._i18n.push_setup_failure_info_3}</li>
+            </ol>
+            <div class="sakai-notifications__banner-heading">${this._i18n.push_setup_failure_info_4.replaceAll("{}", getServiceName())}</div>
           </div>
         ` : nothing}
 
-        <div class="accordion py-0">
-          ${Array.from(this._filteredNotifications, e => e[0]).map(prefix => html`
-            ${this._renderAccordion(prefix, this._filteredNotifications.get(prefix))}
-          `)}
-        </div>
-
-        ${!this.notifications?.length ? html`
-          <div class="d-flex justify-content-around">
-            <div><strong>${this._i18n.no_notifications}</strong></div>
+        ${this._state === PUSH_DENIED_INFO ? html`
+          <div class="sakai-banner sakai-banner--error">
+            <p class="sakai-notifications__banner-text">${this._i18n.notifications_denied.replace("{0}", getServiceName())}</p>
+            <p class="sakai-notifications__banner-text">${this._i18n.notifications_not_allowed2.replace("{0}", getServiceName())}</p>
+            ${this._browserInfoUrl ? html`
+              <a href="${this._browserInfoUrl}" class="sakai-notifications__banner-link" target="_blank" rel="noopener">${this._i18n.browser_info_link_text}</a>
+            ` : nothing}
+          </div>
+          <div class="sakai-notifications__state-actions">
+            <button type="button" class="sakai-btn sakai-btn-primary" @click=${this._showNotifications}>${this._i18n.show_notifications}</button>
           </div>
         ` : nothing}
 
-        <div class="d-flex justify-content-between my-2">
-          ${this._online && this._pushEnabled && Notification.permission === "granted" ? html`
-            <div>
-              <button class="btn ${this._highlightTestButton ? "btn-primary" : "btn-secondary"} btn-sm"
-                  @click=${this._sendTestNotification}>
-                ${this._i18n.test}
+        ${this._state === PWA_INSTALL_INFO ? html`
+          <div class="sakai-banner sakai-banner--info">
+            <div class="sakai-notifications__banner-heading">${this._i18n.pwa_install_title}</div>
+            <p class="sakai-notifications__banner-text">${this._i18n.pwa_install_instructions}</p>
+          </div>
+        ` : nothing}
+
+        ${this._state === PUSH_INTRO ? html`
+          <div class="sakai-banner sakai-banner--info">
+            <p class="sakai-notifications__banner-text">${this._i18n.notifications_not_allowed.replace("{0}", getServiceName())}</p>
+            <p class="sakai-notifications__banner-text sakai-notifications__banner-heading">${this._i18n.notifications_not_allowed2.replace("{0}", getServiceName())}</p>
+          </div>
+          <div class="sakai-notifications__state-actions">
+            <button type="button" class="sakai-btn sakai-btn-primary" @click=${this._triggerPushSubscription}>${this._i18n.accept_notifications}</button>
+          </div>
+        ` : nothing}
+
+        ${this._state === NOTIFICATIONS || this._state === PWA_INSTALL_INFO ? html`
+          ${Notification.permission !== "granted" && this._online && this._pushEnabled ? html`
+            <div class="sakai-banner sakai-banner--warn sakai-notifications__push-banner">
+              <span>${this._i18n.push_not_enabled}</span>
+              <button type="button"
+                  class="sakai-btn sakai-btn-secondary"
+                  aria-label="${this._i18n.enable_push_label}"
+                  @click=${this._enablePush}>
+                ${this._i18n.enable_push}
               </button>
             </div>
           ` : nothing}
 
-          <div class="ms-auto text-end">
-
-            ${Notification.permission !== "granted" && this._online ? html`
-              <button class="btn btn-secondary btn-sm me-2"
-                  @click=${this.loadNotifications}>
-                ${this._i18n.update}
-              </button>
-            ` : nothing}
-
-            ${this._online && this.notifications?.filter(a => !a.viewed).length > 0 ? html`
-              <button class="btn btn-secondary btn-sm"
-                  @click=${this._markAllNotificationsViewed}>
-                ${this._i18n.mark_all_viewed}
-              </button>
-            ` : nothing}
-            ${this._online && this.notifications?.length ? html`
-              <button id="sakai-notifications-clear-all-button"
-                  class="btn btn-secondary btn-sm"
-                  @click=${this._clearAllNotifications}>
-                ${this._i18n.clear_all}
-              </button>
-            ` : nothing}
+          <div class="accordion sakai-notifications__groups">
+            ${Array.from(this._filteredNotifications, e => e[0]).map(prefix => html`
+              ${this._renderGroup(prefix, this._filteredNotifications.get(prefix))}
+            `)}
           </div>
-        </div>
-      ` : nothing}
+
+          ${!this.notifications?.length ? html`
+            <p class="sakai-notifications__empty">${this._i18n.no_notifications}</p>
+          ` : nothing}
+
+          <div class="sakai-notifications__actions">
+            ${this._online && this._pushEnabled && Notification.permission === "granted" ? html`
+              <div class="sakai-notifications__actions-start">
+                <button type="button"
+                    class="sakai-btn ${this._highlightTestButton ? "sakai-btn-primary sakai-notifications__test--highlight" : "sakai-btn-secondary"} sakai-notifications__test"
+                    @click=${this._sendTestNotification}>
+                  ${this._i18n.test}
+                </button>
+              </div>
+            ` : nothing}
+
+            <div class="sakai-notifications__actions-end sakai-actions">
+              ${Notification.permission !== "granted" && this._online ? html`
+                <button type="button" class="sakai-btn sakai-btn-secondary" @click=${this.loadNotifications}>
+                  ${this._i18n.update}
+                </button>
+              ` : nothing}
+
+              ${this._online && this.notifications?.filter(a => !a.viewed).length > 0 ? html`
+                <button type="button" class="sakai-btn sakai-btn-secondary" @click=${this._markAllNotificationsViewed}>
+                  ${this._i18n.mark_all_viewed}
+                </button>
+              ` : nothing}
+
+              ${this._online && this.notifications?.length ? html`
+                <button type="button"
+                    id="sakai-notifications-clear-all-button"
+                    class="sakai-btn sakai-btn-secondary"
+                    @click=${this._clearAllNotifications}>
+                  ${this._i18n.clear_all}
+                </button>
+              ` : nothing}
+            </div>
+          </div>
+        ` : nothing}
+      </div>
     `;
   }
 }
