@@ -14,7 +14,7 @@ export const ReactionsMixin = Base => class extends Base {
               @click=${this._toggleReaction}
               title="${this._i18n[pair[0]]}"
               aria-label="${this._i18n[pair[0]]}">
-            <i class="bi bi-${REACTION_ICONS[pair[0]]}-fill ${REACTION_ICONS[pair[0]]}"></i>
+            <i class="si si-${REACTION_ICONS[pair[0]]}-fill ${REACTION_ICONS[pair[0]]}"></i>
           </button>
         </li>
       `)}
@@ -30,7 +30,7 @@ export const ReactionsMixin = Base => class extends Base {
       ${Object.entries(reactable.reactionTotals).map(pair => html`
         <div class="reaction-block d-flex align-items-center border border-1 rounded-pill px-2 me-1">
           <div>
-            <i class="bi bi-${REACTION_ICONS[pair[0]]}-fill ${REACTION_ICONS[pair[0]]} small"></i>
+            <i class="si si-${REACTION_ICONS[pair[0]]}-fill ${REACTION_ICONS[pair[0]]} small"></i>
           </div>
           <div class="ms-1 small">${pair[1]}</div>
         </div>
