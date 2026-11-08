@@ -68,30 +68,30 @@ describe("sakai-calendar tests", () => {
 
     // In user mode, we'd expect to get announcements from multiple sites.
     const el = await fixture(html`
-      <sakai-calendar user-id="${data.userId}"></sakai-calendar>
+      <sakai-calendar></sakai-calendar>
     `);
 
-    expect(el.shadowRoot.getElementById("container")).to.exist;
+    expect(el.renderRoot.getElementById("container")).to.exist;
 
     await waitUntil(() => {
-      const statusMessage = el.shadowRoot.querySelector("#widget-status");
+      const statusMessage = el.renderRoot.querySelector("#widget-status");
       return el._events && statusMessage && statusMessage.textContent.includes(data.pinnedSitesMessage);
     });
 
     await elementUpdated(el);
     await expect(el).to.be.accessible();
 
-    expect(el.shadowRoot.querySelector("#widget-status")).to.exist;
-    expect(el.shadowRoot.querySelector("#widget-status").textContent).to.contain(data.pinnedSitesMessage);
+    expect(el.renderRoot.querySelector("#widget-status")).to.exist;
+    expect(el.renderRoot.querySelector("#widget-status").textContent).to.contain(data.pinnedSitesMessage);
 
     el.dispatchEvent(new CustomEvent("user-selected-date-changed", { detail: { selectedDate: data.selectedDate } }));
 
     await elementUpdated(el);
     await expect(el).to.be.accessible();
 
-    expect(el.shadowRoot.querySelector("#days-events a")).to.exist;
-    expect(el.shadowRoot.querySelectorAll("#days-events a span").item(0).innerHTML).to.contain(data.userCalendarEvents.events[0].title);
-    expect(el.shadowRoot.querySelectorAll("#days-events a span").item(1).innerHTML).to.contain(data.userCalendarEvents.events[0].siteTitle);
+    expect(el.renderRoot.querySelector("#days-events a")).to.exist;
+    expect(el.renderRoot.querySelectorAll("#days-events a span").item(0).innerHTML).to.contain(data.userCalendarEvents.events[0].title);
+    expect(el.renderRoot.querySelectorAll("#days-events a span").item(1).innerHTML).to.contain(data.userCalendarEvents.events[0].siteTitle);
   });
 
   it ("does not render the pinned sites message in site mode", async () => {
@@ -100,10 +100,10 @@ describe("sakai-calendar tests", () => {
       <sakai-calendar site-id="${data.siteId}"></sakai-calendar>
     `);
 
-    await waitUntil(() => el._events && el._i18n && !el.shadowRoot.querySelector("#widget-status"));
+    await waitUntil(() => el._events && el._i18n && !el.renderRoot.querySelector("#widget-status"));
     await elementUpdated(el);
     await expect(el).to.be.accessible();
 
-    expect(el.shadowRoot.querySelector("#widget-status")).to.not.exist;
+    expect(el.renderRoot.querySelector("#widget-status")).to.not.exist;
   });
 });
