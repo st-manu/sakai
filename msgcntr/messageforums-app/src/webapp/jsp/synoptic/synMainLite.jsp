@@ -144,9 +144,6 @@ function mySetMainFrameHeightViewCell(id)
 </script> 
 
 <script src="/messageforums-tool/js/synopticLite.js"></script>
-<link rel="stylesheet" type="text/css" href="css/TableSorter.css" />
-<link rel="stylesheet" type="text/css" href="css/msgcntr.css" />
-
 	<h:form id="synopticForm">
 		
 		<%-- ===== Display when in MyWorkspace ===== --%>
@@ -275,7 +272,7 @@ function mySetMainFrameHeightViewCell(id)
 		 	</t:div>
 		 	
 			<f:verbatim>
-				<div class="act optionsTable" style="display: none;">
+				<div class="sakai-actions optionsTable" style="display: none;">
 			</f:verbatim>
 			<h:commandButton id="update" value="#{msgs.syn_update}" action="#{mfSynopticBeanLite.proccessActionSaveChanges}" styleClass="active" />
 	 		<f:verbatim>

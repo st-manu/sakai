@@ -11,10 +11,7 @@
 <!--jsp/discussionForum/area/dfAddRank.jsp-->
 <f:view>
     <sakai:view title="Forums">
-        <link rel="stylesheet" href="/messageforums-tool/css/msgcntr.css" type="text/css" />
-        <link rel="stylesheet" href="/library/webjars/jquery-ui/1.12.1/jquery-ui.min.css" type="text/css" />
-        <link rel="stylesheet" href="/messageforums-tool/css/forum_rank.css" type="text/css" />
-        
+                <link rel="stylesheet" href="/library/webjars/jquery-ui/1.12.1/jquery-ui.min.css" type="text/css" />
         <script>includeLatestJQuery("msgcntr");</script>
         <script src="/messageforums-tool/js/json2.js"></script>
         <script src="/messageforums-tool/js/forum.js"></script>
@@ -42,7 +39,10 @@
         </script>
 
         <h:form enctype="multipart/form-data" id="addRank">
-            <sakai:tool_bar_message value="#{msgs.add_rank}" />
+		<% request.setAttribute("dfHeaderView", "ranks"); %>
+		<% request.setAttribute("dfHeaderTitleKey", "add_rank"); %>
+		<% request.setAttribute("dfHeaderBack", "ranks"); %>
+		<%@ include file="/jsp/discussionForum/menu/forumsHeader.jsp" %>
         
             <%-- Validation Message--%>
             <f:verbatim><div id="topAlert" style="display:none; padding:1em 0;"></f:verbatim>
@@ -133,11 +133,11 @@
                     <h:graphicImage url="/images/ranksSpaceFiller.jpg" width="10" height="10"/>
                 </h:panelGroup>
                 <h:panelGroup>
-                    <h:outputText style="color: #404040; font-size: 95%;" value="#{msgs.image_size_info}"/>        
+                    <h:outputText styleClass="sakai-form-help" value="#{msgs.image_size_info}"/>
                 </h:panelGroup>
             </h:panelGrid>
 
-            <div class="act">
+            <div class="sakai-actions">
                 <h:commandButton action="#{ForumTool.processActionSaveRank}" value="#{msgs.syn_update}"  onclick="return validate(this);"
                                  accesskey="r" styleClass="active sakai-ppkr-send-button"/>
                 <h:commandButton action="#{ForumTool.gotoViewRank}" styleClass="active sakai-ppkr-cancel-button"  

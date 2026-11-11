@@ -7,7 +7,7 @@
 </jsp:useBean>
 
 <f:view>
-<sakai:view toolCssHref="/messageforums-tool/css/msgcntr.css">
+<sakai:view>
 	<h:form id="msgForum" rendered="#{ForumTool.instructor || mfStatisticsBean.isAuthor}">
 		<!--discussionForum/statistics/printFriendlyAllAuthoredMsg.jsp-->
 		<div class="sakai-actions sakai-no-print">
@@ -31,7 +31,7 @@
 			    <f:verbatim></h3></div></f:verbatim>
   		
   		<div>
-  		<h:dataTable id="staticAllMessages" value="#{mfStatisticsBean.userAuthoredStatistics2}" var="stat" styleClass="table table-hover table-striped table-bordered" cellpadding="0" cellspacing="0" width="100%" columnClasses="bogus">	
+  		<h:dataTable id="staticAllMessages" value="#{mfStatisticsBean.userAuthoredStatistics2}" var="stat" styleClass="table sakai-table--hover sakai-table--stack" cellpadding="0" cellspacing="0" width="100%" columnClasses="bogus">	
    			<h:column>
 				<h:panelGroup rendered="#{!stat.msgDeleted}" layout="block">
 				<f:verbatim><div  class="printBlock" style="margin:0"></f:verbatim>

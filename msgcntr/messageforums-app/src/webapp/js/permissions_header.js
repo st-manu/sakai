@@ -205,7 +205,14 @@ function setCheckBoxes(changeSettings, markAsNotRead, newForum, newResponse, r2R
   }
 }
 
-// Vanilla JS accordion implementation (replaces jQuery UI accordion)
+function getPermissionPanel(header) {
+  const detailRow = header.closest('tr')?.nextElementSibling;
+  if (detailRow?.classList.contains('sakai-forums__permission-detail')) {
+    return detailRow.querySelector('.permissionPanel, .sakai-forums__permission-panel');
+  }
+  return header.nextElementSibling;
+}
+
 function toggleAccordionPanel(panelIndex) {
   const accordionElement = document.getElementById("revise:perm");
   if (!accordionElement) return;
@@ -214,22 +221,31 @@ function toggleAccordionPanel(panelIndex) {
   if (panelIndex < 0 || panelIndex >= headers.length) return;
 
   const targetHeader = headers[panelIndex];
-  const targetPanel = targetHeader.nextElementSibling;
+  const targetPanel = getPermissionPanel(targetHeader);
+  const targetDetailRow = targetHeader.closest('tr')?.nextElementSibling;
 
   if (targetPanel) {
     headers.forEach((header, index) => {
       if (index !== panelIndex) {
-        const panel = header.nextElementSibling;
+        const panel = getPermissionPanel(header);
+        const detailRow = header.closest('tr')?.nextElementSibling;
         if (panel) {
-          panel.style.display = 'none';
+          panel.hidden = true;
           header.setAttribute('aria-expanded', 'false');
+        }
+        if (detailRow?.classList.contains('sakai-forums__permission-detail')) {
+          detailRow.hidden = true;
         }
       }
     });
 
-    const isHidden = targetPanel.style.display === 'none' || !targetPanel.style.display;
-    targetPanel.style.display = isHidden ? 'block' : 'none';
-    targetHeader.setAttribute('aria-expanded', isHidden ? 'true' : 'false');
+    const willOpen = targetPanel.hidden || targetPanel.style.display === 'none';
+    targetPanel.hidden = !willOpen;
+    targetPanel.style.display = willOpen ? '' : 'none';
+    targetHeader.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
+    if (targetDetailRow?.classList.contains('sakai-forums__permission-detail')) {
+      targetDetailRow.hidden = !willOpen;
+    }
 
     if (typeof resizeFrame === 'function') {
       resizeFrame('grow');
@@ -237,12 +253,15 @@ function toggleAccordionPanel(panelIndex) {
   }
 }
 
-// Initialize accordion with keyboard accessibility
 document.addEventListener('DOMContentLoaded', () => {
   const accordionElement = document.getElementById("revise:perm");
   if (!accordionElement) return;
 
+  const tbody = accordionElement.tBodies?.[0] || accordionElement.querySelector('tbody');
   const headers = accordionElement.querySelectorAll('.permissionCustomize');
+  const columnCount = accordionElement.tHead?.rows?.[0]?.cells?.length
+    || accordionElement.querySelector('tr')?.cells?.length
+    || 3;
 
   headers.forEach((header, index) => {
     header.setAttribute('tabindex', '0');
@@ -250,7 +269,21 @@ document.addEventListener('DOMContentLoaded', () => {
     header.setAttribute('aria-expanded', 'false');
 
     const panel = header.nextElementSibling;
-    if (panel) {
+    const sourceRow = header.closest('tr');
+    if (panel && sourceRow && tbody) {
+      const detailRow = document.createElement('tr');
+      detailRow.className = 'sakai-forums__permission-detail';
+      detailRow.hidden = true;
+      const detailCell = document.createElement('td');
+      detailCell.colSpan = columnCount;
+      panel.hidden = true;
+      panel.style.display = 'none';
+      panel.setAttribute('role', 'region');
+      detailCell.appendChild(panel);
+      detailRow.appendChild(detailCell);
+      sourceRow.insertAdjacentElement('afterend', detailRow);
+    } else if (panel) {
+      panel.hidden = true;
       panel.style.display = 'none';
       panel.setAttribute('role', 'region');
     }

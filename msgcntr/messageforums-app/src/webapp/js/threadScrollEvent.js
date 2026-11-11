@@ -47,7 +47,9 @@ window.addEventListener("load", () => {
 	function elementsInViewPort(items, scroller) {
 		items.forEach(item => {
 			const p = item.conversation.querySelector(".textPanel p");
-			const toolBar = item.conversation.querySelector(".itemToolBar");
+			const toolBar = item.conversation.querySelector(".itemToolBar")
+				|| item.conversation.querySelector(".sakai-forums__message-actions")
+				|| item.conversation.querySelector(".sakai-row-actions");
 			const mnew = item.conversation.querySelector(".messageNew");
 			const parts = item.conversation.id.split(/mi-|ti-|fi-/).filter(Boolean);
 			const [mi, ti] = parts;
@@ -73,7 +75,15 @@ function isBottomInViewport(item, scroller) {
 
 function updateBar(currentRead, total) {
 	const elem = document.getElementById("myBar");
+	const progressValue = document.getElementById("progress-value");
+	if (!elem && !progressValue) {
+		return;
+	}
 	const pct = Math.round(((currentRead*100)/total)) || 0;
-	elem.style.width = pct + '%'; 
-	document.getElementById("progress-value").innerHTML = statRead + ' '+ currentRead + '/' + total + ' - ' + pct + '%';
+	if (elem) {
+		elem.style.width = pct + '%';
+	}
+	if (progressValue) {
+		progressValue.innerHTML = statRead + ' '+ currentRead + '/' + total + ' - ' + pct + '%';
+	}
 }

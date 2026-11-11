@@ -2,6 +2,7 @@
 <%@ taglib uri="http://java.sun.com/jsf/core" prefix="f" %>
 <%@ taglib uri="http://sakaiproject.org/jsf2/sakai" prefix="sakai" %>
 <%@ taglib uri="http://sakaiproject.org/jsf/messageforums" prefix="mf" %>
+<%@ taglib uri="http://myfaces.apache.org/tomahawk" prefix="t" %>
 
 <%
 // hack in attempt to fix navigation quirk
@@ -16,24 +17,14 @@ org.sakaiproject.tool.cover.SessionManager.getCurrentToolSession().
 
 
 <f:view>
-  <sakai:view title="#{msgs.cdfm_discussions}" toolCssHref="/messageforums-tool/css/msgcntr.css">
+  <sakai:view title="#{msgs.cdfm_discussions}">
   		<script>includeLatestJQuery("msgcntr");</script>
 		<script src="/messageforums-tool/js/sak-10625.js"></script>
 		<script src="/messageforums-tool/js/forum.js"></script>
-		<script>
-			$(document).ready(function () {
-				var menuLink = $('#forumsMainMenuLink');
-				var menuLinkSpan = menuLink.closest('span');
-				menuLinkSpan.addClass('current');
-				menuLinkSpan.html(menuLink.text());
-			});
-		</script>
-	<h:form id="msgForum">
-	<%@ include file="/jsp/discussionForum/menu/forumsMenu.jsp" %>
-	<h:messages styleClass="alertMessage" id="errorMessages" rendered="#{! empty facesContext.maximumSeverity}" />
-        <div class="page-header">
-            <h1><h:outputText value="#{msgs.cdfm_discussions}" /></h1>
-        </div>
+	<h:form id="msgForum" styleClass="sakai-forums">
+	<% request.setAttribute("dfHeaderView", "home"); %>
+	<%@ include file="/jsp/discussionForum/menu/forumsHeader.jsp" %>
+	<h:messages styleClass="sakai-banner sakai-banner--error" id="errorMessages" rendered="#{! empty facesContext.maximumSeverity}" />
 	<%@ include file="/jsp/discussionForum/includes/dfAreaInclude.jsp"%>
 	
  	<%

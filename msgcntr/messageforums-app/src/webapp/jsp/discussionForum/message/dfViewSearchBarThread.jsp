@@ -1,21 +1,21 @@
-
-
-    <h:panelGroup styleClass="specialLink" style="display:block;height:100%;overflow:hidden;clear:both" rendered="#{!ForumTool.threadMoved}">
-    	<h:outputText value="#{msgs.df_view} " styleClass="unreadMsg" />
-    	<h:selectOneMenu id="select_label" onchange="this.form.submit();"  valueChangeListener="#{ForumTool.processValueChangedForMessageOrganize}" value="#{ForumTool.selectedMessageView}">
+<h:panelGroup layout="block" styleClass="sakai-table-toolbar sakai-no-print" rendered="#{!ForumTool.threadMoved}">
+	<div class="sakai-table-toolbar__filters" role="group">
+		<label class="sakai-form-label" for="msgForum:select_label">
+			<h:outputText value="#{msgs.df_view}" />
+		</label>
+		<h:selectOneMenu id="select_label" styleClass="sakai-form-control sakai-form-control--sm"
+				onchange="this.form.submit();"
+				valueChangeListener="#{ForumTool.processValueChangedForMessageOrganize}"
+				value="#{ForumTool.selectedMessageView}">
 			<f:selectItem itemValue="thread" itemLabel="#{msgs.msg_organize_thread}" />
-   			<f:selectItem itemValue="date" itemLabel="#{msgs.msg_organize_date_asc}" />
-   			<f:selectItem itemValue="date_desc" itemLabel="#{msgs.msg_organize_date_desc}" />
+			<f:selectItem itemValue="date" itemLabel="#{msgs.msg_organize_date_asc}" />
+			<f:selectItem itemValue="date_desc" itemLabel="#{msgs.msg_organize_date_desc}" />
 			<f:selectItem itemValue="unread" itemLabel="#{msgs.msg_organize_unread}" />
-	  </h:selectOneMenu>
-	</h:panelGroup>
-  
-
-<h:messages styleClass="alertMessage" id="errorMessages" rendered="#{! empty facesContext.maximumSeverity}" />
-<f:verbatim>
-	<div class="success" id="gradesSavedDiv" class="success" style="display:none" role="alert" aria-live="assertive">
-</f:verbatim>
-	<h:outputText value="#{msgs.cdfm_grade_successful}"/>
-<f:verbatim>
+		</h:selectOneMenu>
 	</div>
-</f:verbatim>
+</h:panelGroup>
+
+<h:messages styleClass="sakai-banner sakai-banner--error" id="errorMessages" rendered="#{! empty facesContext.maximumSeverity}" />
+<div class="sakai-banner sakai-banner--success" id="gradesSavedDiv" style="display:none" role="alert" aria-live="assertive">
+	<h:outputText value="#{msgs.cdfm_grade_successful}"/>
+</div>

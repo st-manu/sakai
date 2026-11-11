@@ -6,7 +6,11 @@ Portal chrome contract (slots, title ownership): [`library/docs/sakai-ui-chrome.
 Navigation model (layers, roles, zones, decision tree, responsive tiers, evidence): [`navigation-model.md`](navigation-model.md).
 Per-tool prompt: [`tool-navigation-refactor-prompt.md`](tool-navigation-refactor-prompt.md).
 
-**Reference implementations:** [`polls-reference.md`](polls-reference.md) (Thymeleaf, single A1), [`announcements-reference.md`](announcements-reference.md) (Velocity, server menu → actions), [`messages-reference.md`](messages-reference.md) (JSF private messages) and [`sitestats-reference.md`](sitestats-reference.md) (Thymeleaf with several A1 views).
+**Reference implementations:** [`polls-reference.md`](reference/polls-reference.md) (Thymeleaf, single A1),
+[`announcements-reference.md`](reference/announcements-reference.md) (Velocity, server menu → actions),
+[`messages-reference.md`](reference/messages-reference.md) (JSF private messages),
+[`forums-reference.md`](reference/forums-reference.md) (JSF Discussions) and
+[`sitestats-reference.md`](reference/sitestats-reference.md) (Thymeleaf with several A1 views).
 
 ## Principle
 
@@ -28,7 +32,8 @@ pilot:** Assignments is the first tool that applies the whole tree and phase pla
 1. ~~**Polls**~~ — navigation split done; parity pass pending (Thymeleaf reference; see [`polls-reference.md`](polls-reference.md))
 2. ~~**Announcements**~~ — navigation split done; parity pass pending (Velocity reference; see [`announcements-reference.md`](announcements-reference.md))
 3. ~~**Statistics**~~ — navigation split done; A1 views still rendered as buttons; parity pass pending (see [`sitestats-reference.md`](sitestats-reference.md))
-4. ~~**Messages**~~ — navigation split done; R/A1/back semantics and toolbar parity pending (JSF private messages; see [`messages-reference.md`](messages-reference.md)). The Discussions/forums side is still on `navIntraTool`.
+4. ~~**Messages**~~ — navigation split done; R/A1/back semantics and toolbar parity pending (JSF private messages; see [`messages-reference.md`](reference/messages-reference.md)).
+5. ~~**Discussions/Forums**~~ — navigation, home/forum topic tables, Organize (`sakai-reorderer`), and Playwright cover the Niobe baseline (JSF; see [`forums-reference.md`](reference/forums-reference.md)). Topic conversations, settings/compose forms, statistics body, and print-friendly pages remain for a parity pass.
 5. Dashboard / Home (already Lit)
 6. Conversations
 7. **Assignments** — full-refactor pilot (navigation, tables, forms, rest; student-facing impact)

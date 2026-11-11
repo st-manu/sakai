@@ -8,7 +8,7 @@
    <jsp:setProperty name="msgs" property="baseName" value="org.sakaiproject.api.app.messagecenter.bundle.Messages"/>
 </jsp:useBean>
 <f:view>
-	<sakai:view title="#{msgs.cdfm_discussion_forum_settings}" toolCssHref="/messageforums-tool/css/msgcntr.css">
+	<sakai:view title="#{msgs.cdfm_discussion_forum_settings}">
 	<script>includeLatestJQuery("msgcntr");</script>
 	<script>includeWebjarLibrary("momentjs");</script>
 	<script src="/messageforums-tool/js/jquery.charcounter.js"> </script>
@@ -103,11 +103,9 @@
 	}
 	</script>
 
-  <!-- Y:\msgcntr\messageforums-app\src\webapp\jsp\dfReviseForumSettingsAttach.jsp -->
-    <h:form id="revise" onsubmit="disableFieldsBeforeSubmit()">
+    <h:form id="revise" styleClass="sakai-forums" onsubmit="disableFieldsBeforeSubmit()">
 		  <script>
             $(document).ready(function(){
-				// Improve accessibility in error messages.adding the error as title
 				var errorMessages = $('#revise\\:errorMessages');
 				if (errorMessages !== undefined) {
 					errorMessages.attr("role", "alert");
@@ -127,23 +125,11 @@
                 $('input[id*="forum_siteGroupCheck"]').each(function() {
                       $(this).attr('aria-labelledby', 'revise:createForumsForGroups:1 ' + $(this).attr('id') + '_label');
                 });
-				$('.displayMore').click(function(e){
-					e.preventDefault();
-					$('.displayMorePanel').fadeIn('slow')
-				})
-				$('.displayMoreAutoCreate').click(function(e){
-					e.preventDefault();
-					$('.displayMoreAutoCreatePanel').fadeIn('slow')
-				})
 				if ($('.gradeSelector').find('option').length ===1){
 					$('.gradeSelector').find('select').hide();
 					$('.gradeSelector').find('.instrWithGrades').hide();
 					$('.gradeSelector').find('.instrWOGrades').show();
 				}
-				$('.displayMore').click(function(e){
-						e.preventDefault();
-						$('.displayMorePanel').fadeIn('slow')
-				})
 				var charRemFormat = $('.charRemFormat').text();
 				$(".forum_shortDescriptionClass").charCounter(255, {
 					container: ".charsRemaining",
@@ -155,182 +141,148 @@
                     setAutoCreatePanel();
                 }
 
-                var menuLink = $('#forumsNewMenuLink');
-                var menuLinkSpan = menuLink.closest('span');
-                menuLinkSpan.addClass('current');
-                menuLinkSpan.html(menuLink.text());
-
 			 });
         </script>
-		<%@ include file="/jsp/discussionForum/menu/forumsMenu.jsp" %>
-		<h:panelGroup layout="block" styleClass="page-header">
-			<h1><h:outputText value="#{msgs.cdfm_discussion_forum_settings}" /></h1>
-		</h:panelGroup>
-		<h:panelGroup layout="block" styleClass="instruction">
-		  <h:outputText id="instruction"  value="#{msgs.cdfm_settings_instruction}"/>
-		  <h:outputText value="#{msgs.cdfm_info_required_sign}" styleClass="reqStarInline" />
-		</h:panelGroup>
-			<h:messages layout="table" styleClass="sak-banner-error" id="errorMessages" rendered="#{! empty facesContext.maximumSeverity}"/>
-     
-			<h:panelGrid columns="1" styleClass="jsfFormTable" columnClasses="shorttext">
-				<h:panelGroup>
-					<%-- //designNote: does this text input need a maxlength attribute ? --%>
-					<h:outputLabel id="outputLabel" for="forum_title" styleClass="block strong" style="padding-bottom:.3em;display:block;clear:both;float:none;">
-					<h:outputText id="req_star"  value="#{msgs.cdfm_info_required_sign}" styleClass="reqStar"/>	
-						<h:outputText  value="#{msgs.cdfm_forum_title}" />
-					</h:outputLabel>
-					<h:inputText size="50" id="forum_title"  maxlength="250" value="#{ForumTool.selectedForum.forum.title}" validatorMessage="#{msgs.forums_revise_title_validation}">
-						<f:validateLength minimum="1" maximum="255"/>
-					</h:inputText>
-				</h:panelGroup>
-			</h:panelGrid>
-			<%-- //designNote: rendered attr below should resolve to false only if there is no prior short description
-			 		and if there is server property (TBD) saying not to use it  - below just checking for pre-existing short description--%>
-			<h:panelGrid columns="1"  columnClasses="longtext" rendered="#{ForumTool.showForumShortDescription}">
-				<h:panelGroup >
-					<h:outputText value="" />
-					<%-- //designNote: this label should alert that textarea has a 255 max chars limit --%>
-					<h:outputLabel id="outputLabel1" for="forum_shortDescription"  value="#{msgs.cdfm_shortDescription}" styleClass="strong"/>
-							<h:outputText value="#{msgs.cdfm_shortDescriptionCharsRem}"  styleClass="charRemFormat" style="display:none"/>
-							<%--
-						
-							<h:outputText value="%1 chars remain"  styleClass="charRemFormat" style="display:none"/>
-						--%>
-							<h:outputText value="" styleClass="charsRemaining" style="padding-left:3em;font-size:.85em;"/>
-							<h:outputText value=""  style="display:block"/>
-					
-					<h:inputTextarea rows="3" cols="45" id="forum_shortDescription"  value="#{ForumTool.selectedForum.forum.shortDescription}" styleClass="forum_shortDescriptionClass" style="float:none"/>
-					<h:outputText value="" />
-				</h:panelGroup>
-      	</h:panelGrid>
+		<% request.setAttribute("dfHeaderView", "forumSettings"); %>
+<% request.setAttribute("dfHeaderBack", "discussions"); %>
+<%@ include file="/jsp/discussionForum/menu/forumsHeader.jsp" %>
 
-			<%--RTEditor area - if enabled--%>
-			<h:panelGroup rendered="#{! ForumTool.disableLongDesc}">
+		<p class="sakai-form-section__intro">
+		  <h:outputText id="instruction" value="#{msgs.cdfm_settings_instruction}"/>
+		</p>
+		<h:messages styleClass="sakai-banner sakai-banner--error" id="errorMessages" rendered="#{! empty facesContext.maximumSeverity}"/>
+
+		<div class="sakai-form-section">
+			<h:outputText value="#{msgs.cdfm_discussion_forum_settings}" styleClass="sakai-form-section__title"/>
+			<div class="sakai-form-field">
+				<h:outputLabel id="outputLabel" for="forum_title" styleClass="sakai-form-label required">
+					<h:outputText value="#{msgs.cdfm_forum_title}"/>
+				</h:outputLabel>
+				<h:inputText size="50" id="forum_title" maxlength="250" styleClass="sakai-form-control"
+						value="#{ForumTool.selectedForum.forum.title}" validatorMessage="#{msgs.forums_revise_title_validation}">
+					<f:validateLength minimum="1" maximum="255"/>
+				</h:inputText>
+			</div>
+			<h:panelGroup layout="block" styleClass="sakai-form-field" rendered="#{ForumTool.showForumShortDescription}">
+				<h:outputLabel id="outputLabel1" for="forum_shortDescription" value="#{msgs.cdfm_shortDescription}" styleClass="sakai-form-label"/>
+				<h:outputText value="#{msgs.cdfm_shortDescriptionCharsRem}" styleClass="charRemFormat display-none"/>
+				<span class="charsRemaining sakai-forums__meta"></span>
+				<h:inputTextarea rows="3" cols="45" id="forum_shortDescription"
+						value="#{ForumTool.selectedForum.forum.shortDescription}"
+						styleClass="sakai-form-control forum_shortDescriptionClass"/>
+			</h:panelGroup>
+			<h:panelGroup layout="block" styleClass="sakai-form-field" rendered="#{! ForumTool.disableLongDesc}">
 				<f:verbatim><input type="hidden" id="ckeditor-autosave-context" name="ckeditor-autosave-context" value="forums_dfReviseForumSettingsAttach" /></f:verbatim>
-       				<h:panelGroup rendered="#{ForumTool.selectedForum.forum.id!=null}"><f:verbatim><input type="hidden" id="ckeditor-autosave-entity-id" name="ckeditor-autosave-entity-id" value="</f:verbatim><h:outputText value="#{ForumTool.selectedForum.forum.id}"/><f:verbatim>"/></f:verbatim></h:panelGroup>
+				<h:panelGroup rendered="#{ForumTool.selectedForum.forum.id!=null}"><f:verbatim><input type="hidden" id="ckeditor-autosave-entity-id" name="ckeditor-autosave-entity-id" value="</f:verbatim><h:outputText value="#{ForumTool.selectedForum.forum.id}"/><f:verbatim>"/></f:verbatim></h:panelGroup>
+				<h:outputText id="outputLabel2" value="#{msgs.cdfm_fullDescription}" styleClass="sakai-form-label"/>
+				<sakai:inputRichText textareaOnly="#{PrivateMessagesTool.mobileSession}" rows="#{ForumTool.editorRows}" cols="132" id="df_compose_description" value="#{ForumTool.selectedForum.forum.extendedDescription}">
+				</sakai:inputRichText>
+			</h:panelGroup>
+		</div>
 
-				<h:outputText id="outputLabel2" value="#{msgs.cdfm_fullDescription}" styleClass="labeled"/>
-			<sakai:inputRichText textareaOnly="#{PrivateMessagesTool.mobileSession}" rows="#{ForumTool.editorRows}" cols="132" id="df_compose_description" value="#{ForumTool.selectedForum.forum.extendedDescription}">
-			</sakai:inputRichText>
-	      	</h:panelGroup>
-
-			<%--Attachment area  --%>
-	      <h2>
-		        <h:outputText value="#{msgs.cdfm_att}"/>
-	      </h2>
-
-				<%--designNote: would be nice to make this an include, as well as a more comprehensive MIME type check  --%> 
-			<h:dataTable styleClass="attachPanel" id="attmsg"  value="#{ForumTool.attachments}" var="eachAttach"  cellpadding="0" cellspacing="0" columnClasses="attach,bogus,specialLink,bogus,bogus" rendered="#{!empty ForumTool.attachments}">
+		<div class="sakai-form-section">
+			<h:outputText value="#{msgs.cdfm_att}" styleClass="sakai-form-section__title"/>
+			<h:dataTable styleClass="sakai-table sakai-table--stack" id="attmsg" value="#{ForumTool.attachments}" var="eachAttach"
+					rendered="#{!empty ForumTool.attachments}">
 				<h:column>
-					<f:facet name="header">   <h:outputText value=" "/>
-						</f:facet>
-						<sakai:contentTypeMap fileType="#{eachAttach.attachment.attachmentType}" mapType="image" var="imagePath" pathPrefix="/library/image/"/>
-						<h:graphicImage id="exampleFileIcon" value="#{imagePath}" />
-						</h:column>
-						<h:column>
-						<f:facet name="header">
-							<h:outputText value="#{msgs.cdfm_title}"/>
-						</f:facet>
-							<h:outputText value="#{eachAttach.attachment.attachmentName}"/>
-					</h:column>
-					<h:column>
-					<f:facet name="header">
-						<h:outputText value=" "/>
-					</f:facet>
-						<h:commandLink action="#{ForumTool.processDeleteAttachSetting}" 
-								immediate="true"
-								title="#{msgs.cdfm_remove}">
-							<h:outputText value="#{msgs.cdfm_remove}"/>
-								<f:param value="#{eachAttach.attachment.attachmentId}" name="dfmsg_current_attach"/>
-							</h:commandLink>
-				  </h:column>
-					<h:column rendered="#{!empty ForumTool.attachments}">
-						<f:facet name="header">
-							<h:outputText value="#{msgs.cdfm_attsize}" />
-						</f:facet>
-						<h:outputText value="#{ForumTool.getAttachmentReadableSize(eachAttach.attachment.attachmentSize)}"/>
-					</h:column>
-					<h:column rendered="#{!empty ForumTool.attachments}">
-						<f:facet name="header">
-		  			  <h:outputText value="#{msgs.cdfm_atttype}" />
-						</f:facet>
-					<%--//designNote: do we really need this info if the lookup has worked? I Suppose till the MIME type check is more comprehensive, yes --%>
-						<h:outputText value="#{eachAttach.attachment.attachmentType}"/>
-					</h:column>
+					<f:facet name="header"><h:outputText value=" "/></f:facet>
+					<sakai:contentTypeMap fileType="#{eachAttach.attachment.attachmentType}" mapType="image" var="imagePath" pathPrefix="/library/image/"/>
+					<h:graphicImage id="exampleFileIcon" value="#{imagePath}" alt=""/>
+				</h:column>
+				<h:column>
+					<f:facet name="header"><h:outputText value="#{msgs.cdfm_title}"/></f:facet>
+					<h:outputText value="#{eachAttach.attachment.attachmentName}"/>
+				</h:column>
+				<h:column>
+					<f:facet name="header"><h:outputText value=" "/></f:facet>
+					<h:commandLink action="#{ForumTool.processDeleteAttachSetting}" immediate="true" title="#{msgs.cdfm_remove}">
+						<h:outputText value="#{msgs.cdfm_remove}"/>
+						<f:param value="#{eachAttach.attachment.attachmentId}" name="dfmsg_current_attach"/>
+					</h:commandLink>
+				</h:column>
+				<h:column rendered="#{!empty ForumTool.attachments}">
+					<f:facet name="header"><h:outputText value="#{msgs.cdfm_attsize}"/></f:facet>
+					<h:outputText value="#{ForumTool.getAttachmentReadableSize(eachAttach.attachment.attachmentSize)}"/>
+				</h:column>
+				<h:column rendered="#{!empty ForumTool.attachments}">
+					<f:facet name="header"><h:outputText value="#{msgs.cdfm_atttype}"/></f:facet>
+					<h:outputText value="#{eachAttach.attachment.attachmentType}"/>
+				</h:column>
 			</h:dataTable>
-
-			<h:panelGroup rendered="#{empty ForumTool.attachments}" styleClass="instruction">
-				<h:outputText value="#{msgs.cdfm_no_attachments}" />
+			<h:panelGroup layout="block" styleClass="sakai-form-section__intro" rendered="#{empty ForumTool.attachments}">
+				<h:outputText value="#{msgs.cdfm_no_attachments}"/>
 			</h:panelGroup>
-			<h:panelGroup layout="block" styleClass="act" style="padding:0 0 1em 0;">
-				<h:commandButton  action="#{ForumTool.processAddAttachmentRedirect}"
-					value="#{msgs.cdfm_button_bar_add_attachment_more_redirect}"  
-					style="font-size:96%"
-					rendered="#{!empty ForumTool.attachments}"/>
-				<h:commandButton  action="#{ForumTool.processAddAttachmentRedirect}"
-					value="#{msgs.cdfm_button_bar_add_attachment_redirect}"  
-					style="font-size:96%"
-					rendered="#{empty ForumTool.attachments}"
-					/>
+			<div class="sakai-actions">
+				<h:commandButton action="#{ForumTool.processAddAttachmentRedirect}"
+						value="#{msgs.cdfm_button_bar_add_attachment_more_redirect}"
+						styleClass="sakai-btn sakai-btn-secondary"
+						rendered="#{!empty ForumTool.attachments}"/>
+				<h:commandButton action="#{ForumTool.processAddAttachmentRedirect}"
+						value="#{msgs.cdfm_button_bar_add_attachment_redirect}"
+						styleClass="sakai-btn sakai-btn-secondary"
+						rendered="#{empty ForumTool.attachments}"/>
+			</div>
+		</div>
+
+		<div class="sakai-form-section">
+			<h:outputText id="forum_posting_head" value="#{msgs.cdfm_forum_posting}" styleClass="sakai-form-section__title"/>
+			<div class="sakai-form-field">
+				<div class="sakai-form-choice-group">
+					<div class="sakai-form-choice">
+						<h:selectBooleanCheckbox title="ForumLocked" value="#{ForumTool.selectedForum.forumLocked}" id="forum_locked"/>
+						<h:outputLabel for="forum_locked" value="#{msgs.cdfm_lock_forum}"/>
+					</div>
+					<div class="sakai-form-choice">
+						<h:selectBooleanCheckbox title="Moderated" value="#{ForumTool.selectedForum.forumModerated}" id="moderated"/>
+						<h:outputLabel for="moderated" value="#{msgs.cdfm_moderate_forum}"/>
+					</div>
+					<div class="sakai-form-choice">
+						<h:selectBooleanCheckbox title="postFirst" value="#{ForumTool.selectedForum.forumPostFirst}" id="postFirst"/>
+						<h:outputLabel for="postFirst" value="#{msgs.cdfm_postFirst}"/>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="sakai-form-section">
+			<h:outputText id="forumAvailabilityLabel2" value="#{msgs.cdfm_forum_availability}" styleClass="sakai-form-section__title"/>
+			<div class="sakai-form-field">
+				<h:selectOneRadio layout="pageDirection" onclick="this.blur()" onchange="setDatesEnabled(this);"
+						disabled="#{not ForumTool.editMode}" id="availabilityRestricted"
+						value="#{ForumTool.selectedForum.availabilityRestricted}"
+						styleClass="sakai-form-choice-group">
+					<f:selectItem itemValue="false" itemLabel="#{msgs.cdfm_forum_avail_show}"/>
+					<f:selectItem itemValue="true" itemLabel="#{msgs.cdfm_forum_avail_date}"/>
+				</h:selectOneRadio>
+			</div>
+			<h:panelGroup id="openDateSpan" layout="block" styleClass="sakai-form-field openDateSpan calWidget"
+					style="display: #{ForumTool.selectedForum.availabilityRestricted ? 'block' : 'none'}">
+				<h:outputLabel value="#{msgs.openDate}" for="openDate" styleClass="sakai-form-label"/>
+				<h:inputText id="openDate" styleClass="sakai-form-control openDate" value="#{ForumTool.selectedForum.openDate}"/>
 			</h:panelGroup>
-			<%--general posting  forum settings --%>
-			<h2 id="forum_posting_head">
-				<h:outputText value="#{msgs.cdfm_forum_posting}" />
-			</h2>
-
-				<p class="checkbox">
-					<h:selectBooleanCheckbox
-						title="ForumLocked" value="#{ForumTool.selectedForum.forumLocked}"
-						id="forum_locked">
-					</h:selectBooleanCheckbox>
-					<h:outputLabel for="forum_locked" value="#{msgs.cdfm_lock_forum}" />
-				</p>
-				<p class="checkbox">
-					<h:selectBooleanCheckbox
-						title="Moderated" value="#{ForumTool.selectedForum.forumModerated}"
-						id="moderated">
-					</h:selectBooleanCheckbox>
-					<h:outputLabel for="moderated" value="#{msgs.cdfm_moderate_forum}" />
-				</p>
-				<p class="checkbox">
-					<h:selectBooleanCheckbox
-						title="postFirst" value="#{ForumTool.selectedForum.forumPostFirst}"
-						id="postFirst">
-					</h:selectBooleanCheckbox>
-					<h:outputLabel for="postFirst" value="#{msgs.cdfm_postFirst}" />
-				</p>
-
-			<h2><h:outputText id="forumAvailabilityLabel2" value="#{msgs.cdfm_forum_availability}" /></h2>
-			<h:panelGroup layout="block" styleClass="indnt1">
-              <h:panelGroup styleClass="checkbox">
-                 <h:selectOneRadio layout="pageDirection" onclick="this.blur()" onchange="setDatesEnabled(this);" disabled="#{not ForumTool.editMode}" id="availabilityRestricted"  value="#{ForumTool.selectedForum.availabilityRestricted}">
-                  <f:selectItem itemValue="false" itemLabel="#{msgs.cdfm_forum_avail_show}"/>
-                  <f:selectItem itemValue="true" itemLabel="#{msgs.cdfm_forum_avail_date}"/>
-               </h:selectOneRadio>
-               </h:panelGroup>
-               <h:panelGroup id="openDateSpan" styleClass="indnt2 openDateSpan calWidget" style="display: #{ForumTool.selectedForum.availabilityRestricted ? 'block' : 'none'}">
-                   <h:outputLabel value="#{msgs.openDate}: " for="openDate"/>
-                   <h:inputText id="openDate" styleClass="openDate" value="#{ForumTool.selectedForum.openDate}"/>
-               </h:panelGroup>
-               <h:panelGroup id="closeDateSpan" styleClass="indnt2 closeDateSpan calWidget" style="display: #{ForumTool.selectedForum.availabilityRestricted ? 'block' : 'none'}">
-                   <h:outputLabel value="#{msgs.closeDate}: " for="closeDate" />
-                   <h:inputText id="closeDate" styleClass="closeDate" value="#{ForumTool.selectedForum.closeDate}"/>
-               </h:panelGroup>
-				<h:panelGroup layout="block" styleClass="checkbox" style="display: #{ForumTool.doesSiteHaveCalendar ? '' : 'none'}">
-					<h:panelGroup id="sendOpenCloseDateToCalendarSpan"
-								  styleClass="indnt2 lockForumAfterCloseDateSpan calWidget"
-								  style="display: #{ForumTool.selectedForum.availabilityRestricted ? '' : 'none'}">
-						<h:selectBooleanCheckbox id="sendOpenCloseDateToCalendar" styleClass="ms-0 me-3"
-												 disabled="#{not ForumTool.doesSiteHaveCalendar}"
-												 value="#{ForumTool.selectedForum.forum.sendOpenCloseToCalendar}"/>
-						<h:outputLabel for="sendOpenCloseDateToCalendar" styleClass="p-0" value="#{msgs.sendOpenCloseToCalendar}" />
-					</h:panelGroup>
+			<h:panelGroup id="closeDateSpan" layout="block" styleClass="sakai-form-field closeDateSpan calWidget"
+					style="display: #{ForumTool.selectedForum.availabilityRestricted ? 'block' : 'none'}">
+				<h:outputLabel value="#{msgs.closeDate}" for="closeDate" styleClass="sakai-form-label"/>
+				<h:inputText id="closeDate" styleClass="sakai-form-control closeDate" value="#{ForumTool.selectedForum.closeDate}"/>
+			</h:panelGroup>
+			<h:panelGroup layout="block" styleClass="sakai-form-field" style="display: #{ForumTool.doesSiteHaveCalendar ? '' : 'none'}">
+				<h:panelGroup id="sendOpenCloseDateToCalendarSpan" layout="block"
+						styleClass="sakai-form-choice lockForumAfterCloseDateSpan calWidget"
+						style="display: #{ForumTool.selectedForum.availabilityRestricted ? '' : 'none'}">
+					<h:selectBooleanCheckbox id="sendOpenCloseDateToCalendar"
+							disabled="#{not ForumTool.doesSiteHaveCalendar}"
+							value="#{ForumTool.selectedForum.forum.sendOpenCloseToCalendar}"/>
+					<h:outputLabel for="sendOpenCloseDateToCalendar" value="#{msgs.sendOpenCloseToCalendar}"/>
 				</h:panelGroup>
-               <h:panelGroup layout="block" id="lockForumAfterCloseDateSpan" styleClass="indnt2 lockForumAfterCloseDateSpan" style="display: #{ForumTool.selectedForum.availabilityRestricted ? '' : 'none'}">
-                   <h:selectBooleanCheckbox id="lockForumAfterCloseDate" styleClass="ms-0 me-3" value="#{ForumTool.selectedForum.forum.lockedAfterClosed}"/>
-                   <h:outputLabel for="lockForumAfterCloseDate" styleClass="p-0" value="#{msgs.lockForumAfterCloseDate}" />
-               </h:panelGroup>
 			</h:panelGroup>
+			<h:panelGroup layout="block" id="lockForumAfterCloseDateSpan" styleClass="sakai-form-field lockForumAfterCloseDateSpan"
+					style="display: #{ForumTool.selectedForum.availabilityRestricted ? '' : 'none'}">
+				<div class="sakai-form-choice">
+					<h:selectBooleanCheckbox id="lockForumAfterCloseDate" value="#{ForumTool.selectedForum.forum.lockedAfterClosed}"/>
+					<h:outputLabel for="lockForumAfterCloseDate" value="#{msgs.lockForumAfterCloseDate}"/>
+				</div>
+			</h:panelGroup>
+		</div>
 
 			<script>
 				// Initialize datepickers
@@ -351,152 +303,145 @@
 				});
 			</script>
 
-		<h2><h:outputText value="#{msgs.cdfm_forum_mark_read}"/></h2>
-			
-			<p class="checkbox">
-				<h:selectBooleanCheckbox
-					title="autoMarkThreadsRead"
-					value="#{ForumTool.selectedForum.forumAutoMarkThreadsRead}"
-					id="autoMarkThreadsRead">
-				</h:selectBooleanCheckbox>
-				<h:outputLabel for="autoMarkThreadsRead"	value="#{msgs.cdfm_auto_mark_threads_read}" />
-			</p>
+		<div class="sakai-form-section">
+			<h:outputText value="#{msgs.cdfm_forum_mark_read}" styleClass="sakai-form-section__title"/>
+			<div class="sakai-form-field">
+				<div class="sakai-form-choice">
+					<h:selectBooleanCheckbox title="autoMarkThreadsRead"
+							value="#{ForumTool.selectedForum.forumAutoMarkThreadsRead}"
+							id="autoMarkThreadsRead"/>
+					<h:outputLabel for="autoMarkThreadsRead" value="#{msgs.cdfm_auto_mark_threads_read}"/>
+				</div>
+			</div>
+		</div>
 
-	      <%--designNote: gradebook assignment - need to finesse this - make aware that functionality exists, but flag that there are no gb assignments to select --%>
-				<%--designNote:  How is this a "permission" item? --%>  
-				<h2><h:outputText value="#{msgs.perm_choose_assignment_head}" rendered="#{ForumTool.gradebookExist}" /></h2>
-
-				<h:panelGroup layout="block" rendered="#{ForumTool.discussionGeneric}">
-					<h:outputText styleClass="sak-banner-info" value="#{msgs.group_sitegradebook_simple_forum}" />
-				</h:panelGroup>
-
-				<h:panelGroup layout="block" styleClass="row form-group" id="forum_grading" rendered="#{not ForumTool.discussionGeneric}">
-					<h:outputLabel for="forum_assignments" value="#{msgs.perm_choose_assignment}" styleClass="col-md-2 col-sm-2"></h:outputLabel>  
-					<h:panelGroup layout="block" styleClass="col-md-10 col-sm-10">
-						<h:panelGrid>
-							<h:panelGroup layout="block" styleClass="row">
-							    <f:subview id="non_group_view" rendered="#{!ForumTool.gradebookGroupEnabled}">
-									<h:panelGroup styleClass="gradeSelector itemAction actionItem">
-										<h:selectOneMenu id="forum_assignments" onchange="updateGradeAssignment()"
-														 value="#{ForumTool.selectedForum.gradeAssign}"
-														 disabled="#{not ForumTool.editMode}">
-											<f:selectItems value="#{ForumTool.assignments}" />
-										</h:selectOneMenu>
-										<h:outputText value="#{msgs.perm_choose_assignment_none_f}" styleClass="instrWOGrades" style="display:none;margin-left:0"/>
-										<h:outputText value=" #{msgs.perm_choose_instruction_forum} " styleClass="instrWithGrades" style="margin-left:0;"/>
-										<h:outputLink value="#" style="text-decoration:none" styleClass="instrWithGrades">
-											<h:outputText styleClass="displayMore" value="#{msgs.perm_choose_instruction_more_link}"/>
-										</h:outputLink>
-									</h:panelGroup>
-							    </f:subview>
-							    <f:subview id="group_view" rendered="#{ForumTool.gradebookGroupEnabled}">
-									<sakai-gradebook-item-selector
-											id="gb-selector" input-id="revise:group_view:forum_assignments"
-											app-name="sakai.forums"
-											site-id='<h:outputText value="#{ForumTool.siteId}" />'
-											user-id='<h:outputText value="#{ForumTool.userId}" />'
-											group-id='<h:outputText value="#{ForumTool.groupId}" />'
-											selected-temp='<h:outputText value="#{ForumTool.selectedForum.gradeAssign}" />'>
-									</sakai-gradebook-item-selector>
-									<h:inputHidden id="forum_assignments" value="#{ForumTool.selectedForum.gradeAssign}" />
-							    </f:subview>
-					        </h:panelGroup>
-							<h:panelGroup layout="block" styleClass="row">
-								<h:panelGroup styleClass="displayMorePanel" style="display:none" ></h:panelGroup>
-								<h:panelGroup styleClass="itemAction actionItem displayMorePanel" style="display:none" >
-									<h:outputText styleClass="displayMorePanel" value="#{msgs.perm_choose_instruction_forum_more}"/>
-								</h:panelGroup>
-							</h:panelGroup>
-							<h:panelGroup id="createTaskGroup" style="display:#{((ForumTool.selectedForum.gradeAssign != null && ForumTool.selectedForum.gradeAssign != 'Default_0') ? 'block' : 'none')}">
-								<h:selectBooleanCheckbox id="createTask" title="createTask" value="#{ForumTool.selectedForum.createTask}"/>
-								<h:outputLabel for="createTask" value="#{msgs.perm_create_task_forum}" style="margin-left:5px"/>
-							</h:panelGroup>
-						</h:panelGrid>
+		<h:panelGroup layout="block" styleClass="sakai-form-section" rendered="#{ForumTool.gradebookExist}">
+			<h:outputText value="#{msgs.perm_choose_assignment_head}" styleClass="sakai-form-section__title"/>
+			<h:panelGroup layout="block" rendered="#{ForumTool.discussionGeneric}">
+				<h:outputText styleClass="sakai-banner sakai-banner--info" value="#{msgs.group_sitegradebook_simple_forum}"/>
+			</h:panelGroup>
+			<h:panelGroup layout="block" styleClass="sakai-form-field" id="forum_grading" rendered="#{not ForumTool.discussionGeneric}">
+				<h:outputLabel for="forum_assignments" value="#{msgs.perm_choose_assignment}" styleClass="sakai-form-label"/>
+				<f:subview id="non_group_view" rendered="#{!ForumTool.gradebookGroupEnabled}">
+					<h:panelGroup styleClass="gradeSelector">
+						<h:selectOneMenu id="forum_assignments" onchange="updateGradeAssignment()"
+								value="#{ForumTool.selectedForum.gradeAssign}"
+								disabled="#{not ForumTool.editMode}"
+								styleClass="sakai-form-control">
+							<f:selectItems value="#{ForumTool.assignments}"/>
+						</h:selectOneMenu>
+						<p class="sakai-form-help instrWOGrades display-none">
+							<h:outputText value="#{msgs.perm_choose_assignment_none_f}"/>
+						</p>
+						<p class="sakai-form-help instrWithGrades">
+							<h:outputText value="#{msgs.perm_choose_instruction_forum}"/>
+							<h:outputLink value="#" styleClass="sakai-btn sakai-btn-icon" title="#{msgs.perm_choose_instruction_forum_more}" onclick="return false;">
+								<span class="si si-info" aria-hidden="true"></span>
+								<span class="visually-hidden"><h:outputText value="#{msgs.perm_choose_instruction_more_link}"/></span>
+							</h:outputLink>
+						</p>
 					</h:panelGroup>
+				</f:subview>
+				<f:subview id="group_view" rendered="#{ForumTool.gradebookGroupEnabled}">
+					<sakai-gradebook-item-selector
+							id="gb-selector" input-id="revise:group_view:forum_assignments"
+							app-name="sakai.forums"
+							site-id='<h:outputText value="#{ForumTool.siteId}" />'
+							user-id='<h:outputText value="#{ForumTool.userId}" />'
+							group-id='<h:outputText value="#{ForumTool.groupId}" />'
+							selected-temp='<h:outputText value="#{ForumTool.selectedForum.gradeAssign}" />'>
+					</sakai-gradebook-item-selector>
+					<h:inputHidden id="forum_assignments" value="#{ForumTool.selectedForum.gradeAssign}"/>
+				</f:subview>
+				<h:panelGroup id="createTaskGroup" layout="block"
+						styleClass="sakai-form-choice #{((ForumTool.selectedForum.gradeAssign != null && ForumTool.selectedForum.gradeAssign != 'Default_0') ? '' : 'display-none')}">
+					<h:selectBooleanCheckbox id="createTask" title="createTask" value="#{ForumTool.selectedForum.createTask}"/>
+					<h:outputLabel for="createTask" value="#{msgs.perm_create_task_forum}"/>
 				</h:panelGroup>
-			
-		<sakai-rubric-association styleClass="checkbox" style="margin-left:10px;display:none;"
+			</h:panelGroup>
+			<sakai-rubric-association class="display-none"
+					site-id='<h:outputText value="#{ForumTool.siteId}" />'
+					dont-associate-label='<h:outputText value="#{msgs.forum_dont_associate_label}" />'
+					associate-label='<h:outputText value="#{msgs.forum_associate_label}" />'
+					read-only="true"
+					tool-id="sakai.gradebookng"
+					fine-tune-points='<h:outputText value="#{msgs.option_pointsoverride}" />'
+					hide-student-preview='<h:outputText value="#{msgs.option_studentpreview}" />'>
+			</sakai-rubric-association>
+		</h:panelGroup>
 
-            site-id='<h:outputText value="#{ForumTool.siteId}" />'
-			dont-associate-label='<h:outputText value="#{msgs.forum_dont_associate_label}" />'
-			associate-label='<h:outputText value="#{msgs.forum_associate_label}" />'
-			read-only="true"
-			tool-id="sakai.gradebookng"
-			fine-tune-points='<h:outputText value="#{msgs.option_pointsoverride}" />'
-			hide-student-preview='<h:outputText value="#{msgs.option_studentpreview}" />'
+		<h:panelGroup layout="block" styleClass="sakai-form-section"
+				rendered="#{ForumTool.selectedForum.forum.id==null && !empty ForumTool.siteGroups}">
+			<h:outputText value="#{msgs.cdfm_autocreate_forums_header}" styleClass="sakai-form-section__title"/>
+			<div class="sakai-form-field">
+				<h:selectOneRadio layout="pageDirection" onclick="this.blur()" onchange="setAutoCreatePanel();"
+						disabled="#{not ForumTool.editMode}" id="createForumsForGroups"
+						value="#{ForumTool.selectedForum.restrictPermissionsForGroups}"
+						styleClass="sakai-form-choice-group">
+					<f:selectItem itemValue="false" itemLabel="#{msgs.cdfm_create_one_forum}"/>
+					<f:selectItem itemValue="true" itemLabel="#{msgs.cdfm_autocreate_forums_for_groups}"/>
+				</h:selectOneRadio>
+			</div>
+		</h:panelGroup>
 
-		></sakai-rubric-association>
+		<div id="createOneForumPanel" class="createOneForumPanel sakai-form-section">
+			<%@ include file="/jsp/discussionForum/permissions/permissions_include.jsp"%>
+		</div>
 
+		<div id="createForumsForGroupsPanel" class="createForumsForGroupsPanel sakai-form-section display-none">
 			<h:panelGroup rendered="#{ForumTool.selectedForum.forum.id==null && !empty ForumTool.siteGroups}">
-					<f:verbatim><h2></f:verbatim><h:outputText  value="#{msgs.cdfm_autocreate_forums_header}" /><f:verbatim></h2></f:verbatim>
-				</h:panelGroup>
-				<h:panelGroup layout="block" styleClass="indnt1">
-					<h:panelGrid columns="1" columnClasses="longtext,checkbox" cellpadding="0" cellspacing="0" >
-						<h:panelGroup rendered="#{ForumTool.selectedForum.forum.id==null && !empty ForumTool.siteGroups}">
-							<h:selectOneRadio layout="pageDirection" onclick="this.blur()" onchange="setAutoCreatePanel();" disabled="#{not ForumTool.editMode}" id="createForumsForGroups" value="#{ForumTool.selectedForum.restrictPermissionsForGroups}">
-								<f:selectItem itemValue="false" itemLabel="#{msgs.cdfm_create_one_forum}"/>
-								<f:selectItem itemValue="true" itemLabel="#{msgs.cdfm_autocreate_forums_for_groups}"/>
-							</h:selectOneRadio>
-						</h:panelGroup>
-					</h:panelGrid>
-				</h:panelGroup>
-
-				<h:panelGroup layout="block" styleClass="createOneForumPanel" id="createOneForumPanel">
-					<%@ include file="/jsp/discussionForum/permissions/permissions_include.jsp"%>
-				</h:panelGroup>
-
-				<h:panelGroup layout="block" styleClass="createForumsForGroupsPanel" id="createForumsForGroupsPanel" style="display:none;" >
-				<h:panelGroup rendered="#{ForumTool.selectedForum.forum.id==null && !empty ForumTool.siteGroups}"> 
-					<h:outputText value="#{msgs.cdfm_autocreate_forums_desc}" rendered="#{ForumTool.selectedForum.forum.id==null && !empty ForumTool.siteGroups}" />
-					<h:panelGroup styleClass="itemAction">
-						<h:outputLink value="#" style="text-decoration:none"  styleClass="instrWithGrades">
-							<h:outputText styleClass="displayMoreAutoCreate" value="#{msgs.perm_choose_instruction_more_link}"/>
-						</h:outputLink>
-					</h:panelGroup>
-					<f:verbatim><br/></f:verbatim>
-					<h:panelGroup styleClass="displayMoreAutoCreatePanel instruction" style="display:none">
-						<h:outputText value="#{ForumTool.autoRolesNoneDesc}" />
-						<h:outputText value="#{ForumTool.autoGroupsDesc}" />
-					</h:panelGroup>
-					<h:dataTable value="#{ForumTool.siteGroups}" var="siteGroup" cellpadding="0" cellspacing="0" styleClass="indnt1 jsfFormTable" 
-								 rendered="#{ForumTool.selectedForum.forum.id==null}">
+				<p class="sakai-form-help">
+					<h:outputText value="#{msgs.cdfm_autocreate_forums_desc}"/>
+					<h:outputText value=" #{ForumTool.autoRolesNoneDesc}"/>
+					<h:outputText value="#{ForumTool.autoGroupsDesc}"/>
+				</p>
+				<div class="sakai-form-choice-group sakai-form-choice-group--scroll">
+					<h:dataTable value="#{ForumTool.siteGroups}" var="siteGroup"
+							styleClass="sakai-table sakai-table--stack"
+							rendered="#{ForumTool.selectedForum.forum.id==null}">
 						<h:column>
-						    <h:selectBooleanCheckbox value="#{siteGroup.createForumForGroup}" id="forum_siteGroupCheck" />
-                            <h:outputText value="#{siteGroup.group.title}" id="forum_siteGroupCheck_label" />
+							<div class="sakai-form-choice">
+								<h:selectBooleanCheckbox value="#{siteGroup.createForumForGroup}" id="forum_siteGroupCheck"/>
+								<h:outputText value="#{siteGroup.group.title}" id="forum_siteGroupCheck_label"/>
+							</div>
 						</h:column>
 					</h:dataTable>
-				</h:panelGroup>
-				</h:panelGroup>
-				
-        
-      <h:panelGroup layout="block" styleClass="act">
-          <h:commandButton action="#{ForumTool.processActionSaveForumSettings}" value="#{msgs.cdfm_button_bar_save_setting}"
-          								 rendered="#{!ForumTool.selectedForum.markForDeletion}" accesskey="s" styleClass="blockMeOnClick active">
-    	 	  	<f:param value="#{ForumTool.selectedForum.forum.id}" name="forumId"/>         
-          </h:commandButton>
-				<h:commandButton id="saveandadd" action="#{ForumTool.processActionSaveForumAndAddTopic}" value="#{msgs.cdfm_button_bar_save_setting_add_topic}" accesskey="t"
-          								 rendered = "#{!ForumTool.selectedForum.markForDeletion}" styleClass="blockMeOnClick">
-	        	<f:param value="#{ForumTool.selectedForum.forum.id}" name="forumId"/>
-          </h:commandButton>  
-				<h:commandButton action="#{ForumTool.processActionSaveForumAsDraft}" value="#{msgs.cdfm_button_bar_save_draft}" accesskey="v"
-          								 rendered = "#{!ForumTool.selectedForum.markForDeletion}" styleClass="blockMeOnClick">
-	        	<f:param value="#{ForumTool.selectedForum.forum.id}" name="forumId"/>
-          </h:commandButton>
-				<%-- // designNote: these next 2 actions  should be available in the list view instead of here --%>
-          <h:commandButton id="delete_confirm" action="#{ForumTool.processActionDeleteForumConfirm}" 
-                           value="#{msgs.cdfm_button_bar_delete_forum}" rendered="#{!ForumTool.selectedForum.markForDeletion && ForumTool.displayForumDeleteOption}"
-                           accesskey="d" styleClass="blockMeOnClick">
-	        	<f:param value="#{ForumTool.selectedForum.forum.id}" name="forumId"/>
-          </h:commandButton>
-          
-          <h:commandButton id="delete" action="#{ForumTool.processActionDeleteForum}" 
-                           value="#{msgs.cdfm_button_bar_delete_forum}" rendered="#{ForumTool.selectedForum.markForDeletion}"
-                           accesskey="d"  styleClass="blockMeOnClick">
-	        	<f:param value="#{ForumTool.selectedForum.forum.id}" name="forumId"/>
-          </h:commandButton>
-          <h:commandButton immediate="true" action="#{ForumTool.processActionHome}" value="#{msgs.cdfm_button_bar_cancel}" accesskey="x" />
-          <h:outputText styleClass="sak-banner-info" style="display:none" value="#{msgs.cdfm_processing_submit_message}" />
-       </h:panelGroup>
+				</div>
+			</h:panelGroup>
+		</div>
+
+		<div class="sakai-actions">
+			<h:commandButton action="#{ForumTool.processActionSaveForumSettings}" value="#{msgs.cdfm_button_bar_save_setting}"
+					rendered="#{!ForumTool.selectedForum.markForDeletion}" accesskey="s"
+					styleClass="sakai-btn sakai-btn-primary blockMeOnClick">
+				<f:param value="#{ForumTool.selectedForum.forum.id}" name="forumId"/>
+			</h:commandButton>
+			<h:commandButton id="saveandadd" action="#{ForumTool.processActionSaveForumAndAddTopic}"
+					value="#{msgs.cdfm_button_bar_save_setting_add_topic}" accesskey="t"
+					rendered="#{!ForumTool.selectedForum.markForDeletion}"
+					styleClass="sakai-btn sakai-btn-secondary blockMeOnClick">
+				<f:param value="#{ForumTool.selectedForum.forum.id}" name="forumId"/>
+			</h:commandButton>
+			<h:commandButton action="#{ForumTool.processActionSaveForumAsDraft}" value="#{msgs.cdfm_button_bar_save_draft}" accesskey="v"
+					rendered="#{!ForumTool.selectedForum.markForDeletion}"
+					styleClass="sakai-btn sakai-btn-secondary blockMeOnClick">
+				<f:param value="#{ForumTool.selectedForum.forum.id}" name="forumId"/>
+			</h:commandButton>
+			<h:commandButton id="delete_confirm" action="#{ForumTool.processActionDeleteForumConfirm}"
+					value="#{msgs.cdfm_button_bar_delete_forum}"
+					rendered="#{!ForumTool.selectedForum.markForDeletion && ForumTool.displayForumDeleteOption}"
+					accesskey="d" styleClass="sakai-btn sakai-btn-ghost blockMeOnClick">
+				<f:param value="#{ForumTool.selectedForum.forum.id}" name="forumId"/>
+			</h:commandButton>
+			<h:commandButton id="delete" action="#{ForumTool.processActionDeleteForum}"
+					value="#{msgs.cdfm_button_bar_delete_forum}" rendered="#{ForumTool.selectedForum.markForDeletion}"
+					accesskey="d" styleClass="sakai-btn sakai-btn-primary blockMeOnClick">
+				<f:param value="#{ForumTool.selectedForum.forum.id}" name="forumId"/>
+			</h:commandButton>
+			<h:commandButton immediate="true" action="#{ForumTool.processActionHome}" value="#{msgs.cdfm_button_bar_cancel}"
+					accesskey="x" styleClass="sakai-btn sakai-btn-ghost"/>
+			<h:outputText styleClass="sakai-banner sakai-banner--info display-none" value="#{msgs.cdfm_processing_submit_message}"/>
+		</div>
 	 </h:form>
     </sakai:view>
 </f:view>

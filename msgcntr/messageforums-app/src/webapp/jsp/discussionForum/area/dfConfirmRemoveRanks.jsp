@@ -11,9 +11,6 @@
 <!--jsp/discussionForum/area/dfConfirmRemoveRanks.jsp-->
 <f:view>
     <sakai:view title="Confirm Remove Ranks">
-        <link rel="stylesheet" href="/messageforums-tool/css/msgcntr.css" type="text/css" />
-        <link rel="stylesheet" href="/messageforums-tool/css/forum_rank.css" type="text/css" />
-    
         <h:form id="revise">
             <script src="/messageforums-tool/js/forum_rank.js"></script>
             <script src="/messageforums-tool/js/forum.js"></script>
@@ -33,7 +30,7 @@
                 </h:column>
             </h:dataTable>
     
-            <div class="act">
+            <div class="sakai-actions">
                 <h:commandButton action="#{ForumTool.processActionDeleteRanks}" value="#{msgs.cdfm_button_bar_delete}" styleClass="active"/>
                 <h:commandButton action="#{ForumTool.gotoViewRank}" value="#{msgs.cdfm_cancel}" />
             </div>

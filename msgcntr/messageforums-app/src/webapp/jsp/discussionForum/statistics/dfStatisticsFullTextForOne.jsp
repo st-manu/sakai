@@ -6,162 +6,109 @@
 	<jsp:setProperty name="msgs" property="baseName" value="org.sakaiproject.api.app.messagecenter.bundle.Messages"/>
 </jsp:useBean>
 <f:view>
-  <sakai:view>
-  
-	<h:form id="dfStatisticsForm" rendered="#{ForumTool.instructor || mfStatisticsBean.isAuthor}">
-		<!-- discussionForum/statistics/dfStatisticsFullTextForOne.jsp -->
-  	       	<script>includeLatestJQuery("msgcntr");</script>
-       		<script src="/messageforums-tool/js/sak-10625.js"></script>
+	<sakai:view>
+		<h:form id="dfStatisticsForm" styleClass="sakai-forums" rendered="#{ForumTool.instructor || mfStatisticsBean.isAuthor}">
+			<!-- discussionForum/statistics/dfStatisticsFullTextForOne.jsp -->
+			<script>includeLatestJQuery("msgcntr");</script>
+			<script src="/messageforums-tool/js/sak-10625.js"></script>
 			<script src="/messageforums-tool/js/forum.js"></script>
-			
 			<script>
 				$(document).ready(function() {
-					$(".messageBody").each(function(index){
+					$(".messageBody").each(function(){
 						let msgBody = $(this).html();
 						msgBody = msgBody.replace(/\n/g,',').replace(/\s/g,' ').replace(/  ,/g,',');
 						const wordCountId = $(this).attr('id').substring(11, $(this).attr('id').length);
 						$("#wordCountSpan" + wordCountId).html(getWordCount(msgBody));
 					});
-
-                    var menuLink = $('#forumsStatisticsMenuLink');
-                    var menuLinkSpan = menuLink.closest('span');
-                    menuLinkSpan.addClass('current');
-                    menuLinkSpan.html(menuLink.text());
-
 				});
 			</script>
-            <%@ include file="/jsp/discussionForum/menu/forumsMenu.jsp" %>
+			<% request.setAttribute("dfHeaderView", "statisticsMessage"); %>
+			<% request.setAttribute("dfHeaderBack", "statisticsUser"); %>
+			<%@ include file="/jsp/discussionForum/menu/forumsHeader.jsp" %>
 
-          	 <f:verbatim><div class="breadCrumb"><h3></f:verbatim>
-			 <h:commandLink action="#{ForumTool.processActionHome}" value="#{msgs.cdfm_message_forums}" title=" #{msgs.cdfm_message_forums}"
-			      		rendered="#{ForumTool.messagesandForums}" />
-			 <h:commandLink action="#{ForumTool.processActionHome}" value="#{msgs.cdfm_discussions}" title=" #{msgs.cdfm_discussions}"
-			      		rendered="#{ForumTool.forumsTool}" />
-			 <h:outputText value=" " /><h:outputText value=" / " /><h:outputText value=" " />
-			 <h:commandLink action="#{ForumTool.processActionStatistics}" value="#{msgs.stat_list}" title="#{msgs.stat_list}"/>
-			 <h:outputText value="" /><h:outputText value=" / " /><h:outputText value=" " />
-			 <h:commandLink action="#{mfStatisticsBean.processActionBackToUser}" rendered="#{empty mfStatisticsBean.selectedAllTopicsTopicId && empty mfStatisticsBean.selectedAllTopicsForumId}">
-				 <h:outputText value="#{mfStatisticsBean.selectedSiteUser}" />
-			 </h:commandLink>
-			 <h:commandLink action="#{mfStatisticsBean.processActionStatisticsByAllTopics}" value="#{msgs.stat_list}" title="#{msgs.stat_list}" rendered="#{!empty mfStatisticsBean.selectedAllTopicsTopicId || !empty mfStatisticsBean.selectedAllTopicsForumId}"/>
-		      <h:panelGroup rendered="#{!empty mfStatisticsBean.selectedAllTopicsForumId}">
-			      <h:outputText value=" " /><h:outputText value=" / " /><h:outputText value=" " />
-			      <h:commandLink action="#{mfStatisticsBean.processActionStatisticsByTopic}" immediate="true">
-  				    <f:param value="" name="topicId"/>
-  				    <f:param value="#{mfStatisticsBean.selectedAllTopicsForumId}" name="forumId"/>
-  				    <h:outputText value="#{mfStatisticsBean.selectedAllTopicsForumTitle}" />
-	          	  </h:commandLink>
-			  </h:panelGroup>
-			  <h:panelGroup rendered="#{!empty mfStatisticsBean.selectedAllTopicsTopicId}">
-		      	  <h:outputText value=" " /><h:outputText value=" / " /><h:outputText value=" " />
-			      <h:commandLink action="#{mfStatisticsBean.processActionStatisticsByTopic}" immediate="true">
-  				    <f:param value="#{mfStatisticsBean.selectedAllTopicsTopicId}" name="topicId"/>
-  				    <f:param value="#{mfStatisticsBean.selectedAllTopicsForumId}" name="forumId"/>
-  				    <h:outputText value="#{mfStatisticsBean.selectedAllTopicsTopicTitle}" />
-	          	  </h:commandLink>
-	          </h:panelGroup> 
-			 <h:outputText value=" " /><h:outputText value=" / " /><h:outputText value=" " />
-			 <h:commandLink action="#{ForumTool.processActionShowFullTextForAll}" value="#{msgs.stat_authored}">
-			 </h:commandLink>
-			 <h:outputText value=" " /><h:outputText value=" / " /><h:outputText value=" " />
-			  <h:outputText value="#{mfStatisticsBean.selectedMsgSubject}" />
-			  <f:verbatim></h3></div></f:verbatim>
+			<div class="sakai-table-toolbar sakai-no-print">
+				<div class="sakai-table-toolbar__actions">
+					<h:outputLink styleClass="sakai-btn sakai-btn-ghost" id="print" value="javascript:printFriendly('#{ForumTool.printFriendlyFullTextForOne}');" title="#{msgs.cdfm_print}">
+						<span class="si si-print" aria-hidden="true"></span>
+						<span class="visually-hidden"><h:outputText value="#{msgs.print_friendly}" /></span>
+					</h:outputLink>
+				</div>
+			</div>
 
-		<h:panelGroup id="forumsActions">
-			<h:outputLink styleClass="button" id="print" value="javascript:printFriendly('#{ForumTool.printFriendlyFullTextForOne}');" title="#{msgs.cdfm_print}">
-				<span class="si si-print" aria-hidden="true"></span>
-			</h:outputLink>
-		</h:panelGroup>
+			<h:dataTable id="subjectBody" value="#{mfStatisticsBean.userSubjectMsgBody}" var="stat" styleClass="messagesFlat">
+				<h:column>
+					<h:panelGroup rendered="#{!stat.msgDeleted}" layout="block" styleClass="sakai-forums__message">
+						<f:verbatim><span id="messageBody</f:verbatim><h:outputText value="#{stat.msgId}"/><f:verbatim>" class="messageBody display-none"></f:verbatim>
+							<h:outputText escape="false" value="#{stat.message}"/>
+						<f:verbatim></span></f:verbatim>
 
-  		<h:dataTable id="subjectBody" value="#{mfStatisticsBean.userSubjectMsgBody}" var="stat" styleClass="table table-hover table-striped table-bordered" cellpadding="0" cellspacing="0" width="100%" columnClasses="bogus">	
-   			<h:column>
-				<h:panelGroup rendered="#{!stat.msgDeleted}" layout="block">
-   				<f:verbatim>
-  					<span id="messageBody</f:verbatim><h:outputText value="#{stat.msgId}"/><f:verbatim>" style="display: none" class="messageBody">
-  				</f:verbatim>
-  					<h:outputText escape="false" value="#{stat.message}"/>
-  					</span>  	
-					<span>
-						<span class="si si-add" aria-hidden="true"></span>
-						<h:outputText value="#{msgs.cdfm_message_count}: " escape="false" />
-						<span id="wordCountSpan<h:outputText value="#{stat.msgId}"/>"> </span>
-					</span>
-				<h:panelGroup>
-					<f:verbatim><div style="border-bottom:1px solid #ccc;padding-bottom:5px;height:100%;overflow:hidden"></f:verbatim>
-						<f:verbatim><p style="width:80%;float:left;margin:0;padding:0;font-size:110%;color:#000;font-weight:bold"></f:verbatim>
-							<h:outputText value="#{stat.forumTitle}" />
-							 <h:outputText value="/" />>
-							<h:outputText value="#{stat.topicTitle}" />
-							 <h:outputText value="/" />
-							<h:outputText  value= "#{stat.forumSubject} " />
-							<h:outputText value="#{stat.forumDate}">
-								<f:convertDateTime pattern="#{msgs.date_format_paren}" timeZone="#{ForumTool.userTimeZone}" locale="#{ForumTool.userLocale}"/>
-							</h:outputText>
-						<f:verbatim></p></f:verbatim>						
-						<h:panelGroup rendered="#{ForumTool.instructor}" style="display:block;float:right;width:15%;text-align:right;font-weight:bold">
-							<h:commandLink action="#{ForumTool.processActionDisplayInThread}" title=" #{msgs.stat_display_in_thread}" >
+						<div class="sakai-forums__message-header">
+							<div class="sakai-forums__message-identity">
+								<h:outputText value="#{stat.forumSubject}" styleClass="sakai-forums__title title"/>
+							</div>
+							<div class="sakai-forums__message-meta">
+								<h:outputText value="#{stat.forumTitle}" />
+								<h:outputText value=" / " />
+								<h:outputText value="#{stat.topicTitle}" />
+								<h:outputText value="#{stat.forumDate}">
+									<f:convertDateTime pattern="#{msgs.date_format_paren}" timeZone="#{ForumTool.userTimeZone}" locale="#{ForumTool.userLocale}"/>
+								</h:outputText>
+								<span>
+									<h:outputText value="#{msgs.cdfm_message_count}" />
+									<h:outputText value=": " />
+									<f:verbatim><span id="wordCountSpan</f:verbatim><h:outputText value="#{stat.msgId}"/><f:verbatim>"></span></f:verbatim>
+								</span>
+							</div>
+						</div>
+
+						<div class="sakai-forums__message-body">
+							<mf:htmlShowArea value="#{stat.message}" hideBorder="true" />
+						</div>
+
+						<h:panelGroup layout="block" rendered="#{!empty stat.decoAttachmentsList}">
+							<h:dataTable value="#{stat.decoAttachmentsList}" var="eachAttach" styleClass="sakai-table sakai-table--stack attachListJSF">
+								<h:column>
+									<sakai:contentTypeMap fileType="#{eachAttach.attachment.attachmentType}" mapType="image" var="imagePath" pathPrefix="/library/image/"/>
+									<h:graphicImage id="exampleFileIcon" value="#{imagePath}" alt="" />
+									<h:outputLink value="#{eachAttach.url}" target="_blank">
+										<h:outputText value="#{eachAttach.attachment.attachmentName}" />
+									</h:outputLink>
+								</h:column>
+							</h:dataTable>
+						</h:panelGroup>
+
+						<h:panelGroup layout="block" styleClass="sakai-forums__message-actions sakai-no-print" rendered="#{ForumTool.instructor}">
+							<h:commandLink action="#{ForumTool.processActionDisplayInThread}" title="#{msgs.stat_display_in_thread}" styleClass="sakai-btn sakai-btn-secondary">
 								<f:param value="#{stat.forumId}" name="forumId"/>
-		  				  		<f:param value="#{stat.topicId}" name="topicId"/>
-		  				  		<f:param value="#{stat.msgId}" name="msgId"/>
+								<f:param value="#{stat.topicId}" name="topicId"/>
+								<f:param value="#{stat.msgId}" name="msgId"/>
 								<h:outputText value="#{msgs.stat_display_in_thread}" />
 							</h:commandLink>
 						</h:panelGroup>
-					<f:verbatim></div></f:verbatim>						
-				</h:panelGroup>
-			
-			
-				<mf:htmlShowArea value="#{stat.message}" hideBorder="true" />
-				<h:panelGroup rendered="#{!empty stat.decoAttachmentsList}" style="display:block" styleClass="indnt1">
-					<h:dataTable value="#{stat.decoAttachmentsList}" var="eachAttach" styleClass="attachListJSF" rendered="#{!empty stat.decoAttachmentsList}">
-						<h:column rendered="#{!empty stat.decoAttachmentsList}">
-							<sakai:contentTypeMap fileType="#{eachAttach.attachment.attachmentType}" mapType="image" var="imagePath" pathPrefix="/library/image/"/>		
-							<h:graphicImage id="exampleFileIcon" value="#{imagePath}" />							
-							<h:outputLink value="#{eachAttach.url}" target="_blank">
-								<h:outputText value="#{eachAttach.attachment.attachmentName}" />
-							</h:outputLink>								
-						</h:column>
-					</h:dataTable>
-				</h:panelGroup>
-				</h:panelGroup>
+					</h:panelGroup>
 
-  				<h:panelGroup rendered="#{stat.msgDeleted}" layout="block"> 
-   				<f:verbatim><div class="hierItemBlock"></f:verbatim>
-				<f:verbatim><h4 class="textPanelHeader"></f:verbatim>
-				<f:verbatim><div class="specialLink" style="width:65%;float:left;text-align:left"></f:verbatim>
-				<h:panelGroup>
-					<h:panelGroup styleClass="inactive">
-						<f:verbatim><span></f:verbatim>
-						<h:outputText value="#{msgs.cdfm_msg_deleted_label}" />
-						<f:verbatim></span></f:verbatim>
- 					</h:panelGroup>
-				<f:verbatim></div ></f:verbatim>
-				<f:verbatim><div style="width:30%;float:right;text-align:right"	class="specialLink"></f:verbatim>
-				</h:panelGroup>
-				<h:panelGroup>
-					<h:commandLink action="#{ForumTool.processActionDisplayInThread}" title=" #{msgs.stat_display_in_thread}" >
-							<f:param value="#{stat.forumId}" name="forumId"/>
-  				  			<f:param value="#{stat.topicId}" name="topicId"/>
-  				  			<f:param value="#{stat.msgId}" name="msgId"/>
-						<h:outputText value="#{msgs.stat_display_in_thread}" />
-					</h:commandLink>
-				</h:panelGroup>
-			
-				<f:verbatim></div ></f:verbatim>
-				<f:verbatim><div style="clear:both;height:.1em;width:100%;"></div></f:verbatim>
-				<f:verbatim></h4></f:verbatim>
-				<mf:htmlShowArea value="" hideBorder="true" />
-				<f:verbatim></div></f:verbatim>
-				</h:panelGroup>
-  			</h:column>
-  			
-  		</h:dataTable>
+					<h:panelGroup rendered="#{stat.msgDeleted}" layout="block" styleClass="sakai-forums__message">
+						<div class="sakai-forums__message-header">
+							<div class="sakai-forums__message-identity">
+								<h:outputText value="#{msgs.cdfm_msg_deleted_label}" styleClass="sakai-forums__status"/>
+							</div>
+						</div>
+						<div class="sakai-forums__message-actions sakai-no-print">
+							<h:commandLink action="#{ForumTool.processActionDisplayInThread}" title="#{msgs.stat_display_in_thread}" styleClass="sakai-btn sakai-btn-secondary">
+								<f:param value="#{stat.forumId}" name="forumId"/>
+								<f:param value="#{stat.topicId}" name="topicId"/>
+								<f:param value="#{stat.msgId}" name="msgId"/>
+								<h:outputText value="#{msgs.stat_display_in_thread}" />
+							</h:commandLink>
+						</div>
+					</h:panelGroup>
+				</h:column>
+			</h:dataTable>
 
-  		<br /><br />
-  		<h:panelGroup>
-  			<h:commandButton action="#{mfStatisticsBean.processActionBackToUser}" value="#{mfStatisticsBean.buttonUserName}"  
-			               title="#{mfStatisticsBean.buttonUserName}">			               			
-			</h:commandButton>
-		</h:panelGroup>
-  	</h:form>
-  </sakai:view>
- </f:view>
+			<div class="sakai-actions">
+				<h:commandButton action="#{mfStatisticsBean.processActionBackToUser}" value="#{mfStatisticsBean.buttonUserName}"
+					title="#{mfStatisticsBean.buttonUserName}" styleClass="sakai-btn sakai-btn-ghost"/>
+			</div>
+		</h:form>
+	</sakai:view>
+</f:view>

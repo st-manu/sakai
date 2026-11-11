@@ -12,34 +12,28 @@
 <f:view>
 <sakai:view title="View All Ranks">
 
-<link rel="stylesheet" href="/messageforums-tool/css/msgcntr.css" type="text/css" />
 <link rel="stylesheet" href="/library/webjars/jquery-ui/1.12.1/jquery-ui.min.css" type="text/css" />
-<link rel="stylesheet" href="/messageforums-tool/css/forum_rank.css" type="text/css" />
-
 <script>includeLatestJQuery("msgcntr");</script>
 <script src="/messageforums-tool/js/json2.js"></script>
 <script src="/messageforums-tool/js/forum.js"></script>
 
 
     <h:form id="addRank">
-        <f:verbatim><br/></f:verbatim>
-		<h:outputText value="#{msgs.ranks}"  styleClass="title-text"/>
-		<h:outputText value="- #{msgs.ranks_desc}" />
+		<% request.setAttribute("dfHeaderView", "ranks"); %>
+		<% request.setAttribute("dfHeaderTitleKey", "ranks"); %>
+		<% request.setAttribute("dfHeaderBack", "discussions"); %>
+		<%@ include file="/jsp/discussionForum/menu/forumsHeader.jsp" %>
+		<h:outputText value="#{msgs.ranks_desc}" />
 		<f:verbatim><br/></f:verbatim>
 		<h:graphicImage id="iamgespacer" url="/images/ranksSpaceFiller.jpg" height="10"/>
-		<sakai:tool_bar separator="#{msgs.cdfm_toolbar_separator}" >
-			<h:commandLink id="addRank" rendered="#{ForumTool.instructor}"
-				action="#{ForumTool.processActionAddRank}" immediate="true">
-					<h:outputText value="#{msgs.add_rank}" />
-			</h:commandLink>
-		</sakai:tool_bar>
+
         <f:verbatim><br/></f:verbatim>
 
         <%-- ranks --%>
 		<h:outputText value="#{msgs.no_ranks_defined}" rendered="#{empty ForumTool.rankBeanList}" />
         <div class="table">
             <h:dataTable value="#{ForumTool.rankBeanList}" var="eachrank" rendered="#{!empty ForumTool.rankBeanList}" summary="layout"
-                         styleClass="table table-hover table-striped table-bordered" border="0" cellpadding="3" cellspacing="0"
+                         styleClass="sakai-table sakai-table--hover sakai-table--stack" border="0" cellpadding="3" cellspacing="0"
                          columnClasses="ranktable-name,ranktable-image,ranktable-assignto,ranktable-minpost,ranktable-delete">
                 <h:column id="_checkbox">
                     <f:facet name="header">
@@ -86,7 +80,7 @@
             <f:verbatim><br/></f:verbatim>
 
             <h:graphicImage id="iamgespacer1" url="/images/ranksSpaceFiller.jpg" height="20"/>
-			<div class="act">
+			<div class="sakai-actions">
           		<h:commandButton type="submit" id="delete_submit" immediate="true" rendered="#{! empty ForumTool.rankBeanList}" action="#{ForumTool.processActionConfirmDeleteRanks}" value="#{msgs.delete_rank}" styleClass="active" />
 			    <h:commandButton action="#{ForumTool.processActionHome}" type="submit" immediate="true"  id="delete_cancel" rendered="#{! empty ForumTool.rankBeanList}" value="#{msgs.cdfm_cancel}" />
 			</div>

@@ -7,30 +7,23 @@
 </jsp:useBean>
 
 <f:view>
-	<sakai:view toolCssHref="/messageforums-tool/css/msgcntr.css">
+	<sakai:view>
 		<h:form id="msgForum" styleClass="specialLink">
 			
 	       		<script>includeLatestJQuery("msgcntr");</script>
        		<script src="/messageforums-tool/js/sak-10625.js"></script>
 		<script src="/messageforums-tool/js/forum.js"></script>
 
-		<%@ include file="/jsp/discussionForum/menu/forumsMenu.jsp" %>
+		<% request.setAttribute("dfHeaderView", "pending"); %>
+<%@ include file="/jsp/discussionForum/menu/forumsHeader.jsp" %>
 
 
-			<h3>
-				<h:commandLink action="#{ForumTool.processActionHome}" value="#{msgs.cdfm_message_forums}" title=" #{msgs.cdfm_message_forums}"
-			      		rendered="#{ForumTool.messagesandForums}" />
-			  <h:commandLink action="#{ForumTool.processActionHome}" value="#{msgs.cdfm_discussions}" title=" #{msgs.cdfm_discussions}"
-			      		rendered="#{ForumTool.forumsTool}" />
-      	<h:outputText value=" " /><h:outputText value=" / " /><h:outputText value=" " />
-				<h:outputText value="#{msgs.cdfm_msg_pending_queue_title}" />
-			</h3>
+			
 			<script>
 				$(document).ready(function () {
 
-					document.getElementById("forumsQueueMenuLink").classList.add("current");
 
-					$('.table table-hover table-striped table-bordered tr th a').fadeTo("fast",0.50);
+					$('.sakai-table tr th a').fadeTo("fast",0.50);
 					//deactivate remove link if nothing checked
 					$("#msgForum\\:pendingMsgs\\:mainCheckbox").click(function () {
 
@@ -44,25 +37,23 @@
 							}
 						});
 						if (makeActive) {
-							$('.table table-hover table-striped table-bordered tr th a').fadeTo("fast",1);
+							$('.sakai-table tr th a').fadeTo("fast",1);
 						} else {
-							$('.table table-hover table-striped table-bordered tr th a').fadeTo("fast",0.50);
+							$('.sakai-table tr th a').fadeTo("fast",0.50);
 						}
 					});
 				});
 			</script>
 
-		<div class="instruction">
-				<p>	
+		<p class="sakai-form-section__intro">
 			<h:outputText value="#{msgs.cdfm_deny_with_comments_msg}" rendered="#{ForumTool.numPendingMessages > 0}" />
-	  	<h:outputText value="#{msgs.cdfm_no_pending_msgs}" rendered="#{ForumTool.numPendingMessages < 1}" />
-				</p>	
-	  </div>
-  
-	  <h:messages globalOnly="true" infoClass="success" errorClass="alertMessage" rendered="#{! empty facesContext.maximumSeverity}"/>
+			<h:outputText value="#{msgs.cdfm_no_pending_msgs}" rendered="#{ForumTool.numPendingMessages < 1}" />
+		</p>
+
+		<h:messages globalOnly="true" infoClass="sakai-banner sakai-banner--success" errorClass="sakai-banner sakai-banner--error" rendered="#{! empty facesContext.maximumSeverity}"/>
 	  <div>
 		<h:dataTable id="pendingMsgs" value="#{ForumTool.pendingMessages}" width="100%" var="message" 
-				columnClasses="bogus,nopadd" styleClass="table table-hover table-striped table-bordered specialLink" rendered="#{ForumTool.numPendingMessages >0 }" cellpadding="0" cellspacing="0">
+				columnClasses="bogus,nopadd" styleClass="sakai-table sakai-table--hover sakai-table--stack specialLink" rendered="#{ForumTool.numPendingMessages >0 }" cellpadding="0" cellspacing="0">
 			<h:column>
 				<f:facet name="header">
 					<h:selectBooleanCheckbox title="#{msgs.cdfm_checkall}" id="mainCheckbox" onclick="javascript:selectDeselectCheckboxes(this.id, document.forms[0]);"/>

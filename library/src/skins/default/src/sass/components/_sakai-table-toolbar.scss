@@ -19,6 +19,20 @@
   min-width: 0;
 }
 
+.sakai-table-toolbar--compact-only {
+  display: none;
+}
+
+@container sakai-tool (max-width: 35.999rem) {
+  .sakai-table-toolbar--compact-only {
+    display: flex;
+  }
+
+  .sakai-table thead .sakai-table__sort--desktop {
+    display: none;
+  }
+}
+
 .sakai-table-toolbar__scope {
   font-size: var(--sakai-text-body-sm);
   color: var(--sakai-text-secondary);

@@ -7,7 +7,7 @@
 </jsp:useBean>
 
 <f:view>
-<sakai:view  toolCssHref="/messageforums-tool/css/msgcntr.css">
+<sakai:view >
 	<h:form id="msgForum">
 		<!-- discussionForum/statistics/printFriendlyDisplayInThread.jsp-->	
 		<div class="sakai-actions sakai-no-print">
@@ -33,7 +33,7 @@
 			<h:outputText value="#{ForumTool.selectedTopic.topic.title}" />
 	    <f:verbatim></h3></div></f:verbatim>
 		<div>
-  		<mf:hierDataTable id="allMessagesForOneTopic" value="#{ForumTool.messages}" var="msgDecorateBean" noarrows="true" styleClass="table table-hover table-striped table-bordered" cellpadding="0" cellspacing="0" width="100%" columnClasses="bogus">	
+  		<mf:hierDataTable id="allMessagesForOneTopic" value="#{ForumTool.messages}" var="msgDecorateBean" noarrows="true" styleClass="table sakai-table--hover sakai-table--stack" cellpadding="0" cellspacing="0" width="100%" columnClasses="bogus">	
    			<h:column id="_msg_subject">
 	   			<h:panelGroup rendered="#{ForumTool.selectedMsgId!=msgDecorateBean.message.id}">
 					<f:verbatim><div class="printBlock" style="margin:0"></f:verbatim>

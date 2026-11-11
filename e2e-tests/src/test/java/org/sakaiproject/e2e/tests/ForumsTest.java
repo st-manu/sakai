@@ -94,10 +94,58 @@ class ForumsTest extends SakaiUiTestBase {
 
     @Test
     @Order(3)
+    void canOrganizeForumsWithReorderer() {
+        sakai.login("instructor1");
+        page.navigate(sakaiUrl);
+        sakai.toolClick("Discussion");
+
+        page.getByRole(AriaRole.LINK, new Page.GetByRoleOptions()
+                .setName(Pattern.compile("^Organize$", Pattern.CASE_INSENSITIVE)))
+            .first()
+            .click();
+
+        assertThat(page.locator("#forums-reorderer")).isVisible();
+        page.waitForFunction(
+            "() => document.querySelector('#forums-reorderer')?.updateComplete",
+            null,
+            new Page.WaitForFunctionOptions().setTimeout(15_000)
+        );
+
+        Locator forumRows = page.locator("#forums-reorder-list > li.reorder-element.sakai-reorder-row");
+        assertThat(forumRows.first()).isVisible();
+        assertThat(forumRows.first().locator(".sakai-reorder-drag-handle.drag-handle, .drag-handle").first()).isVisible();
+        assertThat(page.locator("select[id*=\"forumIndex\"], select[id*=\"topicIndex\"]")).hasCount(0);
+        assertThat(page.locator(".sakai-reorder-undo.sakai-no-print")).isVisible();
+
+        if (forumRows.count() > 1) {
+            String firstTitle = forumRows.first().locator(".sakai-reorder-title").first().innerText().trim();
+            String secondTitle = forumRows.nth(1).locator(".sakai-reorder-title").first().innerText().trim();
+            forumRows.nth(1).locator("[data-action=\"move-up\"]").click();
+            assertThat(forumRows.first().locator(".sakai-reorder-title").first()).containsText(secondTitle);
+            assertThat(forumRows.nth(1).locator(".sakai-reorder-title").first()).containsText(firstTitle);
+
+            Locator undoLast = page.locator("#undo-last");
+            assertThat(undoLast).isEnabled();
+            undoLast.click();
+            assertThat(forumRows.first().locator(".sakai-reorder-title").first()).containsText(firstTitle);
+        }
+
+        page.locator("input[type=\"submit\"][value=\"Save\"], button[type=\"submit\"]:has-text(\"Save\")").first()
+            .click(new Locator.ClickOptions().setForce(true));
+        page.waitForLoadState();
+        assertThat(page.getByRole(AriaRole.HEADING, new Page.GetByRoleOptions()
+                .setName(Pattern.compile("^Discussions$", Pattern.CASE_INSENSITIVE))))
+            .isVisible();
+    }
+
+    @Test
+    @Order(4)
     void canOpenAuthoredMessageStatistics() {
         sakai.login("instructor1");
         page.navigate(sakaiUrl);
         sakai.toolClick("Discussion");
+        page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions()
+            .setName("More actions")).first().click();
         page.getByRole(AriaRole.LINK, new Page.GetByRoleOptions()
             .setName("Statistics & Grading").setExact(true)).click();
         page.getByRole(AriaRole.LINK, new Page.GetByRoleOptions()
@@ -112,7 +160,7 @@ class ForumsTest extends SakaiUiTestBase {
     }
 
     @Test
-    @Order(4)
+    @Order(5)
     void deletedTopicHasNoActiveLessonsLink() {
         sakai.login("instructor1");
         page.navigate(sakaiUrl);
@@ -130,6 +178,7 @@ class ForumsTest extends SakaiUiTestBase {
 
         sakai.toolClick("Discussion");
         page.getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName(TOPIC_TITLE).setExact(true)).click();
+        page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("More actions")).first().click();
         page.getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("Delete Topic").setExact(true)).click();
         page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Delete Topic").setExact(true)).click();
         sakai.toolClick("Lessons");

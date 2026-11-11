@@ -15,7 +15,6 @@
 
 <f:view>
 	<sakai:view title="#{msgs.pvt_pvtcompose}">
-		<link rel="stylesheet" href="/messageforums-tool/css/messages.css" type="text/css" />
 		<link rel="stylesheet" href="/library/webjars/jquery-ui/1.12.1/jquery-ui.min.css" type="text/css" />
 		<script>includeLatestJQuery("msgcntr");</script>
 		<script src="/messageforums-tool/js/datetimepicker.js"></script>

@@ -121,15 +121,8 @@
 			}
 		</script>
 			<script>includeLatestJQuery("msgcntr");</script>
-			<script>
-			  if (window.location !== window.parent.location) {
-                            includeWebjarLibrary('bootstrap');
-                          }
-                        </script>
 			<script src="/messageforums-tool/js/dialog.js"></script>
 			<script src="/library/js/spinner.js"></script>
-			<link rel="stylesheet" type="text/css" href="/messageforums-tool/css/dialog.css" />
-			<link rel="stylesheet" type="text/css" href="/messageforums-tool/css/msgcntr_statistics.css" />
 		<script>
 			function initGbSelector(gbSelectorId, inputId) {
 				const input = document.getElementById(inputId);
@@ -184,10 +177,6 @@
 
 			$(document).ready(function() {
 				$('.selAssignVal').val('<h:outputText value="#{mfStatisticsBean.selectedAssign}"/>');
-				let menuLink = $('#forumsStatisticsMenuLink');
-				let menuLinkSpan = menuLink.closest('span');
-				menuLinkSpan.addClass('current');
-				menuLinkSpan.html(menuLink.text());
 				const sakaiReminder = new SakaiReminder();
                                 $('textarea.awesomplete').each(function () {
                                     new Awesomplete(this, {
@@ -201,16 +190,20 @@
                                 });
 			});
 		</script>
-        <%@ include file="/jsp/discussionForum/menu/forumsMenu.jsp" %>
+        <% request.setAttribute("dfHeaderView", "statisticsForumTopic"); %>
+<% request.setAttribute("dfHeaderBack", "statisticsByTopic"); %>
+<%@ include file="/jsp/discussionForum/menu/forumsHeader.jsp" %>
 		
-		<div class="modal fade" id="dialogDiv" data-dialog-frame="dialogFrame" tabindex="-1" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="dialogDivLabel">
-			<div class="modal-dialog modal-xl modal-dialog-centered">
+		<div class="modal fade sakai-forums__grade-modal" id="dialogDiv" data-dialog-frame="dialogFrame" tabindex="-1" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="dialogDivLabel">
+			<div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
 				<div class="modal-content">
 					<div class="modal-header">
-						<h5 class="modal-title" id="dialogDivLabel">
+						<h2 class="modal-title" id="dialogDivLabel">
 							<h:outputText value="#{msgs.cdfm_grade_msg}" />
-						</h5>
-						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="<h:outputText value='#{msgs.close_window}' />"></button>
+						</h2>
+						<button type="button" class="btn-close" data-bs-dismiss="modal">
+							<span class="visually-hidden"><h:outputText value="#{msgs.close_window}" /></span>
+						</button>
 					</div>
 					<div class="modal-body">
 						<f:verbatim>
@@ -220,116 +213,82 @@
 				</div>
 			</div>
 		</div>
-		<f:verbatim>
-	  		<div class="success" id="gradesSavedDiv" class="success" style="display:none">
-	  	</f:verbatim>
+		<div class="sakai-banner sakai-banner--success" id="gradesSavedDiv" style="display:none">
 	  		<h:outputText value="#{msgs.cdfm_grade_successful}"/>
-	  	<f:verbatim>
-	  		</div>
-	  	</f:verbatim>
-	  	<f:verbatim>
-	  		<div class="information" id="gradesNeedSaved" class="success" style="display:none">
-	  	</f:verbatim>
+	  	</div>
+		<div class="sakai-banner sakai-banner--info" id="gradesNeedSaved" style="display:none">
 	  		<h:outputText value="#{msgs.stat_forum_default_grade_info}"/>
-	  	<f:verbatim>
-	  		</div>
-	  	</f:verbatim>
+	  	</div>
 		
 		<h:panelGroup rendered="#{mfStatisticsBean.gradingService.isGradebookGroupEnabled(ForumTool.siteId)}">
-			<h:panelGroup styleClass="sak-banner-error" rendered="#{mfStatisticsBean.selectMoreThanOneItem}">
+			<h:panelGroup styleClass="sakai-banner sakai-banner--error" rendered="#{mfStatisticsBean.selectMoreThanOneItem}">
 				<h:outputText value="#{msgs.cdfm_gradebook_group_selector_error}" />
 			</h:panelGroup>
-			<h:panelGroup styleClass="sak-banner-warn">
+			<h:panelGroup styleClass="sakai-banner sakai-banner--warn">
 				<h:outputText value="#{msgs.cdfm_gradebook_group_selector_instructions}" />
 			</h:panelGroup>
 		</h:panelGroup>
-	  	<h:messages globalOnly="true" infoClass="success" errorClass="alertMessage" rendered="#{! empty facesContext.maximumSeverity}"/>
-		
-  		<h:panelGrid columns="2" width="100%" styleClass="navPanel  specialLink">
-          <h:panelGroup>
-          	 <f:verbatim><h3></f:verbatim>
-			      <h:commandLink action="#{ForumTool.processActionHome}" value="#{msgs.cdfm_message_forums}" title=" #{msgs.cdfm_message_forums}"
-			      		rendered="#{ForumTool.messagesandForums}" />
-			      <h:commandLink action="#{ForumTool.processActionHome}" value="#{msgs.cdfm_discussions}" title=" #{msgs.cdfm_discussions}"
-			      		rendered="#{ForumTool.forumsTool}" />
-			      <h:outputText value=" " /><h:outputText value=" / " /><h:outputText value=" " />
-			      <h:commandLink action="#{mfStatisticsBean.processActionStatisticsByAllTopics}" value="#{msgs.stat_list}" title="#{msgs.stat_list}"/>
-			      <h:outputText value=" " /><h:outputText value=" / " /><h:outputText value=" " />
-			      <h:commandLink action="#{mfStatisticsBean.processActionStatisticsByTopic}" immediate="true">
-				    <f:param value="" name="topicId"/>
-				    <f:param value="#{mfStatisticsBean.selectedAllTopicsForumId}" name="forumId"/>
-				    <h:outputText value="#{mfStatisticsBean.selectedAllTopicsForumTitle}" />
-		      	  </h:commandLink>
-			      <h:panelGroup rendered="#{!empty mfStatisticsBean.selectedAllTopicsTopicId}">
-	    			  <h:outputText value=" " /><h:outputText value=" / " /><h:outputText value=" " />
-			   		  <h:outputText value="#{mfStatisticsBean.selectedAllTopicsTopicTitle}" />
-		   		  </h:panelGroup>
-			    <f:verbatim></h3></f:verbatim>
-          </h:panelGroup> 
-          <h:panelGroup style="display:block; height: 125px; width: 500px;">
+	  	<h:messages globalOnly="true" infoClass="sakai-banner sakai-banner--success" errorClass="sakai-banner sakai-banner--error" rendered="#{! empty facesContext.maximumSeverity}"/>
+
+      <div class="sakai-table-toolbar sakai-no-print">
+        <div class="sakai-table-toolbar__filters">
 			<h:panelGroup rendered="#{!mfStatisticsBean.gradingService.isGradebookGroupEnabled(ForumTool.siteId)}">
-				<h:outputText value="#{msgs.cdfm_select_assign}: "/>
-				<h:selectOneMenu id="assignment" value="#{mfStatisticsBean.selectedAssign}" valueChangeListener="#{mfStatisticsBean.processGradeAssignChange}" styleClass="selAssignVal"
+				<label class="sakai-form-label" for="dfStatisticsForm:assignment"><h:outputText value="#{msgs.cdfm_select_assign}"/></label>
+				<h:selectOneMenu id="assignment" value="#{mfStatisticsBean.selectedAssign}" valueChangeListener="#{mfStatisticsBean.processGradeAssignChange}" styleClass="selAssignVal sakai-form-control sakai-form-control--sm"
 				onchange="document.forms[0].submit();">
 				<f:selectItems value="#{mfStatisticsBean.assignments}" />
 				</h:selectOneMenu>
 			</h:panelGroup>
-          </h:panelGroup>
-          <h:panelGroup styleClass="itemNav" rendered="#{!empty mfStatisticsBean.groupsForStatisticsByTopic}">
-          
-          </h:panelGroup>
-          <h:panelGroup styleClass="itemNav" rendered="#{!empty mfStatisticsBean.cachedGroupsForStatisticsByTopic}">
-	      	<h:outputText value="#{msgs.filter_by_group}: "/>
-			<h:selectOneMenu id="grade" value="#{mfStatisticsBean.selectedGroup}" valueChangeListener="#{mfStatisticsBean.processGroupChange}" onchange="document.forms[0].submit();">
+          <h:panelGroup rendered="#{!empty mfStatisticsBean.cachedGroupsForStatisticsByTopic}">
+	      	<label class="sakai-form-label" for="dfStatisticsForm:grade"><h:outputText value="#{msgs.filter_by_group}"/></label>
+			<h:selectOneMenu id="grade" value="#{mfStatisticsBean.selectedGroup}" valueChangeListener="#{mfStatisticsBean.processGroupChange}" styleClass="sakai-form-control sakai-form-control--sm" onchange="document.forms[0].submit();">
 	           <f:selectItems value="#{mfStatisticsBean.cachedGroupsForStatisticsByTopic}" />
-	        </h:selectOneMenu>          
-          </h:panelGroup>  
-        </h:panelGrid>
+	        </h:selectOneMenu>
+          </h:panelGroup>
+        </div>
+      </div>
         
 	  	
 	  	<f:subview id="defaultValueView" rendered="#{mfStatisticsBean.selectedAssign != 'Default_0'}">
-	  		<div>
-	  			<h:inputText styleClass="defaultValue" size="5" value="0" onkeyup="warn = true;"/>
+	  		<div class="sakai-table-toolbar sakai-no-print">
+	  			<h:inputText styleClass="defaultValue sakai-form-control sakai-form-control--sm" size="5" value="0" onkeyup="warn = true;"/>
           		<f:verbatim>
-          			<input type="button" onclick="applyDefaultToUngraded();" value="</f:verbatim><h:outputText value="#{msgs.stat_forum_default_grade}"/><f:verbatim>"/>
+          			<input type="button" class="sakai-btn sakai-btn-secondary" onclick="applyDefaultToUngraded();" value="</f:verbatim><h:outputText value="#{msgs.stat_forum_default_grade}"/><f:verbatim>"/>
           		</f:verbatim>
           	</div>
 	  	</f:subview>
 	  	
-		<div style="margin-bottom: 1rem;">
-			<h:panelGroup rendered="#{mfStatisticsBean.gradingService.isGradebookGroupEnabled(ForumTool.siteId) && !mfStatisticsBean.discussionGeneric}" id="multigradebook-group-container">
-				<div style="margin-bottom: 0.5rem;">
-					<sakai-gradebook-item-selector
-						id="gb-selector" input-id="dfStatisticsForm:gb_selector"
-						site-id='<h:outputText value="#{ForumTool.siteId}" />'
-						user-id='<h:outputText value="#{ForumTool.userId}" />'
-						group-id='<h:outputText value="#{mfStatisticsBean.groupId}" />'
-						selected-temp='<h:outputText value="Hey" />'>
-					</sakai-gradebook-item-selector>
-					<h:inputHidden 
-						id="gb_selector" 
-						value="#{mfStatisticsBean.selectedAssign}" 
-					/>
-				</div>
-				
-				<h:commandButton action="#{mfStatisticsBean.proccessActionGradeAssignsChangeSubmit}" value="#{msgs.cdfm_gradebook_group_selector_send_button}" accesskey="s"
+		<h:panelGroup layout="block" rendered="#{mfStatisticsBean.gradingService.isGradebookGroupEnabled(ForumTool.siteId) && !mfStatisticsBean.discussionGeneric}" id="multigradebook-group-container" styleClass="sakai-table-toolbar sakai-no-print">
+			<div class="sakai-table-toolbar__filters">
+				<sakai-gradebook-item-selector
+					id="gb-selector" input-id="dfStatisticsForm:gb_selector"
+					site-id='<h:outputText value="#{ForumTool.siteId}" />'
+					user-id='<h:outputText value="#{ForumTool.userId}" />'
+					group-id='<h:outputText value="#{mfStatisticsBean.groupId}" />'
+					selected-temp='<h:outputText value="Hey" />'>
+				</sakai-gradebook-item-selector>
+				<h:inputHidden 
+					id="gb_selector" 
+					value="#{mfStatisticsBean.selectedAssign}" 
+				/>
+				<h:commandButton action="#{mfStatisticsBean.proccessActionGradeAssignsChangeSubmit}" value="#{msgs.cdfm_gradebook_group_selector_send_button}" accesskey="s" styleClass="sakai-btn sakai-btn-secondary"
 				onclick="warn = false;SPNR.disableControlsAndSpin( this, null );"/>
-			</h:panelGroup>
-		</div>
+			</div>
+		</h:panelGroup>
 	  	
 		<%--
 			Use cahcedTopicStatistics - value is cached from #{!empty mfStatisticsBean.groupForStatisticsByTopic} above.
 			Retrieve the topic statistics, then clear the cache since dfStatisticsBean is scoped to the session, and we don't want this data to persist for future requests
 		--%>
-		<div class="table">
-  		<h:dataTable styleClass="table table-hover table-striped table-bordered lines nolines" id="members" value="#{mfStatisticsBean.gradeStatisticsForStatsListByTopic}" var="stat" rendered="true"
-   	 		columnClasses="specialLink,bogus,bogus,bogus,bogus,bogus,bogus" cellpadding="0" cellspacing="0">
+		<div class="sakai-table-wrap">
+  		<h:dataTable styleClass="sakai-table sakai-table--hover sakai-table--stack" id="members" value="#{mfStatisticsBean.gradeStatisticsForStatsListByTopic}" var="stat" rendered="true"
+   	 		columnClasses="sakai-table__primary,bogus,sakai-table__actions" cellpadding="0" cellspacing="0">
   			<h:column>
   				<f:facet name="header">
   					<h:commandLink action="#{mfStatisticsBean.toggleTopicNameSort}" title="#{mfStatisticsBean.pureAnon ? msgs.stat_anon_user : msgs.stat_name}">
 					   	<h:outputText value="#{mfStatisticsBean.pureAnon ? msgs.stat_anon_user : msgs.stat_name}" />
-						<h:graphicImage value="/images/sortascending.gif" rendered="#{mfStatisticsBean.nameSort && mfStatisticsBean.ascending}" alt="#{msgs.stat_sort_name}"/>
-						<h:graphicImage value="/images/sortdescending.gif" rendered="#{mfStatisticsBean.nameSort && !mfStatisticsBean.ascending}" alt="#{msgs.stat_sort_name}"/>
+						<h:outputText value="" styleClass="si si-sort-up" escape="false" rendered="#{mfStatisticsBean.nameSort && mfStatisticsBean.ascending}"/>
+						<h:outputText value="" styleClass="si si-sort-down" escape="false" rendered="#{mfStatisticsBean.nameSort && !mfStatisticsBean.ascending}"/>
 					</h:commandLink>
   				</f:facet>
   				<h:outputLink value="/tool/#{ForumTool.currentToolId}/discussionForum/statistics/dfStatisticsAllAuthoredMsgForOneUser" target="dialogFrame"
@@ -345,8 +304,8 @@
 				<f:facet name="header">
 					<h:commandLink action="#{mfStatisticsBean.toggleTopicIdSort}" title="#{msgs.stat_eid}">
 						<h:outputText value="#{msgs.stat_eid}" />
-						<h:graphicImage value="/images/sortascending.gif" rendered="#{mfStatisticsBean.idSort && mfStatisticsBean.ascending}" alt="#{msgs.stat_sort_eid}"/>
-						<h:graphicImage value="/images/sortdescending.gif" rendered="#{mfStatisticsBean.idSort && !mfStatisticsBean.ascending}" alt="#{msgs.stat_sort_eid}"/>
+						<h:outputText value="" styleClass="si si-sort-up" escape="false" rendered="#{mfStatisticsBean.idSort && mfStatisticsBean.ascending}"/>
+						<h:outputText value="" styleClass="si si-sort-down" escape="false" rendered="#{mfStatisticsBean.idSort && !mfStatisticsBean.ascending}"/>
 					</h:commandLink>
 				</f:facet>
 				<h:outputLink value="/tool/#{ForumTool.currentToolId}/discussionForum/statistics/dfStatisticsAllAuthoredMsgForOneUser" target="dialogFrame" onclick="dialogLinkClick(this);">
@@ -358,19 +317,41 @@
 			</h:column>
 			<h:column>
   				<f:facet name="header">
-					<h:outputText value="#{msgs.stat_forum_details}" />
+					<h:outputText value="#{msgs.pvt_more_actions}" styleClass="visually-hidden"/>
   				</f:facet>
-  				<h:commandLink action="#{mfStatisticsBean.processActionStatisticsUser}" immediate="true" styleClass="font-size: small">
-  				    <f:param value="#{stat.siteUserId}" name="siteUserId"/>
-				   	<h:outputText value="#{msgs.stat_forum_details}" />
-	          	</h:commandLink>
+				<h:panelGroup layout="block" styleClass="sakai-row-actions">
+					<details class="sakai-overflow-menu">
+						<summary class="sakai-overflow-menu__toggle">
+							<span class="si si-three-dots" aria-hidden="true"></span>
+							<span class="visually-hidden"><h:outputText value="#{msgs.pvt_more_actions}"/></span>
+						</summary>
+						<div class="sakai-overflow-menu__panel">
+							<h:commandLink action="#{mfStatisticsBean.processActionStatisticsUser}" immediate="true">
+								<f:param value="#{stat.siteUserId}" name="siteUserId"/>
+								<h:outputText value="#{msgs.stat_forum_details}" />
+							</h:commandLink>
+							<h:outputLink value="/tool/#{ForumTool.currentToolId}/discussionForum/message/dfMsgGrade" target="dialogFrame"
+									onclick="dialogLinkClick(this);"
+									rendered="#{mfStatisticsBean.selectedAssign == 'Default_0' && mfStatisticsBean.discussionGeneric}">
+								<f:param value="#{mfStatisticsBean.selectedAllTopicsForumId}" name="forumId"/>
+								<f:param value="#{mfStatisticsBean.selectedAllTopicsTopicId}" name="topicId"/>
+								<f:param value="#{stat.siteUserId}" name="userId"/>
+								<f:param value="" name="messageId"/>
+								<f:param value="dialogDiv" name="dialogDivId"/>
+								<f:param value="dialogFrame" name="frameId"/>
+								<f:param value="gradesSavedDiv" name="gradesSavedDiv"/>
+								<h:outputText value="#{msgs.cdfm_button_bar_grade}" />
+							</h:outputLink>
+						</div>
+					</details>
+				</h:panelGroup>
   			</h:column>
   			<h:column>
                             <f:facet name="header">
                                 <h:commandLink action="#{mfStatisticsBean.toggleTopicAuthoredNewSort}" title="#{msgs.stat_authored_new}">
                                     <h:outputText value="#{msgs.stat_authored_new}" />
-                                    <h:graphicImage value="/images/sortascending.gif" rendered="#{mfStatisticsBean.authoredNewSort && mfStatisticsBean.ascending}" alt="#{msgs.stat_authored_new}"/>
-                                    <h:graphicImage value="/images/sortdescending.gif" rendered="#{mfStatisticsBean.authoredNewSort && !mfStatisticsBean.ascending}" alt="#{msgs.stat_authored_new}"/>
+                                    <h:outputText value="" styleClass="si si-sort-up" escape="false" rendered="#{mfStatisticsBean.authoredNewSort && mfStatisticsBean.ascending}"/>
+                                    <h:outputText value="" styleClass="si si-sort-down" escape="false" rendered="#{mfStatisticsBean.authoredNewSort && !mfStatisticsBean.ascending}"/>
                                 </h:commandLink>
                             </f:facet>
                             <h:outputText value="#{stat.authoredForumsNewAmt}" />
@@ -379,8 +360,8 @@
                             <f:facet name="header">
                                 <h:commandLink action="#{mfStatisticsBean.toggleTopicAuthoredRepliesSort}" title="#{msgs.stat_authored_replies}">
                                     <h:outputText value="#{msgs.stat_authored_replies}" />
-                                    <h:graphicImage value="/images/sortascending.gif" rendered="#{mfStatisticsBean.authoredRepliesSort && mfStatisticsBean.ascending}" alt="#{msgs.stat_authored_replies}"/>
-                                    <h:graphicImage value="/images/sortdescending.gif" rendered="#{mfStatisticsBean.authoredRepliesSort && !mfStatisticsBean.ascending}" alt="#{msgs.stat_authored_replies}"/>
+                                    <h:outputText value="" styleClass="si si-sort-up" escape="false" rendered="#{mfStatisticsBean.authoredRepliesSort && mfStatisticsBean.ascending}"/>
+                                    <h:outputText value="" styleClass="si si-sort-down" escape="false" rendered="#{mfStatisticsBean.authoredRepliesSort && !mfStatisticsBean.ascending}"/>
                                 </h:commandLink>
                             </f:facet>
                             <h:outputText value="#{stat.authoredForumsRepliesAmt}" />
@@ -389,8 +370,8 @@
   				<f:facet name="header">
   					<h:commandLink action="#{mfStatisticsBean.toggleTopicAuthoredSort}" title="#{msgs.stat_authored_total}">
 					   	<h:outputText value="#{msgs.stat_authored_total}" />
-						<h:graphicImage value="/images/sortascending.gif" rendered="#{mfStatisticsBean.authoredSort && mfStatisticsBean.ascending}" alt="#{msgs.stat_sort_authored}"/>
-						<h:graphicImage value="/images/sortdescending.gif" rendered="#{mfStatisticsBean.authoredSort && !mfStatisticsBean.ascending}" alt="#{msgs.stat_sort_authored}"/>
+						<h:outputText value="" styleClass="si si-sort-up" escape="false" rendered="#{mfStatisticsBean.authoredSort && mfStatisticsBean.ascending}"/>
+						<h:outputText value="" styleClass="si si-sort-down" escape="false" rendered="#{mfStatisticsBean.authoredSort && !mfStatisticsBean.ascending}"/>
 					</h:commandLink>
   				</f:facet>
   				<h:outputText value="#{stat.authoredForumsAmt}" />
@@ -399,8 +380,8 @@
   				<f:facet name="header">
   					<h:commandLink action="#{mfStatisticsBean.toggleTopicReadSort}" title="#{msgs.stat_read}">
 					   	<h:outputText value="#{msgs.stat_read}" />
-						<h:graphicImage value="/images/sortascending.gif" rendered="#{mfStatisticsBean.readSort && mfStatisticsBean.ascending}" alt="#{msgs.stat_sort_read}"/>
-						<h:graphicImage value="/images/sortdescending.gif" rendered="#{mfStatisticsBean.readSort && !mfStatisticsBean.ascending}" alt="#{msgs.stat_sort_read}"/>
+						<h:outputText value="" styleClass="si si-sort-up" escape="false" rendered="#{mfStatisticsBean.readSort && mfStatisticsBean.ascending}"/>
+						<h:outputText value="" styleClass="si si-sort-down" escape="false" rendered="#{mfStatisticsBean.readSort && !mfStatisticsBean.ascending}"/>
 					</h:commandLink>
   				</f:facet>
   				<h:outputText value="#{stat.readForumsAmt}" />
@@ -409,8 +390,8 @@
   				<f:facet name="header">
   					<h:commandLink action="#{mfStatisticsBean.toggleTopicUnreadSort}" title="#{msgs.stat_unread}">
 					   	<h:outputText value="#{msgs.stat_unread}" />
-						<h:graphicImage value="/images/sortascending.gif" rendered="#{mfStatisticsBean.unreadSort && mfStatisticsBean.ascending}" alt="#{msgs.stat_sort_unread}"/>
-						<h:graphicImage value="/images/sortdescending.gif" rendered="#{mfStatisticsBean.unreadSort && !mfStatisticsBean.ascending}" alt="#{msgs.stat_sort_unread}"/>
+						<h:outputText value="" styleClass="si si-sort-up" escape="false" rendered="#{mfStatisticsBean.unreadSort && mfStatisticsBean.ascending}"/>
+						<h:outputText value="" styleClass="si si-sort-down" escape="false" rendered="#{mfStatisticsBean.unreadSort && !mfStatisticsBean.ascending}"/>
 					</h:commandLink>
   				</f:facet>
   				<h:outputText value="#{stat.unreadForumsAmt}" />
@@ -419,37 +400,20 @@
   				<f:facet name="header">
   					<h:commandLink action="#{mfStatisticsBean.toggleTopicPercentReadSort}" title="#{msgs.stat_percent_read}">
 					   	<h:outputText value="#{msgs.stat_percent_read}" />
-						<h:graphicImage value="/images/sortascending.gif" rendered="#{mfStatisticsBean.percentReadSort && mfStatisticsBean.ascending}" alt="#{msgs.stat_sort_percent_read}"/>
-						<h:graphicImage value="/images/sortdescending.gif" rendered="#{mfStatisticsBean.percentReadSort && !mfStatisticsBean.ascending}" alt="#{msgs.stat_sort_percent_read}"/>
+						<h:outputText value="" styleClass="si si-sort-up" escape="false" rendered="#{mfStatisticsBean.percentReadSort && mfStatisticsBean.ascending}"/>
+						<h:outputText value="" styleClass="si si-sort-down" escape="false" rendered="#{mfStatisticsBean.percentReadSort && !mfStatisticsBean.ascending}"/>
 					</h:commandLink>
   				</f:facet>
   				<h:outputText value="#{stat.percentReadForumsAmt}">
   					<f:convertNumber type="percent" />
   				</h:outputText>
   			</h:column>
-  			<h:column rendered="#{mfStatisticsBean.selectedAssign == 'Default_0' && mfStatisticsBean.discussionGeneric}">
-  				<f:facet name="header">
-					<h:outputText value="#{msgs.cdfm_button_bar_grade}" />
-  				</f:facet>
-  				<h:outputLink value="/tool/#{ForumTool.currentToolId}/discussionForum/message/dfMsgGrade" target="dialogFrame"
-						onclick="dialogLinkClick(this);">
-						<f:param value="#{mfStatisticsBean.selectedAllTopicsForumId}" name="forumId"/>
-						<f:param value="#{mfStatisticsBean.selectedAllTopicsTopicId}" name="topicId"/>
-						<f:param value="#{stat.siteUserId}" name="userId"/>
-						<f:param value="" name="messageId"/>
-						<f:param value="dialogDiv" name="dialogDivId"/>
-						<f:param value="dialogFrame" name="frameId"/>
-						<f:param value="gradesSavedDiv" name="gradesSavedDiv"/>
-						<span class="si si-star-fill" aria-hidden="true"></span>
-						<h:outputText value=" #{msgs.cdfm_button_bar_grade}" />
-					</h:outputLink>
-  			</h:column>
   			<h:column rendered="#{mfStatisticsBean.selectedAssign != 'Default_0'}">
   				<f:facet name="header">
   					<h:commandLink action="#{mfStatisticsBean.toggleTopicGradeSort}" title="#{mfStatisticsBean.selAssignName}">
 					   	<h:outputText value="#{mfStatisticsBean.selAssignName}" />
-						<h:graphicImage value="/images/sortascending.gif" rendered="#{mfStatisticsBean.gradeSort && mfStatisticsBean.ascending}" alt="#{mfStatisticsBean.selAssignName}"/>
-						<h:graphicImage value="/images/sortdescending.gif" rendered="#{mfStatisticsBean.gradeSort && !mfStatisticsBean.ascending}" alt="#{mfStatisticsBean.selAssignName}"/>
+						<h:outputText value="" styleClass="si si-sort-up" escape="false" rendered="#{mfStatisticsBean.gradeSort && mfStatisticsBean.ascending}"/>
+						<h:outputText value="" styleClass="si si-sort-down" escape="false" rendered="#{mfStatisticsBean.gradeSort && !mfStatisticsBean.ascending}"/>
 						<f:verbatim><br/></f:verbatim>
 						<h:outputFormat value=" #{msgs.cdfm_points_possible}" rendered="#{mfStatisticsBean.gradeByPoints}">
 							<f:param value="#{mfStatisticsBean.gbItemPointsPossible.split(',')[0]}"/>
@@ -474,14 +438,12 @@
   			</h:column>
   		</h:dataTable>
   		</div>
-		<h:panelGrid columns="1" width="100%" styleClass="navPanel  specialLink">
-		  <h:panelGroup styleClass="itemNav" rendered="#{mfStatisticsBean.selectedAssign != 'Default_0'}">
-		  	<h:commandButton action="#{mfStatisticsBean.proccessActionSubmitGrades}" value="#{msgs.stat_forum_submit_grades}" accesskey="s"
+		<h:panelGroup layout="block" styleClass="sakai-actions" rendered="#{mfStatisticsBean.selectedAssign != 'Default_0'}">
+		  	<h:commandButton action="#{mfStatisticsBean.proccessActionSubmitGrades}" value="#{msgs.stat_forum_submit_grades}" accesskey="s" styleClass="sakai-btn sakai-btn-primary"
 		  		onclick="warn = false;SPNR.disableControlsAndSpin( this, null );" />
-		  	<h:commandButton value="#{msgs.stat_forum_submit_grades_cancel}" accesskey="x"
+		  	<h:commandButton value="#{msgs.stat_forum_submit_grades_cancel}" accesskey="x" styleClass="sakai-btn sakai-btn-ghost"
 		  		onclick="warn = false;SPNR.disableControlsAndSpin( this, null );" />
-		  </h:panelGroup>	
-        </h:panelGrid>  
+		</h:panelGroup>
   	</h:form>
   </sakai:view>
 </f:view>

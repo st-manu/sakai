@@ -369,8 +369,7 @@ function doAjax(messageId, topicId, self){
                 setTimeout(function(){
                     var thisRow = $(self).parents('tr');
                     $(thisRow).children("td").find("div.messageMetadata").children("span.textPanelFooter").addClass('unreadMsg');
-                    //only do this if in subject only view
-                    if ($(self).parent('td').size() === 1) {
+                    if ($(self).closest("table").hasClass("allMessages")) {
                         var thisTheadClassArr = $(thisRow).prop('class').split(' ');
                         var thisThread = thisTheadClassArr[thisTheadClassArr.length - 1];
                         var unread = parseInt($('.hierItemBlock.' + thisThread + ' .childrenNewNumber').text(), 10) || 0;
@@ -393,16 +392,22 @@ function doAjax(messageId, topicId, self){
                         $(thisRow).children("td").find('a.messagetitlelink').first().html('<span class="unreadMsg">' + thisTitle + '</span>');
                     }
                     else {
-						//in dfFlatView - add "New" flag, as well as link target for the thread navigator
-						$(self).closest("td").find("span.authorImage").after('<span class="messageNew">' + newFlag + '</span>');
+						var messageRoot = $(self).closest(".sakai-forums__message, .hierItemBlock, td");
+						messageRoot.find("span.authorImage").first().after('<span class="messageNew">' + newFlag + '</span>');
+						if (messageRoot.find("span.authorImage").length === 0) {
+							messageRoot.find(".sakai-forums__message-identity, .sakai-forums__message-header").first().prepend('<span class="messageNew">' + newFlag + '</span>');
+						}
 						if (setupMessageNav) { setupMessageNav('messageNew'); }
-						var thisRowNumReaders = $(self).closest("div").parent("div").children("span.messageNewNumReaders");
+						var thisRowNumReaders = messageRoot.find(".messageNewNumReaders").first();
 						var messageNumReaders = parseInt($(thisRowNumReaders).text(), 10) || 0;
 						if (messageNumReaders>0) { $(thisRowNumReaders).text(messageNumReaders - 1); }
                     }
 
-                    //remove at end after references are not needed
+                    var menu = $(self).closest(".sakai-overflow-menu");
                     $(self).remove();
+                    if (menu.length && menu.find("a, button").length === 0) {
+                        menu.remove();
+                    }
                 }, 500);
             }
             else {
@@ -434,30 +439,46 @@ function doAjaxRead(messageId, topicId, self){
         success: function(msg){
             if (msg.match(/SUCCESS/)) {
                 setTimeout(function(){
+					var messageRoot = $(self).closest(".sakai-forums__message, .hierItemBlock, td");
+					if (!messageRoot.length) {
+						messageRoot = $(self).parents('tr').children('td').first();
+					}
 					$(self).parents('tr').removeClass('messageNewNext');
-					$(self).parents("div").children("span.messageNew").remove();
-					$(self).parents("div").children("div.messageMetadata").find("span.unreadMsg").removeClass('unreadMsg');
-					$(self).parents("div").parents("div").children('a.messageNewAnchor').remove();
-					// remove "Go to first new message" link if all messages have been marked as "read"
+					messageRoot.find("span.messageNew").remove();
+					messageRoot.find(".messageMetadata span.unreadMsg, .sakai-forums__message-meta .unreadMsg, .unreadMsg").removeClass('unreadMsg');
+					messageRoot.find('a.messageNewAnchor').remove();
 					if ($('.messagesThreaded').find('a.messageNewAnchor').size() === 0) {
 					    $('.jumpToNew').remove();
 					}
-					//add button
-					if (isMarkAsNotReadValue === "true") {
-						$(self).prepend(
-						  $('<a>', {
-						    href: 'javascript:void(0);',
-						    title: markAsNotReadText,
-						    class: 'markAsNotReadIcon button',
-						    text: markAsNotReadText,
-						    click: function() {
-						      doAjax(messageId, topicId, this);
-						    }
-						  })
-						);
+					if (isMarkAsNotReadValue === "true" && self) {
+						var actions = $(self).closest(".sakai-forums__message-actions, .sakai-row-actions");
+						if (!actions.length) {
+							actions = $(self);
+						}
+						var panel = actions.find(".sakai-overflow-menu__panel").first();
+						if (!panel.length) {
+							var menu = $('<details class="sakai-overflow-menu"></details>');
+							menu.append('<summary class="sakai-btn sakai-btn-icon sakai-overflow-menu__toggle"><span class="si si-three-dots" aria-hidden="true"></span></summary>');
+							panel = $('<div class="sakai-overflow-menu__panel"></div>');
+							menu.append(panel);
+							actions.append(menu);
+						}
+						if (!panel.find(".markAsNotReadIcon").length) {
+							var markLink = $('<a>', {
+							    href: 'javascript:void(0);',
+							    title: markAsNotReadText,
+							    class: 'markAsNotReadIcon',
+							    text: markAsNotReadText,
+							    click: function() {
+							      doAjax(messageId, topicId, this);
+							      return false;
+							    }
+							  });
+							panel.prepend(markLink);
+						}
 					}
 					if (setupMessageNav) { setupMessageNav('messageNew'); }
-					var thisRowNumReaders = $(self).parent("div").parent("div").children("span.messageNewNumReaders");
+					var thisRowNumReaders = messageRoot.find(".messageNewNumReaders").first();
 					var messageNumReaders = parseInt($(thisRowNumReaders).text(), 10) || 0;
 					$(thisRowNumReaders).text(messageNumReaders + 1);
                 }, 500);

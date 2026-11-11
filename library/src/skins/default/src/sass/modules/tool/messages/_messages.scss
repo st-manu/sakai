@@ -321,6 +321,22 @@
 	// (WCAG 1.4.11) consistent regardless of which color a given message's background happens to be,
 	// instead of depending on the icon alone standing out against whatever's behind it. Sized a bit larger
 	// than the bare-icon version for visibility, well past the ~24x24px minimum (WCAG 2.5.8).
+	.select2-container--default .select2-selection--multiple:before {
+		content: " ";
+		display: block;
+		position: absolute;
+		border-color: var(--sakai-border-color) transparent transparent transparent;
+		border-style: solid;
+		border-width: 5px 4px 0 4px;
+		height: 0;
+		right: 6px;
+		margin-left: -4px;
+		margin-top: -2px;
+		top: 50%;
+		width: 0;
+		cursor: pointer;
+	}
+
 	.motd-carousel-toggle {
 		background-color: #e9ecef;
 		border: 0;

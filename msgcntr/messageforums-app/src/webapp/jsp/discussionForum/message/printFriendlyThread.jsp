@@ -8,17 +8,17 @@
 </jsp:useBean>
 
 <f:view>
-<sakai:view toolCssHref="/messageforums-tool/css/msgcntr.css">
+<sakai:view>
 	<h:form id="msgForum">
 
 <!--jsp/discussionForum/message/printFriendlyThread.jsp-->
 		
-			<div class="navIntraTool">
-				<a id="printIcon" href="javascript:" onClick="javascript:window.print();">
+			<div class="sakai-actions sakai-no-print">
+				<a class="sakai-btn sakai-btn-secondary" id="printIcon" href="javascript:" onClick="javascript:window.print();">
 					<span class="si si-print" aria-hidden="true"></span>
 					<h:outputText value="#{msgs.send_to_printer}" />
 				</a>
-				<a value="" href="" onClick="window.close();" >
+				<a class="sakai-btn sakai-btn-ghost" value="" href="" onClick="window.close();" >
 					<h:outputText value="#{msgs.close_window}" />
 				</a>
 			</div>

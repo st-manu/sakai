@@ -9,29 +9,19 @@
 </jsp:useBean>
 <%
 String thisId = request.getParameter("panel");
-if (thisId == null) 
+if (thisId == null)
 {
 	thisId = "Main" + org.sakaiproject.tool.cover.ToolManager.getCurrentPlacement().getId();
 }
 %>
 <f:view>
-	<sakai:view toolCssHref="/messageforums-tool/css/msgcntr.css">
-      <h:form id="revise">
-                <script>includeLatestJQuery("msgcntr");</script>
-
-       		<script src="/messageforums-tool/js/forum.js"></script>
-			<%--			--%>
-       		<script src="/messageforums-tool/js/sak-10625.js"></script>
-       		<script src="/messageforums-tool/js/messages.js"></script>
-
+	<sakai:view>
+		<script>includeLatestJQuery("msgcntr");</script>
+		<script src="/messageforums-tool/js/forum.js"></script>
+		<script src="/messageforums-tool/js/sak-10625.js"></script>
+		<script src="/messageforums-tool/js/messages.js"></script>
 		<script>
 			$(document).ready(function(){
-				//fade permission block 
-				// $('#permissionReadOnly').fadeTo("fast", 0.50);
-				// and then disable all the inputs/selects in the permission include so as not to confuse people
-				// cannot seem to be able to submit this if these inputs are disabled :-(
-				// $('#permissionReadOnly input, #permissionReadOnly select').attr('disabled', 'disabled');
-				//toggle the long description, hiding the hide link, then toggling the hide, show links and description
 				$('a#hide').hide();
 				$('#toggle').hide();
 				$('a#show,a#hide').click(function(){
@@ -39,103 +29,104 @@ if (thisId == null)
 					resizeFrame('grow');
 					return false;
 				});
-				var menuLink = $('#forumsMainMenuLink');
-				var menuLinkSpan = menuLink.closest('span');
-				menuLinkSpan.addClass('current');
-				menuLinkSpan.html(menuLink.text());
 			});
 		</script>
-		<%@ include file="/jsp/discussionForum/menu/forumsMenu.jsp" %>
-<!--jsp/discussionForum/forum/dfForumSettings.jsp-->
-		<%--<sakai:tool_bar_message value="#{msgs.cdfm_delete_forum_title}" />--%>
-		<%--//designNote: this just feels weird - presenting somehting that sort of looks like the form used to create the forum (with an editable permissions block!) to comfirm deletion --%>
-		<h:outputText id="alert-delete" styleClass="sak-banner-warn" value="#{msgs.cdfm_delete_forum}" rendered="#{ForumTool.selectedForum.markForDeletion}" style="display:block" />	
-        <h:outputText styleClass="sak-banner-warn" value="#{msgs.cdfm_duplicate_forum_confirm}" rendered="#{ForumTool.selectedForum.markForDuplication}" style="display:block" />
-		<table class="forumHeader">
-			  <tr>
-					<td><h:messages styleClass="sak-banner-warn" id="errorMessages" rendered="#{! empty facesContext.maximumSeverity}" />
-				<h:panelGroup rendered="#{ForumTool.selectedForum.locked=='true'}">
-					<span class="si si-locked forum-status-icon forum-status-icon--compact" aria-hidden="true"></span>
-				</h:panelGroup>
-				<h:panelGroup rendered="#{ForumTool.selectedForum.locked=='false'}">
-					<span class="si si-unlocked forum-status-icon forum-status-icon--compact" aria-hidden="true"></span>
-				</h:panelGroup>
-				<span class="title">
-                    <h:outputText value="#{ForumTool.selectedForum.forum.title}" rendered="#{!ForumTool.selectedForum.markForDuplication}"/>
-				    <h:inputText size="50" value="#{ForumTool.selectedForum.forum.title}" id="forum_title" rendered="#{ForumTool.selectedForum.markForDuplication}">
-                        <f:validateLength minimum="1" maximum="255" />
-                    </h:inputText>
-				</span>
-				<h:outputText   value="#{msgs.cdfm_openb}"/>
-					<h:outputText   value="#{msgs.cdfm_moderated}"  rendered="#{ForumTool.selectedForum.moderated=='true'}" />
-					<h:outputText   value="#{msgs.cdfm_notmoderated}"  rendered="#{ForumTool.selectedForum.moderated=='false'}" />
-				<h:outputText   value="#{msgs.cdfm_closeb}"/>
-			<p class="textPanel">
-				    <h:outputText id="forum_shortDescription"  value="#{ForumTool.selectedForum.forum.shortDescription}"/>
-			</p>
+		<h:form id="revise" styleClass="sakai-forums">
+			<% request.setAttribute("dfHeaderView", "forumSettings"); %>
+			<% request.setAttribute("dfHeaderBack", "forum"); %>
+			<%@ include file="/jsp/discussionForum/menu/forumsHeader.jsp" %>
 
-			<h:panelGroup>
-				<h:panelGroup layout="block" id="openLinkBlock" styleClass="toggleParent openLinkBlock">
-					<a href="#" id="showMessage" class="toggle show">
-						<h:graphicImage url="/images/collapse.gif" alt=""/>
-						<h:outputText value=" #{msgs.cdfm_read_full_description}" />
-					</a>
-				</h:panelGroup>
-				<h:panelGroup layout="block" id="hideLinkBlock" styleClass="toggleParent hideLinkBlock display-none">
-					<a href="#" id="hideMessage" class="toggle show">
-						<h:graphicImage url="/images/expand.gif" alt="" />
-						<h:outputText value=" #{msgs.cdfm_hide_full_description}"/>
-					</a>
-				</h:panelGroup>
-			</h:panelGroup>
+			<h:outputText id="alert-delete" styleClass="sakai-banner sakai-banner--warning" value="#{msgs.cdfm_delete_forum}"
+					rendered="#{ForumTool.selectedForum.markForDeletion}"/>
+			<h:outputText styleClass="sakai-banner sakai-banner--warning" value="#{msgs.cdfm_duplicate_forum_confirm}"
+					rendered="#{ForumTool.selectedForum.markForDuplication}"/>
+			<h:messages styleClass="sakai-banner sakai-banner--error" id="errorMessages" rendered="#{! empty facesContext.maximumSeverity}"/>
 
-			<h:panelGroup layout="block" id="fullTopicDescription" styleClass="textPanel fullTopicDescription">
-				<h:outputText escape="false" value="#{ForumTool.selectedForum.forum.extendedDescription}" />
+			<div class="sakai-forums__forum-header">
+				<div class="sakai-forums__forum-identity">
+					<h:panelGroup styleClass="sakai-forums__status" rendered="#{ForumTool.selectedForum.locked=='true'}">
+						<span class="si si-locked" aria-hidden="true"></span>
+						<span class="visually-hidden"><h:outputText value="#{msgs.cdfm_forum_locked}"/></span>
+					</h:panelGroup>
+					<h:outputText value="#{ForumTool.selectedForum.forum.title}" styleClass="sakai-forums__title"
+							rendered="#{!ForumTool.selectedForum.markForDuplication}"/>
+					<h:panelGroup layout="block" styleClass="sakai-form-field" rendered="#{ForumTool.selectedForum.markForDuplication}">
+						<h:outputLabel for="forum_title" styleClass="sakai-form-label required">
+							<h:outputText value="#{msgs.cdfm_forum_title}"/>
+						</h:outputLabel>
+						<h:inputText size="50" value="#{ForumTool.selectedForum.forum.title}" id="forum_title" styleClass="sakai-form-control">
+							<f:validateLength minimum="1" maximum="255"/>
+						</h:inputText>
+					</h:panelGroup>
+					<h:outputText value="#{msgs.cdfm_moderated}" styleClass="sakai-forums__meta"
+							rendered="#{ForumTool.selectedForum.moderated=='true'}"/>
+					<h:outputText value="#{msgs.cdfm_notmoderated}" styleClass="sakai-forums__meta"
+							rendered="#{ForumTool.selectedForum.moderated=='false'}"/>
+				</div>
+				<h:outputText id="forum_shortDescription" styleClass="sakai-forums__description"
+						value="#{ForumTool.selectedForum.forum.shortDescription}"
+						rendered="#{!empty ForumTool.selectedForum.forum.shortDescription}"/>
 
-				<h:dataTable value="#{ForumTool.selectedForum.attachList}" var="eachAttach" rendered="#{!empty ForumTool.selectedForum.attachList}" styleClass="table table-hover table-striped table-bordered" columnClasses="bogus">
-					<h:column>
-						<sakai:contentTypeMap fileType="#{eachAttach.attachment.attachmentType}" mapType="image" var="imagePath" pathPrefix="/library/image/"/>
-						<h:graphicImage id="exampleFileIcon" value="#{imagePath}" alt="" />
-						<h:outputLink value="#{eachAttach.url}" target="_new_window">
-							<h:outputText value="#{eachAttach.attachment.attachmentName}"  style="text-decoration:underline;"/>
-						</h:outputLink>
-					</h:column>
-				</h:dataTable>
-			</h:panelGroup>
-		</div>	
-		</td>
-		</tr>
-		</table>
-       <div class="act">
-          <h:commandButton id ="revise" rendered="#{!ForumTool.selectedForum.markForDeletion && !ForumTool.selectedForum.markForDuplication}" 
-                           immediate="true"  action="#{ForumTool.processActionReviseForumSettings}" 
-                           value="#{msgs.cdfm_button_bar_revise}" accesskey="r"> 
-    	 	  	<f:param value="#{ForumTool.selectedForum.forum.id}" name="forumId"/>    	 	  	
-          </h:commandButton>
-          
-          <h:commandButton id="delete_confirm" action="#{ForumTool.processActionDeleteForumConfirm}" 
-                           value="#{msgs.cdfm_button_bar_delete_forum}" rendered="#{!ForumTool.selectedForum.markForDeletion && !ForumTool.selectedForum.markForDuplication}"
-                           accesskey="" styleClass="blockMeOnClick">
-	        	<f:param value="#{ForumTool.selectedForum.forum.id}" name="forumId"/>
-          </h:commandButton>
-          
-          <h:commandButton id="delete" action="#{ForumTool.processActionDeleteForum}" 
-                           value="#{msgs.cdfm_button_bar_delete_forum}" rendered="#{ForumTool.selectedForum.markForDeletion}"
-                           accesskey="" styleClass="blockMeOnClick">
-	        	<f:param value="#{ForumTool.selectedForum.forum.id}" name="forumId"/>
-          </h:commandButton>
-          
-          <h:commandButton id="duplicate" action="#{ForumTool.processActionDuplicateForum}" 
-                           value="#{msgs.cdfm_duplicate_forum}" rendered="#{ForumTool.selectedForum.markForDuplication}"
-                           accesskey="s" styleClass="blockMeOnClick">
-	        	<f:param value="#{ForumTool.selectedForum.forum.id}" name="forumId"/>
-          </h:commandButton>
-          
-          <h:commandButton id="cancel" immediate="true" action="#{ForumTool.processReturnToOriginatingPage}" 
-                           value="#{msgs.cdfm_button_bar_cancel}" accesskey="x" />
-         
-         <h:outputText styleClass="sak-banner-info" style="display:none" value="#{msgs.cdfm_processing_submit_message}" />
-       </div>
-	 </h:form>
-    </sakai:view>
+				<h:panelGroup>
+					<h:panelGroup layout="block" id="openLinkBlock" styleClass="toggleParent openLinkBlock">
+						<a href="#" id="showMessage" class="toggle show">
+							<span class="si si-chevron-down" aria-hidden="true"></span>
+							<h:outputText value=" #{msgs.cdfm_read_full_description}"/>
+						</a>
+					</h:panelGroup>
+					<h:panelGroup layout="block" id="hideLinkBlock" styleClass="toggleParent hideLinkBlock display-none">
+						<a href="#" id="hideMessage" class="toggle show">
+							<span class="si si-chevron-up" aria-hidden="true"></span>
+							<h:outputText value=" #{msgs.cdfm_hide_full_description}"/>
+						</a>
+					</h:panelGroup>
+				</h:panelGroup>
+
+				<h:panelGroup layout="block" id="fullTopicDescription" styleClass="textPanel fullTopicDescription display-none">
+					<h:outputText escape="false" value="#{ForumTool.selectedForum.forum.extendedDescription}"/>
+					<h:dataTable value="#{ForumTool.selectedForum.attachList}" var="eachAttach"
+							rendered="#{!empty ForumTool.selectedForum.attachList}"
+							styleClass="sakai-table sakai-table--stack">
+						<h:column>
+							<sakai:contentTypeMap fileType="#{eachAttach.attachment.attachmentType}" mapType="image" var="imagePath" pathPrefix="/library/image/"/>
+							<h:graphicImage id="exampleFileIcon" value="#{imagePath}" alt=""/>
+							<h:outputLink value="#{eachAttach.url}" target="_blank">
+								<h:outputText value="#{eachAttach.attachment.attachmentName}"/>
+							</h:outputLink>
+						</h:column>
+					</h:dataTable>
+				</h:panelGroup>
+			</div>
+
+			<div class="sakai-actions">
+				<h:commandButton id="revise" rendered="#{!ForumTool.selectedForum.markForDeletion && !ForumTool.selectedForum.markForDuplication}"
+						immediate="true" action="#{ForumTool.processActionReviseForumSettings}"
+						value="#{msgs.cdfm_button_bar_revise}" accesskey="r"
+						styleClass="sakai-btn sakai-btn-primary">
+					<f:param value="#{ForumTool.selectedForum.forum.id}" name="forumId"/>
+				</h:commandButton>
+				<h:commandButton id="delete_confirm" action="#{ForumTool.processActionDeleteForumConfirm}"
+						value="#{msgs.cdfm_button_bar_delete_forum}"
+						rendered="#{!ForumTool.selectedForum.markForDeletion && !ForumTool.selectedForum.markForDuplication}"
+						styleClass="sakai-btn sakai-btn-ghost blockMeOnClick">
+					<f:param value="#{ForumTool.selectedForum.forum.id}" name="forumId"/>
+				</h:commandButton>
+				<h:commandButton id="delete" action="#{ForumTool.processActionDeleteForum}"
+						value="#{msgs.cdfm_button_bar_delete_forum}" rendered="#{ForumTool.selectedForum.markForDeletion}"
+						styleClass="sakai-btn sakai-btn-primary blockMeOnClick">
+					<f:param value="#{ForumTool.selectedForum.forum.id}" name="forumId"/>
+				</h:commandButton>
+				<h:commandButton id="duplicate" action="#{ForumTool.processActionDuplicateForum}"
+						value="#{msgs.cdfm_duplicate_forum}" rendered="#{ForumTool.selectedForum.markForDuplication}"
+						accesskey="s" styleClass="sakai-btn sakai-btn-primary blockMeOnClick">
+					<f:param value="#{ForumTool.selectedForum.forum.id}" name="forumId"/>
+				</h:commandButton>
+				<h:commandButton id="cancel" immediate="true" action="#{ForumTool.processReturnToOriginatingPage}"
+						value="#{msgs.cdfm_button_bar_cancel}" accesskey="x"
+						styleClass="sakai-btn sakai-btn-ghost"/>
+				<h:outputText styleClass="sakai-banner sakai-banner--info" style="display:none"
+						value="#{msgs.cdfm_processing_submit_message}"/>
+			</div>
+		</h:form>
+	</sakai:view>
 </f:view>

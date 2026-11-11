@@ -220,7 +220,8 @@ export class SakaiReorderer extends SakaiShadowElement {
    */
   _getDragAfterElement(container, coord) {
 
-    return [ ...container.querySelectorAll("[draggable='true']:not(.dragging)") ]
+    return [ ...container.children ]
+      .filter(child => child.matches?.("[draggable='true']:not(.dragging)"))
       .reduce((closest, child) => {
 
         const box = child.getBoundingClientRect();
@@ -263,7 +264,9 @@ export class SakaiReorderer extends SakaiShadowElement {
    */
   _setupKeyboard(reorderable) {
 
-    const dragHandle = reorderable.querySelector(".drag-handle");
+    const dragHandle = reorderable.querySelector(":scope > .sakai-reorder-row-main > .sakai-reorder-move-controls .drag-handle")
+      || reorderable.querySelector(":scope > .drag-handle")
+      || reorderable.querySelector(".drag-handle");
     dragHandle?.addEventListener("pointerdown", () => this._dragSource = reorderable);
     dragHandle?.addEventListener("pointerup", this._pointerEndListener);
     dragHandle?.addEventListener("pointercancel", this._pointerEndListener);

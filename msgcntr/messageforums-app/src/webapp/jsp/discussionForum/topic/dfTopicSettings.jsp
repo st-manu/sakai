@@ -8,7 +8,7 @@
    <jsp:setProperty name="msgs" property="baseName" value="org.sakaiproject.api.app.messagecenter.bundle.Messages"/>
 </jsp:useBean>
 <f:view>
-	<sakai:view toolCssHref="/messageforums-tool/css/msgcntr.css">
+	<sakai:view>
       <h:form id="revise">
         <script>includeLatestJQuery("msgcntr");</script>
         <script src="/messageforums-tool/js/messages.js"></script>
@@ -26,13 +26,11 @@
 					resizeFrame('grow');
 					return false;
 				});
-				var menuLink = $('#forumsMainMenuLink');
-				var menuLinkSpan = menuLink.closest('span');
-				menuLinkSpan.addClass('current');
-				menuLinkSpan.html(menuLink.text());
 			});
 		</script>
-		<%@ include file="/jsp/discussionForum/menu/forumsMenu.jsp" %>
+		<% request.setAttribute("dfHeaderView", "topicSettings"); %>
+<% request.setAttribute("dfHeaderBack", "forum"); %>
+<%@ include file="/jsp/discussionForum/menu/forumsHeader.jsp" %>
 		<%
 	  	String thisId = request.getParameter("panel");
   		if (thisId == null) 
@@ -106,7 +104,7 @@
 				</div>
 			</h:panelGroup>
 		</div>
-       <div class="act">
+       <div class="sakai-actions">
           <h:commandButton action="#{ForumTool.processActionReviseTopicSettings}" id="revise"  
                            value="#{msgs.cdfm_button_bar_revise}" rendered="#{!ForumTool.selectedTopic.markForDeletion && !ForumTool.selectedTopic.markForDuplication}"
                            accesskey="r" styleClass="active"> 

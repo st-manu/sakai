@@ -118,11 +118,16 @@
 @media (hover: hover) and (pointer: fine) {
   .sakai-table tbody tr .sakai-table__actions .sakai-row-actions {
     opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
   }
 
   .sakai-table tbody tr:hover .sakai-table__actions .sakai-row-actions,
-  .sakai-table tbody tr:focus-within .sakai-table__actions .sakai-row-actions {
+  .sakai-table tbody tr:focus-within .sakai-table__actions .sakai-row-actions,
+  .sakai-table tbody tr .sakai-table__actions .sakai-row-actions:has(.sakai-overflow-menu[open]) {
     opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
   }
 }
 

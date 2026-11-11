@@ -31,7 +31,7 @@
 </jsp:useBean>
 
 <f:view>
-		<sakai:view toolCssHref="/messageforums-tool/css/msgcntr.css">
+		<sakai:view>
 			<h:form styleClass="specialLink">
 			<script src="/messageforums-tool/js/popupscripts.js"></script>
 

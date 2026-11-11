@@ -7,7 +7,7 @@
 </jsp:useBean>
 <f:view>
 
-<sakai:view title="#{msgs.cdfm_add_comment}" toolCssHref="/messageforums-tool/css/msgcntr.css">
+<sakai:view title="#{msgs.cdfm_add_comment}">
 	       		<script>includeLatestJQuery("msgcntr");</script>
        		<script src="/messageforums-tool/js/sak-10625.js"></script>
        		<script src="/messageforums-tool/js/messages.js"></script>

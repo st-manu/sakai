@@ -34,8 +34,9 @@ remove links to these temporary docs.
 | [niobe-rebase-prompt.md](niobe-rebase-prompt.md) | Rebase Niobe onto master/27.x: conflict rules, silent semantic conflicts, verification, rebase log |
 | [niobe-commit-organizer-prompt.md](niobe-commit-organizer-prompt.md) | Squash Niobe commits by tool/function: `Niobe: <summary>`, single author, docs last |
 | [sakai-ui-tool-migration.md](sakai-ui-tool-migration.md) | Tool-by-tool migration roadmap |
-| [polls-reference.md](polls-reference.md) | First migrated tool (Thymeleaf) — A1/P0/P2/P3 + primitives checklist |
-| [announcements-reference.md](announcements-reference.md) | Velocity reference — server menu → `sakai-*` actions |
-| [sitestats-reference.md](sitestats-reference.md) | Multi-view Thymeleaf + shared Lit widgets |
-| [messages-reference.md](messages-reference.md) | JSF private messages — header, list, detail and flow views |
+| [polls-reference.md](reference/polls-reference.md) | First migrated tool (Thymeleaf) — A1/P0/P2/P3 + primitives checklist |
+| [announcements-reference.md](reference/announcements-reference.md) | Velocity reference — server menu → `sakai-*` actions |
+| [sitestats-reference.md](reference/sitestats-reference.md) | Multi-view Thymeleaf + shared Lit widgets |
+| [messages-reference.md](reference/messages-reference.md) | JSF private messages — header, list, detail and flow views |
+| [forums-reference.md](reference/forums-reference.md) | JSF Discussions — target tree, surface contracts and phase plan |
 | [screenshots/](screenshots/) | Playwright smoke captures (safe to delete anytime) |

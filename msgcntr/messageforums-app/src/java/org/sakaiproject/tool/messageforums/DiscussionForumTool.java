@@ -905,22 +905,81 @@ public class DiscussionForumTool implements Serializable {
       setErrorMessage(getResourceBundleString(INSUFFICIENT_PRIVILEGES_TO_EDIT_TEMPLATE_ORGANIZE));
       return gotoMain();
     }
-    if(forums != null){
-    	for(Iterator i = forums.iterator(); i.hasNext(); ) {
-    		DiscussionForumBean forum = (DiscussionForumBean)i.next();
 
-    		// because there is no straight up save forum function we need to retain the draft status
-    		if(forum.getForum().getDraft().booleanValue())
-    			forumManager.saveForumAsDraft(forum.getForum());
-    		else
-    			forumManager.saveForum(forum.getForum());
-    	}
+    HttpServletRequest req = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
+    String[] forumOrder = req.getParameterValues("forumOrder");
+    if (forums != null && forumOrder != null && forumOrder.length > 0) {
+      Map<Long, DiscussionForumBean> forumsById = new HashMap<>();
+      for (Iterator i = forums.iterator(); i.hasNext(); ) {
+        DiscussionForumBean forumBean = (DiscussionForumBean) i.next();
+        if (forumBean.getForum() != null && forumBean.getForum().getId() != null) {
+          forumsById.put(forumBean.getForum().getId(), forumBean);
+        }
+      }
+
+      int forumSort = 1;
+      Set<Long> orderedForumIds = new HashSet<>();
+      for (String forumIdValue : forumOrder) {
+        Long forumId = parseLong(forumIdValue);
+        if (forumId == null || orderedForumIds.contains(forumId)) {
+          continue;
+        }
+        DiscussionForumBean forumBean = forumsById.get(forumId);
+        if (forumBean == null || Boolean.TRUE.equals(forumBean.getNonePermission())) {
+          continue;
+        }
+        orderedForumIds.add(forumId);
+        DiscussionForum forum = forumBean.getForum();
+        forum.setSortIndex(Integer.valueOf(forumSort++));
+
+        String[] topicOrder = req.getParameterValues("topicOrder_" + forumId);
+        if (topicOrder != null && topicOrder.length > 0 && forum.getTopics() != null) {
+          Map<Long, Topic> topicsById = new HashMap<>();
+          for (Object topicObj : forum.getTopics()) {
+            Topic topic = (Topic) topicObj;
+            if (topic != null && topic.getId() != null) {
+              topicsById.put(topic.getId(), topic);
+            }
+          }
+
+          int topicSort = 1;
+          Set<Long> orderedTopicIds = new HashSet<>();
+          for (String topicIdValue : topicOrder) {
+            Long topicId = parseLong(topicIdValue);
+            if (topicId == null || orderedTopicIds.contains(topicId)) {
+              continue;
+            }
+            Topic topic = topicsById.get(topicId);
+            if (topic == null) {
+              continue;
+            }
+            orderedTopicIds.add(topicId);
+            topic.setSortIndex(Integer.valueOf(topicSort++));
+          }
+        }
+
+        if (Boolean.TRUE.equals(forum.getDraft())) {
+          forumManager.saveForumAsDraft(forum);
+        } else {
+          forumManager.saveForum(forum);
+        }
+      }
     }
-    
-    //reload the forums so they change position in the list
+
     forums = null;
-    
-	return gotoMain();
+
+    return gotoMain();
+  }
+
+  private Long parseLong(String value) {
+    if (StringUtils.isBlank(value)) {
+      return null;
+    }
+    try {
+      return Long.valueOf(value.trim());
+    } catch (NumberFormatException e) {
+      return null;
+    }
   }
 
   /**

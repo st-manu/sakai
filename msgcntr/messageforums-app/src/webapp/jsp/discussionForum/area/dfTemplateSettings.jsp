@@ -9,8 +9,8 @@
 </jsp:useBean>
 
 <f:view>
-	<sakai:view title="#{msgs.cdfm_default_template_settings}" toolCssHref="/messageforums-tool/css/msgcntr.css">
-	<h:form id="revise">
+	<sakai:view title="#{msgs.cdfm_default_template_settings}">
+	<h:form id="revise" styleClass="sakai-forums">
         <script>includeLatestJQuery("msgcntr");</script>
 		<script src="/messageforums-tool/js/datetimepicker.js"></script>
        		<script src="/messageforums-tool/js/sak-10625.js"></script>
@@ -33,10 +33,6 @@
   		}
 
          $(document).ready(function() {
-             var menuLink = $('#forumsTemplateSettingsMenuLink');
-             var menuLinkSpan = menuLink.closest('span');
-             menuLinkSpan.addClass('current');
-             menuLinkSpan.html(menuLink.text());
              $('#revise\\:moderated\\:0, #revise\\:moderated\\:1').each(function() {
                      let label = $('#revise\\:forumPostingLabel1').text() + " " + $('#revise\\:outputLabel4').text() + " " + $(this).next().text();
                      $(this).attr('aria-label', label);
@@ -77,53 +73,53 @@
 <!--jsp/discussionForum/area/dfTemplateSettings.jsp-->
 
 
-				<%@ include file="/jsp/discussionForum/menu/forumsMenu.jsp" %>
-				<div class="page-header">
-					<h1><h:outputText value="#{msgs.cdfm_default_template_settings}" /></h1>
-				</div>
-		 		<div class="instruction">
+				<% request.setAttribute("dfHeaderTitleKey", "cdfm_default_template_settings"); %>
+<% request.setAttribute("dfHeaderBack", "discussions"); %>
+<%@ include file="/jsp/discussionForum/menu/forumsHeader.jsp" %>
+
+		 		<p class="sakai-form-section__intro">
 		  		  <h:outputText id="instruction" value="#{msgs.cdfm_default_template_settings_instruction}"/>
+				</p>
+				<h:messages styleClass="sakai-banner sakai-banner--error" id="errorMessages" rendered="#{! empty facesContext.maximumSeverity}" />
+
+				<div class="sakai-form-section">
+					<h:outputText id="forumPostingLabel1" value="#{msgs.cdfm_forum_posting}" styleClass="sakai-form-section__title"/>
+					<div class="sakai-form-field">
+						<h:outputText id="outputLabel4" value="#{msgs.cdfm_moderate_forums}" styleClass="sakai-form-label"/>
+						<h:selectOneRadio layout="pageDirection" disabled="#{not ForumTool.editMode}" id="moderated" value="#{ForumTool.template.moderated}"
+							styleClass="sakai-form-choice-group" onclick="javascript:disableOrEnableModeratePerm();">
+							<f:selectItem itemValue="true" itemLabel="#{msgs.cdfm_yes}"/>
+							<f:selectItem itemValue="false" itemLabel="#{msgs.cdfm_no}"/>
+						</h:selectOneRadio>
+					</div>
+					<div class="sakai-form-field">
+						<h:outputText id="outputLabel15" value="#{msgs.cdfm_postFirst}" styleClass="sakai-form-label"/>
+						<h:selectOneRadio layout="pageDirection" disabled="#{not ForumTool.editMode}" id="postFirst" value="#{ForumTool.template.postFirst}"
+							styleClass="sakai-form-choice-group">
+							<f:selectItem itemValue="true" itemLabel="#{msgs.cdfm_yes}"/>
+							<f:selectItem itemValue="false" itemLabel="#{msgs.cdfm_no}"/>
+						</h:selectOneRadio>
+					</div>
 				</div>
-				<h:messages styleClass="messageAlert" id="errorMessages" rendered="#{! empty facesContext.maximumSeverity}" />
 
-				<h2><h:outputText id="forumPostingLabel1" value="#{msgs.cdfm_forum_posting}" /></h2>
-				<h3><h:outputText id="outputLabel4" value="#{msgs.cdfm_moderate_forums}" /></h3>
-				<h:panelGroup layout="block" styleClass="indnt1">
-					<h:panelGroup styleClass="checkbox">
-						<h:selectOneRadio layout="pageDirection" disabled="#{not ForumTool.editMode}" id="moderated"  value="#{ForumTool.template.moderated}"
-							onclick="javascript:disableOrEnableModeratePerm();">
-							<f:selectItem itemValue="true" itemLabel="#{msgs.cdfm_yes}"/>
-							<f:selectItem itemValue="false" itemLabel="#{msgs.cdfm_no}"/>
-						</h:selectOneRadio>
-					</h:panelGroup>
-				</h:panelGroup>
-				<h3><h:outputText id="outputLabel15" value="#{msgs.cdfm_postFirst}"/></h3>
-				<h:panelGroup layout="block" styleClass="indnt1">
-					<h:panelGroup styleClass="checkbox">
-						<h:selectOneRadio layout="pageDirection" disabled="#{not ForumTool.editMode}" id="postFirst"  value="#{ForumTool.template.postFirst}">
-							<f:selectItem itemValue="true" itemLabel="#{msgs.cdfm_yes}"/>
-							<f:selectItem itemValue="false" itemLabel="#{msgs.cdfm_no}"/>
-						</h:selectOneRadio>
-					</h:panelGroup>
-				</h:panelGroup>
-
-				<h2><h:outputText id="forumAvailabilityLabel" value="#{msgs.cdfm_forum_availability}" /></h2>
-				<h:panelGroup layout="block" styleClass="indnt1">
-					<h:panelGroup styleClass="checkbox">
-						<h:selectOneRadio layout="pageDirection" onclick="this.blur()" onchange="setDatesEnabled(this);" disabled="#{not ForumTool.editMode}" id="availabilityRestricted"  value="#{ForumTool.template.availabilityRestricted}">
+				<div class="sakai-form-section">
+					<h:outputText id="forumAvailabilityLabel" value="#{msgs.cdfm_forum_availability}" styleClass="sakai-form-section__title"/>
+					<div class="sakai-form-field">
+						<h:selectOneRadio layout="pageDirection" onclick="this.blur()" onchange="setDatesEnabled(this);" disabled="#{not ForumTool.editMode}" id="availabilityRestricted" value="#{ForumTool.template.availabilityRestricted}"
+							styleClass="sakai-form-choice-group">
 							<f:selectItem itemValue="false" itemLabel="#{msgs.cdfm_forum_avail_show}"/>
 							<f:selectItem itemValue="true" itemLabel="#{msgs.cdfm_forum_avail_date}" />
 						</h:selectOneRadio>
+					</div>
+					<h:panelGroup id="openDateSpan" layout="block" styleClass="sakai-form-field openDateSpan calWidget" style="display: #{ForumTool.template.availabilityRestricted ? 'block' : 'none'}">
+						<h:outputLabel value="#{msgs.openDate}" for="openDate" styleClass="sakai-form-label"/>
+						<h:inputText id="openDate" styleClass="openDate sakai-form-control" value="#{ForumTool.template.openDate}" />
 					</h:panelGroup>
-					<h:panelGroup id="openDateSpan" styleClass="indnt2 openDateSpan calWidget" style="display: #{ForumTool.template.availabilityRestricted ? 'block' : 'none'}">
-						<h:outputLabel value="#{msgs.openDate}: " for="openDate" />
-						<h:inputText id="openDate" styleClass="openDate" value="#{ForumTool.template.openDate}" />
+					<h:panelGroup id="closeDateSpan" layout="block" styleClass="sakai-form-field closeDateSpan calWidget" style="display: #{ForumTool.template.availabilityRestricted ? 'block' : 'none'}">
+						<h:outputLabel value="#{msgs.closeDate}" for="closeDate" styleClass="sakai-form-label"/>
+						<h:inputText id="closeDate" styleClass="closeDate sakai-form-control" value="#{ForumTool.template.closeDate}" />
 					</h:panelGroup>
-					<h:panelGroup id="closeDateSpan" styleClass="indnt2 closeDateSpan calWidget" style="display: #{ForumTool.template.availabilityRestricted ? 'block' : 'none'}">
-						<h:outputLabel value="#{msgs.closeDate}: " for="closeDate" />
-						<h:inputText id="closeDate" styleClass="closeDate" value="#{ForumTool.template.closeDate}" />
-					</h:panelGroup>
-				</h:panelGroup>
+				</div>
 
 				<script>
 					localDatePicker({
@@ -142,37 +138,37 @@
 					});
 				</script>
 
-				<h2><h:outputText id="forumMarkReadLabel" value="#{msgs.cdfm_forum_mark_read}" /></h2>
-				<h:outputLabel id="outputLabel5" for="autoMarkThreadsRead" value="#{msgs.cdfm_auto_mark_threads_read}"/>
-				<h:panelGroup layout="block" styleClass="indnt1">
-					<h:panelGroup styleClass="checkbox">
+				<div class="sakai-form-section">
+					<h:outputText id="forumMarkReadLabel" value="#{msgs.cdfm_forum_mark_read}" styleClass="sakai-form-section__title"/>
+					<div class="sakai-form-field">
+						<h:outputLabel id="outputLabel5" for="autoMarkThreadsRead" value="#{msgs.cdfm_auto_mark_threads_read}" styleClass="sakai-form-label"/>
 						<h:selectOneRadio layout="pageDirection" disabled="#{not ForumTool.editMode}" id="autoMarkThreadsRead"
-								value="#{ForumTool.template.autoMarkThreadsRead}" onclick="javascript:disableOrEnableModeratePerm();">
+								value="#{ForumTool.template.autoMarkThreadsRead}" styleClass="sakai-form-choice-group"
+								onclick="javascript:disableOrEnableModeratePerm();">
 							<f:selectItem itemValue="true" itemLabel="#{msgs.cdfm_yes}"/>
 							<f:selectItem itemValue="false" itemLabel="#{msgs.cdfm_no}"/>
 						</h:selectOneRadio>
-					</h:panelGroup>
-				</h:panelGroup>
-				<br>
+					</div>
+				</div>
 
 		 		<%@ include file="/jsp/discussionForum/permissions/permissions_include.jsp"%>
-		 		
-        <div class="act">
-          <h:commandButton action="#{ForumTool.processActionReviseTemplateSettings}" 
-                           value="#{msgs.cdfm_button_bar_revise}" 
+
+        <div class="sakai-actions">
+          <h:commandButton action="#{ForumTool.processActionReviseTemplateSettings}"
+                           value="#{msgs.cdfm_button_bar_revise}"
                            rendered="#{not ForumTool.editMode}"
                            accesskey="r"
-						   styleClass="active"/>            
-          <h:commandButton action="#{ForumTool.processActionSaveTemplateSettings}" 
-                           onclick="form.submit;" value="#{msgs.cdfm_button_bar_save_setting}" 
+						   styleClass="sakai-btn sakai-btn-primary"/>
+          <h:commandButton action="#{ForumTool.processActionSaveTemplateSettings}"
+                           onclick="form.submit;" value="#{msgs.cdfm_button_bar_save_setting}"
                            rendered="#{ForumTool.editMode}"
-                           accesskey="s" 
-						   styleClass="active"/>
-<%--          <h:commandButton action="#{ForumTool.processActionRestoreDefaultTemplate}" value="Restore Defaults" rendered="#{ForumTool.editMode}"/>--%>
+                           accesskey="s"
+						   styleClass="sakai-btn sakai-btn-primary"/>
           <h:commandButton immediate="true"
-                           action="#{ForumTool.processActionCancelTemplateSettings}" 
+                           action="#{ForumTool.processActionCancelTemplateSettings}"
                            value="#{msgs.cdfm_button_bar_cancel}"
-                           accesskey="x" />
+                           accesskey="x"
+                           styleClass="sakai-btn sakai-btn-ghost"/>
        </div>
 	  </h:form>
     </sakai:view>

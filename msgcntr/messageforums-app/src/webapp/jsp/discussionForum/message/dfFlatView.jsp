@@ -7,32 +7,21 @@
 </jsp:useBean>
 
 <f:view>
-<sakai:view toolCssHref="/messageforums-tool/css/msgcntr.css">
+<sakai:view>
 
-	<h:form id="msgForum" styleClass="specialLink">
+	<h:form id="msgForum" styleClass="sakai-forums">
 
 	<!--jsp/discussionForum/message/dfFlatView.jsp-->
 		<script>includeLatestJQuery("msgcntr");</script>
-  		<link rel="stylesheet" type="text/css" href="/messageforums-tool/css/dialog.css" />
 		<script src="/messageforums-tool/js/sak-10625.js"></script>
 		<script src="/messageforums-tool/js/forum.js"></script>
 		<script src="/messageforums-tool/js/threadScrollEvent.js"></script>
-		<script>
-		  if (window.location !== window.parent.location) {
-		    includeWebjarLibrary('bootstrap');
-		  }
-		</script>
 		<script src="/messageforums-tool/js/dialog.js"></script>
+		<script type="module" src="/webcomponents/bundles/rubric-association-requirements.js<h:outputText value="#{ForumTool.CDNQuery}" />"></script>
         <script>
             $(document).ready(function(){
-                var menuLink = $('#forumsMainMenuLink');
-                var menuLinkSpan = menuLink.closest('span');
-                menuLinkSpan.addClass('current');
-                menuLinkSpan.html(menuLink.text());
-
                 setupMessageNav('messageNew');
                 setupMessageNav('messagePending');
-
             });
 			var markAsNotReadText = "<h:outputText value="#{msgs.cdfm_mark_as_not_read}"/>";
 			var showThreadChanges = "<h:outputText value="#{ForumTool.showThreadChanges}"/>";
@@ -40,103 +29,107 @@
 			var newFlag = "<h:outputText value="#{msgs.cdfm_newflag}"/>";
 			var isMarkAsNotReadValue = "<h:outputText value="#{ForumTool.selectedTopic.isMarkAsNotRead}"/>";
         </script>
-		<%@ include file="/jsp/discussionForum/menu/forumsMenu.jsp" %>
+		<% request.setAttribute("dfHeaderView", "flat"); %>
+		<% request.setAttribute("dfHeaderBack", "forum"); %>
+		<%@ include file="/jsp/discussionForum/menu/forumsHeader.jsp" %>
 
-	<%--//
-		//plugin required below
-		<script src="/messageforums-tool/js/pxToEm.js"></script>
-
-		/*
-		gsilver: get a value representing max indents
-	 	from the server configuraiton service or the language bundle, parse 
-		all the indented items, and if the item indent goes over the value, flatten to the value 
-		*/
-		<script>
-		$(document).ready(function() {
-			// pick value from element (that gets it from language bundle)
-			maxThreadDepth =$('#maxthreaddepth').text()
-			// double check that this is a number
-			if (isNaN(maxThreadDepth)){
-				maxThreadDepth=10
-			}
-			// for each message, if the message is indented more than the value above
-			// void that and set the new indent to the value
-			$(".messagesThreaded td").each(function (i) {
-				paddingDepth= $(this).css('padding-left').split('px');
-				if ( paddingDepth[0] > parseInt(maxThreadDepth.pxToEm ({scope:'body', reverse:true}))){
-					$(this).css ('padding-left', maxThreadDepth + 'em');
-				}
-			});
-		});
-		</script>	
-		// element into which the value gets insert and retrieved from
-		<span class="highlight"  id="maxthreaddepth" class="skip"><h:outputText value="#{msgs.cdfm_maxthreaddepth}" /></span>
-//--%>
-
-		<div class="headerBar">
-		  <div class="progress-container">
-		    <div class="progress-bar" id="myBar"></div>
-		  </div>
-		  <div id="progress-value" class="p-2"></div>
-		</div>
-
-	<div class="modal fade" id="dialogDiv" data-dialog-frame="dialogFrame" tabindex="-1" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="dialogDivLabel">
-		<div class="modal-dialog modal-xl modal-dialog-centered">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title" id="dialogDivLabel">
-						<h:outputText value="#{msgs.cdfm_grade_msg}" />
-					</h5>
-					<button type="button" class="btn-close" data-bs-dismiss="modal">
-						<span class="visually-hidden">
-							<h:outputText value="#{msgs.close_window}" />
-						</span>
-					</button>
-				</div>
-				<div class="modal-body">
-					<f:verbatim>
-						<iframe id="dialogFrame" name="dialogFrame" class="grade-modal-frame" title="</f:verbatim><h:outputText value="#{msgs.cdfm_grade_msg}" /><f:verbatim>"></iframe>
-					</f:verbatim>
+		<div class="modal fade sakai-forums__grade-modal" id="dialogDiv" data-dialog-frame="dialogFrame" tabindex="-1" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="dialogDivLabel">
+			<div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h2 class="modal-title" id="dialogDivLabel">
+							<h:outputText value="#{msgs.cdfm_grade_msg}" />
+						</h2>
+						<button type="button" class="btn-close" data-bs-dismiss="modal">
+							<span class="visually-hidden">
+								<h:outputText value="#{msgs.close_window}" />
+							</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<f:verbatim>
+							<iframe id="dialogFrame" name="dialogFrame" class="grade-modal-frame" title="</f:verbatim><h:outputText value="#{msgs.cdfm_grade_msg}" /><f:verbatim>"></iframe>
+						</f:verbatim>
+					</div>
 				</div>
 			</div>
 		</div>
-	</div>
 
-		<div class="row">
-			<div class="col-md-9 col-xs-12">
-				<div class="breadCrumb specialLink">
-					<h3>
-						<h:commandLink action="#{ForumTool.processActionHome}" value="#{msgs.cdfm_message_forums}" title=" #{msgs.cdfm_message_forums}"
-							rendered="#{ForumTool.messagesandForums}" />
-						<h:commandLink action="#{ForumTool.processActionHome}" value="#{msgs.cdfm_discussions}" title=" #{msgs.cdfm_discussions}"
-							rendered="#{ForumTool.forumsTool}" />
-						<h:outputText value=" " /><h:outputText value=" / " /><h:outputText value=" " />
-						<h:commandLink action="#{ForumTool.processActionDisplayForum}" title=" #{ForumTool.selectedForum.forum.title}">
-							<f:param value="#{ForumTool.selectedForum.forum.id}" name="forumId"/>
-							<h:outputText value="#{ForumTool.selectedForum.forum.title}" />
-						</h:commandLink>
-						<h:outputText value=" " /><h:outputText value=" / " /><h:outputText value=" " />
-						<h:outputText value="#{ForumTool.selectedTopic.topic.title}" />
-					</h3>
-				</div>
+		<div class="sakai-segmented-control">
+			<h:commandLink immediate="true" action="#{ForumTool.processActionDisplayThreadedView}" styleClass="sakai-segmented-control__btn">
+				<h:outputText value="#{msgs.msg_view_threaded}"/>
+			</h:commandLink>
+			<span class="sakai-segmented-control__btn is-active" aria-current="page"><h:outputText value="#{msgs.cdfm_flat_view_label}"/></span>
+		</div>
+
+		<div class="sakai-forums__forum-header">
+			<div class="sakai-forums__forum-identity">
+				<h:outputText id="draft" styleClass="sakai-forums__status sakai-forums__status--draft"
+						value="#{msgs.cdfm_draft}" rendered="#{ForumTool.selectedTopic.topic.draft == 'true'}"/>
+				<h:panelGroup styleClass="sakai-forums__status" rendered="#{ForumTool.selectedTopic.topic.availability == 'false'}">
+					<span class="si si-calendar-x" aria-hidden="true"></span>
+					<h:outputText value="#{msgs.topic_restricted_message}"/>
+				</h:panelGroup>
+				<h:panelGroup styleClass="sakai-forums__status" rendered="#{ForumTool.selectedForum.locked == 'true'}">
+					<span class="si si-locked" aria-hidden="true"></span>
+					<span class="visually-hidden"><h:outputText value="#{msgs.cdfm_forum_locked}"/></span>
+				</h:panelGroup>
+				<h:panelGroup styleClass="sakai-forums__status" rendered="#{ForumTool.selectedForum.locked != 'true' && ForumTool.selectedTopic.locked == 'true'}">
+					<span class="si si-locked" aria-hidden="true"></span>
+					<span class="visually-hidden">
+						<h:outputFormat value="#{msgs.cdfm_topic_locked}">
+							<f:param value="#{ForumTool.selectedTopic.topic.title}"/>
+						</h:outputFormat>
+					</span>
+				</h:panelGroup>
+				<h:panelGroup rendered="#{ForumTool.selectedTopic.hasRubric == 'true'}">
+					<sakai-rubric-student-preview-button
+						site-id='<h:outputText value="#{ForumTool.siteId}" />'
+						display="icon"
+						tool-id="sakai.gradebookng"
+						entity-id="<h:outputText value="#{ForumTool.selectedTopic.gradeAssign}" />">
+					</sakai-rubric-student-preview-button>
+				</h:panelGroup>
+				<h:outputText id="topic_moderated" value="#{msgs.cdfm_forum_moderated_flag}" styleClass="sakai-forums__meta"
+						rendered="#{ForumTool.selectedTopic.moderated == 'true'}"/>
 			</div>
-			<div class="pull-right">
-				   <h:outputText  styleClass="button formButtonDisabled"  value="#{msgs.cdfm_previous_topic}"  rendered="#{!ForumTool.selectedTopic.hasPreviousTopic}" />
-					 <h:commandLink  styleClass="button" action="#{ForumTool.processActionDisplayPreviousTopic}" value="#{msgs.cdfm_previous_topic}"  rendered="#{ForumTool.selectedTopic.hasPreviousTopic}" 
-					                title=" #{msgs.cdfm_previous_topic}">
-						 <f:param value="#{ForumTool.selectedTopic.previousTopicId}" name="previousTopicId"/>
-						 <f:param value="#{ForumTool.selectedForum.forum.id}" name="forumId"/>
-					 </h:commandLink>
-					 <h:outputText styleClass="button formButtonDisabled" value="#{msgs.cdfm_next_topic}" rendered="#{!ForumTool.selectedTopic.hasNextTopic}" />
-					 <h:commandLink  styleClass="button" action="#{ForumTool.processActionDisplayNextTopic}" value="#{msgs.cdfm_next_topic}" rendered="#{ForumTool.selectedTopic.hasNextTopic}" 
-					                title=" #{msgs.cdfm_next_topic}">
-						<f:param value="#{ForumTool.selectedTopic.nextTopicId}" name="nextTopicId"/>
-						<f:param value="#{ForumTool.selectedForum.forum.id}" name="forumId"/>
-					 </h:commandLink>
- 			</div>
- 		</div>
-	
-		<%--rjlowe: Expanded View to show the message bodies, threaded --%>
+			<h:outputText value="#{ForumTool.selectedTopic.topic.shortDescription}" styleClass="sakai-forums__description"
+					rendered="#{!empty ForumTool.selectedTopic.topic.shortDescription}"/>
+			<f:subview id="longDesc" rendered="#{!empty ForumTool.selectedTopic.attachList || (ForumTool.selectedTopic.topic.extendedDescription != '' && ForumTool.selectedTopic.topic.extendedDescription != null && ForumTool.selectedTopic.topic.extendedDescription != '<br/>')}">
+				<h:panelGroup layout="block" id="openLinkBlock" styleClass="toggleParent openLinkBlock">
+					<a href="#" id="showMessage" class="toggle show">
+						<span class="si si-chevron-down" aria-hidden="true"></span>
+						<h:outputText value=" #{msgs.cdfm_read_full_description}"/>
+						<h:outputText value=" #{msgs.cdfm_and}" rendered="#{!empty ForumTool.selectedTopic.attachList}"/>
+						<h:outputText value=" #{msgs.cdfm_attach}" rendered="#{!empty ForumTool.selectedTopic.attachList}"/>
+					</a>
+				</h:panelGroup>
+				<h:panelGroup layout="block" id="hideLinkBlock" styleClass="toggleParent hideLinkBlock display-none">
+					<a href="#" id="hideMessage" class="toggle show">
+						<span class="si si-chevron-up" aria-hidden="true"></span>
+						<h:outputText value=" #{msgs.cdfm_hide_full_description}"/>
+						<h:outputText value=" #{msgs.cdfm_and}" rendered="#{!empty ForumTool.selectedTopic.attachList}"/>
+						<h:outputText value=" #{msgs.cdfm_attach}" rendered="#{!empty ForumTool.selectedTopic.attachList}"/>
+					</a>
+				</h:panelGroup>
+				<h:panelGroup layout="block" id="fullTopicDescription" styleClass="textPanel fullTopicDescription display-none">
+					<h:outputText escape="false" value="#{ForumTool.selectedTopic.topic.extendedDescription}"/>
+					<h:dataTable styleClass="sakai-table sakai-table--stack attachListTable" value="#{ForumTool.selectedTopic.attachList}"
+							var="eachAttach" rendered="#{!empty ForumTool.selectedTopic.attachList}">
+						<h:column>
+							<sakai:contentTypeMap fileType="#{eachAttach.attachment.attachmentType}" mapType="image" var="imagePath" pathPrefix="/library/image/"/>
+							<h:graphicImage id="exampleFileIcon" value="#{imagePath}" alt=""/>
+						</h:column>
+						<h:column>
+							<h:outputLink value="#{eachAttach.url}" target="_blank">
+								<h:outputText value="#{eachAttach.attachment.attachmentName}"/>
+							</h:outputLink>
+						</h:column>
+					</h:dataTable>
+				</h:panelGroup>
+			</f:subview>
+		</div>
+
 	<span class="skip" id="firstNewItemTitleHolder"><h:outputText value="#{msgs.cdfm_gotofirstnewtitle}" /></span>
 	<span class="skip" id="firstPendingItemTitleHolder"><h:outputText value="#{msgs.cdfm_gotofirstpendingtitle}" /></span>
 	<span class="skip" id="nextPendItemTitleHolder"><h:outputText value="#{msgs.cdfm_gotopendtitle}" /></span>
@@ -144,65 +137,56 @@
 	<span class="skip" id="nextNewItemTitleHolder"><h:outputText value="#{msgs.cdfm_gotonewtitle}" /></span>
 	<span class="skip" id="lastNewItemTitleHolder"><h:outputText value="#{msgs.cdfm_lastnewtitle}" /></span>
 
-		<div id="messNavHolder" style="clear:both;">
-				<h:commandLink action="#{ForumTool.processActionMarkAllAsNotRead}" rendered="#{ForumTool.selectedTopic.isMarkAsNotRead and not ForumTool.selectedTopic.topic.autoMarkThreadsRead}" styleClass="button">
-					<h:outputText value=" #{msgs.cdfm_mark_all_as_not_read}" />
+		<div id="messNavHolder" class="sakai-actions sakai-no-print">
+				<h:commandLink action="#{ForumTool.processActionMarkAllAsNotRead}" rendered="#{ForumTool.selectedTopic.isMarkAsNotRead and not ForumTool.selectedTopic.topic.autoMarkThreadsRead}" styleClass="sakai-btn sakai-btn-secondary">
+					<h:outputText value="#{msgs.cdfm_mark_all_as_not_read}" />
 				</h:commandLink>
 		</div>
 
-		<h:panelGroup id="forumsActions" layout="block">
-			<h:commandLink styleClass="button" value="#{msgs.cdfm_container_title_thread}" id="df_compose_message_dfAllMessages"
-				rendered="#{ForumTool.selectedTopic.isNewResponse && !ForumTool.selectedTopic.locked && !ForumTool.selectedForum.locked == 'true'}" action="#{ForumTool.processAddMessage}" immediate="true"/>
-			<h:outputText value="&#160;" escape="false" />
-			<h:commandLink styleClass="button" value="#{msgs.cdfm_thread_view}"  id="threadView" action="#{ForumTool.processActionDisplayThreadedView}" immediate="true"/>
-			<h:outputText value="&#160;" escape="false" />
-			<h:commandLink styleClass="button" action="#{ForumTool.processActionTopicSettings}" id="topic_setting" value="#{msgs.cdfm_topic_settings}"
-				rendered="#{ForumTool.selectedTopic.changeSettings}">
-				<f:param value="#{ForumTool.selectedTopic.topic.id}" name="topicId"/>
-			</h:commandLink>
-			<h:outputText value="&#160;" escape="false" />
-			<h:commandLink styleClass="button" action="#{ForumTool.processActionDeleteTopicConfirm}" id="delete_confirm"
-				value="#{msgs.cdfm_button_bar_delete_topic}" accesskey="d" rendered="#{!ForumTool.selectedTopic.markForDeletion && ForumTool.displayTopicDeleteOption}">
-				<f:param value="#{ForumTool.selectedTopic.topic.id}" name="topicId"/>
-			</h:commandLink>
-			<h:outputText value="&#160;" escape="false" />
-			<h:outputLink styleClass="button" id="print" value="javascript:printFriendly('#{ForumTool.printFriendlyUrl}');" title="#{msgs.print_friendly}">
-				<span class="si si-print" aria-hidden="true"></span>
-			</h:outputLink>
-		</h:panelGroup>
+		<div id="gradesSavedDiv" class="sakai-banner sakai-banner--success" style="display:none" role="alert" aria-live="assertive">
+			<h:outputText value="#{msgs.cdfm_grade_successful}"/>
+		</div>
 
-		<h:outputText  value="#{msgs.cdfm_no_messages}" rendered="#{empty ForumTool.messages}"   styleClass="sak-banner-info" style="display:block" />
-		<div class="clear">
-			<mf:hierDataTable id="expandedThreadedMessages" value="#{ForumTool.messages}" var="message" 
-	   	 		noarrows="true" styleClass="table-hover messagesThreaded" cellpadding="0" cellspacing="0" width="100%" columnClasses="bogus">
+		<h:panelGroup layout="block" styleClass="sakai-forums__empty" rendered="#{empty ForumTool.messages}">
+			<p class="sakai-forums__empty-text"><h:outputText value="#{msgs.cdfm_no_messages}"/></p>
+			<h:commandLink immediate="true" action="#{ForumTool.processAddMessage}" styleClass="sakai-btn sakai-btn-primary"
+					rendered="#{ForumTool.selectedTopic != null && ForumTool.selectedTopic.isNewResponse && !ForumTool.selectedTopic.locked && !ForumTool.selectedForum.locked}">
+				<h:outputText value="" styleClass="si si-add" escape="false"/>
+				<h:outputText value="#{msgs.cdfm_container_title_thread}"/>
+			</h:commandLink>
+		</h:panelGroup>
+		<h:panelGroup layout="block" rendered="#{!empty ForumTool.messages}">
+			<mf:hierDataTable id="expandedThreadedMessages" value="#{ForumTool.messages}" var="message"
+	   	 		noarrows="true" styleClass="sakai-table sakai-table--hover sakai-table--stack messagesThreaded" columnClasses="bogus">
 				<h:column id="_msg_subject">
 					<%@ include file="dfViewThreadBodyInclude.jsp" %>
 				</h:column>
 			</mf:hierDataTable>
-		</div>
-		
-		<br/><br/>
-		<h:panelGrid columns="1" width="100%" styleClass="navPanel specialLink">
-				 <h:panelGroup styleClass="itemNav">
-				   <h:outputText  styleClass="button formButtonDisabled" value="#{msgs.cdfm_previous_topic}"  rendered="#{!ForumTool.selectedTopic.hasPreviousTopic}" />
-					 <h:commandLink  styleClass="button" action="#{ForumTool.processActionDisplayPreviousTopic}" value="#{msgs.cdfm_previous_topic}"  rendered="#{ForumTool.selectedTopic.hasPreviousTopic}" 
-					                title=" #{msgs.cdfm_previous_topic}">
-						 <f:param value="#{ForumTool.selectedTopic.previousTopicId}" name="previousTopicId"/>
-						 <f:param value="#{ForumTool.selectedForum.forum.id}" name="forumId"/>
-					 </h:commandLink>
-					 <h:outputText  styleClass="button formButtonDisabled" value="#{msgs.cdfm_next_topic}" rendered="#{!ForumTool.selectedTopic.hasNextTopic}" />
-					 <h:commandLink action="#{ForumTool.processActionDisplayNextTopic}" value="#{msgs.cdfm_next_topic}" rendered="#{ForumTool.selectedTopic.hasNextTopic}" 
-					                title=" #{msgs.cdfm_next_topic}"  styleClass="button">
-						<f:param value="#{ForumTool.selectedTopic.nextTopicId}" name="nextTopicId"/>
-						<f:param value="#{ForumTool.selectedForum.forum.id}" name="forumId"/>
-					 </h:commandLink>
-				 </h:panelGroup>
-			</h:panelGrid>
-				
+		</h:panelGroup>
+
+		<h:panelGroup layout="block" styleClass="sakai-actions sakai-forums__pager sakai-no-print">
+			<h:panelGroup styleClass="sakai-btn sakai-btn-secondary is-disabled" rendered="#{!ForumTool.selectedTopic.hasPreviousTopic}">
+				<h:outputText value="#{msgs.cdfm_previous_topic}"/>
+			</h:panelGroup>
+			<h:commandLink styleClass="sakai-btn sakai-btn-secondary" action="#{ForumTool.processActionDisplayPreviousTopic}" rendered="#{ForumTool.selectedTopic.hasPreviousTopic}" title="#{msgs.cdfm_previous_topic}">
+				<h:outputText value="#{msgs.cdfm_previous_topic}"/>
+				<f:param value="#{ForumTool.selectedTopic.previousTopicId}" name="previousTopicId"/>
+				<f:param value="#{ForumTool.selectedForum.forum.id}" name="forumId"/>
+			</h:commandLink>
+			<h:panelGroup styleClass="sakai-btn sakai-btn-secondary is-disabled" rendered="#{!ForumTool.selectedTopic.hasNextTopic}">
+				<h:outputText value="#{msgs.cdfm_next_topic}"/>
+			</h:panelGroup>
+			<h:commandLink styleClass="sakai-btn sakai-btn-secondary" action="#{ForumTool.processActionDisplayNextTopic}" rendered="#{ForumTool.selectedTopic.hasNextTopic}" title="#{msgs.cdfm_next_topic}">
+				<h:outputText value="#{msgs.cdfm_next_topic}"/>
+				<f:param value="#{ForumTool.selectedTopic.nextTopicId}" name="nextTopicId"/>
+				<f:param value="#{ForumTool.selectedForum.forum.id}" name="forumId"/>
+			</h:commandLink>
+		</h:panelGroup>
+
 		<h:inputHidden id="mainOrForumOrTopic" value="dfFlatView" />
 <%
   String thisId = request.getParameter("panel");
-  if (thisId == null) 
+  if (thisId == null)
   {
     thisId = "Main" + org.sakaiproject.tool.cover.ToolManager.getCurrentPlacement().getId();
   }
@@ -211,7 +195,7 @@
 			function resize(){
   				mySetMainFrameHeight('<%= org.sakaiproject.util.Web.escapeJavascript(thisId)%>');
   			}
-			</script> 		
+			</script>
 	</h:form>
 
 </sakai:view>

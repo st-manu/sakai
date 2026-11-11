@@ -132,7 +132,7 @@ public class ViewRenderer extends Renderer
 
 		}
 
-		writer.write("<div class=\"portletBody\">\n");
+		writer.write("<div class=\"portletBody sakai-tool-body\">\n");
 	}
 
 	/**

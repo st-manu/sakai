@@ -129,6 +129,17 @@
 		icon.className = `si ${ascending ? "si-caret-up-fill" : "si-caret-down-fill"} sakai-forum-sort-icon`;
 		icon.setAttribute("aria-hidden", "true");
 		(header.querySelector("a") || header).appendChild(icon);
+
+		const mode = header.querySelector("[data-sakai-forum-sort]")?.dataset.sakaiForumSort;
+		document.querySelectorAll("[data-sakai-forum-sort-trigger]").forEach(button => {
+			button.querySelector(".sakai-forum-sort-icon")?.remove();
+			const active = Boolean(mode) && button.dataset.sakaiForumSortTrigger === mode;
+			button.classList.toggle("is-active", active);
+			button.setAttribute("aria-pressed", active ? "true" : "false");
+			if (active) {
+				button.appendChild(icon.cloneNode(true));
+			}
+		});
 	}
 
 	function toggleThreadVisibility(table, show, imageObj) {

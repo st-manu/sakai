@@ -9,62 +9,63 @@
 </jsp:useBean>
 
 <f:view>
-   <sakai:view title="#{msgs.watch_forums_options}" toolCssHref="/messageforums-tool/css/msgcntr.css">
-      <h:form id="revise">
+   <sakai:view title="#{msgs.watch_forums_options}">
+      <h:form id="revise" styleClass="sakai-forums">
         		<script>includeLatestJQuery("msgcntr");</script>
        		<script src="/messageforums-tool/js/sak-10625.js"></script>
        		<script src="/messageforums-tool/js/messages.js"></script>
           <script>
               $(document).ready(function() {
-                  var menuLink = $('#forumsWatchMenuLink');
-                  var menuLinkSpan = menuLink.closest('span');
-                  menuLinkSpan.addClass('current');
-                  menuLinkSpan.html(menuLink.text());
                   $('#revise\\:emailNotificationOption1, #revise\\:emailNotificationOption2, #revise\\:emailNotificationOption3').each(function() {
                        let label = $('#revise\\:notify_for_all_postings_head').text() + " " + $(this).next().text();
                        $(this).attr('aria-label', label);
                   });
               });
           </script>
-				<%@ include file="/jsp/discussionForum/menu/forumsMenu.jsp" %>
+				<% request.setAttribute("dfHeaderTitleKey", "watch_forums_options"); %>
+<% request.setAttribute("dfHeaderBack", "discussions"); %>
+<%@ include file="/jsp/discussionForum/menu/forumsHeader.jsp" %>
 <!--jsp/discussionForum/area/dfWatchSettings.jsp-->
-		<div class="page-header">
-		    <h1 id="notifications_options_head"><h:outputText value="#{msgs.watch_forums_options}" /></h1>
-		</div>
-		<div>
-		      <h:outputText escape="false" value="#{msgs.watch_forums_options_instruction}" />
-		      <h:outputText  styleClass="sak-banner-info" escape="false" value="#{msgs.watch_forums_options_instruction_note}" />
-                      <f:verbatim><br/></f:verbatim>
-                </div>
-		<h:panelGroup>
-                      <h:outputText style="display:block" id="notify_for_all_postings_head" escape="false" value="#{msgs.notify_for_all_postings_head}" />
-                      <ul style="list-style: none;">
-                          <li>
-                            <h:selectOneRadio id="emailNotificationOption1" group="emailNotificationOption" value="#{ForumTool.watchSettingsBean.emailNotification.notificationLevel}">
-                                <f:selectItem itemValue="2" itemLabel="#{msgs.notify_for_all_postings}"/>
-                            </h:selectOneRadio>
-                          </li>
-                          <li>
-                              <h:selectOneRadio id="emailNotificationOption2" group="emailNotificationOption" value="#{ForumTool.watchSettingsBean.emailNotification.notificationLevel}">
-                                  <f:selectItem itemValue="1" itemLabel="#{msgs.notify_for_postings_to_my_thread}"/>
-                              </h:selectOneRadio>
-                          </li>
-                          <li>
-                                <h:selectOneRadio id="emailNotificationOption3" group="emailNotificationOption" value="#{ForumTool.watchSettingsBean.emailNotification.notificationLevel}">
-                                   <f:selectItem itemValue="0" itemLabel="#{msgs.notify_none}"/>
-                                </h:selectOneRadio>
-                           </li>
-                      </ul>
-                </h:panelGroup>
-        <div class="act">
-          <h:commandButton action="#{ForumTool.processActionSaveEmailNotificationOption}" 
-                           value="#{msgs.cdfm_button_bar_save_setting}" 
-                           accesskey="r"
-						   styleClass="active"/>            
 
-          <h:commandButton action="#{ForumTool.processActionHome}" 
+		<p class="sakai-form-section__intro">
+			<h:outputText escape="false" value="#{msgs.watch_forums_options_instruction}" />
+		</p>
+		<p class="sakai-banner sakai-banner--info">
+			<h:outputText escape="false" value="#{msgs.watch_forums_options_instruction_note}" />
+		</p>
+
+		<div class="sakai-form-section">
+			<h:outputText id="notify_for_all_postings_head" styleClass="sakai-form-section__title" escape="false" value="#{msgs.notify_for_all_postings_head}" />
+			<div class="sakai-form-field">
+				<div class="sakai-form-choice-group" role="radiogroup" aria-labelledby="revise:notify_for_all_postings_head">
+					<div class="sakai-form-choice">
+						<h:selectOneRadio id="emailNotificationOption1" group="emailNotificationOption" value="#{ForumTool.watchSettingsBean.emailNotification.notificationLevel}">
+							<f:selectItem itemValue="2" itemLabel="#{msgs.notify_for_all_postings}"/>
+						</h:selectOneRadio>
+					</div>
+					<div class="sakai-form-choice">
+						<h:selectOneRadio id="emailNotificationOption2" group="emailNotificationOption" value="#{ForumTool.watchSettingsBean.emailNotification.notificationLevel}">
+							<f:selectItem itemValue="1" itemLabel="#{msgs.notify_for_postings_to_my_thread}"/>
+						</h:selectOneRadio>
+					</div>
+					<div class="sakai-form-choice">
+						<h:selectOneRadio id="emailNotificationOption3" group="emailNotificationOption" value="#{ForumTool.watchSettingsBean.emailNotification.notificationLevel}">
+							<f:selectItem itemValue="0" itemLabel="#{msgs.notify_none}"/>
+						</h:selectOneRadio>
+					</div>
+				</div>
+			</div>
+		</div>
+
+        <div class="sakai-actions">
+          <h:commandButton action="#{ForumTool.processActionSaveEmailNotificationOption}"
+                           value="#{msgs.cdfm_button_bar_save_setting}"
+                           accesskey="r"
+						   styleClass="sakai-btn sakai-btn-primary"/>
+          <h:commandButton action="#{ForumTool.processActionHome}"
                            value="#{msgs.cdfm_button_bar_cancel}"
-                           accesskey="x" />
+                           accesskey="x"
+                           styleClass="sakai-btn sakai-btn-ghost"/>
        </div>
 	  </h:form>
     </sakai:view>
